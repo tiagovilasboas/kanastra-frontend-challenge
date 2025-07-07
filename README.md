@@ -52,6 +52,7 @@ Este projeto é o sucessor espiritual do [react-layered-boilerplate](https://git
 - 🌍 **i18n pronto:** Configuração out-of-the-box com i18next + react-i18next (PT/EN).
 - 🤖 **Geradores Plop:** Crie componentes ou features completas (API, store, componente, teste) com um comando.
 - 🐹 **Commitlint + Commitizen:** Histórico de commits padronizado (Conventional Commits).
+- ✅ **Exemplo de Formulário com Zod:** Validação tipada em tempo real integrada ao Mantine.
 
 ## 🏛️ Arquitetura
 
