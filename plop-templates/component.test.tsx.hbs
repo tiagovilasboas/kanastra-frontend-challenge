@@ -1,0 +1,17 @@
+import { render, screen } from '@testing-library/react';
+
+import { {{pascalCase name}} } from './{{pascalCase name}}';
+
+// Mock i18next
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
+describe('{{pascalCase name}}', () => {
+  it('renders correctly', () => {
+    render(<{{pascalCase name}} />);
+    expect(screen.getByText('{{camelCase name}}.welcome')).toBeInTheDocument();
+  });
+}); 

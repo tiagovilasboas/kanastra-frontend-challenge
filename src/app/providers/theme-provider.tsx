@@ -1,4 +1,5 @@
-import { MantineProvider } from '@mantine/core'
+import { Global } from '@emotion/react'
+import { createTheme, MantineProvider } from '@mantine/core'
 
 import { useColorScheme } from '@/hooks/useColorScheme'
 
@@ -6,15 +7,22 @@ type ThemeProviderProps = {
   children: React.ReactNode
 }
 
+const theme = createTheme({})
+
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const { colorScheme } = useColorScheme()
-
-  // Handle 'auto' case from local storage which is not supported by forceColorScheme
-  const finalColorScheme =
-    colorScheme === 'auto' ? 'light' : (colorScheme as 'light' | 'dark')
+  const finalColorScheme: 'light' | 'dark' =
+    colorScheme === 'dark' ? 'dark' : 'light'
 
   return (
-    <MantineProvider forceColorScheme={finalColorScheme}>
+    <MantineProvider theme={theme} forceColorScheme={finalColorScheme}>
+      <Global
+        styles={() => ({
+          body: {
+            backgroundColor: 'var(--mantine-color-body)',
+          },
+        })}
+      />
       {children}
     </MantineProvider>
   )
