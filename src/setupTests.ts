@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom'
 
+import './i18n'
+
 // Mock matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

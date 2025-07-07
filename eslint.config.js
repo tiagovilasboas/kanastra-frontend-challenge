@@ -1,8 +1,8 @@
 import prettierConfig from 'eslint-config-prettier'
 import formatjs from 'eslint-plugin-formatjs'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
-import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js'
 import hooksPlugin from 'eslint-plugin-react-hooks'
+import pluginReactConfig from 'eslint-plugin-react/configs/recommended.js'
 import simpleImportSort from 'eslint-plugin-simple-import-sort'
 import globals from 'globals'
 import tseslint from 'typescript-eslint'
@@ -31,6 +31,11 @@ export default [
         { ignoreProps: ['aria-label', 'data-testid'], ignoreLinks: true },
       ],
       'react/react-in-jsx-scope': 'off',
+    },
+  },
+  {
+    settings: {
+      react: { version: 'detect' },
     },
   },
 ]
