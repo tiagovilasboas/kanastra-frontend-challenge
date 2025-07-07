@@ -37,7 +37,7 @@ Este projeto é o sucessor espiritual do [react-layered-boilerplate](https://git
 ## ✨ Features
 
 - ⚡️ **Vite:** Build ultrarrápido e Hot Module Replacement (HMR) instantâneo.
-- ⚛️ **React 18:** Com todos os hooks e features mais recentes.
+- ⚛️ **React 19:** Com todos os hooks e features mais recentes.
 - 🔵 **TypeScript:** Tipagem estrita para um código mais seguro e manutenível.
 - 🎨 **Mantine:** Biblioteca de componentes React completa e acessível, com suporte a temas e estilo via Emotion.
 - 🧪 **Vitest & Testing Library:** Configuração de testes moderna, rápida e integrada ao Vite.
