@@ -1,0 +1,97 @@
+{
+  "name": "react-vite-boilerplate",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "author": {
+    "name": "Tiago Vilas Boas",
+    "email": "tcarvalhovb@gmail.com",
+    "url": "https://github.com/tiagovilasboas"
+  },
+  "scripts": {
+    "dev": "kill-port 5173 && vite",
+    "format": "prettier --write . && npm run lint --fix",
+    "clean": "rimraf dist .vite",
+    "dev:open": "kill-port 5173 && vite --open",
+    "test:ci": "vitest run --coverage",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky install",
+    "analyze": "npm run build",
+    "lighthouse": "unlighthouse"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mantine/core": "^8.1.2",
+    "@mantine/form": "^8.1.2",
+    "@mantine/hooks": "^8.1.2",
+    "@tabler/icons-react": "^3.34.0",
+    "i18next": "^25.3.1",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-i18next": "^15.6.0",
+    "react-router-dom": "^7.6.3",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.29.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@types/node": "^24.0.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-formatjs": "^5.4.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^5.5.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.1.0",
+    "kill-port": "^2.0.1",
+    "lint-staged": "^16.1.2",
+    "plop": "^4.0.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "rollup-plugin-visualizer": "^6.0.3",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.34.1",
+    "unlighthouse": "^0.17.1",
+    "vite": "^7.0.0",
+    "vite-plugin-environment": "^1.1.3",
+    "vite-plugin-pwa": "^1.0.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4",
+    "zod": "^3.25.74"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
