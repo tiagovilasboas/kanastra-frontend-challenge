@@ -6,25 +6,23 @@ import ptCommon from './locales/pt/common.json'
 
 // É possível adicionar mais namespaces e usar lazy-loading; aqui mantemos simples
 
-i18n
-  .use(initReactI18next)
-  .init({
-    fallbackLng: 'pt',
-    lng: 'pt',
-    debug: false,
-    resources: {
-      en: {
-        common: enCommon,
-      },
-      pt: {
-        common: ptCommon,
-      },
+i18n.use(initReactI18next).init({
+  fallbackLng: 'pt',
+  lng: 'pt',
+  debug: false,
+  resources: {
+    en: {
+      common: enCommon,
     },
-    ns: ['common'],
-    defaultNS: 'common',
-    interpolation: {
-      escapeValue: false, // React já escapa
+    pt: {
+      common: ptCommon,
     },
-  })
+  },
+  ns: ['common'],
+  defaultNS: 'common',
+  interpolation: {
+    escapeValue: false, // React já escapa
+  },
+})
 
-export default i18n 
+export default i18n

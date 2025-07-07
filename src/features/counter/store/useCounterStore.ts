@@ -20,4 +20,4 @@ export const useCounterStore = create<CounterState>((set) => ({
   },
   increment: () => set((state) => ({ value: state.value + 1 })),
   decrement: () => set((state) => ({ value: state.value - 1 })),
-})) 
+}))

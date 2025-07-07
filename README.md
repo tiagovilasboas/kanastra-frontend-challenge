@@ -57,10 +57,10 @@ Este projeto é o sucessor espiritual do [react-layered-boilerplate](https://git
 
 Este boilerplate foi construído em torno de princípios de engenharia de software reconhecidos:
 
-* **SRP (Single-Responsibility Principle)** – cada função, componente ou módulo tem um único motivo para mudar.
-* **DRY (Don't Repeat Yourself)** – abstrações e utilitários compartilhados evitam duplicação de código.
-* **KISS (Keep It Simple, Stupid)** – preferimos soluções simples e legíveis a abstrações desnecessárias.
-* **YAGNI (You Aren't Gonna Need It)** – só adicionamos código quando há uma necessidade real, mantendo o projeto enxuto.
+- **SRP (Single-Responsibility Principle)** – cada função, componente ou módulo tem um único motivo para mudar.
+- **DRY (Don't Repeat Yourself)** – abstrações e utilitários compartilhados evitam duplicação de código.
+- **KISS (Keep It Simple, Stupid)** – preferimos soluções simples e legíveis a abstrações desnecessárias.
+- **YAGNI (You Aren't Gonna Need It)** – só adicionamos código quando há uma necessidade real, mantendo o projeto enxuto.
 
 A estrutura em camadas respeita fortemente a **Dependency Rule** da Clean Architecture: dependências sempre apontam do exterior para o interior (UI ➡️ Hooks ➡️ Services). Isso garante que detalhes técnicos (framework, API) nunca sejam acoplados à lógica de domínio, facilitando testes, manutenção e evolução.
 
@@ -183,9 +183,9 @@ Desenvolvido de dev para dev com ❤️.
 
 Este projeto utiliza [Plop](https://plopjs.com/) para acelerar a criação de código padronizado.
 
-| Comando | O que faz |
-| ------- | --------- |
-| `npm run plop -- component` | Gera um componente isolado em `src/components/` com teste. |
+| Comando                     | O que faz                                                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `npm run plop -- component` | Gera um componente isolado em `src/components/` com teste.                                                          |
 | `npm run plop -- feature`   | Gera uma feature completa: API fake, store Zustand, componente Mantine e testes, tudo em `src/features/<feature>/`. |
 
 Basta responder ao prompt com o nome desejado e o código será gerado automaticamente seguindo a arquitetura.
@@ -233,13 +233,13 @@ Por padrão o idioma inicial é **PT-BR**, mas basta alterar `lng` em `i18n.ts` 
 
 ### Classificação Detalhada
 
-| Critério                | ⭐ (0-5) | Comentário                                                                            |
-| ----------------------- | :-----: | -------------------------------------------------------------------------------------- |
-| Produtividade Dev       | **5**   | Vite, HMR, Plop, scripts conveniência.                                                 |
-| Escalabilidade Código   | **4**   | Camadas + Zustand modulares; faltam micro-frontends/SSR built-in.                     |
-| Qualidade & Manutenção  | **5**   | ESLint completo, Prettier, testes, CI.                                                |
-| Experiência de UI       | **4**   | Mantine cobre 90 %; pode exigir custom DS avançado em alguns casos.                   |
-| Complexidade Inicial    | **3**   | Tooling avançado (husky, commitlint) exige curva curta, mas documentação ajuda.       |
+| Critério               | ⭐ (0-5) | Comentário                                                                      |
+| ---------------------- | :------: | ------------------------------------------------------------------------------- |
+| Produtividade Dev      |  **5**   | Vite, HMR, Plop, scripts conveniência.                                          |
+| Escalabilidade Código  |  **4**   | Camadas + Zustand modulares; faltam micro-frontends/SSR built-in.               |
+| Qualidade & Manutenção |  **5**   | ESLint completo, Prettier, testes, CI.                                          |
+| Experiência de UI      |  **4**   | Mantine cobre 90 %; pode exigir custom DS avançado em alguns casos.             |
+| Complexidade Inicial   |  **3**   | Tooling avançado (husky, commitlint) exige curva curta, mas documentação ajuda. |
 
 > Para chegar a 10/10 seriam necessários: SSR para SEO crítico, Storybook/Ladle out-of-the-box e integração padrão de autenticação/cache de dados.
 

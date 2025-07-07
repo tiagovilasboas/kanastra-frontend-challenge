@@ -3,4 +3,4 @@
   "decrement": "Decrement",
   "fetch": "Fetch value",
   "currentValue": "Current value: {{value}}"
-} 
+}

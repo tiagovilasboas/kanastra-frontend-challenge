@@ -26,4 +26,4 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-Ajuste as etapas conforme sua infraestrutura (Vercel, Netlify, Cloudflare Pages, Azure Static Web Apps, etc.). 
+Ajuste as etapas conforme sua infraestrutura (Vercel, Netlify, Cloudflare Pages, Azure Static Web Apps, etc.).

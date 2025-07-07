@@ -47,7 +47,8 @@ describe('{{pascalCase name}}', () => {
   })
 
   plop.setGenerator('feature', {
-    description: 'Cria uma feature completa (API fake, store Zustand, componente Mantine, testes)',
+    description:
+      'Cria uma feature completa (API fake, store Zustand, componente Mantine, testes)',
     prompts: [
       {
         type: 'input',

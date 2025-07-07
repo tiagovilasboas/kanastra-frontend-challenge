@@ -1,4 +1,6 @@
 export async function fetchCounterValue(): Promise<number> {
   // Simula uma chamada HTTP de 500 ms que devolve um número aleatório
-  return new Promise((resolve) => setTimeout(() => resolve(Math.floor(Math.random() * 100)), 500))
-} 
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(Math.floor(Math.random() * 100)), 500),
+  )
+}

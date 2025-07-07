@@ -7,11 +7,9 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core'
-
 import {
   IconBolt,
   IconChecklist,
-  IconCode,
   IconDeviceLaptop,
   IconGitCommit,
   IconTestPipe,
