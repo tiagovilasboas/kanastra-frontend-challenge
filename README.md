@@ -45,7 +45,6 @@ Este projeto é o sucessor espiritual do [react-layered-boilerplate](https://git
 - 🐶 **Husky & lint-staged:** Hooks de pre-commit para rodar testes e linters antes de cada commit.
 - 📦 **Alias de Importação:** Importe de `@/components` em vez de `../../../components`.
 - 🌐 **PWA Ready:** Suporte para Progressive Web App.
-- 🌙 **Dark Mode:** Tema escuro com um clique.
 - 🏛️ **Arquitetura em Camadas:** Código organizado, escalável e fácil de testar.
 - ✨ **Prettier Sort Imports & ESLint Simple Import Sort:** Imports organizados automaticamente.
 - 👀 **ESLint a11y & FormatJS:** Acessibilidade e internacionalização enforced.
@@ -96,7 +95,7 @@ flowchart TD
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (versão 18 ou superior)
+- [Node.js](https://nodejs.org/) (versão 20 LTS ou superior)
 - [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 
 ### Instalação
