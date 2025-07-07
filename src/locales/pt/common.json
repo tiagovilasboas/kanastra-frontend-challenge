@@ -8,11 +8,6 @@
     "home": "Início",
     "about": "Sobre"
   },
-  "theme": {
-    "light": "Modo claro",
-    "dark": "Modo escuro",
-    "toggle": "Alternar tema"
-  },
   "footer": {
     "madeBy": "Feito com ❤️ por {{author}}"
   },

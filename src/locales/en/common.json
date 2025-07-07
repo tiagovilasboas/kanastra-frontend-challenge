@@ -8,11 +8,6 @@
     "home": "Home",
     "about": "About"
   },
-  "theme": {
-    "light": "Light mode",
-    "dark": "Dark mode",
-    "toggle": "Toggle theme"
-  },
   "footer": {
     "madeBy": "Made with ❤️ by {{author}}"
   },
