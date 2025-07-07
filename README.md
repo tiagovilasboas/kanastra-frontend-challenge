@@ -160,13 +160,6 @@ Contribuições são o que fazem a comunidade open source um lugar incrível par
 
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 
-## 👨‍💻 Autor
-
-**Tiago Vilas Boas**
-
-- **LinkedIn:** [@tiagovilasboas](https://www.linkedin.com/in/tiagovilasboas/)
-- **GitHub:** [@tiagovilasboas](https://github.com/tiagovilasboas)
-
 ## 🧩 Geradores de Código (Plop)
 
 Este projeto utiliza [Plop](https://plopjs.com/) para acelerar a criação de código padronizado.
@@ -248,5 +241,12 @@ Roadmap atualizado em **[docs/ROADMAP.md](docs/ROADMAP.md)**.
 Histórico de versões: **[docs/CHANGELOG.md](docs/CHANGELOG.md)**.
 
 ---
+
+## 👨‍💻 Autor
+
+**Tiago Vilas Boas**
+
+- **LinkedIn:** [@tiagovilasboas](https://www.linkedin.com/in/tiagovilasboas/)
+- **GitHub:** [@tiagovilasboas](https://github.com/tiagovilasboas)
 
 Desenvolvido de dev para dev com ❤️.
