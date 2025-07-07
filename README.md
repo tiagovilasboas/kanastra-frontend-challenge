@@ -12,10 +12,6 @@ Um boilerplate robusto e rico em funcionalidades para construir aplicações Rea
 ![Vitest](https://img.shields.io/badge/vitest-%236E9F18.svg?style=for-the-badge&logo=vitest&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-Perf_100-green?style=for-the-badge&logo=lighthouse&logoColor=white)
 
-Um boilerplate React robusto e escalável, construído com as ferramentas mais modernas do ecossistema Frontend. Ele combina a velocidade do **Vite** com a produtividade do **Mantine** (biblioteca de componentes + design system), tudo isso sobre uma **Arquitetura em Camadas** inspirada na Clean Architecture.
-
-Este projeto é o sucessor espiritual do [react-layered-boilerplate](https://github.com/tiagovilasboas/react-layered-boilerplate), atualizado para as melhores práticas de 2024.
-
 ---
 
 ## 📚 Índice
