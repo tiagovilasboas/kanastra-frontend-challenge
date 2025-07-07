@@ -2,8 +2,6 @@ import { Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
 
-import { ThemeToggle } from '@/components/ThemeToggle'
-
 function App() {
   const { t } = useTranslation()
   return (
@@ -23,7 +21,6 @@ function App() {
         <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Link to="/">{t('nav.home')}</Link>
           <Link to="/about">{t('nav.about')}</Link>
-          <ThemeToggle />
         </nav>
       </header>
       <main className="main-content">
