@@ -1,3 +1,4 @@
+/* eslint-disable formatjs/no-literal-string-in-jsx */
 import {
   Badge,
   Container,
@@ -7,6 +8,7 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core'
+
 import {
   IconBolt,
   IconChecklist,

@@ -1,6 +1,9 @@
-import { MantineProvider } from '@mantine/core'
-import { render, screen } from '@testing-library/react'
+/* eslint-disable formatjs/no-literal-string-in-jsx */
 import React from 'react'
+
+import { MantineProvider } from '@mantine/core'
+
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 

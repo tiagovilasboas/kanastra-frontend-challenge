@@ -15,5 +15,6 @@
   },
   "footer": {
     "madeBy": "Made with ❤️ by {{author}}"
-  }
+  },
+  "loading": "Loading..."
 }
