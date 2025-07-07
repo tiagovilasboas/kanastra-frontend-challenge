@@ -1,3 +1,4 @@
+import { MantineProvider } from '@mantine/core'
 import { render, screen } from '@testing-library/react'
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
@@ -15,9 +16,11 @@ vi.mock('@/features/greeter/components/Greeting', () => ({
 describe('App component', () => {
   it('renders header and theme toggle button', () => {
     render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>,
+      <MantineProvider defaultColorScheme="light">
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      </MantineProvider>,
     )
 
     const logo = screen.getByRole('link', { name: /react boilerplate/i })
