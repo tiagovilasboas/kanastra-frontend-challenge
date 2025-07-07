@@ -2,6 +2,8 @@
 
 Um boilerplate robusto e rico em funcionalidades para construir aplicações React modernas com Vite. Este projeto foi desenhado para fornecer uma base sólida com as melhores práticas, incluindo TypeScript, suporte a PWA e uma configuração flexível para bibliotecas de UI.
 
+- Pensado com foco total em **Developer Experience (DX)**: feedback instantâneo, zero-boilerplate e ferramentas que mantêm você produtivo desde o primeiro commit.
+
 > ⚠️ **Evolução:** Este repositório é a continuação direta do projeto [react-layered-boilerplate](https://github.com/tiagovilasboas/react-layered-boilerplate), incorporando Mantine, Vite 7 e novas práticas de automação (Husky, Commitlint, CI GitHub Actions, etc.).
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
