@@ -2,5 +2,18 @@
   "increment": "Incrementar",
   "decrement": "Decrementar",
   "fetch": "Buscar valor",
-  "currentValue": "Valor atual: {{value}}"
+  "currentValue": "Valor atual: {{value}}",
+  "brand": "React Boilerplate",
+  "nav": {
+    "home": "Início",
+    "about": "Sobre"
+  },
+  "theme": {
+    "light": "Modo claro",
+    "dark": "Modo escuro",
+    "toggle": "Alternar tema"
+  },
+  "footer": {
+    "madeBy": "Feito com ❤️ por {{author}}"
+  }
 }

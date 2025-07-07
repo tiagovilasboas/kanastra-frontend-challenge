@@ -1,9 +1,11 @@
 import { Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, Outlet } from 'react-router-dom'
 
 import { ThemeToggle } from '@/components/ThemeToggle'
 
 function App() {
+  const { t } = useTranslation()
   return (
     <div className="app">
       <header className="header">
@@ -16,11 +18,11 @@ function App() {
             fontWeight: 'bold',
           }}
         >
-          React Boilerplate
+          {t('brand')}
         </Link>
         <nav style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
+          <Link to="/">{t('nav.home')}</Link>
+          <Link to="/about">{t('nav.about')}</Link>
           <ThemeToggle />
         </nav>
       </header>
@@ -31,14 +33,7 @@ function App() {
       </main>
       <footer className="footer">
         <p>
-          Made with ❤️ by{' '}
-          <a
-            href="https://github.com/tiagovilasboas"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Tiago Vilas Boas
-          </a>
+          {t('footer.madeBy', { author: 'Tiago Vilas Boas' })}{' '}
         </p>
       </footer>
     </div>
