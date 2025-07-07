@@ -86,8 +86,8 @@ src/
 
 ```mermaid
 flowchart TD
-  UI["Componentes \n(UI)"] --> Hooks["Hooks \n(Lógica de Estado)"]
-  Hooks --> Services["Services \n(Acesso a Dados)"]
+  UI["Componentes<br/>(UI)"] --> Hooks["Hooks<br/>(Lógica de Estado)"]
+  Hooks --> Services["Services<br/>(Acesso a Dados)"]
   Services -->|HTTP / Storage| Sources[("APIs / DB / Cache")]
 ```
 

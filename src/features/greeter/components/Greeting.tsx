@@ -12,7 +12,6 @@ import {
   TextInput,
   Title,
 } from '@mantine/core'
-
 import { Info } from 'lucide-react'
 
 export function Component() {

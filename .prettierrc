@@ -1,16 +1,5 @@
 {
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "all",
-  "plugins": ["@trivago/prettier-plugin-sort-imports"],
-  "importOrder": [
-    "^react$",
-    "^@mantine/(.*)$",
-    "^@?\\w",
-    "^@/(.*)$",
-    "^../",
-    "^./"
-  ],
-  "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "trailingComma": "all"
 }

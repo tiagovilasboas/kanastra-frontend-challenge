@@ -8,7 +8,6 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core'
-
 import {
   IconBolt,
   IconChecklist,
