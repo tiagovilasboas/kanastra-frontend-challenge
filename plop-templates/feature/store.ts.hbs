@@ -1,0 +1,23 @@
+import { create } from 'zustand'
+
+import { fetch{{pascalCase name}}Value } from '../api/{{camelCase name}}Api'
+
+interface {{pascalCase name}}State {
+  value: number
+  loading: boolean
+  fetchValue: () => Promise<void>
+  increment: () => void
+  decrement: () => void
+}
+
+export const use{{pascalCase name}}Store = create<{{pascalCase name}}State>((set) => ({
+  value: 0,
+  loading: false,
+  fetchValue: async () => {
+    set({ loading: true })
+    const value = await fetch{{pascalCase name}}Value()
+    set({ value, loading: false })
+  },
+  increment: () => set((state) => ({ value: state.value + 1 })),
+  decrement: () => set((state) => ({ value: state.value - 1 })),
+})) 
