@@ -27,14 +27,12 @@ function App() {
         </nav>
       </header>
       <main className="main-content">
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>{t('loading')}</div>}>
           <Outlet />
         </Suspense>
       </main>
       <footer className="footer">
-        <p>
-          {t('footer.madeBy', { author: 'Tiago Vilas Boas' })}{' '}
-        </p>
+        <p>{t('footer.madeBy', { author: 'Tiago Vilas Boas' })}</p>
       </footer>
     </div>
   )
