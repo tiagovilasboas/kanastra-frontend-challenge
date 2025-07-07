@@ -89,10 +89,6 @@ flowchart TD
   UI["Componentes \n(UI)"] --> Hooks["Hooks \n(Lógica de Estado)"]
   Hooks --> Services["Services \n(Acesso a Dados)"]
   Services -->|HTTP / Storage| Sources[("APIs / DB / Cache")]
-  style UI fill:#8fc7ff,stroke:#333,stroke-width:1px
-  style Hooks fill:#ffd47d,stroke:#333,stroke-width:1px
-  style Services fill:#a4e8a4,stroke:#333,stroke-width:1px
-  style Sources fill:#e0e0e0,stroke:#333,stroke-width:1px
 ```
 
 ## 🚀 Começando
