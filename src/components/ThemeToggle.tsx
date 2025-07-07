@@ -1,10 +1,12 @@
-import { ActionIcon, Tooltip, useMantineColorScheme } from '@mantine/core'
+import { ActionIcon, Tooltip } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
+import { useColorScheme } from '@/hooks/useColorScheme'
+
 export function ThemeToggle() {
   const { t } = useTranslation()
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { colorScheme, toggleColorScheme } = useColorScheme()
   const dark = colorScheme === 'dark'
 
   return (
