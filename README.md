@@ -167,10 +167,6 @@ Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
 - **LinkedIn:** [@tiagovilasboas](https://www.linkedin.com/in/tiagovilasboas/)
 - **GitHub:** [@tiagovilasboas](https://github.com/tiagovilasboas)
 
----
-
-Desenvolvido de dev para dev com ❤️.
-
 ## 🧩 Geradores de Código (Plop)
 
 Este projeto utiliza [Plop](https://plopjs.com/) para acelerar a criação de código padronizado.
@@ -252,3 +248,5 @@ Roadmap atualizado em **[docs/ROADMAP.md](docs/ROADMAP.md)**.
 Histórico de versões: **[docs/CHANGELOG.md](docs/CHANGELOG.md)**.
 
 ---
+
+Desenvolvido de dev para dev com ❤️.
