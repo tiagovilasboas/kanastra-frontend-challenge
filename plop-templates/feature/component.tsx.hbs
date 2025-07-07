@@ -1,22 +1,28 @@
-import { Button, Card, Group, Text } from '@mantine/core' import {
-useTranslation } from 'react-i18next' import { use{{pascalCase name}}Store }
-from '../store/use{{pascalCase name}}Store' export function
-{{pascalCase name}}() { const { t } = useTranslation() const { value, loading,
-increment, decrement, fetchValue } = use{{pascalCase name}}Store() return (
-<Card shadow='sm' padding='lg'>
-  <Text size='lg' mb='sm'>
-    {t('currentValue', { value })}
-  </Text>
-  <Group>
-    <Button
-      variant='default'
-      onClick='{decrement}'
-      aria-label="{t('decrement')}"
-    >-</Button>
-    <Button onClick='{increment}' aria-label="{t('increment')}">+</Button>
-    <Button loading='{loading}' onClick='{fetchValue}' variant='light'>
-      {t('fetch')}
-    </Button>
-  </Group>
-</Card>
-) }
+import { Box, Button, Card, Group, Text } from '@mantine/core'
+import { useTranslation } from 'react-i18next'
+import { use{{pascalCase name}}Store } from '../store/use{{pascalCase name}}Store'
+import classes from './{{pascalCase name}}.module.css'
+
+export function {{pascalCase name}}() {
+  const { t } = useTranslation('{{camelCase name}}')
+  const { value, loading, increment, decrement, fetchValue } = use{{pascalCase name}}Store()
+
+  return (
+    <Card withBorder p="lg" className={classes.wrapper}>
+      <Text size='lg' mb='sm'>
+        {t('currentValue', { value })}
+      </Text>
+      <Group>
+        <Button
+          variant='default'
+          onClick={decrement}
+          aria-label={t('decrement')}
+        >-</Button>
+        <Button onClick={increment} aria-label={t('increment')}>+</Button>
+        <Button loading={loading} onClick={fetchValue} variant='light'>
+          {t('fetch')}
+        </Button>
+      </Group>
+    </Card>
+  )
+}

@@ -74,6 +74,11 @@ module.exports = function (plop) {
         path: 'src/features/{{camelCase name}}/components/{{pascalCase name}}.test.tsx',
         templateFile: 'plop-templates/feature/component.test.tsx.hbs',
       },
+      {
+        type: 'add',
+        path: 'src/features/{{camelCase name}}/components/{{pascalCase name}}.module.css',
+        templateFile: 'plop-templates/feature/component.module.css.hbs',
+      },
     ],
   })
 }
