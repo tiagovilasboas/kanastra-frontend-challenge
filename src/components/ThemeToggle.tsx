@@ -2,7 +2,7 @@ import { ActionIcon, Tooltip } from '@mantine/core'
 import { IconMoon, IconSun } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next'
 
-import { useColorScheme } from '@/hooks/useColorScheme'
+import { useColorScheme } from '@/app/providers/color-scheme-provider'
 
 export function ThemeToggle() {
   const { t } = useTranslation()

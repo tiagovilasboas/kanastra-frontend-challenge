@@ -8,6 +8,9 @@
     "email": "tcarvalhovb@gmail.com",
     "url": "https://github.com/tiagovilasboas"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "kill-port 5173 && vite",
     "format": "prettier --write . && npm run lint --fix",

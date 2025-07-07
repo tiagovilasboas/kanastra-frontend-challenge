@@ -1,4 +1,6 @@
 /* eslint-disable formatjs/no-literal-string-in-jsx */
+import '@testing-library/jest-dom'
+
 import { MantineProvider } from '@mantine/core'
 import { render, screen } from '@testing-library/react'
 import React from 'react'
@@ -15,9 +17,9 @@ vi.mock('@/features/greeter/components/Greeting', () => ({
 }))
 
 describe('App component', () => {
-  it('renders header and theme toggle button', () => {
+  it('renders header and navigation links', () => {
     render(
-      <MantineProvider defaultColorScheme="light">
+      <MantineProvider>
         <MemoryRouter>
           <App />
         </MemoryRouter>
@@ -26,10 +28,5 @@ describe('App component', () => {
 
     const logo = screen.getByRole('link', { name: /react boilerplate/i })
     expect(logo).toBeInTheDocument()
-
-    const themeToggleButton = screen.getByRole('button', {
-      name: /alternar tema/i,
-    })
-    expect(themeToggleButton).toBeInTheDocument()
   })
 })

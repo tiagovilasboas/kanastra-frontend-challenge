@@ -1,7 +1,7 @@
 import { Global } from '@emotion/react'
 import { createTheme, MantineProvider } from '@mantine/core'
 
-import { useColorScheme } from '@/hooks/useColorScheme'
+import { useColorScheme } from './color-scheme-provider'
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -20,6 +20,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         styles={() => ({
           body: {
             backgroundColor: 'var(--mantine-color-body)',
+            color: 'var(--mantine-color-text)',
           },
         })}
       />

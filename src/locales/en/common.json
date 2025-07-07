@@ -16,5 +16,12 @@
   "footer": {
     "madeBy": "Made with ❤️ by {{author}}"
   },
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "name": "Name",
+  "email": "Email",
+  "submit": "Submit",
+  "validation": {
+    "required": "Field required",
+    "invalidEmail": "Invalid email"
+  }
 }

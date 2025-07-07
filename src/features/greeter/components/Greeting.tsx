@@ -7,12 +7,12 @@ import {
   Container,
   Group,
   Stack,
-  Switch,
   Text,
-  TextInput,
   Title,
 } from '@mantine/core'
 import { Info } from 'lucide-react'
+
+import { FormExample } from './FormExample'
 
 export function Component() {
   return (
@@ -71,33 +71,9 @@ export function Component() {
           </Alert>
 
           <Group align="stretch" justify="center" gap="xl" wrap="wrap">
-            {/* Card example */}
+            {/* Zod + Mantine Form example */}
             <Card shadow="sm" padding="lg" withBorder maw={400} w="100%">
-              <Stack gap="md">
-                <Title order={3}>Inscreva-se</Title>
-                <Text size="sm" c="dimmed">
-                  Receba novidades por e-mail
-                </Text>
-
-                <Stack gap="xs">
-                  <TextInput
-                    label="Email"
-                    placeholder="voce@exemplo.com"
-                    id="email"
-                    type="email"
-                  />
-                  <Switch
-                    label="Quero receber novidades"
-                    id="updates"
-                    defaultChecked
-                  />
-                </Stack>
-
-                <Group justify="flex-end" gap="sm">
-                  <Button variant="default">Cancelar</Button>
-                  <Button>Enviar</Button>
-                </Group>
-              </Stack>
+              <FormExample />
             </Card>
 
             {/* Badges example */}
