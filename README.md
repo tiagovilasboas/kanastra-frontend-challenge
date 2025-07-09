@@ -6,13 +6,27 @@ Um boilerplate robusto e rico em funcionalidades para construir aplicações Rea
 
 > ⚠️ **Evolução:** Este repositório é a continuação direta do projeto [react-layered-boilerplate](https://github.com/tiagovilasboas/react-layered-boilerplate), incorporando Mantine, Vite 7 e novas práticas de automação (Husky, Commitlint, CI GitHub Actions, etc.).
 
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![Mantine](https://img.shields.io/badge/Mantine-0081ff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZwogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICB2aWV3Qm94PSIwIDAgMjQgMjQiCiAgZmlsbD0iI0ZGRiI+CiAgPHBhdGggZD0iTTEyIDI0YzYuNjIgMCAxMi01LjM4IDEyLTEyUzE4LjYyIDAgMTIgMCAwIDUuMzggMCAxMnM1LjM4IDEyIDEyIDEyeiIvPgogIDxwYXRoIGQ9Ik0xMiAxNGEyIDIgMCAxIDAtMi0yIDIgMiAwIDAgMCAyIDJ6bTAtOGEyIDIgMCAxIDAtMi0yIDIgMiAwIDAgMCAyIDJ6IiBmaWxsPSIjMDA4MWZmIi8+Cjwvc3ZnPgo=)
 ![Vitest](https://img.shields.io/badge/vitest-%236E9F18.svg?style=for-the-badge&logo=vitest&logoColor=white)
 ![Lighthouse](https://img.shields.io/badge/Lighthouse-Perf_100-green?style=for-the-badge&logo=lighthouse&logoColor=white)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+---
+
+## ⚠️ Nota Importante: Comece Por Aqui!
+
+Este boilerplate inclui componentes e páginas de exemplo para demonstrar suas funcionalidades. Antes de iniciar o desenvolvimento da sua aplicação, é crucial limpar esses exemplos para começar com um projeto limpo.
+
+Execute o seguinte comando para remover todos os arquivos de exemplo e preparar o ambiente:
+
+```bash
+npm run cleanup
+```
+
+**Esta ação é irreversível.** Após a execução, a estrutura do projeto estará pronta para você começar a construir sua aplicação.
 
 ---
 

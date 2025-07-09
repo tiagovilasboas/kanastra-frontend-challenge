@@ -1,0 +1,12 @@
+import { Container, Title } from '@mantine/core'
+import { useTranslation } from 'react-i18next'
+
+export function Component() {
+  const { t } = useTranslation()
+
+  return (
+    <Container>
+      <Title order={1}>{t('homePage.title')}</Title>
+    </Container>
+  )
+} 

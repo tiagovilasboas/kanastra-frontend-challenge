@@ -81,4 +81,64 @@ module.exports = function (plop) {
       },
     ],
   })
+
+  plop.setGenerator('cleanup', {
+    description: 'Limpa o boilerplate removendo exemplos e código desnecessário',
+    prompts: [
+      {
+        type: 'confirm',
+        name: 'confirm',
+        message:
+          'Tem certeza que deseja limpar o projeto? Essa ação é irreversível e removerá todos os componentes e páginas de exemplo.',
+        default: false,
+      },
+    ],
+    actions: (data) => {
+      if (!data.confirm) {
+        console.log('Limpeza cancelada pelo usuário.')
+        return []
+      }
+
+      return [
+        {
+          type: 'remove',
+          path: 'src/features',
+        },
+        {
+          type: 'remove',
+          path: 'src/pages/AboutPage.tsx',
+        },
+        {
+          type: 'remove',
+          path: 'src/features/greeter/components/Greeting.tsx',
+        },
+        {
+          type: 'add',
+          path: 'src/pages/HomePage.tsx',
+          templateFile: 'plop-templates/cleanup/HomePage.tsx.hbs',
+          force: true,
+        },
+        {
+          type: 'modify',
+          path: 'src/app/router.tsx',
+          templateFile: 'plop-templates/cleanup/router.tsx.hbs',
+        },
+        {
+          type: 'modify',
+          path: 'src/App.tsx',
+          templateFile: 'plop-templates/cleanup/App.tsx.hbs',
+        },
+        {
+          type: 'modify',
+          path: 'src/locales/en/common.json',
+          templateFile: 'plop-templates/cleanup/en.common.json.hbs',
+        },
+        {
+          type: 'modify',
+          path: 'src/locales/pt/common.json',
+          templateFile: 'plop-templates/cleanup/pt.common.json.hbs',
+        },
+      ]
+    },
+  })
 }
