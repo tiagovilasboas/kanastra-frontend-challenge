@@ -28,3 +28,4 @@ dist-ssr
 stats.html
 out.css
 coverage/
+tsconfig.tsbuildinfo
