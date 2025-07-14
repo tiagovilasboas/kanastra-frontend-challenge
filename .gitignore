@@ -27,3 +27,4 @@ dist-ssr
 .unlighthouse
 stats.html
 out.css
+coverage/
