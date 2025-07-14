@@ -138,7 +138,6 @@ flowchart TD
 | `npm run build`      | Compila a aplicação para produção.                         |
 | `npm run preview`    | Serve o build de produção localmente para teste.           |
 | `npm run test`       | Roda os testes com Vitest.                                 |
-| `npm run test:ci`    | Testes + coverage (usado no CI).                           |
 | `npm run lint`       | Executa o ESLint para encontrar problemas no código.       |
 | `npm run format`     | Prettier + ESLint ‟--fix" (mantém código formatado).       |
 | `npm run clean`      | Limpa `dist` e cache Vite.                                 |

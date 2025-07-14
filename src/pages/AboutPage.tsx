@@ -111,10 +111,6 @@ export function Component() {
             <Badge variant="light">npm run format</Badge> – Prettier + ESLint
             fix.
           </List.Item>
-          <List.Item>
-            <Badge variant="light">npm run test:ci</Badge> – testes + coverage
-            (workflow CI).
-          </List.Item>
         </List>
       </Stack>
     </Container>

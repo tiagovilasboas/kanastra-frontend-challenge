@@ -16,7 +16,7 @@
     "format": "prettier --write . && npm run lint --fix",
     "clean": "rimraf dist .vite",
     "dev:open": "kill-port 5173 && vite --open",
-    "test:ci": "vitest run --coverage",
+    "test:ui": "vitest --ui",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
