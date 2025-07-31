@@ -23,6 +23,108 @@ Criar uma interface moderna e responsiva que permita aos usuários:
 
 Uma aplicação web completa com integração à Spotify Web API, interface atrativa e funcionalidades de busca e navegação.
 
+## 🏗️ Boas Práticas de Desenvolvimento
+
+### BP01 - Componentização e Reutilização
+
+- **Descrição:** Estrutura de componentes bem definida e reutilizável
+- **Critérios:**
+  - [ ] **Componentes Atômicos**: Criar componentes pequenos e focados
+  - [ ] **Composição**: Usar composição ao invés de herança
+  - [ ] **Props Interface**: Definir interfaces TypeScript para props
+  - [ ] **Default Props**: Usar valores padrão apropriados
+  - [ ] **Component Library**: Manter biblioteca de componentes organizada
+
+### BP02 - Clean Code e Legibilidade
+
+- **Descrição:** Código limpo, legível e bem estruturado
+- **Critérios:**
+  - [ ] **Nomes Descritivos**: Variáveis, funções e componentes com nomes claros
+  - [ ] **Funções Pequenas**: Funções com responsabilidade única (SRP)
+  - [ ] **Evitar Duplicação**: DRY (Don't Repeat Yourself)
+  - [ ] **Comentários Úteis**: Comentários apenas quando necessário
+  - [ ] **Consistência**: Padrões consistentes em todo o código
+
+### BP03 - Arquitetura e Organização
+
+- **Descrição:** Estrutura de pastas e arquivos bem organizada
+- **Critérios:**
+  - [ ] **Separação de Responsabilidades**: UI, lógica de negócio e dados separados
+  - [ ] **Feature-based Structure**: Organizar por features quando apropriado
+  - [ ] **Barrel Exports**: Usar arquivos index.ts para exportações
+  - [ ] **Import/Export Limpos**: Imports organizados e específicos
+  - [ ] **Configuração Centralizada**: Configs em arquivos dedicados
+
+### BP04 - TypeScript e Tipagem
+
+- **Descrição:** Uso adequado e consistente do TypeScript
+- **Critérios:**
+  - [ ] **Tipagem Explícita**: Evitar `any`, usar tipos específicos
+  - [ ] **Interfaces vs Types**: Escolher apropriadamente
+  - [ ] **Generic Types**: Usar quando apropriado
+  - [ ] **Type Guards**: Para validação de tipos
+  - [ ] **API Types**: Definir tipos para respostas da API
+
+### BP05 - Performance e Otimização
+
+- **Descrição:** Código otimizado e performático
+- **Critérios:**
+  - [ ] **React.memo**: Para componentes que renderizam frequentemente
+  - [ ] **useMemo/useCallback**: Para cálculos e funções custosas
+  - [ ] **Lazy Loading**: Para componentes e rotas grandes
+  - [ ] **Bundle Splitting**: Dividir código em chunks
+  - [ ] **Image Optimization**: Otimizar imagens e assets
+
+### BP06 - Estado e Gerenciamento de Dados
+
+- **Descrição:** Gerenciamento de estado eficiente e previsível
+- **Critérios:**
+  - [ ] **Estado Local vs Global**: Escolher apropriadamente
+  - [ ] **Imutabilidade**: Não mutar estado diretamente
+  - [ ] **Normalização**: Estruturar dados de forma normalizada
+  - [ ] **Loading States**: Estados de carregamento bem definidos
+  - [ ] **Error Boundaries**: Tratamento de erros em componentes
+
+### BP07 - Testes e Qualidade
+
+- **Descrição:** Código testável e com qualidade garantida
+- **Critérios:**
+  - [ ] **Testabilidade**: Componentes e funções testáveis
+  - [ ] **Unit Tests**: Testes para lógica de negócio
+  - [ ] **Integration Tests**: Testes para integração com API
+  - [ ] **Component Tests**: Testes para componentes UI
+  - [ ] **Error Scenarios**: Testar casos de erro
+
+### BP08 - Acessibilidade e UX
+
+- **Descrição:** Interface acessível e com boa experiência do usuário
+- **Critérios:**
+  - [ ] **Semantic HTML**: Usar tags HTML apropriadas
+  - [ ] **ARIA Labels**: Para elementos interativos
+  - [ ] **Keyboard Navigation**: Navegação por teclado
+  - [ ] **Focus Management**: Gerenciar foco adequadamente
+  - [ ] **Loading Feedback**: Feedback visual para ações
+
+### BP09 - Internacionalização
+
+- **Descrição:** Suporte a múltiplos idiomas
+- **Critérios:**
+  - [ ] **i18n Setup**: Configuração adequada do i18next
+  - [ ] **Translation Keys**: Chaves organizadas e descritivas
+  - [ ] **Pluralization**: Suporte a pluralização
+  - [ ] **RTL Support**: Suporte a idiomas RTL se necessário
+  - [ ] **Date/Number Formatting**: Formatação localizada
+
+### BP10 - Segurança
+
+- **Descrição:** Práticas de segurança no frontend
+- **Critérios:**
+  - [ ] **Input Validation**: Validar inputs do usuário
+  - [ ] **XSS Prevention**: Prevenir ataques XSS
+  - [ ] **Environment Variables**: Não expor secrets no código
+  - [ ] **HTTPS**: Usar HTTPS em produção
+  - [ ] **Content Security Policy**: Implementar CSP se necessário
+
 ## 📋 Requisitos Funcionais
 
 ### RF01 - Busca de Artistas
@@ -137,7 +239,7 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 
 ## 📊 Critérios de Avaliação
 
-### Funcionalidade (40%)
+### Funcionalidade (30%)
 
 - [ ] Busca de artistas funcionando
 - [ ] Detalhes do artista carregando corretamente
@@ -145,13 +247,13 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] Filtros funcionando adequadamente
 - [ ] Tratamento de erros implementado
 
-### Código (30%)
+### Código e Boas Práticas (40%)
 
-- [ ] Código limpo e bem estruturado
-- [ ] Uso adequado de TypeScript
-- [ ] Componentes reutilizáveis
-- [ ] Arquitetura escalável
-- [ ] Documentação adequada
+- [ ] **Componentização adequada** (10%)
+- [ ] **Clean code e legibilidade** (10%)
+- [ ] **Arquitetura bem estruturada** (10%)
+- [ ] **TypeScript bem utilizado** (5%)
+- [ ] **Performance otimizada** (5%)
 
 ### UX/UI (20%)
 
@@ -174,13 +276,16 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] Definir escopo mínimo viável (MVP)
 - [ ] Setup inicial do projeto
 - [ ] Configurar variáveis de ambiente
+- [ ] **Definir estrutura de componentes**
+- [ ] **Configurar padrões de código**
 
 ### Dia 1 – Estrutura e Layout
 
 - [ ] Criar rotas principais
 - [ ] Montar layout base responsivo
 - [ ] Implementar grid de artistas
-- [ ] Criar componentes reutilizáveis
+- [ ] **Criar componentes base reutilizáveis**
+- [ ] **Implementar design system**
 
 ### Dia 2 – Integração com API
 
@@ -188,6 +293,7 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] Implementar busca de artistas
 - [ ] Carregar detalhes do artista
 - [ ] Implementar top músicas e álbuns
+- [ ] **Aplicar boas práticas de tipagem**
 
 ### Dia 3 – Paginação e Estados
 
@@ -195,6 +301,7 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] Adicionar filtros
 - [ ] Gerenciamento de estado
 - [ ] Loading states e tratamento de erros
+- [ ] **Otimizar performance**
 
 ### Dia 4 – Polimento
 
@@ -202,6 +309,7 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] Animações e transições
 - [ ] Responsividade e acessibilidade
 - [ ] Variações de componentes
+- [ ] **Refatorar para clean code**
 
 ### Dia 5 – Testes e Deploy
 
@@ -209,6 +317,7 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 - [ ] README completo
 - [ ] Deploy no Vercel/Netlify
 - [ ] Revisão final
+- [ ] **Code review e documentação**
 
 ## 🛠️ Stack Tecnológico
 
@@ -246,6 +355,9 @@ Uma aplicação web completa com integração à Spotify Web API, interface atra
 3. **Mantenha o código limpo** e bem documentado
 4. **Teste em diferentes dispositivos** e navegadores
 5. **Considere a performance** com debounce e paginação
+6. **Siga as boas práticas** de componentização e clean code
+7. **Use TypeScript adequadamente** com tipagem explícita
+8. **Mantenha a acessibilidade** em mente durante o desenvolvimento
 
 ## 🔄 Atualizações
 
@@ -258,4 +370,4 @@ Este arquivo será atualizado conforme:
 ---
 
 **Última atualização:** 2024-12-19
-**Versão:** 1.1.0
+**Versão:** 2.0.0
