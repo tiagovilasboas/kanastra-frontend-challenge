@@ -22,5 +22,15 @@
   "welcome": {
     "title": "Bem-vindo ao Kanastra Frontend Challenge",
     "subtitle": "Este é o ponto de partida para o seu projeto. Comece a construir suas features aqui!"
-  }
+  },
+  "language": "Idioma",
+  "languages": {
+    "portuguese": "Português",
+    "english": "Inglês"
+  },
+  "flags": {
+    "brazil": "🇧🇷",
+    "usa": "🇺🇸"
+  },
+  "colon": ":"
 }

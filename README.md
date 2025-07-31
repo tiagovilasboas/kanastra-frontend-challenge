@@ -22,6 +22,7 @@ Uma aplicação web moderna que permite aos usuários:
 - 🌐 **i18n:** Suporte para internacionalização (PT/EN)
 - 🏛️ **Arquitetura em Camadas:** Código organizado, escalável e fácil de testar
 - 🎧 **Spotify Web API:** Integração para dados de artistas, músicas e álbuns
+- 📦 **Zustand:** Gerenciamento de estado simples e eficiente
 
 ## 📦 Instalação
 
@@ -82,6 +83,8 @@ Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, c
 - [x] Configuração de internacionalização (i18n)
 - [x] Estrutura base de pastas
 - [x] Página inicial funcional
+- [x] Gerenciamento de estado com Zustand
+- [x] Suporte a idiomas (PT/EN) com seletor
 
 ### 🔄 Em Andamento
 
@@ -115,6 +118,17 @@ O projeto já está configurado com **i18next** + **react-i18next**:
 - Arquivos de tradução em `src/locales/{pt,en}/common.json`
 - Use o hook `useTranslation()` em qualquer componente
 - Idioma padrão: **PT-BR**
+- Seletor de idioma no header da aplicação
+- Sincronização automática com Zustand store
+
+## 📦 Gerenciamento de Estado
+
+O projeto utiliza **Zustand** para gerenciamento de estado:
+
+- Store principal em `src/stores/appStore.ts`
+- Persistência automática de configurações
+- Gerenciamento de idioma, tema, loading states e erros
+- API simples e intuitiva
 
 ## 🎧 Spotify Web API
 
