@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import App from '@/App'
+import HomePage from '@/pages/HomePage'
 
 export const router = createBrowserRouter([
   {
@@ -9,11 +10,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        lazy: () => import('@/features/greeter/components/Greeting'),
-      },
-      {
-        path: '/about',
-        lazy: () => import('@/pages/AboutPage'),
+        element: <HomePage />,
       },
     ],
   },

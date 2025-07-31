@@ -3,7 +3,7 @@
   "decrement": "Decrement",
   "fetch": "Fetch value",
   "currentValue": "Current value: {{value}}",
-  "brand": "React Boilerplate",
+  "brand": "Kanastra Frontend Challenge",
   "nav": {
     "home": "Home",
     "about": "About"
@@ -18,5 +18,9 @@
   "validation": {
     "required": "Field required",
     "invalidEmail": "Invalid email"
+  },
+  "welcome": {
+    "title": "Welcome to Kanastra Frontend Challenge",
+    "subtitle": "This is the starting point for your project. Start building your features here!"
   }
 }
