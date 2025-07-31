@@ -45,13 +45,80 @@ src/
 └── types/                # Tipos globais da aplicação
 ```
 
-## 🎯 Próximos Passos
+## 🗺️ Roadmap
 
-1. Implementar as features específicas do desafio
-2. Configurar a integração com APIs
-3. Adicionar testes unitários e de integração
-4. Implementar validações com Zod
-5. Configurar o deploy
+Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, consulte o [ROADMAP.md](./ROADMAP.md).
+
+### Fases Principais:
+
+1. **🚀 Fase 1: Estrutura Base** - Configuração inicial e arquitetura
+2. **🎨 Fase 2: Interface e UX** - Layout, navegação e responsividade
+3. **🔧 Fase 3: Funcionalidades Core** - Estado, APIs e formulários
+4. **🧪 Fase 4: Testes e Qualidade** - Testes unitários e de integração
+5. **⚡ Fase 5: Otimização e Deploy** - Performance, acessibilidade e deploy
+
+## 🎯 Status Atual
+
+### ✅ Concluído
+
+- [x] Setup inicial do projeto
+- [x] Configuração de TypeScript, ESLint e Prettier
+- [x] Configuração de testes com Vitest
+- [x] Configuração de internacionalização (i18n)
+- [x] Estrutura base de pastas
+- [x] Página inicial funcional
+
+### 🔄 Em Andamento
+
+- [ ] Análise dos requisitos específicos do desafio
+- [ ] Definição da arquitetura de features
+
+### 📋 Próximos Passos
+
+- [ ] Implementar features específicas do desafio
+- [ ] Configurar integração com APIs
+- [ ] Adicionar testes unitários e de integração
+- [ ] Implementar validações com Zod
+- [ ] Configurar o deploy
+
+## 🧩 Geradores de Código
+
+Este projeto utiliza Plop para acelerar a criação de código padronizado:
+
+```bash
+# Gerar uma feature completa
+npm run plop -- feature
+
+# Gerar um componente isolado
+npm run plop -- component
+```
+
+## 🔤 Internacionalização
+
+O projeto já está configurado com **i18next** + **react-i18next**:
+
+- Arquivos de tradução em `src/locales/{pt,en}/common.json`
+- Use o hook `useTranslation()` em qualquer componente
+- Idioma padrão: **PT-BR**
+
+## 📊 Critérios de Avaliação
+
+O projeto será avaliado considerando:
+
+- **Funcionalidade (40%)** - Requisitos implementados corretamente
+- **Código (30%)** - Código limpo, TypeScript e arquitetura
+- **UX/UI (20%)** - Interface intuitiva e responsiva
+- **Testes (10%)** - Cobertura adequada de testes
+
+## 🚀 Deploy
+
+Para fazer o deploy:
+
+```bash
+npm run build
+```
+
+O build de produção será gerado na pasta `dist/` e pode ser deployado em qualquer plataforma (Vercel, Netlify, etc.).
 
 ## 📝 Licença
 
