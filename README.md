@@ -106,17 +106,7 @@ Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, c
 - [ ] Adicionar paginação de álbuns
 - [ ] Configurar o deploy
 
-## 🧩 Geradores de Código
 
-Este projeto utiliza Plop para acelerar a criação de código padronizado:
-
-```bash
-# Gerar uma feature completa
-npm run plop -- feature
-
-# Gerar um componente isolado
-npm run plop -- component
-```
 
 ## 🔤 Internacionalização
 
