@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import { spotifyStyles } from '@/lib/design-system/utils'
 
 export interface CardProps extends MantineCardProps {
-  variant?: 'default' | 'elevated' | 'interactive'
+  variant?: 'default' | 'elevated' | 'interactive' | 'artist' | 'album'
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -24,6 +24,28 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             '&:hover': {},
           }
         case 'interactive':
+          return {
+            backgroundColor: '#181818',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              backgroundColor: '#282828',
+              transform: 'translateY(-4px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+            },
+          }
+        case 'artist':
+          return {
+            backgroundColor: '#181818',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              backgroundColor: '#282828',
+              transform: 'translateY(-4px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+            },
+          }
+        case 'album':
           return {
             backgroundColor: '#181818',
             cursor: 'pointer',
@@ -62,7 +84,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     }
 
     const cardStyles = {
-      ...spotifyStyles.transitionNormal,
+      ...spotifyStyles.transitionSpotify,
       ...getVariantStyles(),
       ...getSizeStyles(),
       ...style,

@@ -1,94 +1,80 @@
-// Design System Tokens - Inspirado no Spotify
+// Design System Tokens - Spotify Official
 
 export const colors = {
-  // Cores principais do Spotify
-  primary: {
-    50: '#e3f2fd',
-    100: '#bbdefb',
-    200: '#90caf9',
-    300: '#64b5f6',
-    400: '#42a5f5',
-    500: '#1db954', // Verde Spotify
-    600: '#1aa34a',
-    700: '#168f3f',
-    800: '#127b35',
-    900: '#0e672a',
+  // Cores oficiais do Spotify
+  spotify: {
+    green: '#1DB954', // Verde principal do Spotify
+    black: '#191414', // Preto oficial do Spotify
+    white: '#FFFFFF',
   },
   
-  // Cores neutras
-  neutral: {
-    50: '#fafafa',
-    100: '#f5f5f5',
-    200: '#e5e5e5',
-    300: '#d4d4d4',
-    400: '#a3a3a3',
-    500: '#737373',
-    600: '#525252',
-    700: '#404040',
-    800: '#262626',
-    900: '#171717',
-  },
-  
-  // Cores de fundo
+  // Cores de fundo (baseadas no app do Spotify)
   background: {
-    primary: '#121212', // Fundo principal do Spotify
+    primary: '#121212', // Fundo principal (dark mode)
     secondary: '#181818', // Fundo secundário
     tertiary: '#282828', // Fundo terciário
     elevated: '#404040', // Fundo elevado
+    card: '#181818', // Fundo dos cards
+    cardHover: '#282828', // Fundo dos cards no hover
   },
   
-  // Cores de texto
+  // Cores de texto (baseadas no app do Spotify)
   text: {
-    primary: '#ffffff',
-    secondary: '#b3b3b3',
-    tertiary: '#727272',
-    disabled: '#535353',
+    primary: '#FFFFFF', // Texto principal
+    secondary: '#B3B3B3', // Texto secundário
+    tertiary: '#727272', // Texto terciário
+    disabled: '#535353', // Texto desabilitado
+    muted: '#A7A7A7', // Texto suave
   },
   
-  // Estados
-  success: '#1db954',
-  warning: '#ffd700',
-  error: '#e91429',
-  info: '#1db954',
-}
-
-export const spacing = {
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '24px',
-  xl: '32px',
-  '2xl': '48px',
-  '3xl': '64px',
-}
-
-export const borderRadius = {
-  none: '0',
-  sm: '4px',
-  md: '8px',
-  lg: '12px',
-  xl: '16px',
-  full: '9999px',
+  // Cores de estado
+  state: {
+    success: '#1DB954', // Verde Spotify
+    warning: '#FFD700', // Amarelo
+    error: '#E91429', // Vermelho
+    info: '#1DB954', // Verde Spotify
+  },
+  
+  // Cores de gradiente (usadas no Spotify)
+  gradients: {
+    primary: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    spotify: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
+    dark: 'linear-gradient(135deg, #121212 0%, #282828 100%)',
+  },
+  
+  // Cores de overlay
+  overlay: {
+    light: 'rgba(0, 0, 0, 0.3)',
+    medium: 'rgba(0, 0, 0, 0.5)',
+    dark: 'rgba(0, 0, 0, 0.7)',
+  },
 }
 
 export const typography = {
+  // Fontes oficiais do Spotify
   fontFamily: {
-    primary: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    primary: 'Circular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    secondary: 'Circular, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     mono: 'SF Mono, Monaco, "Cascadia Code", "Roboto Mono", Consolas, monospace',
   },
   
+  // Tamanhos de fonte (baseados no Spotify)
   fontSize: {
-    xs: '12px',
-    sm: '14px',
-    md: '16px',
-    lg: '18px',
-    xl: '20px',
-    '2xl': '24px',
-    '3xl': '30px',
-    '4xl': '36px',
+    xs: '11px', // Texto muito pequeno
+    sm: '12px', // Texto pequeno
+    base: '14px', // Texto base
+    md: '16px', // Texto médio
+    lg: '18px', // Texto grande
+    xl: '20px', // Texto extra grande
+    '2xl': '24px', // Título pequeno
+    '3xl': '28px', // Título médio
+    '4xl': '32px', // Título grande
+    '5xl': '36px', // Título extra grande
   },
   
+  // Pesos de fonte (baseados no Spotify)
   fontWeight: {
+    light: '300',
     normal: '400',
     medium: '500',
     semibold: '600',
@@ -96,27 +82,67 @@ export const typography = {
     extrabold: '800',
   },
   
+  // Altura de linha (baseada no Spotify)
   lineHeight: {
-    tight: '1.25',
-    normal: '1.5',
-    relaxed: '1.75',
+    tight: '1.2',
+    normal: '1.4',
+    relaxed: '1.6',
+    loose: '1.8',
+  },
+  
+  // Espaçamento entre letras
+  letterSpacing: {
+    tight: '-0.025em',
+    normal: '0',
+    wide: '0.025em',
+    wider: '0.05em',
   },
 }
 
+export const spacing = {
+  // Sistema de espaçamento mobile-first
+  xs: '4px',
+  sm: '8px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  '2xl': '48px',
+  '3xl': '64px',
+  '4xl': '96px',
+}
+
+export const borderRadius = {
+  // Border radius baseado no Spotify
+  none: '0',
+  sm: '4px',
+  md: '8px',
+  lg: '12px',
+  xl: '16px',
+  '2xl': '20px',
+  full: '9999px',
+}
+
 export const shadows = {
+  // Sombras baseadas no Spotify
+  none: 'none',
   sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
   md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  spotify: '0 8px 16px rgba(0, 0, 0, 0.3)', // Sombra específica do Spotify
 }
 
 export const transitions = {
+  // Transições baseadas no Spotify
   fast: '150ms ease-in-out',
-  normal: '250ms ease-in-out',
-  slow: '350ms ease-in-out',
+  normal: '200ms ease-in-out',
+  slow: '300ms ease-in-out',
+  spotify: 'all 0.2s ease-in-out', // Transição padrão do Spotify
 }
 
+// Breakpoints mobile-first (baseados no Spotify)
 export const breakpoints = {
+  xs: '320px',
   sm: '640px',
   md: '768px',
   lg: '1024px',
@@ -139,4 +165,60 @@ export const zIndex = {
   skipLink: 1600,
   toast: 1700,
   tooltip: 1800,
+}
+
+// Layout tokens específicos do Spotify
+export const layout = {
+  // Header
+  headerHeight: {
+    mobile: '56px',
+    desktop: '64px',
+  },
+  
+  // Sidebar (se aplicável)
+  sidebarWidth: {
+    mobile: '100%',
+    desktop: '240px',
+  },
+  
+  // Container
+  containerMaxWidth: {
+    mobile: '100%',
+    tablet: '768px',
+    desktop: '1200px',
+  },
+  
+  // Grid
+  gridGap: {
+    mobile: '16px',
+    tablet: '24px',
+    desktop: '32px',
+  },
+  
+  // Card
+  cardPadding: {
+    mobile: '16px',
+    tablet: '20px',
+    desktop: '24px',
+  },
+}
+
+// Iconografia (tamanhos baseados no Spotify)
+export const icons = {
+  size: {
+    xs: '12px',
+    sm: '16px',
+    md: '20px',
+    lg: '24px',
+    xl: '32px',
+    '2xl': '48px',
+  },
+  
+  // Espaçamento entre ícone e texto
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+  },
 } 

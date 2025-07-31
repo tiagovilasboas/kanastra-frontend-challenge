@@ -24,6 +24,8 @@ export function Header({ title }: HeaderProps) {
         position: 'sticky',
         top: 0,
         zIndex: 100,
+        backdropFilter: 'blur(10px)',
+        backgroundColor: 'rgba(24, 24, 24, 0.95)',
       }}
     >
       <Group>
@@ -31,8 +33,12 @@ export function Header({ title }: HeaderProps) {
           style={{
             ...spotifyStyles.textPrimary,
             ...spotifyStyles.fontWeightBold,
-            ...spotifyStyles.textXl,
+            ...spotifyStyles.text2xl,
             margin: 0,
+            background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
           }}
         >
           {title || t('brand')}

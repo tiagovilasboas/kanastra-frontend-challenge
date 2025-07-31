@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import { spotifyStyles } from '@/lib/design-system/utils'
 
 export interface ButtonProps extends Omit<MantineButtonProps, 'variant'> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'spotify'
   size?: 'sm' | 'md' | 'lg'
 }
 
@@ -14,10 +14,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       switch (variant) {
         case 'primary':
           return {
-            backgroundColor: '#1db954',
-            color: '#ffffff',
+            backgroundColor: '#1DB954',
+            color: '#FFFFFF',
+            border: 'none',
             '&:hover': {
-              backgroundColor: '#1aa34a',
+              backgroundColor: '#1ed760',
               transform: 'scale(1.02)',
             },
             '&:active': {
@@ -27,28 +28,44 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         case 'secondary':
           return {
             backgroundColor: 'transparent',
-            color: '#ffffff',
+            color: '#FFFFFF',
             border: '1px solid #535353',
             '&:hover': {
               backgroundColor: '#282828',
-              borderColor: '#b3b3b3',
+              borderColor: '#B3B3B3',
             },
           }
         case 'ghost':
           return {
             backgroundColor: 'transparent',
-            color: '#b3b3b3',
+            color: '#B3B3B3',
+            border: 'none',
             '&:hover': {
               backgroundColor: '#282828',
-              color: '#ffffff',
+              color: '#FFFFFF',
             },
           }
         case 'danger':
           return {
-            backgroundColor: '#e91429',
-            color: '#ffffff',
+            backgroundColor: '#E91429',
+            color: '#FFFFFF',
+            border: 'none',
             '&:hover': {
               backgroundColor: '#d10f23',
+            },
+          }
+        case 'spotify':
+          return {
+            background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
+            color: '#FFFFFF',
+            border: 'none',
+            fontWeight: '600',
+            '&:hover': {
+              background: 'linear-gradient(135deg, #1ed760 0%, #1DB954 100%)',
+              transform: 'scale(1.02)',
+            },
+            '&:active': {
+              transform: 'scale(0.98)',
             },
           }
         default:
@@ -62,19 +79,22 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           return {
             height: '32px',
             padding: '0 16px',
-            fontSize: '14px',
+            fontSize: '12px',
+            borderRadius: '16px',
           }
         case 'md':
           return {
             height: '40px',
             padding: '0 24px',
-            fontSize: '16px',
+            fontSize: '14px',
+            borderRadius: '20px',
           }
         case 'lg':
           return {
             height: '48px',
             padding: '0 32px',
-            fontSize: '18px',
+            fontSize: '16px',
+            borderRadius: '24px',
           }
         default:
           return {}
@@ -84,8 +104,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const buttonStyles = {
       ...spotifyStyles.fontPrimary,
       ...spotifyStyles.fontWeightMedium,
-      ...spotifyStyles.roundedMd,
-      ...spotifyStyles.transitionNormal,
+      ...spotifyStyles.transitionSpotify,
       ...spotifyStyles.focusRing,
       ...getVariantStyles(),
       ...getSizeStyles(),

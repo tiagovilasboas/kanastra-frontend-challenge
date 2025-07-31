@@ -1,7 +1,7 @@
 import { Grid, Group, Stack, Text, Title } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
-import { Button, Card } from '@/components/ui'
+import { Button, Card, SpotifyIcon } from '@/components/ui'
 import { Container } from '@/components/layout'
 import { spotifyStyles } from '@/lib/design-system/utils'
 
@@ -9,7 +9,7 @@ export default function DesignSystemPage() {
   const { t } = useTranslation()
 
   return (
-    <Container>
+    <Container variant="mobile-first">
       <Stack gap="xl" p="xl">
         <div>
           <Title
@@ -17,7 +17,12 @@ export default function DesignSystemPage() {
             style={{
               ...spotifyStyles.textPrimary,
               ...spotifyStyles.fontWeightBold,
+              ...spotifyStyles.text4xl,
               marginBottom: '16px',
+              background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             {t('designSystem.title')}
@@ -26,6 +31,7 @@ export default function DesignSystemPage() {
             style={{
               ...spotifyStyles.textSecondary,
               ...spotifyStyles.textLg,
+              ...spotifyStyles.leadingRelaxed,
             }}
           >
             {t('designSystem.subtitle')}
@@ -40,18 +46,21 @@ export default function DesignSystemPage() {
             </Title>
             
             <Group gap="md">
-              <Button variant="primary" size="sm">
+              <Button variant="spotify" size="sm">
                 {t('designSystem.primarySmall')}
               </Button>
-              <Button variant="primary" size="md">
+              <Button variant="spotify" size="md">
                 {t('designSystem.primaryMedium')}
               </Button>
-              <Button variant="primary" size="lg">
+              <Button variant="spotify" size="lg">
                 {t('designSystem.primaryLarge')}
               </Button>
             </Group>
 
             <Group gap="md">
+              <Button variant="primary" size="md">
+                Primary
+              </Button>
               <Button variant="secondary" size="md">
                 {t('designSystem.secondary')}
               </Button>
@@ -115,6 +124,45 @@ export default function DesignSystemPage() {
           </Stack>
         </Card>
 
+        {/* Icons Section */}
+        <Card variant="elevated" size="lg">
+          <Stack gap="lg">
+            <Title order={2} style={spotifyStyles.textPrimary}>
+              Spotify Icons
+            </Title>
+            
+            <Grid gutter="md">
+              <Grid.Col span={{ base: 6, md: 3 }}>
+                <Stack gap="sm" align="center">
+                  <SpotifyIcon icon="play" size="lg" />
+                  <Text size="sm" style={spotifyStyles.textSecondary}>Play</Text>
+                </Stack>
+              </Grid.Col>
+              
+              <Grid.Col span={{ base: 6, md: 3 }}>
+                <Stack gap="sm" align="center">
+                  <SpotifyIcon icon="pause" size="lg" />
+                  <Text size="sm" style={spotifyStyles.textSecondary}>Pause</Text>
+                </Stack>
+              </Grid.Col>
+              
+              <Grid.Col span={{ base: 6, md: 3 }}>
+                <Stack gap="sm" align="center">
+                  <SpotifyIcon icon="heart" size="lg" />
+                  <Text size="sm" style={spotifyStyles.textSecondary}>Heart</Text>
+                </Stack>
+              </Grid.Col>
+              
+              <Grid.Col span={{ base: 6, md: 3 }}>
+                <Stack gap="sm" align="center">
+                  <SpotifyIcon icon="search" size="lg" />
+                  <Text size="sm" style={spotifyStyles.textSecondary}>Search</Text>
+                </Stack>
+              </Grid.Col>
+            </Grid>
+          </Stack>
+        </Card>
+
         {/* Colors Section */}
         <Card variant="elevated" size="lg">
           <Stack gap="lg">
@@ -126,20 +174,20 @@ export default function DesignSystemPage() {
               <Grid.Col span={{ base: 12, md: 3 }}>
                 <div
                   style={{
-                    backgroundColor: '#1db954',
+                    background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
                     height: '60px',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ffffff',
+                    color: '#FFFFFF',
                     fontWeight: 'bold',
                   }}
                 >
                   {t('designSystem.primary')}
                 </div>
                 <Text size="sm" style={spotifyStyles.textSecondary} mt="xs">
-                  #1db954
+                  #1DB954
                 </Text>
               </Grid.Col>
               
@@ -152,7 +200,7 @@ export default function DesignSystemPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ffffff',
+                    color: '#FFFFFF',
                     fontWeight: 'bold',
                     border: '1px solid #282828',
                   }}
@@ -173,7 +221,7 @@ export default function DesignSystemPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ffffff',
+                    color: '#FFFFFF',
                     fontWeight: 'bold',
                     border: '1px solid #282828',
                   }}
@@ -194,7 +242,7 @@ export default function DesignSystemPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: '#ffffff',
+                    color: '#FFFFFF',
                     fontWeight: 'bold',
                   }}
                 >
@@ -205,6 +253,45 @@ export default function DesignSystemPage() {
                 </Text>
               </Grid.Col>
             </Grid>
+          </Stack>
+        </Card>
+
+        {/* Typography Section */}
+        <Card variant="elevated" size="lg">
+          <Stack gap="lg">
+            <Title order={2} style={spotifyStyles.textPrimary}>
+              Typography
+            </Title>
+            
+            <Stack gap="md">
+              <div>
+                <Text style={{ ...spotifyStyles.text5xl, ...spotifyStyles.fontWeightBold }}>
+                  Heading 1 - 36px Bold
+                </Text>
+                <Text style={spotifyStyles.textSecondary}>Circular font family</Text>
+              </div>
+              
+              <div>
+                <Text style={{ ...spotifyStyles.text3xl, ...spotifyStyles.fontWeightSemibold }}>
+                  Heading 2 - 28px Semibold
+                </Text>
+                <Text style={spotifyStyles.textSecondary}>Circular font family</Text>
+              </div>
+              
+              <div>
+                <Text style={{ ...spotifyStyles.textLg, ...spotifyStyles.fontWeightMedium }}>
+                  Body Large - 18px Medium
+                </Text>
+                <Text style={spotifyStyles.textSecondary}>Circular font family</Text>
+              </div>
+              
+              <div>
+                <Text style={{ ...spotifyStyles.textBase, ...spotifyStyles.fontWeightNormal }}>
+                  Body Base - 14px Normal
+                </Text>
+                <Text style={spotifyStyles.textSecondary}>Circular font family</Text>
+              </div>
+            </Stack>
           </Stack>
         </Card>
       </Stack>

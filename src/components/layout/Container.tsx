@@ -4,14 +4,37 @@ import { forwardRef } from 'react'
 import { spotifyStyles } from '@/lib/design-system/utils'
 
 export interface ContainerProps extends MantineContainerProps {
-  variant?: 'default' | 'fluid'
+  variant?: 'default' | 'fluid' | 'mobile-first'
 }
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-  ({ variant = 'default', style, children, ...props }, ref) => {
+  ({ variant = 'mobile-first', style, children, ...props }, ref) => {
+    const getContainerStyles = () => {
+      switch (variant) {
+        case 'default':
+          return {
+            ...spotifyStyles.bgPrimary,
+            minHeight: '100vh',
+          }
+        case 'fluid':
+          return {
+            ...spotifyStyles.bgPrimary,
+            minHeight: '100vh',
+            width: '100%',
+          }
+        case 'mobile-first':
+          return {
+            ...spotifyStyles.bgPrimary,
+            minHeight: '100vh',
+            ...spotifyStyles.mobileFirst.container,
+          }
+        default:
+          return {}
+      }
+    }
+
     const containerStyles = {
-      ...spotifyStyles.bgPrimary,
-      minHeight: '100vh',
+      ...getContainerStyles(),
       ...style,
     }
 
