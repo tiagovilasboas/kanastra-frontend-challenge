@@ -71,6 +71,14 @@ src/
 
 Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, consulte o [ROADMAP_CHALLENGE.md](./docs/ROADMAP_CHALLENGE.md).
 
+## 📚 Documentação
+
+- **[📋 REQUIREMENTS.md](./docs/REQUIREMENTS.md)** - Requisitos específicos do desafio
+- **[🗺️ ROADMAP_CHALLENGE.md](./docs/ROADMAP_CHALLENGE.md)** - Plano de desenvolvimento detalhado
+- **[📊 IMPLEMENTATION_STATUS.md](./docs/IMPLEMENTATION_STATUS.md)** - Status de implementação
+- **[🐕 REVIEWDOG.md](./docs/REVIEWDOG.md)** - Configuração de revisões automáticas
+- **[🔒 HUSKY_HOOKS.md](./docs/HUSKY_HOOKS.md)** - Configuração de Git hooks
+
 ### Fases Principais:
 
 1. **🧭 Dia 0:** Planejamento e Setup - Configuração inicial e documentação
