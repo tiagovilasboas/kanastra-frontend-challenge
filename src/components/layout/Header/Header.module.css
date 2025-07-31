@@ -1,0 +1,100 @@
+/* Header Component Styles */
+.header {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  background-color: rgba(249, 250, 251, 0.95);
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerBrand {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerBrand:hover {
+  color: #1DB954;
+}
+
+.headerBrandIcon {
+  width: 24px;
+  height: 24px;
+  color: #1DB954;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerLanguageSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerLanguageButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.headerLanguageButton:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.headerLanguageButton.active {
+  background-color: #1DB954;
+  color: white;
+}
+
+.headerLanguageFlag {
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerContainer {
+    padding: 0 16px;
+  }
+  
+  .headerBrand {
+    font-size: 18px;
+  }
+  
+  .headerActions {
+    gap: 12px;
+  }
+  
+  .headerLanguageButton {
+    padding: 6px;
+    font-size: 12px;
+  }
+} 

@@ -1,0 +1,72 @@
+/* Container Component Styles */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.containerMobileFirst {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.containerMobileFirst[data-variant="mobile-first"] {
+  padding: 16px;
+}
+
+.containerMobileFirst[data-variant="mobile-first"][data-breakpoint="sm"] {
+  padding: 24px;
+}
+
+.containerMobileFirst[data-variant="mobile-first"][data-breakpoint="md"] {
+  padding: 32px;
+}
+
+.containerMobileFirst[data-variant="mobile-first"][data-breakpoint="lg"] {
+  padding: 48px;
+}
+
+.containerFluid {
+  width: 100%;
+  padding: 0 16px;
+}
+
+.containerNarrow {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.containerWide {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  .containerMobileFirst[data-variant="mobile-first"] {
+    padding: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .containerMobileFirst[data-variant="mobile-first"] {
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .containerMobileFirst[data-variant="mobile-first"] {
+    padding: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container,
+  .containerNarrow,
+  .containerWide {
+    padding: 0 16px;
+  }
+} 

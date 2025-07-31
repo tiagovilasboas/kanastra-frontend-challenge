@@ -1,10 +1,16 @@
-export type { ArtistCardProps } from './ArtistCard'
-export { ArtistCard } from './ArtistCard'
-export type { ButtonProps } from './Button'
+// Button
 export { Button } from './Button'
-export type { CardProps } from './Card'
+export type { ButtonProps } from './Button'
+
+// Card
 export { Card } from './Card'
-export type { SearchInputProps } from './SearchInput'
+export type { CardProps } from './Card'
+
+// SearchInput
 export { SearchInput } from './SearchInput'
-export type { SpotifyIconProps } from './SpotifyIcon'
+
+// ArtistCard
+export { ArtistCard } from './ArtistCard'
+
+// SpotifyIcon
 export { SpotifyIcon } from './SpotifyIcon'

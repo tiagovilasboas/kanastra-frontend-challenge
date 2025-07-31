@@ -1,0 +1,117 @@
+/* SearchInput Component Styles */
+.searchContainer {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 48px 12px 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 25px;
+  font-size: 16px;
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+  font-family: inherit;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #1DB954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+}
+
+.searchInput:disabled {
+  background-color: #f9fafb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+/* Search icon */
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  pointer-events: none;
+  font-size: 18px;
+}
+
+/* Clear button */
+.searchClear {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.searchClear:hover {
+  background-color: #d1d5db;
+  color: #374151;
+}
+
+.searchClear:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Loading state */
+.searchLoading {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #1DB954;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translateY(-50%) rotate(0deg); }
+  100% { transform: translateY(-50%) rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .searchContainer {
+    max-width: 100%;
+  }
+  
+  .searchInput {
+    padding: 10px 44px 10px 44px;
+    font-size: 14px;
+  }
+  
+  .searchIcon {
+    left: 12px;
+    font-size: 16px;
+  }
+  
+  .searchClear {
+    right: 12px;
+    width: 18px;
+    height: 18px;
+  }
+} 

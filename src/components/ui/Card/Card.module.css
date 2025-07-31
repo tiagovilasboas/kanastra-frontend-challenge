@@ -1,0 +1,202 @@
+/* Card Component Styles */
+.card {
+  /* Base styles */
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
+}
+
+/* Variant styles */
+.cardDefault {
+  padding: 16px;
+}
+
+.cardElevated {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardElevated:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.cardArtist {
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.cardArtist:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cardArtist:hover .cardOverlay {
+  opacity: 1;
+}
+
+.cardAlbum {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.cardAlbum:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Card content */
+.cardContent {
+  padding: 16px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.cardSubtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.cardDescription {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* Card image */
+.cardImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background-color: #f3f4f6;
+}
+
+.cardImageArtist {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background-color: #f3f4f6;
+}
+
+.cardImageAlbum {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background-color: #f3f4f6;
+}
+
+/* Card overlay for artist cards */
+.cardOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.cardPlayButton {
+  width: 48px;
+  height: 48px;
+  background-color: #1DB954;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  font-size: 20px;
+}
+
+.cardPlayButton:hover {
+  background-color: #1ed760;
+  transform: scale(1.1);
+}
+
+/* Card metadata */
+.cardMetadata {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.cardPopularity {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cardPopularityDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #1DB954;
+}
+
+.cardFollowers {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Card genres */
+.cardGenres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.cardGenre {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card {
+    border-radius: 8px;
+  }
+  
+  .cardContent {
+    padding: 12px;
+  }
+  
+  .cardImage,
+  .cardImageArtist,
+  .cardImageAlbum {
+    height: 160px;
+  }
+} 
