@@ -29,11 +29,10 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
     this.setupInterceptors()
   }
 
-  // Authentication methods
   getAuthUrl(): string {
     const { clientId, redirectUri, scopes } = this.config
     const scopeString = scopes.join(' ')
-    
+
     return `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
       redirectUri,
     )}&scope=${encodeURIComponent(scopeString)}`
@@ -49,7 +48,6 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
 
   setAccessToken(token: string): void {
     this.accessToken = token
-    // Update axios default headers
     this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
 
@@ -67,7 +65,6 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
     localStorage.removeItem('spotify_token')
   }
 
-  // Artist methods
   async searchArtists(
     query: string,
     params: SearchParams = { query, type: 'artist', limit: 20, offset: 0 },
@@ -131,9 +128,7 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
     }
   }
 
-  // Private methods
   private setupInterceptors(): void {
-    // Request interceptor
     this.api.interceptors.request.use(
       (config) => {
         if (this.accessToken) {
@@ -146,7 +141,6 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
       },
     )
 
-    // Response interceptor
     this.api.interceptors.response.use(
       (response) => {
         return response
@@ -163,7 +157,7 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
   private handleError(error: unknown, message: string): RepositoryError {
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as { response?: { data?: unknown; status?: number } }
-      
+
       if (axiosError.response?.data) {
         const spotifyError = axiosError.response.data as SpotifyError
         return new RepositoryError(
@@ -172,7 +166,7 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
           error,
         )
       }
-      
+
       if (axiosError.response?.status) {
         return new RepositoryError(
           `${message}: HTTP ${axiosError.response.status}`,
@@ -181,14 +175,13 @@ export class SpotifyRepositoryImpl implements SpotifyRepository {
         )
       }
     }
-    
+
     return new RepositoryError(message, undefined, error)
   }
 
   private handleTokenExpired(): void {
     this.accessToken = null
     delete this.api.defaults.headers.common['Authorization']
-    // Redirect to login
     window.location.href = this.getAuthUrl()
   }
 } 

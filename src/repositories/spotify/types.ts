@@ -1,8 +1,6 @@
-import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
+import { SpotifyArtist, SpotifyAlbum, SpotifyTrack } from '@/types/spotify'
 
-// Spotify-specific repository interfaces
 export interface SpotifyRepository {
-  // Authentication
   getAuthUrl(): string
   extractTokenFromUrl(url: string): string | null
   setAccessToken(token: string): void
@@ -10,14 +8,12 @@ export interface SpotifyRepository {
   isAuthenticated(): boolean
   logout(): void
 
-  // Artists
   searchArtists(query: string, params?: SearchParams): Promise<SpotifySearchResponse>
   getArtist(id: string): Promise<SpotifyArtist>
   getArtistTopTracks(artistId: string, market?: string): Promise<SpotifyArtistTopTracksResponse>
   getArtistAlbums(artistId: string, params?: AlbumParams): Promise<SpotifyArtistAlbumsResponse>
 }
 
-// Request/Response types
 export interface SearchParams {
   query: string
   type: 'artist' | 'track' | 'album'
@@ -55,7 +51,6 @@ export interface SpotifyArtistAlbumsResponse {
   previous: string | null
 }
 
-// Configuration
 export interface SpotifyConfig {
   clientId: string
   redirectUri: string
@@ -63,7 +58,6 @@ export interface SpotifyConfig {
   baseUrl: string
 }
 
-// Error types
 export interface SpotifyError {
   error: {
     status: number

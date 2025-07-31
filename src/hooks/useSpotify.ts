@@ -2,184 +2,190 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { spotifyRepository } from '@/repositories'
-import { RepositoryResponse } from '@/repositories/base/BaseRepository'
-import {
-  AlbumParams,
-  SearchParams,
-  SpotifyArtistAlbumsResponse,
-  SpotifyArtistTopTracksResponse,
-  SpotifySearchResponse,
-} from '@/repositories/spotify/types'
-import { SpotifyArtist } from '@/types/spotify'
+import { SpotifyArtist, SpotifyAlbum, SpotifyTrack } from '@/types/spotify'
 
-export const useSpotify = () => {
+interface UseSpotifyReturn {
+  // State
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
+  searchResults: SpotifyArtist[]
+  currentArtist: SpotifyArtist | null
+  artistTopTracks: SpotifyTrack[]
+  artistAlbums: SpotifyAlbum[]
+  currentPage: number
+  totalPages: number
+  albumFilter: string
+
+  // Actions
+  login: () => void
+  logout: () => void
+  handleCallback: (url: string) => void
+  searchArtists: (query: string) => Promise<void>
+  getArtistDetails: (artistId: string) => Promise<void>
+  getArtistTopTracks: (artistId: string) => Promise<void>
+  getArtistAlbums: (artistId: string, page?: number) => Promise<void>
+  clearSearch: () => void
+  clearArtist: () => void
+  setCurrentPage: (page: number) => void
+  setAlbumFilter: (filter: string) => void
+}
+
+export function useSpotify(): UseSpotifyReturn {
   const navigate = useNavigate()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [searchResults, setSearchResults] = useState<RepositoryResponse<SpotifySearchResponse>>({
-    data: { artists: { items: [], total: 0, limit: 20, offset: 0, next: null, previous: null } },
-    loading: false,
-  })
-  const [currentArtist, setCurrentArtist] = useState<RepositoryResponse<SpotifyArtist>>({
-    data: {} as SpotifyArtist,
-    loading: false,
-  })
-  const [artistTopTracks, setArtistTopTracks] = useState<RepositoryResponse<SpotifyArtistTopTracksResponse>>({
-    data: { tracks: [] },
-    loading: false,
-  })
-  const [artistAlbums, setArtistAlbums] = useState<RepositoryResponse<SpotifyArtistAlbumsResponse>>({
-    data: { items: [], total: 0, limit: 20, offset: 0, next: null, previous: null },
-    loading: false,
-  })
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [searchResults, setSearchResults] = useState<SpotifyArtist[]>([])
+  const [currentArtist, setCurrentArtist] = useState<SpotifyArtist | null>(null)
+  const [artistTopTracks, setArtistTopTracks] = useState<SpotifyTrack[]>([])
+  const [artistAlbums, setArtistAlbums] = useState<SpotifyAlbum[]>([])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(0)
+  const [albumFilter, setAlbumFilter] = useState('')
 
-  // Verificar autenticação na inicialização
   useEffect(() => {
-    const token = spotifyRepository.getAccessToken()
-    setIsAuthenticated(!!token)
-  }, [])
-
-  // Login
-  const login = useCallback(() => {
-    const authUrl = spotifyRepository.getAuthUrl()
-    window.location.href = authUrl
-  }, [])
-
-  // Logout
-  const logout = useCallback(() => {
-    spotifyRepository.logout()
-    setIsAuthenticated(false)
-    navigate('/')
-  }, [navigate])
-
-  // Processar callback de autenticação
-  const processAuthCallback = useCallback((url: string) => {
-    const token = spotifyRepository.extractTokenFromUrl(url)
+    const token = localStorage.getItem('spotify_token')
     if (token) {
       spotifyRepository.setAccessToken(token)
       setIsAuthenticated(true)
-      // Salvar token no localStorage
+    }
+  }, [])
+
+  const login = useCallback(() => {
+    window.location.href = spotifyRepository.getAuthUrl()
+  }, [])
+
+  const logout = useCallback(() => {
+    spotifyRepository.logout()
+    setIsAuthenticated(false)
+    setSearchResults([])
+    setCurrentArtist(null)
+    setArtistTopTracks([])
+    setArtistAlbums([])
+    setError(null)
+    navigate('/')
+  }, [navigate])
+
+  const handleCallback = useCallback((url: string) => {
+    const token = spotifyRepository.extractTokenFromUrl(url)
+    if (token) {
+      spotifyRepository.setAccessToken(token)
       localStorage.setItem('spotify_token', token)
-      navigate('/')
+      setIsAuthenticated(true)
+      setError(null)
+    }
+  }, [])
+
+  const searchArtists = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([])
+      return
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await spotifyRepository.searchArtists(query)
+      setSearchResults(response.artists.items)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao buscar artistas')
+      setSearchResults([])
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  const getArtistDetails = useCallback(async (artistId: string) => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const artist = await spotifyRepository.getArtist(artistId)
+      setCurrentArtist(artist)
+      navigate(`/artist/${artistId}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar artista')
+    } finally {
+      setIsLoading(false)
     }
   }, [navigate])
 
-  // Buscar artistas
-  const searchArtists = useCallback(async (params: SearchParams) => {
-    setSearchResults(prev => ({ ...prev, loading: true, error: undefined }))
-    
+  const getArtistTopTracks = useCallback(async (artistId: string) => {
+    setIsLoading(true)
+    setError(null)
+
     try {
-      const response = await spotifyRepository.searchArtists(params.query, params)
-      setSearchResults({
-        data: response,
-        loading: false,
-      })
-    } catch (error) {
-      setSearchResults(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-      }))
+      const response = await spotifyRepository.getArtistTopTracks(artistId)
+      setArtistTopTracks(response.tracks)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar top tracks')
+      setArtistTopTracks([])
+    } finally {
+      setIsLoading(false)
     }
   }, [])
 
-  // Obter detalhes do artista
-  const getArtist = useCallback(async (artistId: string) => {
-    setCurrentArtist(prev => ({ ...prev, loading: true, error: undefined }))
-    
+  const getArtistAlbums = useCallback(async (artistId: string, page = 1) => {
+    setIsLoading(true)
+    setError(null)
+
     try {
-      const response = await spotifyRepository.getArtist(artistId)
-      setCurrentArtist({
-        data: response,
-        loading: false,
+      const limit = 20
+      const offset = (page - 1) * limit
+      const response = await spotifyRepository.getArtistAlbums(artistId, {
+        limit,
+        offset,
       })
-    } catch (error) {
-      setCurrentArtist(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-      }))
+
+      setArtistAlbums(response.items)
+      setCurrentPage(page)
+      setTotalPages(Math.ceil(response.total / limit))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao carregar álbuns')
+      setArtistAlbums([])
+    } finally {
+      setIsLoading(false)
     }
   }, [])
 
-  // Obter top tracks do artista
-  const getArtistTopTracks = useCallback(async (artistId: string, market: string = 'BR') => {
-    setArtistTopTracks(prev => ({ ...prev, loading: true, error: undefined }))
-    
-    try {
-      const response = await spotifyRepository.getArtistTopTracks(artistId, market)
-      setArtistTopTracks({
-        data: response,
-        loading: false,
-      })
-    } catch (error) {
-      setArtistTopTracks(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-      }))
-    }
-  }, [])
-
-  // Obter álbuns do artista
-  const getArtistAlbums = useCallback(async (artistId: string, params: AlbumParams = {}) => {
-    setArtistAlbums(prev => ({ ...prev, loading: true, error: undefined }))
-    
-    try {
-      const response = await spotifyRepository.getArtistAlbums(artistId, params)
-      setArtistAlbums({
-        data: response,
-        loading: false,
-      })
-    } catch (error) {
-      setArtistAlbums(prev => ({
-        ...prev,
-        loading: false,
-        error: error instanceof Error ? error.message : 'Erro desconhecido',
-      }))
-    }
-  }, [])
-
-  // Limpar resultados da busca
   const clearSearch = useCallback(() => {
-    setSearchResults({
-      data: { artists: { items: [], total: 0, limit: 20, offset: 0, next: null, previous: null } },
-      loading: false,
-    })
+    setSearchResults([])
+    setError(null)
   }, [])
 
-  // Limpar artista atual
-  const clearCurrentArtist = useCallback(() => {
-    setCurrentArtist({
-      data: {} as SpotifyArtist,
-      loading: false,
-    })
-    setArtistTopTracks({
-      data: { tracks: [] },
-      loading: false,
-    })
-    setArtistAlbums({
-      data: { items: [], total: 0, limit: 20, offset: 0, next: null, previous: null },
-      loading: false,
-    })
+  const clearArtist = useCallback(() => {
+    setCurrentArtist(null)
+    setArtistTopTracks([])
+    setArtistAlbums([])
+    setCurrentPage(1)
+    setTotalPages(0)
+    setAlbumFilter('')
+    setError(null)
   }, [])
 
   return {
-    // State
     isAuthenticated,
+    isLoading,
+    error,
     searchResults,
     currentArtist,
     artistTopTracks,
     artistAlbums,
-    
-    // Actions
+    currentPage,
+    totalPages,
+    albumFilter,
     login,
     logout,
-    processAuthCallback,
+    handleCallback,
     searchArtists,
-    getArtist,
+    getArtistDetails,
     getArtistTopTracks,
     getArtistAlbums,
     clearSearch,
-    clearCurrentArtist,
+    clearArtist,
+    setCurrentPage,
+    setAlbumFilter,
   }
 }

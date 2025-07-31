@@ -1,59 +1,37 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-type Language = 'pt' | 'en'
-type Theme = 'light' | 'dark'
-
 interface AppState {
-  // Language
-  language: Language
-  setLanguage: (language: Language) => void
-
-  // Theme
-  theme: Theme
-  setTheme: (theme: Theme) => void
-  toggleTheme: () => void
-
-  // Loading states
+  language: string
+  theme: 'light' | 'dark'
   isLoading: boolean
-  setIsLoading: (loading: boolean) => void
-
-  // Error handling
   error: string | null
-  setError: (error: string | null) => void
-  clearError: () => void
 }
 
-export const useAppStore = create<AppState>()(
+interface AppActions {
+  setLanguage: (language: string) => void
+  setTheme: (theme: 'light' | 'dark') => void
+  setLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
+}
+
+type AppStore = AppState & AppActions
+
+export const useAppStore = create<AppStore>()(
   persist(
     (set) => ({
-      // Language
       language: 'pt',
-      setLanguage: (language) => set({ language }),
-
-      // Theme
-      theme: 'light',
-      setTheme: (theme) => set({ theme }),
-      toggleTheme: () =>
-        set((state) => ({
-          theme: state.theme === 'light' ? 'dark' : 'light',
-        })),
-
-      // Loading states
+      theme: 'dark',
       isLoading: false,
-      setIsLoading: (loading) => set({ isLoading: loading }),
-
-      // Error handling
       error: null,
+
+      setLanguage: (language) => set({ language }),
+      setTheme: (theme) => set({ theme }),
+      setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
-      clearError: () => set({ error: null }),
     }),
     {
-      name: 'app-storage',
-      partialize: (state) => ({
-        language: state.language,
-        theme: state.theme,
-      }),
-    },
-  ),
+      name: 'app-store',
+    }
+  )
 )

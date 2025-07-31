@@ -8,7 +8,6 @@ export interface SpotifyIconProps {
   style?: React.CSSProperties
 }
 
-// Ícones comuns do Spotify
 const spotifyIcons = {
   play: '▶️',
   pause: '⏸️',
@@ -32,7 +31,6 @@ const spotifyIcons = {
   profile: '👤',
 }
 
-// Tamanhos dos ícones
 const iconSizes = {
   xs: '12px',
   sm: '16px',

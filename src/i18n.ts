@@ -3,9 +3,7 @@ import { initReactI18next } from 'react-i18next'
 
 import enArtist from './locales/en/artist.json'
 import enAuth from './locales/en/auth.json'
-// Common translations
 import enCommon from './locales/en/common.json'
-// Page-specific translations
 import enHome from './locales/en/home.json'
 import enSearch from './locales/en/search.json'
 import ptArtist from './locales/pt/artist.json'
@@ -37,7 +35,7 @@ i18n.use(initReactI18next).init({
   ns: ['common', 'home', 'search', 'auth', 'artist'],
   defaultNS: 'common',
   interpolation: {
-    escapeValue: false, // React já escapa
+    escapeValue: false,
   },
 })
 

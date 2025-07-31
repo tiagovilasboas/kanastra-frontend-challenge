@@ -1,5 +1,3 @@
-// Spotify API Types
-
 export interface SpotifyImage {
   url: string
   height: number
@@ -11,13 +9,10 @@ export interface SpotifyArtist {
   name: string
   images: SpotifyImage[]
   popularity: number
-  genres: string[]
-  external_urls: {
-    spotify: string
-  }
   followers: {
     total: number
   }
+  genres: string[]
 }
 
 export interface SpotifyAlbum {
@@ -26,10 +21,7 @@ export interface SpotifyAlbum {
   images: SpotifyImage[]
   release_date: string
   total_tracks: number
-  album_type: 'album' | 'single' | 'compilation'
-  external_urls: {
-    spotify: string
-  }
+  album_type: string
   artists: SpotifyArtist[]
 }
 
@@ -37,13 +29,12 @@ export interface SpotifyTrack {
   id: string
   name: string
   duration_ms: number
+  track_number: number
+  disc_number: number
   explicit: boolean
-  external_urls: {
-    spotify: string
-  }
-  album: SpotifyAlbum
-  artists: SpotifyArtist[]
   popularity: number
+  artists: SpotifyArtist[]
+  album: SpotifyAlbum
 }
 
 export interface SpotifySearchResponse {
@@ -77,14 +68,12 @@ export interface SpotifyError {
   }
 }
 
-// API Response types
 export interface ApiResponse<T> {
-  data: T
+  data: T | null
   error?: string
   loading: boolean
 }
 
-// Search parameters
 export interface SearchParams {
   query: string
   type: 'artist' | 'track' | 'album'
@@ -92,7 +81,6 @@ export interface SearchParams {
   offset?: number
 }
 
-// Pagination
 export interface PaginationInfo {
   currentPage: number
   totalPages: number

@@ -18,7 +18,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const { i18n } = useTranslation()
   const { language } = useAppStore()
 
-  // Sync i18n language with Zustand store
   useEffect(() => {
     if (i18n.language !== language) {
       i18n.changeLanguage(language)
