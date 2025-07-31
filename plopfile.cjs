@@ -83,7 +83,8 @@ module.exports = function (plop) {
   })
 
   plop.setGenerator('cleanup', {
-    description: 'Limpa o boilerplate removendo exemplos e código desnecessário',
+    description:
+      'Limpa o boilerplate removendo exemplos e código desnecessário',
     prompts: [
       {
         type: 'confirm',
