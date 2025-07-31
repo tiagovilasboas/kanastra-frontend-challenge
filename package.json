@@ -24,10 +24,7 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "type-check": "tsc --noEmit",
-    "reviewdog": "reviewdog -conf=.reviewdog.yml",
-    "reviewdog:eslint": "eslint . --format=unix | reviewdog -f=eslint -name=\"ESLint\" -reporter=github-pr-review",
-    "reviewdog:typescript": "tsc --noEmit --pretty false 2>&1 | reviewdog -f=tsc -name=\"TypeScript\" -reporter=github-pr-review",
-    "reviewdog:prettier": "prettier --check . 2>&1 | reviewdog -f=eslint -name=\"Prettier\" -reporter=github-pr-review",
+
     "prepare": "husky install",
     "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run"
   },

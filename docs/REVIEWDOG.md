@@ -1,148 +1,113 @@
-# 🐕 Reviewdog - Revisões Automáticas de Código
+# 🐕 Reviewdog - Revisões Automáticas
 
 ## 📋 Visão Geral
 
 O [Reviewdog](https://github.com/reviewdog/reviewdog) é uma ferramenta que automatiza a revisão de código, integrando-se com o GitHub para fornecer feedback automático em Pull Requests.
 
-## 🚀 Funcionalidades
+## 🎯 Funcionalidades
 
-### ✅ **Revisões Automáticas**
-- **ESLint**: Verificação de qualidade de código JavaScript/TypeScript
-- **TypeScript**: Verificação de tipos e erros de compilação
-- **Prettier**: Verificação de formatação de código
-- **Build**: Verificação de build do projeto
+### **GitHub Actions (Automático)**
+- ✅ **Execução automática** em Pull Requests
+- ✅ **Feedback visual** nos comentários do PR
+- ✅ **Integração nativa** com GitHub
+- ✅ **Reporta issues** diretamente no código
 
-### 🔧 **Integração com GitHub**
-- Comentários automáticos em Pull Requests
-- Diferenciação entre erros e warnings
-- Filtro por contexto de mudanças (diff_context)
+### **Ferramentas Suportadas**
+- ✅ **ESLint** - Análise de qualidade de código
+- ✅ **TypeScript** - Verificação de tipos
+- ✅ **Prettier** - Formatação de código
+- ✅ **Build** - Verificação de compilação
 
-## 📁 Arquivos de Configuração
+## 🔧 Configuração
 
-### `.github/workflows/reviewdog.yml`
-Workflow do GitHub Actions que executa as verificações automaticamente em Pull Requests.
+### **GitHub Actions**
+O Reviewdog está configurado no workflow `.github/workflows/reviewdog.yml` e executa automaticamente em Pull Requests.
 
-### `.reviewdog.yml`
-Configuração global do Reviewdog com parâmetros de execução.
-
-## 🛠️ Scripts Disponíveis
-
-```bash
-# Executar Reviewdog com configuração global
-npm run reviewdog
-
-# Executar ESLint com Reviewdog
-npm run reviewdog:eslint
-
-# Executar TypeScript com Reviewdog
-npm run reviewdog:typescript
-
-# Executar Prettier com Reviewdog
-npm run reviewdog:prettier
-```
-
-## 🔄 Como Funciona
-
-### 1. **Trigger Automático**
-- O workflow é executado automaticamente em cada Pull Request
-- Verifica apenas as mudanças no contexto do diff
-
-### 2. **Execução Paralela**
-- Cada ferramenta (ESLint, TypeScript, Prettier) roda em jobs separados
-- Permite identificação rápida de problemas específicos
-
-### 3. **Feedback no GitHub**
-- Comentários são postados diretamente no Pull Request
-- Diferenciação visual entre erros e warnings
-- Links diretos para as linhas problemáticas
-
-## 📊 Configurações
-
-### **Níveis de Severidade**
+### **Workflow Automático**
 ```yaml
-level: error  # info, warning, error
+name: reviewdog
+on: [pull_request]
+
+jobs:
+  eslint:
+    # Executa ESLint e reporta issues
+  typescript:
+    # Executa TypeScript e reporta issues
+  prettier:
+    # Executa Prettier e reporta issues
+  build:
+    # Executa build e verifica compilação
 ```
 
-### **Modos de Filtro**
-```yaml
-filter_mode: diff_context  # diff_context, nofilter, added
-```
+## 🚀 Como Funciona
 
-### **Reporters**
-```yaml
-reporter: github-pr-review  # github-pr-review, github-check
-```
+### **1. Pull Request Criado**
+- GitHub Actions executa automaticamente
+- Reviewdog analisa o código
+- Issues são reportados como comentários
 
-## 🎯 Benefícios
+### **2. Feedback Visual**
+- **Comentários inline** no código
+- **Nível de severidade** (error, warning, info)
+- **Contexto** das mudanças
+
+### **3. Resolução**
+- Desenvolvedor corrige issues
+- Push das correções
+- Reviewdog re-executa automaticamente
+
+## 📊 Benefícios
 
 ### **Para Desenvolvedores**
-- ✅ **Feedback imediato** sobre problemas de código
-- ✅ **Aprendizado contínuo** com sugestões automáticas
-- ✅ **Consistência** no padrão de código
-- ✅ **Prevenção** de bugs antes do merge
+- ✅ **Feedback imediato** sobre problemas
+- ✅ **Contexto visual** das issues
+- ✅ **Padronização** automática
+- ✅ **Qualidade** consistente
 
 ### **Para o Time**
-- ✅ **Qualidade consistente** do código
-- ✅ **Redução** de revisões manuais repetitivas
-- ✅ **Padronização** de práticas de desenvolvimento
-- ✅ **Documentação** automática de problemas
+- ✅ **Code review** mais eficiente
+- ✅ **Redução** de bugs
+- ✅ **Padrões** consistentes
+- ✅ **CI/CD** integrado
 
-## 🔧 Configuração Local
+### **Para o Projeto**
+- ✅ **Qualidade** mantida
+- ✅ **Performance** otimizada
+- ✅ **Manutenibilidade** melhorada
 
-### **Instalação do Reviewdog**
+## 🎯 Uso Local
+
+### **Verificação Manual**
 ```bash
-# Instalar via Go
-go install github.com/reviewdog/reviewdog/cmd/reviewdog@latest
+# Verificar lint
+npm run lint
 
-# Ou via script de instalação
-curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v0.14.2
+# Verificar tipos
+npm run type-check
+
+# Verificar formatação
+npm run format
+
+# Verificar tudo
+npm run pre-commit-check
 ```
 
-### **Configuração de Token**
+### **Correção Automática**
 ```bash
-# Configurar token do GitHub
-export REVIEWDOG_GITHUB_API_TOKEN=your_github_token
+# Corrigir lint automaticamente
+npm run lint:fix
+
+# Formatar código
+npm run format
 ```
 
-### **Execução Local**
-```bash
-# Executar verificações localmente
-npm run reviewdog:eslint
-npm run reviewdog:typescript
-npm run reviewdog:prettier
-```
+## ⚠️ Importante
 
-## 🚨 Troubleshooting
+**O Reviewdog só funciona no GitHub Actions**, não localmente. Para desenvolvimento local, use os scripts npm padrão:
 
-### **Problemas Comuns**
-
-#### 1. **Token não configurado**
-```bash
-Error: github token is not set
-```
-**Solução**: Configure o `REVIEWDOG_GITHUB_API_TOKEN`
-
-#### 2. **Permissões insuficientes**
-```bash
-Error: 403 Forbidden
-```
-**Solução**: Verifique as permissões do token no GitHub
-
-#### 3. **Workflow não executa**
-- Verifique se o arquivo está em `.github/workflows/`
-- Confirme se o trigger está configurado para `pull_request`
-
-## 📈 Métricas e Relatórios
-
-### **Dashboard do GitHub**
-- Acesse a aba "Actions" no repositório
-- Visualize histórico de execuções
-- Monitore tempo de execução e falhas
-
-### **Insights**
-- Identifique padrões de problemas
-- Acompanhe evolução da qualidade do código
-- Meça eficácia das verificações
+- `npm run lint` - Verificar qualidade
+- `npm run type-check` - Verificar tipos
+- `npm run format` - Formatar código
 
 ## 🔗 Links Úteis
 
@@ -151,16 +116,4 @@ Error: 403 Forbidden
 - [GitHub Actions](https://docs.github.com/en/actions)
 - [ESLint](https://eslint.org/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Prettier](https://prettier.io/)
-
-## 🎉 Resultado Final
-
-Com o Reviewdog configurado, o projeto agora possui:
-
-- ✅ **Revisões automáticas** em Pull Requests
-- ✅ **Feedback imediato** sobre qualidade de código
-- ✅ **Padronização** de práticas de desenvolvimento
-- ✅ **Prevenção** de problemas antes do merge
-- ✅ **Integração** completa com GitHub Actions
-
-O Reviewdog é uma ferramenta essencial para manter a qualidade do código e melhorar a experiência de desenvolvimento! 🚀 
+- [Prettier](https://prettier.io/) 
