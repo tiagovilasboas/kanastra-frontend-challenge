@@ -1,48 +1,46 @@
-import { Loader, Stack, Text, Title } from '@mantine/core'
+import { Loader,Stack, Text, Title } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { Container } from '@/components/layout'
-import { spotifyStyles } from '@/lib/design-system/utils'
-import { spotifyService } from '@/services/spotifyService'
+import { spotifyRepository } from '@/repositories'
 
 export default function CallbackPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
-    'loading',
-  )
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     const processCallback = async () => {
       try {
-        const currentUrl = window.location.href
-        const token = spotifyService.extractTokenFromUrl(currentUrl)
-
-        if (token) {
-          // Configurar o token no serviço
-          spotifyService.setAccessToken(token)
-
-          // Salvar no localStorage
-          localStorage.setItem('spotify_token', token)
-
-          setStatus('success')
-
-          // Redirecionar para home após um breve delay
-          setTimeout(() => {
-            navigate('/')
-          }, 2000)
-        } else {
+        // Extrair token da URL
+        const token = spotifyRepository.extractTokenFromUrl(window.location.href)
+        
+        if (!token) {
           setStatus('error')
           setErrorMessage('Token não encontrado na URL')
+          return
         }
+
+        // Configurar token no repository
+        spotifyRepository.setAccessToken(token)
+        
+        // Salvar no localStorage
+        localStorage.setItem('spotify_token', token)
+        
+        // Marcar como sucesso
+        setStatus('success')
+        
+        // Redirecionar após 2 segundos
+        setTimeout(() => {
+          navigate('/')
+        }, 2000)
+        
       } catch (error) {
         setStatus('error')
-        setErrorMessage(
-          error instanceof Error ? error.message : 'Erro desconhecido',
-        )
+        setErrorMessage(error instanceof Error ? error.message : 'Erro desconhecido')
       }
     }
 
@@ -55,120 +53,51 @@ export default function CallbackPage() {
         return (
           <Stack gap="lg" align="center">
             <Loader size="lg" color="#1DB954" />
-            <Title
-              order={2}
-              style={{
-                ...spotifyStyles.textPrimary,
-                ...spotifyStyles.fontWeightSemibold,
-              }}
-            >
+            <Title order={2} className="text-primary font-bold text-2xl">
               {t('auth:connecting')}
             </Title>
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textBase,
-                textAlign: 'center',
-              }}
-            >
+            <Text className="text-secondary text-base text-center">
               {t('auth:connectingMessage')}
             </Text>
           </Stack>
         )
-
+      
       case 'success':
         return (
           <Stack gap="lg" align="center">
-            <div
-              style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '50%',
-                backgroundColor: '#1DB954',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-              }}
-            >
-              ✓
+            <div className="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center">
+              <span className="text-white text-2xl">✓</span>
             </div>
-            <Title
-              order={2}
-              style={{
-                ...spotifyStyles.textPrimary,
-                ...spotifyStyles.fontWeightSemibold,
-              }}
-            >
+            <Title order={2} className="text-primary font-bold text-2xl">
               {t('auth:success')}
             </Title>
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textBase,
-                textAlign: 'center',
-              }}
-            >
+            <Text className="text-secondary text-base text-center">
               {t('auth:successMessage')}
             </Text>
           </Stack>
         )
-
+      
       case 'error':
         return (
           <Stack gap="lg" align="center">
-            <div
-              style={{
-                width: '60px',
-                height: '60px',
-                borderRadius: '50%',
-                backgroundColor: '#E91429',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '24px',
-                color: '#FFFFFF',
-              }}
-            >
-              ✕
+            <div className="w-16 h-16 bg-error rounded-full flex items-center justify-center">
+              <span className="text-white text-2xl">✗</span>
             </div>
-            <Title
-              order={2}
-              style={{
-                ...spotifyStyles.textPrimary,
-                ...spotifyStyles.fontWeightSemibold,
-              }}
-            >
+            <Title order={2} className="text-primary font-bold text-2xl">
               {t('auth:error')}
             </Title>
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textBase,
-                textAlign: 'center',
-              }}
-            >
+            <Text className="text-secondary text-base text-center">
               {errorMessage || t('auth:errorMessage')}
             </Text>
             <button
               onClick={() => navigate('/')}
-              style={{
-                backgroundColor: '#1DB954',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: '20px',
-                padding: '12px 24px',
-                fontSize: '14px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out',
-              }}
+              className="btn-spotify btn-secondary"
             >
               {t('auth:backToHome')}
             </button>
           </Stack>
         )
-
+      
       default:
         return null
     }
@@ -176,15 +105,7 @@ export default function CallbackPage() {
 
   return (
     <Container variant="mobile-first">
-      <Stack
-        gap="xl"
-        align="center"
-        justify="center"
-        style={{
-          minHeight: '100vh',
-          padding: '48px 24px',
-        }}
-      >
+      <Stack gap="xl" align="center" justify="center" className="min-h-screen p-3xl">
         {renderContent()}
       </Stack>
     </Container>
