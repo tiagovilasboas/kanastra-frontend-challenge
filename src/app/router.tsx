@@ -1,8 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import App from '@/App'
-import DesignSystemPage from '@/pages/DesignSystemPage'
 import HomePage from '@/pages/HomePage'
+import DesignSystemPage from '@/pages/DesignSystemPage'
+import CallbackPage from '@/pages/CallbackPage'
 
 export const router = createBrowserRouter([
   {
@@ -18,5 +19,9 @@ export const router = createBrowserRouter([
         element: <DesignSystemPage />,
       },
     ],
+  },
+  {
+    path: '/callback',
+    element: <CallbackPage />,
   },
 ])

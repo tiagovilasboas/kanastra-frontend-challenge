@@ -33,6 +33,34 @@
     "usa": "🇺🇸"
   },
   "colon": ":",
+  "home": {
+    "title": "Discover Amazing Artists",
+    "subtitle": "Search for your favorite artists and discover new talents with the Spotify API",
+    "welcome": "Welcome to Spotify Explorer"
+  },
+  "search": {
+    "placeholder": "Search artists...",
+    "clear": "Clear search",
+    "results": "Search results",
+    "resultsFor": "Results for",
+    "noResults": "No results found",
+    "noResultsMessage": "Try searching for another artist or check the spelling",
+    "error": "Search error"
+  },
+  "auth": {
+    "loginWithSpotify": "Login with Spotify",
+    "connecting": "Connecting...",
+    "connectingMessage": "We are connecting you to Spotify",
+    "success": "Successfully connected!",
+    "successMessage": "You will be redirected in a few seconds",
+    "error": "Connection error",
+    "errorMessage": "An error occurred while connecting to Spotify",
+    "backToHome": "Back to home"
+  },
+  "artist": {
+    "popularity": "popularity",
+    "followers": "followers"
+  },
   "designSystem": {
     "title": "Design System - Spotify Inspired",
     "subtitle": "Spotify-inspired components for the Kanastra challenge",

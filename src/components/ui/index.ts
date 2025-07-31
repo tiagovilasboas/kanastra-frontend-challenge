@@ -1,7 +1,11 @@
 export { Button } from './Button'
 export { Card } from './Card'
+export { SearchInput } from './SearchInput'
 export { SpotifyIcon } from './SpotifyIcon'
+export { ArtistCard } from './ArtistCard'
 
 export type { ButtonProps } from './Button'
 export type { CardProps } from './Card'
+export type { SearchInputProps } from './SearchInput'
 export type { SpotifyIconProps } from './SpotifyIcon'
+export type { ArtistCardProps } from './ArtistCard'

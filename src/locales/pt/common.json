@@ -33,6 +33,34 @@
     "usa": "🇺🇸"
   },
   "colon": ":",
+  "home": {
+    "title": "Descubra Artistas Incríveis",
+    "subtitle": "Busque por seus artistas favoritos e descubra novos talentos com a API do Spotify",
+    "welcome": "Bem-vindo ao Spotify Explorer"
+  },
+  "search": {
+    "placeholder": "Buscar artistas...",
+    "clear": "Limpar busca",
+    "results": "Resultados da busca",
+    "resultsFor": "Resultados para",
+    "noResults": "Nenhum resultado encontrado",
+    "noResultsMessage": "Tente buscar por outro artista ou verifique a ortografia",
+    "error": "Erro na busca"
+  },
+  "auth": {
+    "loginWithSpotify": "Entrar com Spotify",
+    "connecting": "Conectando...",
+    "connectingMessage": "Estamos conectando você ao Spotify",
+    "success": "Conectado com sucesso!",
+    "successMessage": "Você será redirecionado em alguns segundos",
+    "error": "Erro na conexão",
+    "errorMessage": "Ocorreu um erro ao conectar com o Spotify",
+    "backToHome": "Voltar ao início"
+  },
+  "artist": {
+    "popularity": "popularidade",
+    "followers": "seguidores"
+  },
   "designSystem": {
     "title": "Design System - Spotify Inspired",
     "subtitle": "Componentes inspirados no design do Spotify para o desafio Kanastra",
