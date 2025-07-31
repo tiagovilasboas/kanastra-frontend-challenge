@@ -1,8 +1,9 @@
-import { Card, Text, Group, Badge } from '@mantine/core'
+import { Badge, Card, Text } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
-import { SpotifyIcon } from './SpotifyIcon'
 import { SpotifyArtist } from '@/types/spotify'
+
+import { SpotifyIcon } from './SpotifyIcon'
 
 export interface ArtistCardProps {
   artist: SpotifyArtist
@@ -17,7 +18,6 @@ export const ArtistCard = ({
   onClick,
   showGenres = true,
   showFollowers = true,
-  size = 'md',
 }: ArtistCardProps) => {
   const { t } = useTranslation()
 
@@ -30,7 +30,9 @@ export const ArtistCard = ({
   const getImageUrl = () => {
     if (artist.images && artist.images.length > 0) {
       // Retornar a imagem de tamanho médio ou a primeira disponível
-      const mediumImage = artist.images.find(img => img.width >= 300 && img.width <= 600)
+      const mediumImage = artist.images.find(
+        (img) => img.width >= 300 && img.width <= 600,
+      )
       return mediumImage?.url || artist.images[0].url
     }
     return '/placeholder-artist.jpg' // Imagem placeholder
@@ -53,11 +55,7 @@ export const ArtistCard = ({
   }
 
   return (
-    <Card
-      variant="unstyled"
-      className="artist-card"
-      onClick={handleClick}
-    >
+    <Card variant="unstyled" className="artist-card" onClick={handleClick}>
       {/* Imagem do artista */}
       <div className="relative">
         <img
@@ -69,7 +67,7 @@ export const ArtistCard = ({
             target.src = '/placeholder-artist.jpg'
           }}
         />
-        
+
         {/* Overlay com ícone de play */}
         {onClick && (
           <div className="absolute bottom-2 right-2 bg-spotify-green rounded-full w-10 h-10 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
@@ -82,13 +80,13 @@ export const ArtistCard = ({
       <div className="p-md">
         <div className="space-y-sm">
           {/* Nome do artista */}
-          <Text className="artist-card-title">
-            {artist.name}
-          </Text>
+          <Text className="artist-card-title">{artist.name}</Text>
 
           {/* Popularidade */}
           <div className="artist-card-popularity">
-            <div className={`popularity-dot ${getPopularityClass(artist.popularity)}`} />
+            <div
+              className={`popularity-dot ${getPopularityClass(artist.popularity)}`}
+            />
             <Text className="text-sm text-secondary">
               {artist.popularity}% {t('artist:popularity')}
             </Text>
@@ -105,11 +103,7 @@ export const ArtistCard = ({
           {showGenres && artist.genres && artist.genres.length > 0 && (
             <div className="artist-card-genres">
               {artist.genres.slice(0, 3).map((genre, index) => (
-                <Badge
-                  key={index}
-                  size="sm"
-                  className="genre-badge"
-                >
+                <Badge key={index} size="sm" className="genre-badge">
                   {genre}
                 </Badge>
               ))}
@@ -124,4 +118,4 @@ export const ArtistCard = ({
       </div>
     </Card>
   )
-} 
+}

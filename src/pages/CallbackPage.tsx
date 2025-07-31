@@ -1,16 +1,18 @@
+import { Loader, Stack, Text, Title } from '@mantine/core'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Stack, Title, Text, Loader } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { Container } from '@/components/layout'
-import { spotifyService } from '@/services/spotifyService'
 import { spotifyStyles } from '@/lib/design-system/utils'
+import { spotifyService } from '@/services/spotifyService'
 
 export default function CallbackPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
+    'loading',
+  )
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
@@ -18,16 +20,16 @@ export default function CallbackPage() {
       try {
         const currentUrl = window.location.href
         const token = spotifyService.extractTokenFromUrl(currentUrl)
-        
+
         if (token) {
           // Configurar o token no serviço
           spotifyService.setAccessToken(token)
-          
+
           // Salvar no localStorage
           localStorage.setItem('spotify_token', token)
-          
+
           setStatus('success')
-          
+
           // Redirecionar para home após um breve delay
           setTimeout(() => {
             navigate('/')
@@ -38,7 +40,9 @@ export default function CallbackPage() {
         }
       } catch (error) {
         setStatus('error')
-        setErrorMessage(error instanceof Error ? error.message : 'Erro desconhecido')
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Erro desconhecido',
+        )
       }
     }
 
@@ -71,7 +75,7 @@ export default function CallbackPage() {
             </Text>
           </Stack>
         )
-      
+
       case 'success':
         return (
           <Stack gap="lg" align="center">
@@ -109,7 +113,7 @@ export default function CallbackPage() {
             </Text>
           </Stack>
         )
-      
+
       case 'error':
         return (
           <Stack gap="lg" align="center">
@@ -164,7 +168,7 @@ export default function CallbackPage() {
             </button>
           </Stack>
         )
-      
+
       default:
         return null
     }
@@ -185,4 +189,4 @@ export default function CallbackPage() {
       </Stack>
     </Container>
   )
-} 
+}

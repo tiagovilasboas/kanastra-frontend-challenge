@@ -1,16 +1,23 @@
-import { Button as MantineButton, type ButtonProps as MantineButtonProps } from '@mantine/core'
+import {
+  Button as MantineButton,
+  type ButtonProps as MantineButtonProps,
+} from '@mantine/core'
 import { forwardRef } from 'react'
 
 export interface ButtonProps extends MantineButtonProps {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'spotify'
   size?: 'sm' | 'md' | 'lg'
+  onClick?: () => void
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', className, children, ...props }, ref) => {
+  (
+    { variant = 'primary', size = 'md', className, children, ...props },
+    ref,
+  ) => {
     const getButtonClass = () => {
       const baseClass = 'btn-spotify transition-spotify'
-      
+
       switch (variant) {
         case 'primary':
           return `${baseClass}`
@@ -50,7 +57,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </MantineButton>
     )
-  }
+  },
 )
 
-Button.displayName = 'Button' 
+Button.displayName = 'Button'

@@ -1,22 +1,18 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Stack, Title, Text, Grid, Group, Button, Skeleton, Alert } from '@mantine/core'
+import { Alert, Button, Grid, Group, Stack, Text, Title } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
-import { SearchInput, ArtistCard } from '@/components/ui'
 import { Container } from '@/components/layout'
+import { ArtistCard, SearchInput } from '@/components/ui'
 import { useSpotify } from '@/hooks/useSpotify'
 import { SpotifyArtist } from '@/types/spotify'
 
 export default function HomePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const {
-    isAuthenticated,
-    searchResults,
-    searchArtists,
-    clearSearch,
-  } = useSpotify()
+  const { isAuthenticated, searchResults, searchArtists, clearSearch } =
+    useSpotify()
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -28,7 +24,11 @@ export default function HomePage() {
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     if (query.trim()) {
-      searchArtists(query)
+      searchArtists({
+        query: query.trim(),
+        type: 'artist',
+        limit: 20,
+      })
     } else {
       clearSearch()
     }
@@ -39,7 +39,8 @@ export default function HomePage() {
   }
 
   const handleLogin = () => {
-    window.location.href = 'https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=https://localhost:5173/callback&scope=user-read-private%20user-read-email'
+    window.location.href =
+      'https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=https://localhost:5173/callback&scope=user-read-private%20user-read-email'
   }
 
   const renderSkeletons = () => (
@@ -124,10 +125,7 @@ export default function HomePage() {
       <Stack gap="xl" className="p-xl">
         {/* Header da página */}
         <div>
-          <Title
-            order={1}
-            className="text-primary font-bold text-3xl mb-sm"
-          >
+          <Title order={1} className="text-primary font-bold text-3xl mb-sm">
             {searchQuery ? t('search:results') : t('home:welcome')}
           </Title>
           {searchQuery && (
@@ -151,13 +149,11 @@ export default function HomePage() {
           renderInitialState()
         ) : (
           <div>
-            {searchResults.loading ? (
-              renderSkeletons()
-            ) : searchQuery ? (
-              renderArtists()
-            ) : (
-              renderInitialState()
-            )}
+            {searchResults.loading
+              ? renderSkeletons()
+              : searchQuery
+                ? renderArtists()
+                : renderInitialState()}
 
             {/* Mensagem de erro */}
             {searchResults.error && (

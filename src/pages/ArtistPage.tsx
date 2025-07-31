@@ -1,32 +1,29 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { 
-  Stack, 
-  Title, 
-  Text, 
-  Grid, 
-  Group, 
-  Button, 
-  Skeleton, 
+import {
   Alert,
-  Pagination,
   Badge,
-  Image,
-  Divider
+  Divider,
+  Grid,
+  Group,
+  Pagination,
+  Skeleton,
+  Stack,
+  Text,
+  Title,
 } from '@mantine/core'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { SearchInput, Button as SpotifyButton } from '@/components/ui'
 import { Container } from '@/components/layout'
+import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useSpotify } from '@/hooks/useSpotify'
-import { spotifyStyles } from '@/lib/design-system/utils'
-import { SpotifyArtist, SpotifyAlbum, SpotifyTrack } from '@/types/spotify'
+import { SpotifyAlbum, SpotifyArtist } from '@/types/spotify'
 
 export default function ArtistPage() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  
+
   const {
     currentArtist,
     artistTopTracks,
@@ -40,25 +37,29 @@ export default function ArtistPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
-  // Carregar dados do artista
   useEffect(() => {
     if (id) {
       getArtist(id)
       getArtistTopTracks(id)
-      getArtistAlbums(id, { limit: itemsPerPage, offset: 0 })
+      getArtistAlbums(id, {
+        limit: itemsPerPage,
+        offset: (currentPage - 1) * itemsPerPage,
+      })
     }
-  }, [id, getArtist, getArtistTopTracks, getArtistAlbums])
+  }, [id, getArtist, getArtistTopTracks, getArtistAlbums, currentPage])
 
   const handleAlbumFilter = (query: string) => {
     setAlbumFilter(query)
-    setCurrentPage(1)
+    setCurrentPage(1) // Reset para primeira página ao filtrar
   }
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
-    const offset = (page - 1) * itemsPerPage
     if (id) {
-      getArtistAlbums(id, { limit: itemsPerPage, offset })
+      getArtistAlbums(id, {
+        limit: itemsPerPage,
+        offset: (page - 1) * itemsPerPage,
+      })
     }
   }
 
@@ -73,13 +74,16 @@ export default function ArtistPage() {
   }
 
   const formatReleaseDate = (date: string) => {
-    return new Date(date).getFullYear()
+    return new Date(date).toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
   }
 
   const getArtistImage = (artist: SpotifyArtist) => {
     if (artist.images && artist.images.length > 0) {
-      const largeImage = artist.images.find(img => img.width >= 600)
-      return largeImage?.url || artist.images[0].url
+      return artist.images[0].url
     }
     return '/placeholder-artist.jpg'
   }
@@ -91,8 +95,9 @@ export default function ArtistPage() {
     return '/placeholder-album.jpg'
   }
 
-  const filteredAlbums = artistAlbums.data.items.filter(album =>
-    album.name.toLowerCase().includes(albumFilter.toLowerCase())
+  // Filtrar álbuns por nome
+  const filteredAlbums = artistAlbums.data.items.filter((album) =>
+    album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
 
   const totalPages = Math.ceil(artistAlbums.data.total / itemsPerPage)
@@ -101,16 +106,18 @@ export default function ArtistPage() {
   if (currentArtist.loading) {
     return (
       <Container variant="mobile-first">
-        <Stack gap="xl" p="xl">
-          <Skeleton height={200} radius="md" />
-          <Grid>
-            <Grid.Col span={{ base: 12, md: 6 }}>
-              <Skeleton height={300} radius="md" />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 6 }}>
-              <Skeleton height={300} radius="md" />
-            </Grid.Col>
-          </Grid>
+        <Stack gap="xl" className="p-xl">
+          <Skeleton height={60} width="200px" />
+          <Skeleton height={200} radius="50%" width={200} className="mx-auto" />
+          <Skeleton height={40} width="300px" className="mx-auto" />
+          <Skeleton height={20} width="150px" className="mx-auto" />
+          <Divider />
+          <Skeleton height={30} width="200px" />
+          <Stack gap="md">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Skeleton key={index} height={60} />
+            ))}
+          </Stack>
         </Stack>
       </Container>
     )
@@ -120,15 +127,11 @@ export default function ArtistPage() {
   if (currentArtist.error) {
     return (
       <Container variant="mobile-first">
-        <Stack gap="xl" p="xl" align="center">
+        <Stack gap="xl" className="p-xl">
           <Alert
-            title={t('artist.error')}
+            title={t('artist:error')}
             color="red"
-            style={{
-              backgroundColor: '#2a1a1a',
-              border: '1px solid #e91429',
-              color: '#ff6b6b',
-            }}
+            className="alert-spotify alert-error"
           >
             {currentArtist.error}
           </Alert>
@@ -144,7 +147,7 @@ export default function ArtistPage() {
 
   return (
     <Container variant="mobile-first">
-      <Stack gap="xl" p="xl">
+      <Stack gap="xl" className="p-xl">
         {/* Header com botão voltar */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
@@ -153,264 +156,138 @@ export default function ArtistPage() {
         </Group>
 
         {/* Informações do artista */}
-        <div style={{ textAlign: 'center' }}>
-          <Image
+        <div className="artist-header">
+          <img
             src={getArtistImage(artist)}
             alt={artist.name}
-            style={{
-              width: '200px',
-              height: '200px',
-              borderRadius: '50%',
-              margin: '0 auto 24px',
-              objectFit: 'cover',
+            className="artist-image"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.src = '/placeholder-artist.jpg'
             }}
-            fallbackSrc="/placeholder-artist.jpg"
           />
-          
-          <Title
-            order={1}
-            style={{
-              ...spotifyStyles.textPrimary,
-              ...spotifyStyles.fontWeightBold,
-              ...spotifyStyles.text4xl,
-              marginBottom: '8px',
-            }}
-          >
+
+          <Title order={1} className="artist-name">
             {artist.name}
           </Title>
-          
-          <Group justify="center" gap="md">
-            <Badge
-              size="lg"
-              style={{
-                backgroundColor: '#1DB954',
-                color: '#FFFFFF',
-                fontSize: '14px',
-                padding: '8px 16px',
-              }}
-            >
+
+          <div className="artist-stats">
+            <Badge className="artist-popularity-badge">
               {artist.popularity}% {t('artist:popularity')}
             </Badge>
-            
+
             {artist.followers && (
-              <Text
-                style={{
-                  ...spotifyStyles.textSecondary,
-                  ...spotifyStyles.textLg,
-                }}
-              >
-                {artist.followers.total.toLocaleString()} {t('artist:followers')}
+              <Text className="artist-followers">
+                {artist.followers.total.toLocaleString()}{' '}
+                {t('artist:followers')}
               </Text>
             )}
-          </Group>
+          </div>
 
-          {/* Gêneros */}
           {artist.genres && artist.genres.length > 0 && (
-            <Group justify="center" gap="sm" mt="md" wrap="wrap">
+            <div className="artist-genres">
               {artist.genres.slice(0, 5).map((genre, index) => (
-                <Badge
-                  key={index}
-                  size="sm"
-                  style={{
-                    backgroundColor: '#282828',
-                    color: '#B3B3B3',
-                    border: '1px solid #404040',
-                  }}
-                >
+                <Badge key={index} size="sm" variant="outline">
                   {genre}
                 </Badge>
               ))}
-            </Group>
+            </div>
           )}
         </div>
 
-        <Divider style={{ borderColor: '#282828' }} />
+        <Divider className="border-tertiary" />
 
         {/* Top Músicas */}
         <div>
-          <Title
-            order={2}
-            style={{
-              ...spotifyStyles.textPrimary,
-              ...spotifyStyles.fontWeightSemibold,
-              ...spotifyStyles.text2xl,
-              marginBottom: '24px',
-            }}
-          >
+          <Title order={2} className="text-primary font-bold text-2xl mb-lg">
             {t('artist:topTracks')}
           </Title>
 
           {artistTopTracks.loading ? (
             <Stack gap="md">
               {Array.from({ length: 5 }).map((_, index) => (
-                <Skeleton key={index} height={60} radius="md" />
+                <Skeleton key={index} height={60} />
               ))}
             </Stack>
           ) : (
-            <Stack gap="md">
-              {artistTopTracks.data.tracks.slice(0, 5).map((track, index) => (
-                <div
-                  key={track.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    padding: '12px',
-                    backgroundColor: '#181818',
-                    borderRadius: '8px',
-                    transition: 'background-color 0.2s ease-in-out',
-                    cursor: 'pointer',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#282828'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#181818'
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...spotifyStyles.textSecondary,
-                      ...spotifyStyles.fontWeightMedium,
-                      width: '30px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    {index + 1}
-                  </Text>
-                  
-                  <Image
+            <div className="track-list">
+              {artistTopTracks.data.tracks.map((track, index) => (
+                <div key={track.id} className="track-item">
+                  <div className="track-number">{index + 1}</div>
+                  <img
                     src={getAlbumImage(track.album)}
                     alt={track.album.name}
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '4px',
-                      margin: '0 12px',
-                      objectFit: 'cover',
-                    }}
-                    fallbackSrc="/placeholder-album.jpg"
+                    className="track-album-image"
                   />
-                  
-                  <div style={{ flex: 1 }}>
-                    <Text
-                      style={{
-                        ...spotifyStyles.textPrimary,
-                        ...spotifyStyles.fontWeightMedium,
-                        ...spotifyStyles.textBase,
-                      }}
-                    >
-                      {track.name}
-                    </Text>
-                    <Text
-                      style={{
-                        ...spotifyStyles.textSecondary,
-                        ...spotifyStyles.textSm,
-                      }}
-                    >
-                      {track.artists.map(a => a.name).join(', ')}
+                  <div className="track-info">
+                    <Text className="track-name">{track.name}</Text>
+                    <Text className="track-artists">
+                      {track.artists.map((artist) => artist.name).join(', ')}
                     </Text>
                   </div>
-                  
-                  <Text
-                    style={{
-                      ...spotifyStyles.textSecondary,
-                      ...spotifyStyles.textSm,
-                    }}
-                  >
+                  <div className="track-duration">
                     {formatDuration(track.duration_ms)}
-                  </Text>
+                  </div>
                 </div>
               ))}
-            </Stack>
+            </div>
           )}
         </div>
 
-        <Divider style={{ borderColor: '#282828' }} />
+        <Divider className="border-tertiary" />
 
         {/* Álbuns */}
         <div>
-          <Group justify="space-between" align="center" mb="lg">
-            <Title
-              order={2}
-              style={{
-                ...spotifyStyles.textPrimary,
-                ...spotifyStyles.fontWeightSemibold,
-                ...spotifyStyles.text2xl,
-              }}
-            >
-              {t('artist:albums')}
-            </Title>
-            
+          <Title order={2} className="text-primary font-bold text-2xl mb-lg">
+            {t('artist:albums')}
+          </Title>
+
+          {/* Filtro de álbuns */}
+          <div className="mb-lg">
             <SearchInput
               onSearch={handleAlbumFilter}
               placeholder={t('artist:filterAlbums')}
               debounceMs={300}
             />
-          </Group>
+          </div>
 
           {artistAlbums.loading ? (
-            <Grid gutter="md">
+            <Grid className="album-grid">
               {Array.from({ length: 8 }).map((_, index) => (
                 <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                  <Skeleton height={200} radius="md" />
+                  <div className="album-card">
+                    <Skeleton height={200} className="mb-sm" />
+                    <Skeleton height={20} className="mb-xs" />
+                    <Skeleton height={16} width="60%" />
+                  </div>
                 </Grid.Col>
               ))}
             </Grid>
           ) : (
             <>
-              <Grid gutter="md">
+              <Grid className="album-grid">
                 {filteredAlbums.map((album) => (
-                  <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                    <div
-                      style={{
-                        backgroundColor: '#181818',
-                        borderRadius: '12px',
-                        padding: '16px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease-in-out',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = '#282828'
-                        e.currentTarget.style.transform = 'translateY(-4px)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = '#181818'
-                        e.currentTarget.style.transform = 'translateY(0)'
-                      }}
-                    >
-                      <Image
+                  <Grid.Col
+                    key={album.id}
+                    span={{ base: 12, sm: 6, md: 4, lg: 3 }}
+                  >
+                    <div className="album-card">
+                      <img
                         src={getAlbumImage(album)}
                         alt={album.name}
-                        style={{
-                          width: '100%',
-                          aspectRatio: '1',
-                          borderRadius: '8px',
-                          marginBottom: '12px',
-                          objectFit: 'cover',
+                        className="album-image"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = '/placeholder-album.jpg'
                         }}
-                        fallbackSrc="/placeholder-album.jpg"
                       />
-                      
-                      <Text
-                        style={{
-                          ...spotifyStyles.textPrimary,
-                          ...spotifyStyles.fontWeightSemibold,
-                          ...spotifyStyles.textBase,
-                          marginBottom: '4px',
-                        }}
-                        lineClamp={2}
-                      >
-                        {album.name}
-                      </Text>
-                      
-                      <Text
-                        style={{
-                          ...spotifyStyles.textSecondary,
-                          ...spotifyStyles.textSm,
-                        }}
-                      >
-                                                 {formatReleaseDate(album.release_date)} • {album.total_tracks} {t('artist:tracks')}
-                      </Text>
+                      <div>
+                        <Text className="album-name">{album.name}</Text>
+                        <Text className="album-info">
+                          {formatReleaseDate(album.release_date)} •{' '}
+                          {album.total_tracks} {t('artist:tracks')}
+                        </Text>
+                      </div>
                     </div>
                   </Grid.Col>
                 ))}
@@ -418,45 +295,26 @@ export default function ArtistPage() {
 
               {/* Paginação */}
               {totalPages > 1 && (
-                <Group justify="center" mt="xl">
+                <div className="pagination-container">
                   <Pagination
                     total={totalPages}
                     value={currentPage}
                     onChange={handlePageChange}
-                    color="#1DB954"
                     size="md"
                     radius="md"
-                    styles={{
-                      control: {
-                        backgroundColor: '#282828',
-                        border: '1px solid #404040',
-                        color: '#FFFFFF',
-                        '&:hover': {
-                          backgroundColor: '#404040',
-                        },
-                      },
-                      active: {
-                        backgroundColor: '#1DB954',
-                        border: '1px solid #1DB954',
-                      },
-                    }}
+                    className="spotify-pagination"
                   />
-                </Group>
+                </div>
               )}
             </>
           )}
 
-          {/* Mensagem de erro */}
+          {/* Erro ao carregar álbuns */}
           {artistAlbums.error && (
             <Alert
-                              title={t('artist:albumsError')}
+              title={t('artist:albumsError')}
               color="red"
-              style={{
-                backgroundColor: '#2a1a1a',
-                border: '1px solid #e91429',
-                color: '#ff6b6b',
-                marginTop: '24px',
-              }}
+              className="alert-spotify alert-error mt-lg"
             >
               {artistAlbums.error}
             </Alert>
@@ -465,4 +323,4 @@ export default function ArtistPage() {
       </Stack>
     </Container>
   )
-} 
+}

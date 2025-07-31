@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
 import { TextInput } from '@mantine/core'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { SpotifyIcon } from './SpotifyIcon'
@@ -21,7 +21,7 @@ export const SearchInput = ({
 }: SearchInputProps) => {
   const { t } = useTranslation()
   const [value, setValue] = useState('')
-  const debounceRef = useRef<NodeJS.Timeout>()
+  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Debounce effect
   useEffect(() => {
@@ -84,4 +84,4 @@ export const SearchInput = ({
       )}
     </div>
   )
-} 
+}

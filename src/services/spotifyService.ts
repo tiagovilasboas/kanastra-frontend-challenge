@@ -1,12 +1,12 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
 import {
-  SpotifyArtist,
-  SpotifySearchResponse,
-  SpotifyArtistTopTracksResponse,
-  SpotifyArtistAlbumsResponse,
-  SpotifyError,
   SearchParams,
+  SpotifyArtist,
+  SpotifyArtistAlbumsResponse,
+  SpotifyArtistTopTracksResponse,
+  SpotifyError,
+  SpotifySearchResponse,
 } from '@/types/spotify'
 
 class SpotifyService {
@@ -29,7 +29,7 @@ class SpotifyService {
       },
       (error) => {
         return Promise.reject(error)
-      }
+      },
     )
 
     // Interceptor para tratamento de erros
@@ -41,7 +41,7 @@ class SpotifyService {
           this.handleTokenExpired()
         }
         return Promise.reject(error)
-      }
+      },
     )
   }
 
@@ -80,7 +80,7 @@ class SpotifyService {
     ].join(' ')
 
     return `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
-      redirectUri
+      redirectUri,
     )}&scope=${encodeURIComponent(scopes)}`
   }
 
@@ -123,11 +123,11 @@ class SpotifyService {
   // Obter top tracks do artista
   async getArtistTopTracks(
     artistId: string,
-    market: string = 'BR'
+    market: string = 'BR',
   ): Promise<SpotifyArtistTopTracksResponse> {
     try {
       const response = await this.api.get(
-        `/artists/${artistId}/top-tracks?market=${market}`
+        `/artists/${artistId}/top-tracks?market=${market}`,
       )
       return response.data
     } catch (error) {
@@ -142,7 +142,7 @@ class SpotifyService {
       limit?: number
       offset?: number
       include_groups?: string
-    } = {}
+    } = {},
   ): Promise<SpotifyArtistAlbumsResponse> {
     try {
       const response = await this.api.get(`/artists/${artistId}/albums`, {
@@ -159,10 +159,13 @@ class SpotifyService {
   }
 
   // Tratamento de erros
-  private handleError(error: any): Error {
-    if (error.response?.data) {
-      const spotifyError = error.response.data as SpotifyError
-      return new Error(spotifyError.error.message)
+  private handleError(error: unknown): Error {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { data?: unknown } }
+      if (axiosError.response?.data) {
+        const spotifyError = axiosError.response.data as SpotifyError
+        return new Error(spotifyError.error.message)
+      }
     }
     return new Error('Erro na comunicação com a API do Spotify')
   }
@@ -193,4 +196,4 @@ export const spotifyService = new SpotifyService()
 // Hook para usar o serviço
 export const useSpotifyService = () => {
   return spotifyService
-} 
+}
