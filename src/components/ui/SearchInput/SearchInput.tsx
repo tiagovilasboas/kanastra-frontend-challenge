@@ -1,4 +1,4 @@
-import { IconSearch, IconX } from '@tabler/icons-react'
+import { Search, X } from 'lucide-react'
 import { useEffect,useRef, useState } from 'react'
 
 import styles from './SearchInput.module.css'
@@ -50,7 +50,7 @@ export function SearchInput({
 
   return (
     <div className={styles.searchContainer}>
-      <IconSearch className={styles.searchIcon} size={20} />
+      <Search className={styles.searchIcon} size={20} />
       
       <input
         type="text"
@@ -70,7 +70,7 @@ export function SearchInput({
           className={styles.searchClear}
           aria-label="Clear search"
         >
-          <IconX size={12} />
+          <X size={12} />
         </button>
       )}
     </div>

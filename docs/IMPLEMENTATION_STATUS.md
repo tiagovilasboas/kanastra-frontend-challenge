@@ -103,13 +103,13 @@
 ### Páginas
 - [x] HomePage
 - [x] CallbackPage
-- [x] DesignSystemPage
+
 - [ ] **ArtistPage** (detalhes do artista)
 
 ### Rotas
 - [x] `/` - Home
 - [x] `/callback` - Auth callback
-- [x] `/design-system` - Design system
+
 - [ ] `/artist/:id` - Detalhes do artista
 
 ## 🎯 Próximos Passos Prioritários

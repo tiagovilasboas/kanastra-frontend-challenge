@@ -16,7 +16,6 @@
     "format": "prettier --write . && npm run lint --fix",
     "clean": "rimraf dist .vite",
     "dev:open": "kill-port 5173 && vite --open",
-    "test:ui": "vitest --ui",
     "build": "tsc -b && vite build",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",
@@ -30,17 +29,12 @@
     "reviewdog:typescript": "tsc --noEmit --pretty false 2>&1 | reviewdog -f=tsc -name=\"TypeScript\" -reporter=github-pr-review",
     "reviewdog:prettier": "prettier --check . 2>&1 | reviewdog -f=eslint -name=\"Prettier\" -reporter=github-pr-review",
     "prepare": "husky install",
-    "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run",
-    "analyze": "npm run build",
-    "lighthouse": "unlighthouse"
+    "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@mantine/core": "^8.1.2",
-    "@mantine/form": "^8.1.2",
     "@mantine/hooks": "^8.1.2",
-    "@tabler/icons-react": "^3.34.0",
+    "axios": "^1.11.0",
     "i18next": "^25.3.1",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
@@ -60,8 +54,6 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
     "@vitest/coverage-v8": "^3.2.4",
-    "commitizen": "^4.3.1",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-formatjs": "^5.4.0",
@@ -78,13 +70,9 @@
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
-    "rollup-plugin-visualizer": "^6.0.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
-    "unlighthouse": "^0.17.1",
     "vite": "^7.0.0",
-    "vite-plugin-environment": "^1.1.3",
-    "vite-plugin-pwa": "^1.0.1",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4",
     "zod": "^3.25.74"
@@ -99,10 +87,5 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog"
-    }
   }
 }

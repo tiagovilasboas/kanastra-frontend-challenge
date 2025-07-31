@@ -1,4 +1,4 @@
-import { IconPlayerPlay } from '@tabler/icons-react'
+import { Play } from 'lucide-react'
 
 import { SpotifyArtist } from '@/types/spotify'
 
@@ -51,7 +51,7 @@ export function ArtistCard({
       
       <div className={styles.cardOverlay}>
         <button className={styles.playButton} aria-label="Play artist">
-          <IconPlayerPlay size={24} />
+          <Play size={24} />
         </button>
       </div>
       

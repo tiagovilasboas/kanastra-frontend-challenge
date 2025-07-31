@@ -1,4 +1,3 @@
-import { Global } from '@emotion/react'
 import { createTheme, MantineProvider } from '@mantine/core'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -28,14 +27,6 @@ export function AppProvider({ children }: AppProviderProps) {
 
   return (
     <MantineProvider theme={theme} forceColorScheme={appTheme}>
-      <Global
-        styles={() => ({
-          body: {
-            backgroundColor: 'var(--mantine-color-body)',
-            color: 'var(--mantine-color-text)',
-          },
-        })}
-      />
       {children}
     </MantineProvider>
   )

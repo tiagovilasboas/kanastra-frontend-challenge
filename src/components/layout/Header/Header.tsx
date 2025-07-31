@@ -1,7 +1,7 @@
-import { IconMusic } from '@tabler/icons-react'
+import { Music } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { LanguageSelector } from '@/components/LanguageSelector'
+import { LanguageSelector } from '@/components/ui/LanguageSelector'
 
 import styles from './Header.module.css'
 
@@ -12,7 +12,7 @@ export function Header() {
     <header className={styles.header}>
       <div className={styles.headerContainer}>
         <a href="/" className={styles.headerBrand}>
-          <IconMusic className={styles.headerBrandIcon} />
+          <Music className={styles.headerBrandIcon} />
           {t('common:brand')}
         </a>
         
