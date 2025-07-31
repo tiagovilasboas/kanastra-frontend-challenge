@@ -30,69 +30,7 @@
   },
   "flags": {
     "brazil": "🇧🇷",
-    "usa": "🇺🇸"
+    "usa": "��🇸"
   },
-  "colon": ":",
-  "home": {
-    "title": "Descubra Artistas Incríveis",
-    "subtitle": "Busque por seus artistas favoritos e descubra novos talentos com a API do Spotify",
-    "welcome": "Bem-vindo ao Spotify Explorer"
-  },
-  "search": {
-    "placeholder": "Buscar artistas...",
-    "clear": "Limpar busca",
-    "results": "Resultados da busca",
-    "resultsFor": "Resultados para",
-    "noResults": "Nenhum resultado encontrado",
-    "noResultsMessage": "Tente buscar por outro artista ou verifique a ortografia",
-    "error": "Erro na busca"
-  },
-  "auth": {
-    "loginWithSpotify": "Entrar com Spotify",
-    "connecting": "Conectando...",
-    "connectingMessage": "Estamos conectando você ao Spotify",
-    "success": "Conectado com sucesso!",
-    "successMessage": "Você será redirecionado em alguns segundos",
-    "error": "Erro na conexão",
-    "errorMessage": "Ocorreu um erro ao conectar com o Spotify",
-    "backToHome": "Voltar ao início"
-  },
-  "artist": {
-    "popularity": "popularidade",
-    "followers": "seguidores",
-    "topTracks": "Principais Músicas",
-    "albums": "Álbuns",
-    "tracks": "músicas",
-    "filterAlbums": "Filtrar álbuns...",
-    "backToHome": "Voltar ao início",
-    "error": "Erro ao carregar artista",
-    "albumsError": "Erro ao carregar álbuns"
-  },
-  "designSystem": {
-    "title": "Design System - Spotify Inspired",
-    "subtitle": "Componentes inspirados no design do Spotify para o desafio Kanastra",
-    "buttons": "Buttons",
-    "cards": "Cards",
-    "inputs": "Inputs",
-    "colorPalette": "Color Palette",
-    "primary": "Primary",
-    "secondary": "Secondary",
-    "background": "Background",
-    "tertiary": "Tertiary",
-    "defaultCard": "Default Card",
-    "defaultCardDesc": "Card padrão com fundo escuro",
-    "elevatedCard": "Elevated Card",
-    "elevatedCardDesc": "Card elevado com sombra",
-    "interactiveCard": "Interactive Card",
-    "interactiveCardDesc": "Card interativo com hover",
-    "primarySmall": "Primary Small",
-    "primaryMedium": "Primary Medium",
-    "primaryLarge": "Primary Large",
-    "danger": "Danger",
-    "ghost": "Ghost",
-    "defaultInputPlaceholder": "Default input placeholder",
-    "searchInputPlaceholder": "Search input placeholder",
-    "smallInput": "Small input",
-    "largeInput": "Large input"
-  }
+  "colon": ":"
 }

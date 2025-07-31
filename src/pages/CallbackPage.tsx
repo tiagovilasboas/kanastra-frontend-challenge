@@ -58,7 +58,7 @@ export default function CallbackPage() {
                 ...spotifyStyles.fontWeightSemibold,
               }}
             >
-              {t('auth.connecting')}
+              {t('auth:connecting')}
             </Title>
             <Text
               style={{
@@ -67,7 +67,7 @@ export default function CallbackPage() {
                 textAlign: 'center',
               }}
             >
-              {t('auth.connectingMessage')}
+              {t('auth:connectingMessage')}
             </Text>
           </Stack>
         )
@@ -96,7 +96,7 @@ export default function CallbackPage() {
                 ...spotifyStyles.fontWeightSemibold,
               }}
             >
-              {t('auth.success')}
+              {t('auth:success')}
             </Title>
             <Text
               style={{
@@ -105,7 +105,7 @@ export default function CallbackPage() {
                 textAlign: 'center',
               }}
             >
-              {t('auth.successMessage')}
+              {t('auth:successMessage')}
             </Text>
           </Stack>
         )
@@ -135,7 +135,7 @@ export default function CallbackPage() {
                 ...spotifyStyles.fontWeightSemibold,
               }}
             >
-              {t('auth.error')}
+              {t('auth:error')}
             </Title>
             <Text
               style={{
@@ -144,7 +144,7 @@ export default function CallbackPage() {
                 textAlign: 'center',
               }}
             >
-              {errorMessage || t('auth.errorMessage')}
+              {errorMessage || t('auth:errorMessage')}
             </Text>
             <button
               onClick={() => navigate('/')}
@@ -160,7 +160,7 @@ export default function CallbackPage() {
                 transition: 'all 0.2s ease-in-out',
               }}
             >
-              {t('auth.backToHome')}
+              {t('auth:backToHome')}
             </button>
           </Stack>
         )

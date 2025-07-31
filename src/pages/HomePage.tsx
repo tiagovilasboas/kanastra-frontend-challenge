@@ -67,7 +67,7 @@ export default function HomePage() {
     if (artists.length === 0 && searchQuery) {
       return (
         <Alert
-          title={t('search.noResults')}
+                          title={t('search:noResults')}
           color="gray"
           style={{
             backgroundColor: '#282828',
@@ -75,7 +75,7 @@ export default function HomePage() {
             color: '#B3B3B3',
           }}
         >
-          {t('search.noResultsMessage')}
+                      {t('search:noResultsMessage')}
         </Alert>
       )
     }
@@ -99,36 +99,36 @@ export default function HomePage() {
   const renderInitialState = () => (
     <Stack gap="xl" align="center" style={{ textAlign: 'center' }}>
       <div>
-        <Title
-          order={1}
-          style={{
-            ...spotifyStyles.textPrimary,
-            ...spotifyStyles.fontWeightBold,
-            ...spotifyStyles.text4xl,
-            marginBottom: '16px',
-            background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}
-        >
-          {t('home.title')}
-        </Title>
-        <Text
-          style={{
-            ...spotifyStyles.textSecondary,
-            ...spotifyStyles.textLg,
-            ...spotifyStyles.leadingRelaxed,
-            maxWidth: '600px',
-          }}
-        >
-          {t('home.subtitle')}
-        </Text>
+                  <Title
+            order={1}
+            style={{
+              ...spotifyStyles.textPrimary,
+              ...spotifyStyles.fontWeightBold,
+              ...spotifyStyles.text4xl,
+              marginBottom: '16px',
+              background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {t('home:title')}
+          </Title>
+                  <Text
+            style={{
+              ...spotifyStyles.textSecondary,
+              ...spotifyStyles.textLg,
+              ...spotifyStyles.leadingRelaxed,
+              maxWidth: '600px',
+            }}
+          >
+            {t('home:subtitle')}
+          </Text>
       </div>
 
       <SearchInput
         onSearch={handleSearch}
-        placeholder={t('search.placeholder')}
+        placeholder={t('search:placeholder')}
         disabled={!isAuthenticated}
       />
 
@@ -139,7 +139,7 @@ export default function HomePage() {
           onClick={handleLogin}
           style={{ marginTop: '32px' }}
         >
-          {t('auth.loginWithSpotify')}
+          {t('auth:loginWithSpotify')}
         </Button>
       )}
     </Stack>
@@ -159,7 +159,7 @@ export default function HomePage() {
               marginBottom: '8px',
             }}
           >
-            {searchQuery ? t('search.results') : t('home.welcome')}
+            {searchQuery ? t('search:results') : t('home:welcome')}
           </Title>
           {searchQuery && (
             <Text
@@ -168,7 +168,7 @@ export default function HomePage() {
                 ...spotifyStyles.textBase,
               }}
             >
-              {t('search.resultsFor')} "{searchQuery}"
+              {t('search:resultsFor')} &quot;{searchQuery}&quot;
             </Text>
           )}
         </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
         <Group justify="center">
           <SearchInput
             onSearch={handleSearch}
-            placeholder={t('search.placeholder')}
+            placeholder={t('search:placeholder')}
             disabled={!isAuthenticated}
           />
         </Group>
@@ -198,7 +198,7 @@ export default function HomePage() {
             {/* Mensagem de erro */}
             {searchResults.error && (
               <Alert
-                title={t('search.error')}
+                title={t('search:error')}
                 color="red"
                 style={{
                   backgroundColor: '#2a1a1a',

@@ -1,0 +1,11 @@
+{
+  "popularity": "popularity",
+  "followers": "followers",
+  "topTracks": "Top Tracks",
+  "albums": "Albums",
+  "tracks": "tracks",
+  "filterAlbums": "Filter albums...",
+  "backToHome": "Back to home",
+  "error": "Error loading artist",
+  "albumsError": "Error loading albums"
+} 

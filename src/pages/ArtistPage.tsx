@@ -133,7 +133,7 @@ export default function ArtistPage() {
             {currentArtist.error}
           </Alert>
           <SpotifyButton variant="primary" onClick={handleBackToHome}>
-            {t('artist.backToHome')}
+            {t('artist:backToHome')}
           </SpotifyButton>
         </Stack>
       </Container>
@@ -148,7 +148,7 @@ export default function ArtistPage() {
         {/* Header com botão voltar */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
-            ← {t('artist.backToHome')}
+            ← {t('artist:backToHome')}
           </SpotifyButton>
         </Group>
 
@@ -189,7 +189,7 @@ export default function ArtistPage() {
                 padding: '8px 16px',
               }}
             >
-              {artist.popularity}% {t('artist.popularity')}
+              {artist.popularity}% {t('artist:popularity')}
             </Badge>
             
             {artist.followers && (
@@ -199,7 +199,7 @@ export default function ArtistPage() {
                   ...spotifyStyles.textLg,
                 }}
               >
-                {artist.followers.followers.toLocaleString()} {t('artist.followers')}
+                {artist.followers.total.toLocaleString()} {t('artist:followers')}
               </Text>
             )}
           </Group>
@@ -237,7 +237,7 @@ export default function ArtistPage() {
               marginBottom: '24px',
             }}
           >
-            {t('artist.topTracks')}
+            {t('artist:topTracks')}
           </Title>
 
           {artistTopTracks.loading ? (
@@ -338,12 +338,12 @@ export default function ArtistPage() {
                 ...spotifyStyles.text2xl,
               }}
             >
-              {t('artist.albums')}
+              {t('artist:albums')}
             </Title>
             
             <SearchInput
               onSearch={handleAlbumFilter}
-              placeholder={t('artist.filterAlbums')}
+              placeholder={t('artist:filterAlbums')}
               debounceMs={300}
             />
           </Group>
@@ -409,7 +409,7 @@ export default function ArtistPage() {
                           ...spotifyStyles.textSm,
                         }}
                       >
-                        {formatReleaseDate(album.release_date)} • {album.total_tracks} {t('artist.tracks')}
+                                                 {formatReleaseDate(album.release_date)} • {album.total_tracks} {t('artist:tracks')}
                       </Text>
                     </div>
                   </Grid.Col>
@@ -449,7 +449,7 @@ export default function ArtistPage() {
           {/* Mensagem de erro */}
           {artistAlbums.error && (
             <Alert
-              title={t('artist.albumsError')}
+                              title={t('artist:albumsError')}
               color="red"
               style={{
                 backgroundColor: '#2a1a1a',

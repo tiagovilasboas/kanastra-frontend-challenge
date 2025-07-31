@@ -25,7 +25,7 @@ export default function DesignSystemPage() {
               backgroundClip: 'text',
             }}
           >
-            {t('designSystem.title')}
+            {t('designSystem:title')}
           </Title>
           <Text
             style={{
@@ -34,7 +34,7 @@ export default function DesignSystemPage() {
               ...spotifyStyles.leadingRelaxed,
             }}
           >
-            {t('designSystem.subtitle')}
+            {t('designSystem:subtitle')}
           </Text>
         </div>
 

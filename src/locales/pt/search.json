@@ -1,0 +1,9 @@
+{
+  "placeholder": "Buscar artistas...",
+  "clear": "Limpar busca",
+  "results": "Resultados da busca",
+  "resultsFor": "Resultados para",
+  "noResults": "Nenhum resultado encontrado",
+  "noResultsMessage": "Tente buscar por outro artista ou verifique a ortografia",
+  "error": "Erro na busca"
+} 

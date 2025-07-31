@@ -30,69 +30,7 @@
   },
   "flags": {
     "brazil": "🇧🇷",
-    "usa": "🇺🇸"
+    "usa": "��🇸"
   },
-  "colon": ":",
-  "home": {
-    "title": "Discover Amazing Artists",
-    "subtitle": "Search for your favorite artists and discover new talents with the Spotify API",
-    "welcome": "Welcome to Spotify Explorer"
-  },
-  "search": {
-    "placeholder": "Search artists...",
-    "clear": "Clear search",
-    "results": "Search results",
-    "resultsFor": "Results for",
-    "noResults": "No results found",
-    "noResultsMessage": "Try searching for another artist or check the spelling",
-    "error": "Search error"
-  },
-  "auth": {
-    "loginWithSpotify": "Login with Spotify",
-    "connecting": "Connecting...",
-    "connectingMessage": "We are connecting you to Spotify",
-    "success": "Successfully connected!",
-    "successMessage": "You will be redirected in a few seconds",
-    "error": "Connection error",
-    "errorMessage": "An error occurred while connecting to Spotify",
-    "backToHome": "Back to home"
-  },
-  "artist": {
-    "popularity": "popularity",
-    "followers": "followers",
-    "topTracks": "Top Tracks",
-    "albums": "Albums",
-    "tracks": "tracks",
-    "filterAlbums": "Filter albums...",
-    "backToHome": "Back to home",
-    "error": "Error loading artist",
-    "albumsError": "Error loading albums"
-  },
-  "designSystem": {
-    "title": "Design System - Spotify Inspired",
-    "subtitle": "Spotify-inspired components for the Kanastra challenge",
-    "buttons": "Buttons",
-    "cards": "Cards",
-    "inputs": "Inputs",
-    "colorPalette": "Color Palette",
-    "primary": "Primary",
-    "secondary": "Secondary",
-    "background": "Background",
-    "tertiary": "Tertiary",
-    "defaultCard": "Default Card",
-    "defaultCardDesc": "Default card with dark background",
-    "elevatedCard": "Elevated Card",
-    "elevatedCardDesc": "Elevated card with shadow",
-    "interactiveCard": "Interactive Card",
-    "interactiveCardDesc": "Interactive card with hover",
-    "primarySmall": "Primary Small",
-    "primaryMedium": "Primary Medium",
-    "primaryLarge": "Primary Large",
-    "danger": "Danger",
-    "ghost": "Ghost",
-    "defaultInputPlaceholder": "Default input placeholder",
-    "searchInputPlaceholder": "Search input placeholder",
-    "smallInput": "Small input",
-    "largeInput": "Large input"
-  }
+  "colon": ":"
 }

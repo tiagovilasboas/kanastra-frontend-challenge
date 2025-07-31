@@ -1,0 +1,9 @@
+{
+  "placeholder": "Search artists...",
+  "clear": "Clear search",
+  "results": "Search results",
+  "resultsFor": "Results for",
+  "noResults": "No results found",
+  "noResultsMessage": "Try searching for another artist or check the spelling",
+  "error": "Search error"
+} 

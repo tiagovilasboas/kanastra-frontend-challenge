@@ -1,10 +1,25 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
+// Common translations
 import enCommon from './locales/en/common.json'
 import ptCommon from './locales/pt/common.json'
 
-// É possível adicionar mais namespaces e usar lazy-loading; aqui mantemos simples
+// Page-specific translations
+import enHome from './locales/en/home.json'
+import ptHome from './locales/pt/home.json'
+
+import enSearch from './locales/en/search.json'
+import ptSearch from './locales/pt/search.json'
+
+import enAuth from './locales/en/auth.json'
+import ptAuth from './locales/pt/auth.json'
+
+import enArtist from './locales/en/artist.json'
+import ptArtist from './locales/pt/artist.json'
+
+import enDesignSystem from './locales/en/designSystem.json'
+import ptDesignSystem from './locales/pt/designSystem.json'
 
 i18n.use(initReactI18next).init({
   fallbackLng: 'pt',
@@ -13,12 +28,22 @@ i18n.use(initReactI18next).init({
   resources: {
     en: {
       common: enCommon,
+      home: enHome,
+      search: enSearch,
+      auth: enAuth,
+      artist: enArtist,
+      designSystem: enDesignSystem,
     },
     pt: {
       common: ptCommon,
+      home: ptHome,
+      search: ptSearch,
+      auth: ptAuth,
+      artist: ptArtist,
+      designSystem: ptDesignSystem,
     },
   },
-  ns: ['common'],
+  ns: ['common', 'home', 'search', 'auth', 'artist', 'designSystem'],
   defaultNS: 'common',
   interpolation: {
     escapeValue: false, // React já escapa
