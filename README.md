@@ -62,7 +62,7 @@ src/
 
 ## 🗺️ Roadmap
 
-Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, consulte o [ROADMAP.md](./ROADMAP.md).
+Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, consulte o [ROADMAP_CHALLENGE.md](./docs/ROADMAP_CHALLENGE.md).
 
 ### Fases Principais:
 
@@ -158,6 +158,14 @@ O projeto será avaliado considerando:
 - **Código (30%)** - Código limpo, TypeScript e arquitetura
 - **UX/UI (20%)** - Interface intuitiva, responsiva e animações
 - **Testes (10%)** - Cobertura adequada de testes
+
+## 📚 Documentação
+
+- [📋 Requisitos](./docs/REQUIREMENTS.md) - Requisitos específicos do desafio
+- [🗺️ Roadmap](./docs/ROADMAP_CHALLENGE.md) - Plano de desenvolvimento detalhado
+- [🚀 Deploy](./docs/DEPLOY.md) - Instruções de deploy
+- [❓ FAQ](./docs/FAQ.md) - Perguntas frequentes
+- [📝 Changelog](./docs/CHANGELOG.md) - Histórico de versões
 
 ## 🚀 Deploy
 
