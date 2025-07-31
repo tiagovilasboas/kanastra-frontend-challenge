@@ -59,7 +59,14 @@
   },
   "artist": {
     "popularity": "popularidade",
-    "followers": "seguidores"
+    "followers": "seguidores",
+    "topTracks": "Principais Músicas",
+    "albums": "Álbuns",
+    "tracks": "músicas",
+    "filterAlbums": "Filtrar álbuns...",
+    "backToHome": "Voltar ao início",
+    "error": "Erro ao carregar artista",
+    "albumsError": "Erro ao carregar álbuns"
   },
   "designSystem": {
     "title": "Design System - Spotify Inspired",

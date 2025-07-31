@@ -4,6 +4,7 @@ import App from '@/App'
 import HomePage from '@/pages/HomePage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import CallbackPage from '@/pages/CallbackPage'
+import ArtistPage from '@/pages/ArtistPage'
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         path: '/design-system',
         element: <DesignSystemPage />,
+      },
+      {
+        path: '/artist/:id',
+        element: <ArtistPage />,
       },
     ],
   },

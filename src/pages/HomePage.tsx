@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Stack, Title, Text, Grid, Group, Button, Skeleton, Alert } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
@@ -10,6 +11,7 @@ import { SpotifyArtist } from '@/types/spotify'
 
 export default function HomePage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const {
     isAuthenticated,
     searchResults,
@@ -38,7 +40,7 @@ export default function HomePage() {
 
   const handleArtistClick = (artist: SpotifyArtist) => {
     // Navegar para a página do artista
-    window.location.href = `/artist/${artist.id}`
+    navigate(`/artist/${artist.id}`)
   }
 
   const handleLogin = () => {
