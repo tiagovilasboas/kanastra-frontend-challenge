@@ -1,135 +1,121 @@
-# 🗺️ Roadmap - Kanastra Frontend Challenge
+# 🗺️ Roadmap - Kanastra Frontend Challenge (Spotify API)
 
 ## 📋 Visão Geral
 
-Este roadmap define as etapas de desenvolvimento para o desafio frontend da Kanastra, organizadas por prioridade e complexidade.
+Este roadmap detalha as etapas recomendadas para a implementação do desafio técnico de Frontend da Kanastra, com prazos e prioridades para facilitar a execução dentro dos 5 dias corridos estipulados.
 
 ## 🎯 Objetivos do Desafio
 
-- [ ] Implementar interface responsiva e moderna
-- [ ] Criar componentes reutilizáveis
-- [ ] Implementar gerenciamento de estado
-- [ ] Adicionar validações de formulário
-- [ ] Implementar testes unitários e de integração
-- [ ] Otimizar performance e acessibilidade
+- [ ] Integrar com Spotify Web API
+- [ ] Implementar busca de artistas com filtro
+- [ ] Criar página de detalhes do artista
+- [ ] Implementar paginação de álbuns
+- [ ] Desenvolver interface responsiva e moderna
+- [ ] Adicionar animações e feedback visual
 
-## 🚀 Fase 1: Estrutura Base (Dias 1-2)
+## 🧭 Roadmap de Implementação
 
-### 1.1 Configuração Inicial ✅
+### ✅ Dia 0 – Planejamento e Setup
 
-- [x] Setup do projeto com React Vite Boilerplate
-- [x] Configuração de TypeScript
-- [x] Configuração de ESLint e Prettier
-- [x] Configuração de testes com Vitest
-- [x] Configuração de internacionalização (i18n)
+- [ ] Ler a [documentação do Spotify Web API](https://developer.spotify.com/documentation/web-api)
+- [ ] Definir escopo mínimo viável (MVP)
+- [ ] Criar repositório GitHub com README inicial
+- [ ] Setup inicial do projeto:
+  - [ ] Vite + React + TypeScript
+  - [ ] Tailwind CSS + shadcn/ui
+  - [ ] ESLint + Prettier
+  - [ ] React Router + Context API
+  - [ ] .env com variáveis de autenticação da API
 
-### 1.2 Arquitetura e Estrutura
+### 🎨 Dia 1 – Estrutura e Layout
 
-- [ ] Definir estrutura de pastas para features
-- [ ] Configurar roteamento com React Router
-- [ ] Implementar layout base da aplicação
-- [ ] Configurar tema e estilos globais
+- [ ] Criar rotas principais:
+  - `/` → Home / Listagem de artistas
+  - `/artist/:id` → Detalhes do artista
+- [ ] Montar layout base responsivo
+- [ ] Implementar grid de artistas com UI atrativa
+- [ ] Criar componentes reutilizáveis (Card, Header, Input, etc.)
 
-### 1.3 Componentes Base
+### 🎧 Dia 2 – Integração com a API do Spotify
 
-- [ ] Criar componentes de UI compartilhados
-- [ ] Implementar sistema de design tokens
-- [ ] Configurar biblioteca de componentes
+- [ ] Criar serviço `spotifyService.ts` com Axios
+- [ ] Implementar busca de artistas com filtro por nome (debounce)
+- [ ] Ao clicar em um artista, carregar:
+  - [ ] Nome e popularidade
+  - [ ] Top músicas
+  - [ ] Lista de álbuns com paginação (20 por página)
 
-## 🎨 Fase 2: Interface e UX (Dias 3-5)
+### 🔄 Dia 3 – Paginação, Filtros e Estados
 
-### 2.1 Layout e Navegação
+- [ ] Implementar paginação manual dos álbuns
+- [ ] Filtro por nome do álbum
+- [ ] Gerenciamento de estado com Context API ou Zustand
+- [ ] Implementar loading states (skeletons/spinners)
+- [ ] Tratar erros com mensagens amigáveis
+- [ ] Adicionar feedback para listas vazias
 
-- [ ] Implementar header/navbar responsivo
-- [ ] Criar sistema de navegação
-- [ ] Implementar breadcrumbs (se necessário)
-- [ ] Adicionar loading states
+### 🌍 Dia 4 – Polimento e Diferenciais
 
-### 2.2 Páginas Principais
+- [ ] Tradução com i18n (ex: pt-BR e en-US)
+- [ ] Adicionar animações (entradas suaves, transições)
+- [ ] Criar variações de componentes (botão com loading, inputs com erro, etc.)
+- [ ] Garantir responsividade e acessibilidade básica (aria-labels, contraste)
 
-- [ ] Página inicial/dashboard
-- [ ] Páginas de listagem (se aplicável)
-- [ ] Páginas de detalhes (se aplicável)
-- [ ] Páginas de formulário
+### 🧪 Dia 5 – Testes, README e Deploy
 
-### 2.3 Responsividade
+- [ ] Testes unitários (opcional)
+- [ ] Testes E2E com Cypress (opcional)
+- [ ] Escrever README completo com:
+  - Tecnologias
+  - Como rodar
+  - Link da demo
+- [ ] Deploy no [Vercel](https://vercel.com) ou [Netlify](https://netlify.com)
+- [ ] Revisar tudo antes da entrega final
 
-- [ ] Implementar design mobile-first
-- [ ] Testar em diferentes breakpoints
-- [ ] Otimizar para tablets e desktops
+## 🏁 Entrega Final
 
-## 🔧 Fase 3: Funcionalidades Core (Dias 6-8)
+- [ ] Conferir todos os requisitos e diferenciais listados no desafio
+- [ ] Validar funcionamento no mobile e desktop
+- [ ] Subir repositório no GitHub com o link da demo
+- [ ] Responder ao e-mail com o link do repositório
 
-### 3.1 Gerenciamento de Estado
+## 🛠️ Stack Tecnológico
 
-- [ ] Configurar Zustand para estado global
-- [ ] Implementar stores específicos por feature
-- [ ] Configurar persistência de estado (se necessário)
+### Frontend
 
-### 3.2 Integração com APIs
+- **Vite** - Build tool
+- **React 19** - Framework principal
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - Biblioteca de componentes
 
-- [ ] Configurar cliente HTTP (Axios/Fetch)
-- [ ] Implementar interceptors para autenticação
-- [ ] Criar services/repositories para APIs
-- [ ] Implementar cache de dados
+### Navegação e Estado
 
-### 3.3 Formulários e Validação
+- **React Router** - Roteamento
+- **Context API/Zustand** - Gerenciamento de estado
 
-- [ ] Implementar formulários com Mantine
-- [ ] Adicionar validação com Zod
-- [ ] Criar componentes de input customizados
-- [ ] Implementar feedback de validação
+### Integração
 
-## 🧪 Fase 4: Testes e Qualidade (Dias 9-10)
+- **Axios** - Cliente HTTP
+- **Spotify Web API** - API externa
 
-### 4.1 Testes Unitários
+### Qualidade
 
-- [ ] Testar componentes isolados
-- [ ] Testar hooks customizados
-- [ ] Testar utilitários e helpers
-- [ ] Configurar cobertura de testes
+- **ESLint** - Linting
+- **Prettier** - Formatação
 
-### 4.2 Testes de Integração
+### Deploy
 
-- [ ] Testar fluxos completos
-- [ ] Testar integração com APIs
-- [ ] Testar navegação entre páginas
-
-### 4.3 Testes E2E (Opcional)
-
-- [ ] Configurar Playwright/Cypress
-- [ ] Implementar testes críticos
-- [ ] Testar em diferentes navegadores
-
-## ⚡ Fase 5: Otimização e Deploy (Dias 11-12)
-
-### 5.1 Performance
-
-- [ ] Implementar lazy loading
-- [ ] Otimizar bundle size
-- [ ] Configurar code splitting
-- [ ] Implementar memoização
-
-### 5.2 Acessibilidade
-
-- [ ] Adicionar atributos ARIA
-- [ ] Testar navegação por teclado
-- [ ] Verificar contraste de cores
-- [ ] Implementar screen reader support
-
-### 5.3 Deploy e CI/CD
-
-- [ ] Configurar build de produção
-- [ ] Configurar GitHub Actions
-- [ ] Deploy em ambiente de staging
-- [ ] Configurar análise de performance
+- **Vercel/Netlify** - Plataforma de deploy
 
 ## 📊 Critérios de Avaliação
 
 ### Funcionalidade (40%)
 
-- [ ] Requisitos implementados corretamente
-- [ ] Fluxos funcionando adequadamente
+- [ ] Busca de artistas funcionando
+- [ ] Detalhes do artista carregando corretamente
+- [ ] Paginação de álbuns implementada
+- [ ] Filtros funcionando adequadamente
 - [ ] Tratamento de erros implementado
 
 ### Código (30%)
@@ -138,56 +124,49 @@ Este roadmap define as etapas de desenvolvimento para o desafio frontend da Kana
 - [ ] Uso adequado de TypeScript
 - [ ] Componentes reutilizáveis
 - [ ] Arquitetura escalável
+- [ ] Documentação adequada
 
 ### UX/UI (20%)
 
 - [ ] Interface intuitiva e moderna
 - [ ] Responsividade implementada
-- [ ] Acessibilidade considerada
+- [ ] Animações suaves
+- [ ] Loading states e feedback visual
 
 ### Testes (10%)
 
-- [ ] Cobertura adequada de testes
-- [ ] Testes bem estruturados
-- [ ] Testes automatizados funcionando
+- [ ] Testes implementados (se aplicável)
+- [ ] Funcionamento em diferentes dispositivos
+- [ ] Compatibilidade cross-browser
 
-## 🛠️ Tecnologias e Ferramentas
+## 🎯 Endpoints da API Spotify
 
-### Frontend
+### Principais Endpoints
 
-- **React 19** - Framework principal
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool
-- **Mantine** - Biblioteca de componentes
-- **React Router** - Roteamento
-- **Zustand** - Gerenciamento de estado
+- `GET /search` - Buscar artistas
+- `GET /artists/{id}` - Detalhes do artista
+- `GET /artists/{id}/top-tracks` - Top músicas
+- `GET /artists/{id}/albums` - Álbuns do artista
 
-### Testes
+### Parâmetros Importantes
 
-- **Vitest** - Testes unitários
-- **Testing Library** - Testes de componentes
-- **Playwright** - Testes E2E (opcional)
-
-### Qualidade
-
-- **ESLint** - Linting
-- **Prettier** - Formatação
-- **Husky** - Git hooks
-- **Commitlint** - Padronização de commits
-
-### Deploy
-
-- **GitHub Actions** - CI/CD
-- **Vercel/Netlify** - Deploy (sugestão)
+- `q` - Query de busca
+- `type` - Tipo de item (artist, track, album)
+- `limit` - Limite de resultados
+- `offset` - Offset para paginação
 
 ## 📝 Notas Importantes
 
-1. **Priorize a qualidade do código** sobre a quantidade de features
-2. **Documente decisões importantes** de arquitetura
-3. **Mantenha commits pequenos e descritivos**
-4. **Teste em diferentes dispositivos e navegadores**
-5. **Considere a experiência do usuário** em todas as decisões
+1. **Priorize a funcionalidade** sobre features extras
+2. **Foque na experiência do usuário** com loading states e feedback
+3. **Mantenha o código limpo** e bem documentado
+4. **Teste em diferentes dispositivos** e navegadores
+5. **Considere a performance** com debounce e paginação
 
 ## 🔄 Atualizações
 
-Este roadmap será atualizado conforme os requisitos específicos do PDF forem analisados e conforme o desenvolvimento progride.
+Este roadmap será atualizado conforme o desenvolvimento progride e novos requisitos são identificados.
+
+---
+
+**Feito com foco em performance, legibilidade e impacto visual. Boa sorte! 🚀**

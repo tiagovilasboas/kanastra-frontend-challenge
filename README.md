@@ -1,6 +1,15 @@
-# Kanastra Frontend Challenge
+# Kanastra Frontend Challenge - Spotify API Integration
 
-Este projeto foi construído usando o [React Vite Boilerplate](https://github.com/tiagovilasboas/react-vite-boilerplate) como base, fornecendo uma estrutura robusta e moderna para desenvolvimento React.
+Este projeto foi construído usando o [React Vite Boilerplate](https://github.com/tiagovilasboas/react-vite-boilerplate) como base, fornecendo uma estrutura robusta e moderna para desenvolvimento React com integração à **Spotify Web API**.
+
+## 🎵 Sobre o Projeto
+
+Uma aplicação web moderna que permite aos usuários:
+
+- 🔍 Buscar artistas por nome
+- 👤 Visualizar detalhes dos artistas
+- 🎵 Explorar top músicas dos artistas
+- 💿 Navegar pelos álbuns com paginação
 
 ## 🚀 Tecnologias
 
@@ -12,6 +21,7 @@ Este projeto foi construído usando o [React Vite Boilerplate](https://github.co
 - 📐 **ESLint & Prettier:** Qualidade de código e formatação garantidas
 - 🌐 **i18n:** Suporte para internacionalização (PT/EN)
 - 🏛️ **Arquitetura em Camadas:** Código organizado, escalável e fácil de testar
+- 🎧 **Spotify Web API:** Integração para dados de artistas, músicas e álbuns
 
 ## 📦 Instalação
 
@@ -38,9 +48,13 @@ src/
 ├── app/                  # Configurações globais, providers, rotas
 ├── components/           # Componentes de UI compartilhados
 ├── features/             # Módulos/Features da aplicação
+│   ├── artists/          # Feature de artistas
+│   ├── albums/           # Feature de álbuns
+│   └── tracks/           # Feature de músicas
 ├── hooks/                # Hooks globais
 ├── lib/                  # Utilitários
 ├── pages/                # Páginas da aplicação
+├── services/             # Serviços de API (Spotify)
 ├── stores/               # Stores globais (Zustand)
 └── types/                # Tipos globais da aplicação
 ```
@@ -51,11 +65,12 @@ Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, c
 
 ### Fases Principais:
 
-1. **🚀 Fase 1: Estrutura Base** - Configuração inicial e arquitetura
-2. **🎨 Fase 2: Interface e UX** - Layout, navegação e responsividade
-3. **🔧 Fase 3: Funcionalidades Core** - Estado, APIs e formulários
-4. **🧪 Fase 4: Testes e Qualidade** - Testes unitários e de integração
-5. **⚡ Fase 5: Otimização e Deploy** - Performance, acessibilidade e deploy
+1. **🧭 Dia 0:** Planejamento e Setup - Configuração inicial e documentação
+2. **🎨 Dia 1:** Estrutura e Layout - Rotas, layout e componentes base
+3. **🎧 Dia 2:** Integração com API - Spotify Web API e busca de artistas
+4. **🔄 Dia 3:** Paginação e Estados - Filtros, paginação e gerenciamento de estado
+5. **🌍 Dia 4:** Polimento - Animações, i18n e acessibilidade
+6. **🧪 Dia 5:** Testes e Deploy - Testes, documentação e deploy
 
 ## 🎯 Status Atual
 
@@ -75,10 +90,10 @@ Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, c
 
 ### 📋 Próximos Passos
 
-- [ ] Implementar features específicas do desafio
-- [ ] Configurar integração com APIs
-- [ ] Adicionar testes unitários e de integração
-- [ ] Implementar validações com Zod
+- [ ] Implementar integração com Spotify Web API
+- [ ] Criar feature de busca de artistas
+- [ ] Implementar página de detalhes do artista
+- [ ] Adicionar paginação de álbuns
 - [ ] Configurar o deploy
 
 ## 🧩 Geradores de Código
@@ -101,13 +116,33 @@ O projeto já está configurado com **i18next** + **react-i18next**:
 - Use o hook `useTranslation()` em qualquer componente
 - Idioma padrão: **PT-BR**
 
+## 🎧 Spotify Web API
+
+### Endpoints Principais
+
+- `GET /search` - Buscar artistas
+- `GET /artists/{id}` - Detalhes do artista
+- `GET /artists/{id}/top-tracks` - Top músicas
+- `GET /artists/{id}/albums` - Álbuns do artista
+
+### Configuração
+
+Para usar a API, você precisará:
+
+1. Criar uma aplicação no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Configurar as variáveis de ambiente:
+   ```
+   VITE_SPOTIFY_CLIENT_ID=seu_client_id
+   VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret
+   ```
+
 ## 📊 Critérios de Avaliação
 
 O projeto será avaliado considerando:
 
-- **Funcionalidade (40%)** - Requisitos implementados corretamente
+- **Funcionalidade (40%)** - Integração com API, busca, paginação
 - **Código (30%)** - Código limpo, TypeScript e arquitetura
-- **UX/UI (20%)** - Interface intuitiva e responsiva
+- **UX/UI (20%)** - Interface intuitiva, responsiva e animações
 - **Testes (10%)** - Cobertura adequada de testes
 
 ## 🚀 Deploy
