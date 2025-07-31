@@ -1,7 +1,8 @@
-import { useTranslation } from 'react-i18next'
 import { IconMusic } from '@tabler/icons-react'
+import { useTranslation } from 'react-i18next'
 
 import { LanguageSelector } from '@/components/LanguageSelector'
+
 import styles from './Header.module.css'
 
 export function Header() {

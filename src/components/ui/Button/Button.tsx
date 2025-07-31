@@ -1,5 +1,5 @@
-import { forwardRef } from 'react'
 import { Button as MantineButton, ButtonProps as MantineButtonProps } from '@mantine/core'
+import { forwardRef } from 'react'
 
 import styles from './Button.module.css'
 

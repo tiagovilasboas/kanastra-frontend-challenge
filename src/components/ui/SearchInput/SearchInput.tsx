@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from 'react'
 import { IconSearch, IconX } from '@tabler/icons-react'
+import { useEffect,useRef, useState } from 'react'
 
 import styles from './SearchInput.module.css'
 

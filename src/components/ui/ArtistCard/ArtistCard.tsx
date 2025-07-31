@@ -1,6 +1,7 @@
 import { IconPlayerPlay } from '@tabler/icons-react'
 
 import { SpotifyArtist } from '@/types/spotify'
+
 import styles from './ArtistCard.module.css'
 
 interface ArtistCardProps {

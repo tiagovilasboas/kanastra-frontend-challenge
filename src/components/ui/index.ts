@@ -1,10 +1,10 @@
 // Button
-export { Button } from './Button'
 export type { ButtonProps } from './Button'
+export { Button } from './Button'
 
 // Card
-export { Card } from './Card'
 export type { CardProps } from './Card'
+export { Card } from './Card'
 
 // SearchInput
 export { SearchInput } from './SearchInput'

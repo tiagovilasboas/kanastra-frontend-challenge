@@ -18,9 +18,9 @@
     "dev:open": "kill-port 5173 && vite --open",
     "test:ui": "vitest --ui",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix --max-warnings=0",
+    "lint:check": "eslint . --max-warnings=0 --format=unix",
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
@@ -30,6 +30,7 @@
     "reviewdog:typescript": "tsc --noEmit --pretty false 2>&1 | reviewdog -f=tsc -name=\"TypeScript\" -reporter=github-pr-review",
     "reviewdog:prettier": "prettier --check . 2>&1 | reviewdog -f=eslint -name=\"Prettier\" -reporter=github-pr-review",
     "prepare": "husky install",
+    "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run",
     "analyze": "npm run build",
     "lighthouse": "unlighthouse"
   },
@@ -90,11 +91,13 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
+      "eslint --fix --max-warnings=0",
+      "prettier --write",
+      "git add"
     ],
-    "*.{json,md}": [
-      "prettier --write"
+    "*.{json,md,css}": [
+      "prettier --write",
+      "git add"
     ]
   },
   "config": {

@@ -1,5 +1,5 @@
-import { forwardRef } from 'react'
 import { Container as MantineContainer, ContainerProps as MantineContainerProps } from '@mantine/core'
+import { forwardRef } from 'react'
 
 import styles from './Container.module.css'
 
