@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 
 import App from '@/App'
+import DesignSystemPage from '@/pages/DesignSystemPage'
 import HomePage from '@/pages/HomePage'
 
 export const router = createBrowserRouter([
@@ -11,6 +12,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: '/design-system',
+        element: <DesignSystemPage />,
       },
     ],
   },

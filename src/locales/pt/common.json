@@ -32,5 +32,32 @@
     "brazil": "🇧🇷",
     "usa": "🇺🇸"
   },
-  "colon": ":"
+  "colon": ":",
+  "designSystem": {
+    "title": "Design System - Spotify Inspired",
+    "subtitle": "Componentes inspirados no design do Spotify para o desafio Kanastra",
+    "buttons": "Buttons",
+    "cards": "Cards",
+    "inputs": "Inputs",
+    "colorPalette": "Color Palette",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "background": "Background",
+    "tertiary": "Tertiary",
+    "defaultCard": "Default Card",
+    "defaultCardDesc": "Card padrão com fundo escuro",
+    "elevatedCard": "Elevated Card",
+    "elevatedCardDesc": "Card elevado com sombra",
+    "interactiveCard": "Interactive Card",
+    "interactiveCardDesc": "Card interativo com hover",
+    "primarySmall": "Primary Small",
+    "primaryMedium": "Primary Medium",
+    "primaryLarge": "Primary Large",
+    "danger": "Danger",
+    "ghost": "Ghost",
+    "defaultInputPlaceholder": "Default input placeholder",
+    "searchInputPlaceholder": "Search input placeholder",
+    "smallInput": "Small input",
+    "largeInput": "Large input"
+  }
 }

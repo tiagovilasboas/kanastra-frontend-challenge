@@ -32,5 +32,32 @@
     "brazil": "🇧🇷",
     "usa": "🇺🇸"
   },
-  "colon": ":"
+  "colon": ":",
+  "designSystem": {
+    "title": "Design System - Spotify Inspired",
+    "subtitle": "Spotify-inspired components for the Kanastra challenge",
+    "buttons": "Buttons",
+    "cards": "Cards",
+    "inputs": "Inputs",
+    "colorPalette": "Color Palette",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "background": "Background",
+    "tertiary": "Tertiary",
+    "defaultCard": "Default Card",
+    "defaultCardDesc": "Default card with dark background",
+    "elevatedCard": "Elevated Card",
+    "elevatedCardDesc": "Elevated card with shadow",
+    "interactiveCard": "Interactive Card",
+    "interactiveCardDesc": "Interactive card with hover",
+    "primarySmall": "Primary Small",
+    "primaryMedium": "Primary Medium",
+    "primaryLarge": "Primary Large",
+    "danger": "Danger",
+    "ghost": "Ghost",
+    "defaultInputPlaceholder": "Default input placeholder",
+    "searchInputPlaceholder": "Search input placeholder",
+    "smallInput": "Small input",
+    "largeInput": "Large input"
+  }
 }
