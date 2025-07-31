@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
-import { TextInput, ActionIcon } from '@mantine/core'
+import { TextInput } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
 import { SpotifyIcon } from './SpotifyIcon'
-import { spotifyStyles } from '@/lib/design-system/utils'
 
 export interface SearchInputProps {
   onSearch: (query: string) => void
@@ -22,7 +21,6 @@ export const SearchInput = ({
 }: SearchInputProps) => {
   const { t } = useTranslation()
   const [value, setValue] = useState('')
-  const [isFocused, setIsFocused] = useState(false)
   const debounceRef = useRef<NodeJS.Timeout>()
 
   // Debounce effect
@@ -53,77 +51,10 @@ export const SearchInput = ({
     onSearch('')
   }
 
-  const handleFocus = () => {
-    setIsFocused(true)
-  }
-
-  const handleBlur = () => {
-    setIsFocused(false)
-  }
-
-  const searchInputStyles = {
-    ...spotifyStyles.fontPrimary,
-    ...spotifyStyles.textBase,
-    ...spotifyStyles.transitionSpotify,
-    backgroundColor: isFocused ? '#2a2a2a' : '#242424',
-    border: 'none',
-    borderRadius: '20px',
-    padding: '12px 16px',
-    paddingLeft: '48px', // Espaço para o ícone
-    color: '#FFFFFF',
-    width: '100%',
-    '&:focus': {
-      outline: 'none',
-      backgroundColor: '#2a2a2a',
-    },
-    '&::placeholder': {
-      color: '#B3B3B3',
-    },
-  }
-
-  const iconContainerStyles = {
-    position: 'absolute' as const,
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    zIndex: 1,
-    color: isFocused ? '#1DB954' : '#B3B3B3',
-    transition: 'color 0.2s ease-in-out',
-  }
-
-  const clearButtonStyles = {
-    position: 'absolute' as const,
-    right: '8px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    zIndex: 1,
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#B3B3B3',
-    cursor: 'pointer',
-    padding: '4px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: 'all 0.2s ease-in-out',
-    '&:hover': {
-      backgroundColor: '#404040',
-      color: '#FFFFFF',
-    },
-  }
-
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        maxWidth: '400px',
-      }}
-      className={className}
-    >
+    <div className={`search-container ${className || ''}`}>
       {/* Ícone de busca */}
-      <div style={iconContainerStyles}>
+      <div className="search-icon">
         <SpotifyIcon icon="search" size="md" />
       </div>
 
@@ -131,16 +62,12 @@ export const SearchInput = ({
       <TextInput
         value={value}
         onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        placeholder={placeholder || t('search.placeholder')}
+        placeholder={placeholder || t('search:placeholder')}
         disabled={disabled}
         variant="unstyled"
-        styles={{
-          input: searchInputStyles,
-          wrapper: {
-            width: '100%',
-          },
+        classNames={{
+          input: 'input-spotify',
+          wrapper: 'w-full',
         }}
       />
 
@@ -148,9 +75,9 @@ export const SearchInput = ({
       {value && (
         <button
           onClick={handleClear}
-          style={clearButtonStyles}
+          className="search-clear"
           type="button"
-          aria-label={t('search.clear')}
+          aria-label={t('search:clear')}
         >
           <SpotifyIcon icon="close" size="sm" />
         </button>

@@ -1,121 +1,50 @@
 import { Button as MantineButton, type ButtonProps as MantineButtonProps } from '@mantine/core'
 import { forwardRef } from 'react'
 
-import { spotifyStyles } from '@/lib/design-system/utils'
-
-export interface ButtonProps extends Omit<MantineButtonProps, 'variant'> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'spotify'
+export interface ButtonProps extends MantineButtonProps {
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'spotify'
   size?: 'sm' | 'md' | 'lg'
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', children, style, ...props }, ref) => {
-    const getVariantStyles = () => {
+  ({ variant = 'primary', size = 'md', className, children, ...props }, ref) => {
+    const getButtonClass = () => {
+      const baseClass = 'btn-spotify transition-spotify'
+      
       switch (variant) {
         case 'primary':
-          return {
-            backgroundColor: '#1DB954',
-            color: '#FFFFFF',
-            border: 'none',
-            '&:hover': {
-              backgroundColor: '#1ed760',
-              transform: 'scale(1.02)',
-            },
-            '&:active': {
-              transform: 'scale(0.98)',
-            },
-          }
+          return `${baseClass}`
         case 'secondary':
-          return {
-            backgroundColor: 'transparent',
-            color: '#FFFFFF',
-            border: '1px solid #535353',
-            '&:hover': {
-              backgroundColor: '#282828',
-              borderColor: '#B3B3B3',
-            },
-          }
-        case 'ghost':
-          return {
-            backgroundColor: 'transparent',
-            color: '#B3B3B3',
-            border: 'none',
-            '&:hover': {
-              backgroundColor: '#282828',
-              color: '#FFFFFF',
-            },
-          }
+          return `${baseClass} btn-secondary`
         case 'danger':
-          return {
-            backgroundColor: '#E91429',
-            color: '#FFFFFF',
-            border: 'none',
-            '&:hover': {
-              backgroundColor: '#d10f23',
-            },
-          }
+          return `${baseClass} bg-error hover:bg-red-600`
+        case 'ghost':
+          return `${baseClass} btn-ghost`
         case 'spotify':
-          return {
-            background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
-            color: '#FFFFFF',
-            border: 'none',
-            fontWeight: '600',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #1ed760 0%, #1DB954 100%)',
-              transform: 'scale(1.02)',
-            },
-            '&:active': {
-              transform: 'scale(0.98)',
-            },
-          }
+          return `${baseClass} spotify-gradient`
         default:
-          return {}
+          return baseClass
       }
     }
 
-    const getSizeStyles = () => {
+    const getSizeClass = () => {
       switch (size) {
         case 'sm':
-          return {
-            height: '32px',
-            padding: '0 16px',
-            fontSize: '12px',
-            borderRadius: '16px',
-          }
+          return 'px-sm py-xs text-sm'
         case 'md':
-          return {
-            height: '40px',
-            padding: '0 24px',
-            fontSize: '14px',
-            borderRadius: '20px',
-          }
+          return 'px-md py-sm text-base'
         case 'lg':
-          return {
-            height: '48px',
-            padding: '0 32px',
-            fontSize: '16px',
-            borderRadius: '24px',
-          }
+          return 'px-lg py-md text-lg'
         default:
-          return {}
+          return 'px-md py-sm text-base'
       }
-    }
-
-    const buttonStyles = {
-      ...spotifyStyles.fontPrimary,
-      ...spotifyStyles.fontWeightMedium,
-      ...spotifyStyles.transitionSpotify,
-      ...spotifyStyles.focusRing,
-      ...getVariantStyles(),
-      ...getSizeStyles(),
-      ...style,
     }
 
     return (
       <MantineButton
         ref={ref}
         variant="unstyled"
-        style={buttonStyles}
+        className={`${getButtonClass()} ${getSizeClass()} ${className || ''}`}
         {...props}
       >
         {children}

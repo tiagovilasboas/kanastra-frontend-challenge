@@ -1,8 +1,7 @@
-import { Card, Text, Group, Stack, Badge } from '@mantine/core'
+import { Card, Text, Group, Badge } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
 import { SpotifyIcon } from './SpotifyIcon'
-import { spotifyStyles } from '@/lib/design-system/utils'
 import { SpotifyArtist } from '@/types/spotify'
 
 export interface ArtistCardProps {
@@ -47,48 +46,24 @@ export const ArtistCard = ({
     return followers.toString()
   }
 
-  const getPopularityColor = (popularity: number) => {
-    if (popularity >= 80) return '#1DB954'
-    if (popularity >= 60) return '#1ed760'
-    if (popularity >= 40) return '#1aa34a'
-    return '#727272'
-  }
-
-  const cardStyles = {
-    ...spotifyStyles.bgCard,
-    ...spotifyStyles.transitionSpotify,
-    cursor: onClick ? 'pointer' : 'default',
-    overflow: 'hidden',
-    '&:hover': onClick ? {
-      ...spotifyStyles.bgCardHover,
-      transform: 'translateY(-4px)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-    } : {},
-  }
-
-  const imageStyles = {
-    width: '100%',
-    height: size === 'sm' ? '120px' : size === 'md' ? '160px' : '200px',
-    objectFit: 'cover' as const,
-    borderRadius: '8px',
-  }
-
-  const contentStyles = {
-    padding: size === 'sm' ? '12px' : size === 'md' ? '16px' : '20px',
+  const getPopularityClass = (popularity: number) => {
+    if (popularity >= 80) return 'high'
+    if (popularity >= 60) return 'medium'
+    return 'low'
   }
 
   return (
     <Card
-      variant="interactive"
-      style={cardStyles}
+      variant="unstyled"
+      className="artist-card"
       onClick={handleClick}
     >
       {/* Imagem do artista */}
-      <div style={{ position: 'relative' }}>
+      <div className="relative">
         <img
           src={getImageUrl()}
           alt={artist.name}
-          style={imageStyles}
+          className="artist-card-image"
           onError={(e) => {
             const target = e.target as HTMLImageElement
             target.src = '/placeholder-artist.jpg'
@@ -97,118 +72,56 @@ export const ArtistCard = ({
         
         {/* Overlay com ícone de play */}
         {onClick && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '8px',
-              right: '8px',
-              backgroundColor: '#1DB954',
-              borderRadius: '50%',
-              width: '40px',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              opacity: 0,
-              transition: 'opacity 0.2s ease-in-out',
-            }}
-            className="play-button"
-          >
+          <div className="absolute bottom-2 right-2 bg-spotify-green rounded-full w-10 h-10 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
             <SpotifyIcon icon="play" size="md" color="#FFFFFF" />
           </div>
         )}
       </div>
 
       {/* Conteúdo */}
-      <div style={contentStyles}>
-        <Stack gap="sm">
+      <div className="p-md">
+        <div className="space-y-sm">
           {/* Nome do artista */}
-          <Text
-            style={{
-              ...spotifyStyles.textPrimary,
-              ...spotifyStyles.fontWeightSemibold,
-              ...spotifyStyles.textLg,
-              lineHeight: 1.2,
-            }}
-            lineClamp={2}
-          >
+          <Text className="artist-card-title">
             {artist.name}
           </Text>
 
           {/* Popularidade */}
-          <Group gap="xs" align="center">
-            <div
-              style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: getPopularityColor(artist.popularity),
-              }}
-            />
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textSm,
-              }}
-            >
-              {artist.popularity}% {t('artist.popularity')}
+          <div className="artist-card-popularity">
+            <div className={`popularity-dot ${getPopularityClass(artist.popularity)}`} />
+            <Text className="text-sm text-secondary">
+              {artist.popularity}% {t('artist:popularity')}
             </Text>
-          </Group>
+          </div>
 
           {/* Seguidores */}
           {showFollowers && artist.followers && (
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textSm,
-              }}
-            >
-              {formatFollowers(artist.followers.followers)} {t('artist.followers')}
+            <Text className="artist-card-followers">
+              {formatFollowers(artist.followers.total)} {t('artist:followers')}
             </Text>
           )}
 
           {/* Gêneros */}
           {showGenres && artist.genres && artist.genres.length > 0 && (
-            <Group gap="xs" wrap="wrap">
+            <div className="artist-card-genres">
               {artist.genres.slice(0, 3).map((genre, index) => (
                 <Badge
                   key={index}
                   size="sm"
-                  style={{
-                    backgroundColor: '#282828',
-                    color: '#B3B3B3',
-                    border: '1px solid #404040',
-                    fontSize: '10px',
-                    padding: '2px 8px',
-                  }}
+                  className="genre-badge"
                 >
                   {genre}
                 </Badge>
               ))}
               {artist.genres.length > 3 && (
-                <Text
-                  style={{
-                    ...spotifyStyles.textSecondary,
-                    ...spotifyStyles.textXs,
-                  }}
-                >
+                <Text className="text-xs text-secondary">
                   +{artist.genres.length - 3}
                 </Text>
               )}
-            </Group>
+            </div>
           )}
-        </Stack>
+        </div>
       </div>
-
-      <style jsx>{`
-        .play-button {
-          opacity: 0;
-        }
-        
-        .artist-card:hover .play-button {
-          opacity: 1;
-        }
-      `}</style>
     </Card>
   )
 } 

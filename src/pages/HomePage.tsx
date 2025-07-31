@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { SearchInput, ArtistCard } from '@/components/ui'
 import { Container } from '@/components/layout'
 import { useSpotify } from '@/hooks/useSpotify'
-import { spotifyStyles } from '@/lib/design-system/utils'
 import { SpotifyArtist } from '@/types/spotify'
 
 export default function HomePage() {
@@ -21,73 +20,65 @@ export default function HomePage() {
 
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Buscar artistas quando a query mudar
   useEffect(() => {
-    if (searchQuery.trim()) {
-      searchArtists({
-        query: searchQuery,
-        type: 'artist',
-        limit: 20,
-      })
-    } else {
-      clearSearch()
-    }
-  }, [searchQuery, searchArtists, clearSearch])
+    // Limpar busca ao montar o componente
+    clearSearch()
+  }, [clearSearch])
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
+    if (query.trim()) {
+      searchArtists(query)
+    } else {
+      clearSearch()
+    }
   }
 
   const handleArtistClick = (artist: SpotifyArtist) => {
-    // Navegar para a página do artista
     navigate(`/artist/${artist.id}`)
   }
 
   const handleLogin = () => {
-    // Redirecionar para login do Spotify
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=${encodeURIComponent('https://localhost:5173/callback')}&scope=${encodeURIComponent('user-read-private user-read-email')}`
-    window.location.href = authUrl
+    window.location.href = 'https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=https://localhost:5173/callback&scope=user-read-private%20user-read-email'
   }
 
-  // Renderizar skeleton de loading
   const renderSkeletons = () => (
-    <Grid gutter="md">
+    <Grid className="grid-spotify">
       {Array.from({ length: 8 }).map((_, index) => (
         <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-          <Skeleton height={200} radius="md" />
+          <div className="card-spotify">
+            <div className="loading-skeleton h-40 mb-md" />
+            <div className="loading-skeleton h-4 mb-sm" />
+            <div className="loading-skeleton h-3 mb-sm" />
+            <div className="loading-skeleton h-3 w-2/3" />
+          </div>
         </Grid.Col>
       ))}
     </Grid>
   )
 
-  // Renderizar lista de artistas
   const renderArtists = () => {
-    const artists = searchResults.data.artists.items
-
-    if (artists.length === 0 && searchQuery) {
+    if (!searchResults.data?.artists?.items?.length) {
       return (
         <Alert
-                          title={t('search:noResults')}
+          title={t('search:noResults')}
           color="gray"
-          style={{
-            backgroundColor: '#282828',
-            border: '1px solid #404040',
-            color: '#B3B3B3',
-          }}
+          className="alert-spotify"
         >
-                      {t('search:noResultsMessage')}
+          {t('search:noResultsMessage')}
         </Alert>
       )
     }
 
     return (
-      <Grid gutter="md">
-        {artists.map((artist) => (
+      <Grid className="grid-spotify">
+        {searchResults.data.artists.items.map((artist) => (
           <Grid.Col key={artist.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
             <ArtistCard
               artist={artist}
               onClick={handleArtistClick}
-              size="md"
+              showGenres={true}
+              showFollowers={true}
             />
           </Grid.Col>
         ))}
@@ -95,35 +86,18 @@ export default function HomePage() {
     )
   }
 
-  // Renderizar estado inicial
   const renderInitialState = () => (
-    <Stack gap="xl" align="center" style={{ textAlign: 'center' }}>
+    <Stack gap="xl" align="center" className="text-center">
       <div>
-                  <Title
-            order={1}
-            style={{
-              ...spotifyStyles.textPrimary,
-              ...spotifyStyles.fontWeightBold,
-              ...spotifyStyles.text4xl,
-              marginBottom: '16px',
-              background: 'linear-gradient(135deg, #1DB954 0%, #1ed760 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
-            {t('home:title')}
-          </Title>
-                  <Text
-            style={{
-              ...spotifyStyles.textSecondary,
-              ...spotifyStyles.textLg,
-              ...spotifyStyles.leadingRelaxed,
-              maxWidth: '600px',
-            }}
-          >
-            {t('home:subtitle')}
-          </Text>
+        <Title
+          order={1}
+          className="spotify-gradient-text text-4xl font-bold mb-md"
+        >
+          {t('home:title')}
+        </Title>
+        <Text className="text-secondary text-lg leading-relaxed max-w-2xl">
+          {t('home:subtitle')}
+        </Text>
       </div>
 
       <SearchInput
@@ -137,7 +111,7 @@ export default function HomePage() {
           variant="spotify"
           size="lg"
           onClick={handleLogin}
-          style={{ marginTop: '32px' }}
+          className="mt-2xl"
         >
           {t('auth:loginWithSpotify')}
         </Button>
@@ -147,27 +121,17 @@ export default function HomePage() {
 
   return (
     <Container variant="mobile-first">
-      <Stack gap="xl" p="xl">
+      <Stack gap="xl" className="p-xl">
         {/* Header da página */}
         <div>
           <Title
             order={1}
-            style={{
-              ...spotifyStyles.textPrimary,
-              ...spotifyStyles.fontWeightBold,
-              ...spotifyStyles.text3xl,
-              marginBottom: '8px',
-            }}
+            className="text-primary font-bold text-3xl mb-sm"
           >
             {searchQuery ? t('search:results') : t('home:welcome')}
           </Title>
           {searchQuery && (
-            <Text
-              style={{
-                ...spotifyStyles.textSecondary,
-                ...spotifyStyles.textBase,
-              }}
-            >
+            <Text className="text-secondary text-base">
               {t('search:resultsFor')} &quot;{searchQuery}&quot;
             </Text>
           )}
@@ -200,12 +164,7 @@ export default function HomePage() {
               <Alert
                 title={t('search:error')}
                 color="red"
-                style={{
-                  backgroundColor: '#2a1a1a',
-                  border: '1px solid #e91429',
-                  color: '#ff6b6b',
-                  marginTop: '24px',
-                }}
+                className="alert-spotify alert-error mt-lg"
               >
                 {searchResults.error}
               </Alert>
