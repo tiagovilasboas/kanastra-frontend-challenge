@@ -1,37 +1,35 @@
-import { ActionIcon, Group, Text } from '@mantine/core'
+import { ActionIcon, Group } from '@mantine/core'
 import { useTranslation } from 'react-i18next'
 
 import { useAppStore } from '@/stores/appStore'
 
 export function LanguageSelector() {
-  const { language, setLanguage } = useAppStore()
   const { t } = useTranslation()
+  const { language, setLanguage } = useAppStore()
 
-  const handleLanguageChange = (newLanguage: 'pt' | 'en') => {
+  const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage)
   }
 
   return (
     <Group gap="xs">
-      <Text size="sm" c="dimmed">
-        {t('language')}
-        {t('colon')}
-      </Text>
       <ActionIcon
         variant={language === 'pt' ? 'filled' : 'subtle'}
-        size="sm"
+        color={language === 'pt' ? 'blue' : 'gray'}
         onClick={() => handleLanguageChange('pt')}
-        aria-label={t('languages.portuguese')}
+        aria-label={t('common:language')}
+        title={t('common:language')}
       >
-        {t('flags.brazil')}
+        🇧🇷
       </ActionIcon>
       <ActionIcon
         variant={language === 'en' ? 'filled' : 'subtle'}
-        size="sm"
+        color={language === 'en' ? 'blue' : 'gray'}
         onClick={() => handleLanguageChange('en')}
-        aria-label={t('languages.english')}
+        aria-label={t('common:language')}
+        title={t('common:language')}
       >
-        {t('flags.usa')}
+        🇺🇸
       </ActionIcon>
     </Group>
   )
