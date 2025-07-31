@@ -42,6 +42,13 @@ npm install
 - `npm run format` - Formata o código com Prettier
 - `npm run type-check` - Verifica os tipos TypeScript
 
+### 🐕 Reviewdog - Revisões Automáticas
+
+- `npm run reviewdog` - Executa Reviewdog com configuração global
+- `npm run reviewdog:eslint` - ESLint com Reviewdog
+- `npm run reviewdog:typescript` - TypeScript com Reviewdog
+- `npm run reviewdog:prettier` - Prettier com Reviewdog
+
 ## 🏗️ Estrutura do Projeto
 
 ```
