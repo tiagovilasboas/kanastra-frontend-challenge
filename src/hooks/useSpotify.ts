@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { spotifyRepository } from '@/repositories'
-import { SpotifyArtist, SpotifyAlbum, SpotifyTrack } from '@/types/spotify'
+import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
 interface UseSpotifyReturn {
   // State
