@@ -72,7 +72,7 @@ export default function HomePage() {
     if (!searchResults.length) {
       return (
         <div className="no-results">
-          <div className="no-results-icon">🎵</div>
+          <div className="no-results-icon">{t('common:icons.music')}</div>
           <Title order={3} className="text-primary mb-sm">
             {t('search:noResults')}
           </Title>
@@ -124,7 +124,7 @@ export default function HomePage() {
             variant="gradient"
             gradient={{ from: 'green', to: 'blue' }}
           >
-            🎵 Spotify Explorer
+            {t('common:icons.music')} {t('common:appName')}
           </Badge>
         </div>
 
@@ -157,10 +157,12 @@ export default function HomePage() {
 
       <div className="hero-visual">
         <div className="floating-cards">
-          <div className="floating-card card-1">🎤</div>
-          <div className="floating-card card-2">🎸</div>
-          <div className="floating-card card-3">🎹</div>
-          <div className="floating-card card-4">🥁</div>
+          <div className="floating-card card-1">
+            {t('common:icons.microphone')}
+          </div>
+          <div className="floating-card card-2">{t('common:icons.guitar')}</div>
+          <div className="floating-card card-3">{t('common:icons.piano')}</div>
+          <div className="floating-card card-4">{t('common:icons.drums')}</div>
         </div>
       </div>
     </div>
@@ -215,8 +217,8 @@ export default function HomePage() {
     <header className="main-header">
       <div className="header-left">
         <div className="logo">
-          <div className="logo-icon">♪</div>
-          <span className="logo-text">Spotify Explorer</span>
+          <div className="logo-icon">{t('common:icons.note')}</div>
+          <span className="logo-text">{t('common:appName')}</span>
         </div>
       </div>
 

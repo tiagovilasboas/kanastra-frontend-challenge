@@ -55,5 +55,14 @@
   },
   "searchInput": {
     "clearSearch": "Limpar busca"
+  },
+  "appName": "Spotify Explorer",
+  "icons": {
+    "music": "🎵",
+    "microphone": "🎤",
+    "guitar": "🎸",
+    "piano": "🎹",
+    "drums": "🥁",
+    "note": "♪"
   }
 }

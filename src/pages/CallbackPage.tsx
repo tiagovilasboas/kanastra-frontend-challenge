@@ -24,7 +24,7 @@ export default function CallbackPage() {
 
         if (!token) {
           setStatus('error')
-          setErrorMessage('Token não encontrado na URL')
+          setErrorMessage(t('auth:tokenNotFound'))
           return
         }
 
@@ -44,13 +44,13 @@ export default function CallbackPage() {
       } catch (error) {
         setStatus('error')
         setErrorMessage(
-          error instanceof Error ? error.message : 'Erro desconhecido',
+          error instanceof Error ? error.message : t('auth:unknownError'),
         )
       }
     }
 
     processCallback()
-  }, [navigate])
+  }, [navigate, t])
 
   const renderContent = () => {
     switch (status) {
