@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
+import { logger } from '@/utils/logger'
 
 interface UseSpotifyAuthReturn {
   isAuthenticated: boolean
@@ -24,16 +25,18 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
       spotifyRepository.setAccessToken(token)
       setIsAuthenticated(true)
     }
-  }, [])
+  }, []) // spotifyRepository is stable, no need to add to deps
 
   const login = useCallback(async () => {
     try {
-      console.log('🚀 Starting login process...')
+      logger.debug('Starting login process')
       const authUrl = await spotifyRepository.getAuthUrl()
-      console.log('🌐 Redirecting to:', authUrl.substring(0, 100) + '...')
+      logger.debug('Redirecting to auth URL', {
+        url: authUrl.substring(0, 100) + '...',
+      })
       window.location.href = authUrl
     } catch (error) {
-      console.error('❌ Error generating auth URL:', error)
+      logger.error('Error generating auth URL', error)
     }
   }, [])
 
@@ -61,7 +64,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
         setIsAuthenticated(true)
       }
     } catch (error) {
-      console.error('Error exchanging code for token:', error)
+      logger.error('Error exchanging code for token', error)
     }
   }, [])
 

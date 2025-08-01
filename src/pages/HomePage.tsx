@@ -1,305 +1,207 @@
-import {
-  ActionIcon,
-  Alert,
-  Badge,
-  Button,
-  Grid,
-  Text,
-  Title,
-} from '@mantine/core'
-import {
-  Download,
-  Heart,
-  Home,
-  Play,
-  Plus,
-  Search,
-  Settings,
-  User,
-} from 'lucide-react'
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { ArtistCard, SearchInput } from '@/components/ui'
+import { Header, Sidebar } from '@/components/layout'
+import { ArtistCard } from '@/components/ui/ArtistCard'
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
+import { MusicIcon } from '@/components/ui/MusicIcon'
+import { usePrefetch } from '@/hooks/usePrefetch'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
-import { SpotifyArtist } from '@/types/spotify'
 
-export default function HomePage() {
+export const HomePage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { isAuthenticated, login } = useSpotifyAuth()
-  const { searchResults, searchArtists, clearSearch, isLoading, error } =
+  const { isAuthenticated } = useSpotifyAuth()
+  const { prefetchArtistData } = usePrefetch()
+
+  const [activeSection, setActiveSection] = useState<
+    'home' | 'library' | 'create'
+  >('home')
+  const { searchResults, isLoading, error, searchArtists, searchQuery } =
     useSpotifySearch()
 
-  const [searchQuery, setSearchQuery] = useState('')
+  const handleArtistClick = (artistId: string) => {
+    navigate(`/artist/${artistId}`)
+    prefetchArtistData(artistId)
+  }
 
-  useEffect(() => {
-    clearSearch()
-  }, [clearSearch])
+  const handleNavItemClick = (section: 'home' | 'library' | 'create') => {
+    setActiveSection(section)
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query)
-    if (query.trim()) {
-      searchArtists(query.trim())
-    } else {
-      clearSearch()
+    switch (section) {
+      case 'home':
+        searchArtists('') // Clear search
+        break
+      case 'library':
+        // TODO: Implement library functionality
+        break
+      case 'create':
+        // TODO: Implement create playlist functionality
+        break
     }
   }
 
-  const handleArtistClick = (artist: SpotifyArtist) => {
-    navigate(`/artist/${artist.id}`)
-  }
-
-  const renderSkeletons = () => (
-    <Grid gutter="lg">
-      {Array.from({ length: 12 }).map((_, index) => (
-        <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
-          <div className="artist-card-skeleton">
-            <div className="skeleton-image" />
-            <div className="skeleton-content">
-              <div className="skeleton-title" />
-              <div className="skeleton-subtitle" />
+  const renderMainContent = () => {
+    // Show hero section only when on home and not authenticated
+    if (!isAuthenticated && activeSection === 'home' && !searchQuery) {
+      return (
+        <div className="hero-section">
+          <div className="hero-content">
+            <h1 className="hero-title">
+              {t('home:heroTitle')} <MusicIcon size={32} />
+            </h1>
+            <p className="hero-subtitle">
+              {t('home:heroSubtitle')} {t('icons:icons.microphone')}
+            </p>
+            <div className="hero-features">
+              <div className="feature">
+                <span className="feature-icon">{t('icons:icons.guitar')}</span>
+                <span className="feature-text">{t('home:feature1')}</span>
+              </div>
+              <div className="feature">
+                <span className="feature-icon">{t('icons:icons.piano')}</span>
+                <span className="feature-text">{t('home:feature2')}</span>
+              </div>
+              <div className="feature">
+                <span className="feature-icon">{t('icons:icons.drums')}</span>
+                <span className="feature-text">{t('home:feature3')}</span>
+              </div>
             </div>
           </div>
-        </Grid.Col>
-      ))}
-    </Grid>
-  )
-
-  const renderArtists = () => {
-    if (!searchResults.length) {
-      return (
-        <div className="no-results">
-          <div className="no-results-icon">{t('common:icons.music')}</div>
-          <Title order={3} className="text-primary mb-sm">
-            {t('search:noResults')}
-          </Title>
-          <Text className="text-secondary text-center">
-            {t('search:noResultsMessage')}
-          </Text>
         </div>
       )
     }
 
-    return (
-      <div>
-        <div className="section-header">
-          <Title order={2} className="text-primary">
-            {t('search:results')}
-          </Title>
-          <Text className="text-secondary">
-            {t('search:resultsForWithQuery', 'Results for "{query}"', {
-              query: searchQuery,
-            })}
-          </Text>
+    // Show library section
+    if (activeSection === 'library') {
+      return (
+        <div className="library-section">
+          <div className="library-content">
+            <h2 className="library-title">{t('navigation:library')}</h2>
+            <p className="library-message">
+              {isAuthenticated
+                ? t('navigation:libraryMessage')
+                : t('navigation:libraryMessageUnauth')}
+            </p>
+          </div>
         </div>
+      )
+    }
 
-        <Grid gutter="lg">
-          {searchResults.map((artist: SpotifyArtist) => (
-            <Grid.Col
-              key={artist.id}
-              span={{ base: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
-            >
+    // Show create playlist section
+    if (activeSection === 'create') {
+      return (
+        <div className="create-section">
+          <div className="create-content">
+            <h2 className="create-title">{t('navigation:create')}</h2>
+            <p className="create-message">
+              {isAuthenticated
+                ? t('navigation:createMessage')
+                : t('navigation:createMessageUnauth')}
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    // Show loading skeleton when searching
+    if (isLoading && searchQuery) {
+      return (
+        <div className="main-content">
+          <LoadingSkeleton variant="search-results" count={8} />
+        </div>
+      )
+    }
+
+    if (error) {
+      return (
+        <div className="error-section">
+          <div className="error-content">
+            <span className="error-icon">{t('icons:icons.note')}</span>
+            <h2 className="error-title">{t('search:errorTitle')}</h2>
+            <p className="error-message">{t('search:errorMessage')}</p>
+          </div>
+        </div>
+      )
+    }
+
+    if (!searchQuery) {
+      return (
+        <div className="welcome-section">
+          <div className="welcome-content">
+            <h2 className="welcome-title">{t('search:welcomeTitle')}</h2>
+            <p className="welcome-message">{t('search:welcomeMessage')}</p>
+            <div className="search-tips">
+              <div className="tip">
+                <span className="tip-icon">{t('icons:icons.microphone')}</span>
+                <span className="tip-text">{t('search:tip1')}</span>
+              </div>
+              <div className="tip">
+                <span className="tip-icon">{t('icons:icons.guitar')}</span>
+                <span className="tip-text">{t('search:tip2')}</span>
+              </div>
+              <div className="tip">
+                <span className="tip-icon">{t('icons:icons.piano')}</span>
+                <span className="tip-text">{t('search:tip3')}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    // Show no results only when search is complete and no results found
+    if (searchQuery && !isLoading && searchResults?.length === 0) {
+      return (
+        <div className="no-results-section">
+          <div className="no-results-content">
+            <span className="no-results-icon">{t('icons:icons.note')}</span>
+            <h2 className="no-results-title">{t('search:noResultsTitle')}</h2>
+            <p className="no-results-message">{t('search:noResultsMessage')}</p>
+          </div>
+        </div>
+      )
+    }
+
+    // Show results when search is complete and has results
+    if (searchQuery && !isLoading && searchResults?.length > 0) {
+      return (
+        <div className="results-section">
+          <div className="results-header">
+            <h2 className="results-title">
+              {t('search:resultsTitle', { count: searchResults?.length || 0 })}
+            </h2>
+          </div>
+
+          <div className="results-grid">
+            {searchResults?.map((artist) => (
               <ArtistCard
+                key={artist.id}
                 artist={artist}
-                onClick={handleArtistClick}
-                showGenres={true}
+                onClick={() => handleArtistClick(artist.id)}
                 showFollowers={true}
               />
-            </Grid.Col>
-          ))}
-        </Grid>
-      </div>
-    )
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    // Fallback - should not reach here
+    return null
   }
-
-  const renderHeroSection = () => (
-    <div className="hero-section">
-      <div className="hero-content">
-        <div className="hero-badge">
-          <Badge
-            size="lg"
-            variant="gradient"
-            gradient={{ from: 'green', to: 'blue' }}
-          >
-            {t('common:icons.music')} {t('common:appName')}
-          </Badge>
-        </div>
-
-        <Title order={1} className="hero-title">
-          {t('home:title')}
-        </Title>
-
-        <Text className="hero-subtitle">{t('home:subtitle')}</Text>
-
-        {!isAuthenticated ? (
-          <Button
-            variant="gradient"
-            gradient={{ from: 'green', to: 'blue' }}
-            size="xl"
-            onClick={() => {
-              console.log('🔘 Login button clicked!')
-              login()
-            }}
-            className="hero-button"
-            leftSection={<Play size={20} />}
-          >
-            {t('auth:loginWithSpotify')}
-          </Button>
-        ) : (
-          <div className="search-hero">
-            <SearchInput
-              onSearch={handleSearch}
-              placeholder={t('search:placeholder')}
-            />
-          </div>
-        )}
-      </div>
-
-      <div className="hero-visual">
-        <div className="floating-cards">
-          <div className="floating-card card-1">
-            {t('common:icons.microphone')}
-          </div>
-          <div className="floating-card card-2">{t('common:icons.guitar')}</div>
-          <div className="floating-card card-3">{t('common:icons.piano')}</div>
-          <div className="floating-card card-4">{t('common:icons.drums')}</div>
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderSidebar = () => (
-    <div className="sidebar">
-      <div className="sidebar-section">
-        <div className="sidebar-item active">
-          <Home size={20} />
-          <span>{t('common:home')}</span>
-        </div>
-        <div className="sidebar-item">
-          <Search size={20} />
-          <span>{t('common:search')}</span>
-        </div>
-        <div className="sidebar-item">
-          <Heart size={20} />
-          <span>{t('common:library')}</span>
-        </div>
-      </div>
-
-      <div className="sidebar-section">
-        <div className="sidebar-item">
-          <Plus size={20} />
-          <span>{t('common:createPlaylist')}</span>
-        </div>
-        <div className="sidebar-item">
-          <Heart size={20} />
-          <span>{t('common:likedSongs')}</span>
-        </div>
-        <div className="sidebar-item">
-          <Download size={20} />
-          <span>{t('common:downloads')}</span>
-        </div>
-      </div>
-
-      <div className="sidebar-section">
-        <div className="sidebar-item">
-          <Settings size={20} />
-          <span>{t('common:settings')}</span>
-        </div>
-        <div className="sidebar-item">
-          <User size={20} />
-          <span>{t('common:profile')}</span>
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderHeader = () => (
-    <header className="main-header">
-      <div className="header-left">
-        <div className="logo">
-          <div className="logo-icon">{t('common:icons.note')}</div>
-          <span className="logo-text">{t('common:appName')}</span>
-        </div>
-      </div>
-
-      <div className="header-center">
-        {isAuthenticated && (
-          <SearchInput
-            onSearch={handleSearch}
-            placeholder={t('search:placeholder')}
-          />
-        )}
-      </div>
-
-      <div className="header-right">
-        <ActionIcon variant="subtle" size="lg" className="header-icon">
-          <Settings size={20} />
-        </ActionIcon>
-        <ActionIcon variant="subtle" size="lg" className="header-icon">
-          <User size={20} />
-        </ActionIcon>
-      </div>
-    </header>
-  )
 
   return (
     <div className="app-layout" data-testid="home-page">
-      {renderSidebar()}
-
-      <div className="main-content">
-        {renderHeader()}
-
-        <div className="content-area">
-          {!isAuthenticated ? (
-            renderHeroSection()
-          ) : (
-            <div className="content-wrapper">
-              {searchQuery ? (
-                <div>
-                  {isLoading ? renderSkeletons() : renderArtists()}
-
-                  {error && (
-                    <Alert
-                      title={t('search:error')}
-                      color="red"
-                      className="error-alert"
-                    >
-                      {error}
-                    </Alert>
-                  )}
-                </div>
-              ) : (
-                <div className="welcome-content">
-                  <div className="welcome-section">
-                    <Title order={2} className="welcome-title">
-                      {t('home:welcome')}
-                    </Title>
-                    <Text className="welcome-text">
-                      {t('home:startExploring')}
-                    </Text>
-
-                    <SearchInput
-                      onSearch={handleSearch}
-                      placeholder={t('search:placeholder')}
-                    />
-                  </div>
-
-                  <div className="featured-section">
-                    <Title order={3} className="section-title">
-                      {t('home:trendingArtists')}
-                    </Title>
-                    <Text className="section-subtitle">
-                      {t('home:trendingDescription')}
-                    </Text>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+      <Sidebar
+        activeSection={activeSection}
+        onNavItemClick={handleNavItemClick}
+      />
+      <div className="main-area">
+        <Header onSearch={searchArtists} />
+        <main className="main-content">{renderMainContent()}</main>
       </div>
     </div>
   )

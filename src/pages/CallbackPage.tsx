@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom'
 
 import { Container } from '@/components/layout'
 import { spotifyRepository } from '@/repositories'
+import { logger } from '@/utils/logger'
 
-export default function CallbackPage() {
+export const CallbackPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
@@ -16,8 +17,7 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const processCallback = async () => {
-      console.log('🔄 Processing callback...')
-      console.log('📍 Current URL:', window.location.href)
+      logger.debug('Processing callback', { url: window.location.href })
 
       try {
         // Extrair código e state da URL
@@ -26,13 +26,13 @@ export default function CallbackPage() {
         )
 
         if (!code) {
-          console.log('❌ No code found in URL')
+          logger.error('No code found in URL')
           setStatus('error')
           setErrorMessage(t('auth:tokenNotFound'))
           return
         }
 
-        console.log('✅ Code found, exchanging for token...')
+        logger.debug('Code found, exchanging for token')
 
         // Trocar código por token
         const token = await spotifyRepository.exchangeCodeForToken(
@@ -40,7 +40,7 @@ export default function CallbackPage() {
           state || undefined,
         )
 
-        console.log('✅ Token received, setting up...')
+        logger.debug('Token received, setting up')
 
         // Configurar token no repository
         spotifyRepository.setAccessToken(token)
@@ -56,7 +56,7 @@ export default function CallbackPage() {
           navigate('/')
         }, 2000)
       } catch (error) {
-        console.error('❌ Callback processing error:', error)
+        logger.error('Callback processing error', error)
         setStatus('error')
         setErrorMessage(
           error instanceof Error

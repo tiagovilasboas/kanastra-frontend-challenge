@@ -6,10 +6,10 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 
 import { AppProvider } from '../app/providers/app-provider'
-import App from './App'
+import { App } from './App'
 
 describe('App component', () => {
-  it('renders main content area', () => {
+  it('renders app container', () => {
     render(
       <AppProvider>
         <MemoryRouter>
@@ -18,8 +18,8 @@ describe('App component', () => {
       </AppProvider>,
     )
 
-    const mainContent = screen.getByRole('main')
-    expect(mainContent).toBeInTheDocument()
-    expect(mainContent).toHaveClass('main-content')
+    const appContainer = screen.getByTestId('app-container')
+    expect(appContainer).toBeInTheDocument()
+    expect(appContainer).toHaveClass('app')
   })
 })

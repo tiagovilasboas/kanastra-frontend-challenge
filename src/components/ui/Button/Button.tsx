@@ -1,66 +1,51 @@
-import { Button as MantineButton, ButtonProps as MantineButtonProps } from '@mantine/core'
-import { forwardRef } from 'react'
+import React from 'react'
 
 import styles from './Button.module.css'
 
-export interface ButtonProps extends MantineButtonProps {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'spotify'
-  size?: 'sm' | 'md' | 'lg'
+export interface ButtonProps {
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary' | 'ghost' | 'gradient'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
   onClick?: () => void
+  disabled?: boolean
+  className?: string
+  leftSection?: React.ReactNode
+  rightSection?: React.ReactNode
+  type?: 'button' | 'submit' | 'reset'
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', className, children, ...props }, ref) => {
-    const getVariantClass = () => {
-      switch (variant) {
-        case 'primary':
-          return styles.buttonPrimary
-        case 'secondary':
-          return styles.buttonSecondary
-        case 'danger':
-          return styles.buttonDanger
-        case 'ghost':
-          return styles.buttonGhost
-        case 'spotify':
-          return styles.buttonSpotify
-        default:
-          return styles.buttonPrimary
-      }
-    }
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  onClick,
+  disabled = false,
+  className = '',
+  leftSection,
+  rightSection,
+  type = 'button',
+}) => {
+  const baseClass = styles.button
+  const variantClass = styles[variant]
+  const sizeClass = styles[size]
+  const disabledClass = disabled ? styles.disabled : ''
 
-    const getSizeClass = () => {
-      switch (size) {
-        case 'sm':
-          return styles.buttonSmall
-        case 'md':
-          return styles.buttonMedium
-        case 'lg':
-          return styles.buttonLarge
-        default:
-          return styles.buttonMedium
-      }
-    }
+  const combinedClassName =
+    `${baseClass} ${variantClass} ${sizeClass} ${disabledClass} ${className}`.trim()
 
-    const buttonClasses = [
-      styles.button,
-      getVariantClass(),
-      getSizeClass(),
-      className,
-    ]
-      .filter(Boolean)
-      .join(' ')
-
-    return (
-      <MantineButton
-        ref={ref}
-        className={buttonClasses}
-        variant="unstyled"
-        {...props}
-      >
-        {children}
-      </MantineButton>
-    )
-  },
-)
-
-Button.displayName = 'Button' 
+  return (
+    <button
+      type={type}
+      className={combinedClassName}
+      onClick={onClick}
+      disabled={disabled}
+      aria-disabled={disabled}
+    >
+      {leftSection && <span className={styles.leftSection}>{leftSection}</span>}
+      <span className={styles.content}>{children}</span>
+      {rightSection && (
+        <span className={styles.rightSection}>{rightSection}</span>
+      )}
+    </button>
+  )
+}
