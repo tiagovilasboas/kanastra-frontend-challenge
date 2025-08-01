@@ -1,4 +1,4 @@
-import './i18n'
+import './config/i18n'
 import '@mantine/core/styles.css'
 import './styles/globals.css'
 
@@ -8,11 +8,10 @@ import { RouterProvider } from 'react-router-dom'
 
 import { AppProvider } from './app/providers/app-provider'
 import { router } from './app/router.tsx'
+import App from './app/App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppProvider>
-      <RouterProvider router={router} />
-    </AppProvider>
+    <App />
   </React.StrictMode>,
 )
