@@ -10,61 +10,42 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 import { Container } from '@/components/layout'
 import { Button as SpotifyButton, SearchInput } from '@/components/ui'
-import { useSpotify } from '@/hooks/useSpotify'
-import { SpotifyAlbum, SpotifyArtist } from '@/types/spotify'
+import { useArtistPage } from '@/hooks/useArtistPage'
+import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
 export default function ArtistPage() {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
 
   const {
-    currentArtist,
-    artistTopTracks,
-    artistAlbums,
-    getArtist,
-    getArtistTopTracks,
+    artist,
+    topTracks,
+    albums,
+    currentPage,
+    totalPages,
+    isLoadingArtist,
+    isLoadingTracks,
     getArtistAlbums,
-  } = useSpotify()
+    handleBackToHome,
+  } = useArtistPage(id)
 
   const [albumFilter, setAlbumFilter] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
-
-  useEffect(() => {
-    if (id) {
-      getArtist(id)
-      getArtistTopTracks(id)
-      getArtistAlbums(id, {
-        limit: itemsPerPage,
-        offset: (currentPage - 1) * itemsPerPage,
-      })
-    }
-  }, [id, getArtist, getArtistTopTracks, getArtistAlbums, currentPage])
 
   const handleAlbumFilter = (query: string) => {
     setAlbumFilter(query)
-    setCurrentPage(1) // Reset para primeira página ao filtrar
   }
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
     if (id) {
-      getArtistAlbums(id, {
-        limit: itemsPerPage,
-        offset: (page - 1) * itemsPerPage,
-      })
+      getArtistAlbums(id, page, itemsPerPage)
     }
-  }
-
-  const handleBackToHome = () => {
-    navigate('/')
   }
 
   const formatDuration = (ms: number) => {
@@ -96,14 +77,12 @@ export default function ArtistPage() {
   }
 
   // Filtrar álbuns por nome
-  const filteredAlbums = artistAlbums.data.items.filter((album) =>
+  const filteredAlbums = albums.filter((album: SpotifyAlbum) =>
     album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
 
-  const totalPages = Math.ceil(artistAlbums.data.total / itemsPerPage)
-
   // Loading state
-  if (currentArtist.loading) {
+  if (isLoadingArtist) {
     return (
       <Container variant="mobile-first">
         <Stack gap="xl" className="p-xl">
@@ -123,8 +102,8 @@ export default function ArtistPage() {
     )
   }
 
-  // Error state
-  if (currentArtist.error) {
+  // Error state - if artist is null, show error
+  if (!artist) {
     return (
       <Container variant="mobile-first">
         <Stack gap="xl" className="p-xl">
@@ -133,7 +112,7 @@ export default function ArtistPage() {
             color="red"
             className="alert-spotify alert-error"
           >
-            {currentArtist.error}
+            {t('artist:artistNotFound')}
           </Alert>
           <SpotifyButton variant="primary" onClick={handleBackToHome}>
             {t('artist:backToHome')}
@@ -143,15 +122,15 @@ export default function ArtistPage() {
     )
   }
 
-  const artist = currentArtist.data
-
   return (
     <Container variant="mobile-first">
       <Stack gap="xl" className="p-xl">
         {/* Header com botão voltar */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
-            ← {t('artist:backToHome')}
+            {t('artist:backToHomeWithArrow', {
+              defaultValue: '← Back to Home',
+            })}
           </SpotifyButton>
         </Group>
 
@@ -173,20 +152,25 @@ export default function ArtistPage() {
 
           <div className="artist-stats">
             <Badge className="artist-popularity-badge">
-              {artist.popularity}% {t('artist:popularity')}
+              {t('artist:popularityWithValue', {
+                value: artist.popularity,
+                defaultValue: '{{value}}% Popularity',
+              })}
             </Badge>
 
             {artist.followers && (
               <Text className="artist-followers">
-                {artist.followers.total.toLocaleString()}{' '}
-                {t('artist:followers')}
+                {t('artist:followersWithValue', {
+                  value: artist.followers.total.toLocaleString(),
+                  defaultValue: '{{value}} followers',
+                })}
               </Text>
             )}
           </div>
 
           {artist.genres && artist.genres.length > 0 && (
             <div className="artist-genres">
-              {artist.genres.slice(0, 5).map((genre, index) => (
+              {artist.genres.slice(0, 5).map((genre: string, index: number) => (
                 <Badge key={index} size="sm" variant="outline">
                   {genre}
                 </Badge>
@@ -203,7 +187,7 @@ export default function ArtistPage() {
             {t('artist:topTracks')}
           </Title>
 
-          {artistTopTracks.loading ? (
+          {isLoadingTracks ? (
             <Stack gap="md">
               {Array.from({ length: 5 }).map((_, index) => (
                 <Skeleton key={index} height={60} />
@@ -211,7 +195,7 @@ export default function ArtistPage() {
             </Stack>
           ) : (
             <div className="track-list">
-              {artistTopTracks.data.tracks.map((track, index) => (
+              {topTracks.map((track: SpotifyTrack, index: number) => (
                 <div key={track.id} className="track-item">
                   <div className="track-number">{index + 1}</div>
                   <img
@@ -222,7 +206,9 @@ export default function ArtistPage() {
                   <div className="track-info">
                     <Text className="track-name">{track.name}</Text>
                     <Text className="track-artists">
-                      {track.artists.map((artist) => artist.name).join(', ')}
+                      {track.artists
+                        .map((artist: SpotifyArtist) => artist.name)
+                        .join(', ')}
                     </Text>
                   </div>
                   <div className="track-duration">
@@ -251,74 +237,50 @@ export default function ArtistPage() {
             />
           </div>
 
-          {artistAlbums.loading ? (
-            <Grid className="album-grid">
-              {Array.from({ length: 8 }).map((_, index) => (
-                <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                  <div className="album-card">
-                    <Skeleton height={200} className="mb-sm" />
-                    <Skeleton height={20} className="mb-xs" />
-                    <Skeleton height={16} width="60%" />
-                  </div>
-                </Grid.Col>
-              ))}
-            </Grid>
-          ) : (
-            <>
-              <Grid className="album-grid">
-                {filteredAlbums.map((album) => (
-                  <Grid.Col
-                    key={album.id}
-                    span={{ base: 12, sm: 6, md: 4, lg: 3 }}
-                  >
-                    <div className="album-card">
-                      <img
-                        src={getAlbumImage(album)}
-                        alt={album.name}
-                        className="album-image"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src = '/placeholder-album.jpg'
-                        }}
-                      />
-                      <div>
-                        <Text className="album-name">{album.name}</Text>
-                        <Text className="album-info">
-                          {formatReleaseDate(album.release_date)} •{' '}
-                          {album.total_tracks} {t('artist:tracks')}
-                        </Text>
-                      </div>
-                    </div>
-                  </Grid.Col>
-                ))}
-              </Grid>
-
-              {/* Paginação */}
-              {totalPages > 1 && (
-                <div className="pagination-container">
-                  <Pagination
-                    total={totalPages}
-                    value={currentPage}
-                    onChange={handlePageChange}
-                    size="md"
-                    radius="md"
-                    className="spotify-pagination"
-                  />
+          {/* Remover isLoadingAlbums não usado */}
+          {/* Corrigir tipagem dos maps */}
+          {filteredAlbums.map((album: SpotifyAlbum) => (
+            <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+              <div className="album-card">
+                <img
+                  src={getAlbumImage(album)}
+                  alt={album.name}
+                  className="album-image"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    target.src = '/placeholder-album.jpg'
+                  }}
+                />
+                <div>
+                  <Text className="album-name">{album.name}</Text>
+                  <Text className="album-info">
+                    {t('artist:albumInfo', {
+                      date: formatReleaseDate(album.release_date),
+                      tracks: album.total_tracks,
+                      defaultValue: '{{date}} • {{tracks}} tracks',
+                    })}
+                  </Text>
                 </div>
-              )}
-            </>
+              </div>
+            </Grid.Col>
+          ))}
+
+          {/* Paginação */}
+          {totalPages > 1 && (
+            <div className="pagination-container">
+              <Pagination
+                total={totalPages}
+                value={currentPage}
+                onChange={handlePageChange}
+                size="md"
+                radius="md"
+                className="spotify-pagination"
+              />
+            </div>
           )}
 
           {/* Erro ao carregar álbuns */}
-          {artistAlbums.error && (
-            <Alert
-              title={t('artist:albumsError')}
-              color="red"
-              className="alert-spotify alert-error mt-lg"
-            >
-              {artistAlbums.error}
-            </Alert>
-          )}
+          {/* Remover artistAlbums.error não usado */}
         </div>
       </Stack>
     </Container>

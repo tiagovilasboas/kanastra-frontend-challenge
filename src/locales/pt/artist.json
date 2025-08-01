@@ -7,5 +7,9 @@
   "filterAlbums": "Filtrar álbuns...",
   "backToHome": "Voltar ao início",
   "error": "Erro ao carregar artista",
-  "albumsError": "Erro ao carregar álbuns"
-} 
+  "albumsError": "Erro ao carregar álbuns",
+  "backToHomeWithArrow": "← Voltar para início",
+  "popularityWithValue": "{{value}}% Popularidade",
+  "followersWithValue": "{{value}} seguidores",
+  "albumInfo": "{{date}} • {{tracks}} faixas"
+}

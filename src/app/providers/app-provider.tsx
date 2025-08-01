@@ -1,7 +1,9 @@
 import { createTheme, MantineProvider } from '@mantine/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { useAppStore } from '@/stores/appStore'
 
 type AppProviderProps = {
@@ -12,6 +14,8 @@ const theme = createTheme({
   primaryColor: 'blue',
   fontFamily: 'Inter, sans-serif',
 })
+
+const queryClient = new QueryClient()
 
 export function AppProvider({ children }: AppProviderProps) {
   const { theme: appTheme } = useAppStore()
@@ -25,8 +29,12 @@ export function AppProvider({ children }: AppProviderProps) {
   }, [language, i18n])
 
   return (
-    <MantineProvider theme={theme} forceColorScheme={appTheme}>
-      {children}
-    </MantineProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider theme={theme} forceColorScheme={appTheme}>
+          {children}
+        </MantineProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

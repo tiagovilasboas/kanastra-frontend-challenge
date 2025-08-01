@@ -7,5 +7,9 @@
   "filterAlbums": "Filter albums...",
   "backToHome": "Back to home",
   "error": "Error loading artist",
-  "albumsError": "Error loading albums"
-} 
+  "albumsError": "Error loading albums",
+  "backToHomeWithArrow": "← Back to Home",
+  "popularityWithValue": "{{value}}% Popularity",
+  "followersWithValue": "{{value}} followers",
+  "albumInfo": "{{date}} • {{tracks}} tracks"
+}

@@ -5,5 +5,6 @@
   "resultsFor": "Resultados para",
   "noResults": "Nenhum resultado encontrado",
   "noResultsMessage": "Tente buscar por outro artista ou verifique a ortografia",
-  "error": "Erro na busca"
-} 
+  "error": "Erro na busca",
+  "resultsForWithQuery": "Resultados para \"{query}\""
+}

@@ -5,14 +5,16 @@ import { useNavigate } from 'react-router-dom'
 
 import { Container } from '@/components/layout'
 import { ArtistCard, SearchInput } from '@/components/ui'
-import { useSpotify } from '@/hooks/useSpotify'
+import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
+import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { SpotifyArtist } from '@/types/spotify'
 
 export default function HomePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { isAuthenticated, searchResults, searchArtists, clearSearch } =
-    useSpotify()
+  const { isAuthenticated, login } = useSpotifyAuth()
+  const { searchResults, searchArtists, clearSearch, isLoading, error } =
+    useSpotifySearch()
 
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -24,11 +26,7 @@ export default function HomePage() {
   const handleSearch = (query: string) => {
     setSearchQuery(query)
     if (query.trim()) {
-      searchArtists({
-        query: query.trim(),
-        type: 'artist',
-        limit: 20,
-      })
+      searchArtists(query.trim())
     } else {
       clearSearch()
     }
@@ -36,11 +34,6 @@ export default function HomePage() {
 
   const handleArtistClick = (artist: SpotifyArtist) => {
     navigate(`/artist/${artist.id}`)
-  }
-
-  const handleLogin = () => {
-    window.location.href =
-      'https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=https://localhost:5173/callback&scope=user-read-private%20user-read-email'
   }
 
   const renderSkeletons = () => (
@@ -59,7 +52,7 @@ export default function HomePage() {
   )
 
   const renderArtists = () => {
-    if (!searchResults.data?.artists?.items?.length) {
+    if (!searchResults.length) {
       return (
         <Alert
           title={t('search:noResults')}
@@ -73,7 +66,7 @@ export default function HomePage() {
 
     return (
       <Grid className="grid-spotify">
-        {searchResults.data.artists.items.map((artist) => (
+        {searchResults.map((artist: SpotifyArtist) => (
           <Grid.Col key={artist.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
             <ArtistCard
               artist={artist}
@@ -108,12 +101,7 @@ export default function HomePage() {
       />
 
       {!isAuthenticated && (
-        <Button
-          variant="spotify"
-          size="lg"
-          onClick={handleLogin}
-          className="mt-2xl"
-        >
+        <Button variant="spotify" size="lg" onClick={login} className="mt-2xl">
           {t('auth:loginWithSpotify')}
         </Button>
       )}
@@ -130,7 +118,9 @@ export default function HomePage() {
           </Title>
           {searchQuery && (
             <Text className="text-secondary text-base">
-              {t('search:resultsFor')} &quot;{searchQuery}&quot;
+              {t('search:resultsForWithQuery', 'Results for "{query}"', {
+                query: searchQuery,
+              })}
             </Text>
           )}
         </div>
@@ -149,20 +139,20 @@ export default function HomePage() {
           renderInitialState()
         ) : (
           <div>
-            {searchResults.loading
+            {isLoading
               ? renderSkeletons()
               : searchQuery
                 ? renderArtists()
                 : renderInitialState()}
 
             {/* Mensagem de erro */}
-            {searchResults.error && (
+            {error && (
               <Alert
                 title={t('search:error')}
                 color="red"
                 className="alert-spotify alert-error mt-lg"
               >
-                {searchResults.error}
+                {error}
               </Alert>
             )}
           </div>

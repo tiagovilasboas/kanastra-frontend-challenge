@@ -30,7 +30,22 @@
   },
   "flags": {
     "brazil": "🇧🇷",
-    "usa": "��🇸"
+    "usa": "🇺🇸"
   },
-  "colon": ":"
+  "colon": ":",
+  "errorBoundary": {
+    "title": "Ops! Algo deu errado",
+    "description": "Desculpe, ocorreu um erro inesperado. Tente recarregar a página.",
+    "details": "Detalhes do erro (desenvolvimento)",
+    "tryAgain": "Tentar Novamente"
+  },
+  "artistCard": {
+    "playArtist": "Reproduzir artista",
+    "popularity": "Popularidade",
+    "followers": "Seguidores",
+    "popularityWithValue": "{{value}}%"
+  },
+  "searchInput": {
+    "clearSearch": "Limpar busca"
+  }
 }

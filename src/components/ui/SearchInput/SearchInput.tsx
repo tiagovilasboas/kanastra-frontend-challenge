@@ -1,5 +1,6 @@
 import { Search, X } from 'lucide-react'
-import { useEffect,useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import styles from './SearchInput.module.css'
 
@@ -16,6 +17,7 @@ export function SearchInput({
   disabled = false,
   debounceMs = 300,
 }: SearchInputProps) {
+  const { t } = useTranslation()
   const [value, setValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
@@ -51,7 +53,7 @@ export function SearchInput({
   return (
     <div className={styles.searchContainer}>
       <Search className={styles.searchIcon} size={20} />
-      
+
       <input
         type="text"
         value={value}
@@ -60,19 +62,19 @@ export function SearchInput({
         disabled={disabled}
         className={styles.searchInput}
       />
-      
+
       {isLoading && <div className={styles.searchLoading} />}
-      
+
       {value && !isLoading && (
         <button
           type="button"
           onClick={handleClear}
           className={styles.searchClear}
-          aria-label="Clear search"
+          aria-label={t('searchInput:clearSearch', 'Clear search')}
         >
           <X size={12} />
         </button>
       )}
     </div>
   )
-} 
+}

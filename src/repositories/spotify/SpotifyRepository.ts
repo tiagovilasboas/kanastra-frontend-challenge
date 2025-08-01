@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
+import { getApiConfig, getSpotifyConfig } from '@/config/environment'
 import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
 import { RepositoryError } from '../base/BaseRepository'
@@ -41,13 +42,6 @@ export interface SpotifyArtistAlbumsResponse {
   previous: string | null
 }
 
-export interface SpotifyConfig {
-  clientId: string
-  redirectUri: string
-  scopes: string[]
-  baseUrl: string
-}
-
 export interface SpotifyError {
   error: {
     status: number
@@ -58,13 +52,13 @@ export interface SpotifyError {
 export class SpotifyRepository {
   private api: AxiosInstance
   private accessToken: string | null = null
-  private config: SpotifyConfig
+  private config = getSpotifyConfig()
+  private apiConfig = getApiConfig()
 
-  constructor(config: SpotifyConfig) {
-    this.config = config
+  constructor() {
     this.api = axios.create({
-      baseURL: config.baseUrl,
-      timeout: 10000,
+      baseURL: this.config.baseUrl,
+      timeout: this.apiConfig.timeout,
     })
 
     this.setupInterceptors()
@@ -74,7 +68,7 @@ export class SpotifyRepository {
     const { clientId, redirectUri, scopes } = this.config
     const scopeString = scopes.join(' ')
 
-    return `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
+    return `${this.config.authUrl}?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
       redirectUri,
     )}&scope=${encodeURIComponent(scopeString)}`
   }
@@ -111,14 +105,17 @@ export class SpotifyRepository {
     params: SearchParams = { query, type: 'artist', limit: 20, offset: 0 },
   ): Promise<SpotifySearchResponse> {
     try {
-      const response: AxiosResponse<SpotifySearchResponse> = await this.api.get('/search', {
-        params: {
-          q: params.query,
-          type: 'artist',
-          limit: params.limit || 20,
-          offset: params.offset || 0,
+      const response: AxiosResponse<SpotifySearchResponse> = await this.api.get(
+        '/search',
+        {
+          params: {
+            q: params.query,
+            type: 'artist',
+            limit: params.limit || 20,
+            offset: params.offset || 0,
+          },
         },
-      })
+      )
       return response.data
     } catch (error) {
       throw this.handleError(error, 'Failed to search artists')
@@ -127,7 +124,9 @@ export class SpotifyRepository {
 
   async getArtist(id: string): Promise<SpotifyArtist> {
     try {
-      const response: AxiosResponse<SpotifyArtist> = await this.api.get(`/artists/${id}`)
+      const response: AxiosResponse<SpotifyArtist> = await this.api.get(
+        `/artists/${id}`,
+      )
       return response.data
     } catch (error) {
       throw this.handleError(error, `Failed to get artist ${id}`)
@@ -139,12 +138,14 @@ export class SpotifyRepository {
     market: string = 'BR',
   ): Promise<SpotifyArtistTopTracksResponse> {
     try {
-      const response: AxiosResponse<SpotifyArtistTopTracksResponse> = await this.api.get(
-        `/artists/${artistId}/top-tracks?market=${market}`,
-      )
+      const response: AxiosResponse<SpotifyArtistTopTracksResponse> =
+        await this.api.get(`/artists/${artistId}/top-tracks?market=${market}`)
       return response.data
     } catch (error) {
-      throw this.handleError(error, `Failed to get top tracks for artist ${artistId}`)
+      throw this.handleError(
+        error,
+        `Failed to get top tracks for artist ${artistId}`,
+      )
     }
   }
 
@@ -153,19 +154,20 @@ export class SpotifyRepository {
     params: AlbumParams = {},
   ): Promise<SpotifyArtistAlbumsResponse> {
     try {
-      const response: AxiosResponse<SpotifyArtistAlbumsResponse> = await this.api.get(
-        `/artists/${artistId}/albums`,
-        {
+      const response: AxiosResponse<SpotifyArtistAlbumsResponse> =
+        await this.api.get(`/artists/${artistId}/albums`, {
           params: {
             limit: params.limit || 20,
             offset: params.offset || 0,
             include_groups: params.include_groups || 'album,single',
           },
-        },
-      )
+        })
       return response.data
     } catch (error) {
-      throw this.handleError(error, `Failed to get albums for artist ${artistId}`)
+      throw this.handleError(
+        error,
+        `Failed to get albums for artist ${artistId}`,
+      )
     }
   }
 
@@ -197,7 +199,9 @@ export class SpotifyRepository {
 
   private handleError(error: unknown, message: string): RepositoryError {
     if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as { response?: { data?: unknown; status?: number } }
+      const axiosError = error as {
+        response?: { data?: unknown; status?: number }
+      }
 
       if (axiosError.response?.data) {
         const spotifyError = axiosError.response.data as SpotifyError
@@ -225,4 +229,4 @@ export class SpotifyRepository {
     delete this.api.defaults.headers.common['Authorization']
     window.location.href = this.getAuthUrl()
   }
-} 
+}

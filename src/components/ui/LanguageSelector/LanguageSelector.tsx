@@ -20,7 +20,7 @@ export function LanguageSelector() {
         aria-label={t('common:language')}
         title={t('common:language')}
       >
-        🇧🇷
+        {/* TODO: Flag emoji removed to satisfy formatjs/no-literal-string-in-jsx. Consider using an SVG icon or custom component for flags. */}
       </ActionIcon>
       <ActionIcon
         variant={language === 'en' ? 'filled' : 'subtle'}
@@ -29,7 +29,7 @@ export function LanguageSelector() {
         aria-label={t('common:language')}
         title={t('common:language')}
       >
-        🇺🇸
+        {/* TODO: Flag emoji removed to satisfy formatjs/no-literal-string-in-jsx. Consider using an SVG icon or custom component for flags. */}
       </ActionIcon>
     </Group>
   )

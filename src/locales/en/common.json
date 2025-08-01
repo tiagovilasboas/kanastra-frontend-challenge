@@ -30,7 +30,22 @@
   },
   "flags": {
     "brazil": "🇧🇷",
-    "usa": "��🇸"
+    "usa": "🇺🇸"
   },
-  "colon": ":"
+  "colon": ":",
+  "errorBoundary": {
+    "title": "Oops! Something went wrong",
+    "description": "Sorry, an unexpected error occurred. Try reloading the page.",
+    "details": "Error details (development)",
+    "tryAgain": "Try Again"
+  },
+  "artistCard": {
+    "playArtist": "Play artist",
+    "popularity": "Popularity",
+    "followers": "Followers",
+    "popularityWithValue": "{{value}}%"
+  },
+  "searchInput": {
+    "clearSearch": "Clear search"
+  }
 }

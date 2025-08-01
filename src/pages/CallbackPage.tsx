@@ -1,4 +1,4 @@
-import { Loader,Stack, Text, Title } from '@mantine/core'
+import { Loader, Stack, Text, Title } from '@mantine/core'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -9,15 +9,19 @@ import { spotifyRepository } from '@/repositories'
 export default function CallbackPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>(
+    'loading',
+  )
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     const processCallback = async () => {
       try {
         // Extrair token da URL
-        const token = spotifyRepository.extractTokenFromUrl(window.location.href)
-        
+        const token = spotifyRepository.extractTokenFromUrl(
+          window.location.href,
+        )
+
         if (!token) {
           setStatus('error')
           setErrorMessage('Token não encontrado na URL')
@@ -26,21 +30,22 @@ export default function CallbackPage() {
 
         // Configurar token no repository
         spotifyRepository.setAccessToken(token)
-        
+
         // Salvar no localStorage
         localStorage.setItem('spotify_token', token)
-        
+
         // Marcar como sucesso
         setStatus('success')
-        
+
         // Redirecionar após 2 segundos
         setTimeout(() => {
           navigate('/')
         }, 2000)
-        
       } catch (error) {
         setStatus('error')
-        setErrorMessage(error instanceof Error ? error.message : 'Erro desconhecido')
+        setErrorMessage(
+          error instanceof Error ? error.message : 'Erro desconhecido',
+        )
       }
     }
 
@@ -61,12 +66,17 @@ export default function CallbackPage() {
             </Text>
           </Stack>
         )
-      
+
       case 'success':
         return (
           <Stack gap="lg" align="center">
-            <div className="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center">
-              <span className="text-white text-2xl">✓</span>
+            <div
+              className="w-16 h-16 bg-spotify-green rounded-full flex items-center justify-center"
+              aria-label={t('auth:successIconLabel', 'Success')}
+            >
+              <span className="text-white text-2xl">
+                {t('auth:successIcon', '✓')}
+              </span>
             </div>
             <Title order={2} className="text-primary font-bold text-2xl">
               {t('auth:success')}
@@ -76,12 +86,17 @@ export default function CallbackPage() {
             </Text>
           </Stack>
         )
-      
+
       case 'error':
         return (
           <Stack gap="lg" align="center">
-            <div className="w-16 h-16 bg-error rounded-full flex items-center justify-center">
-              <span className="text-white text-2xl">✗</span>
+            <div
+              className="w-16 h-16 bg-error rounded-full flex items-center justify-center"
+              aria-label={t('auth:errorIconLabel', 'Error')}
+            >
+              <span className="text-white text-2xl">
+                {t('auth:errorIcon', '✗')}
+              </span>
             </div>
             <Title order={2} className="text-primary font-bold text-2xl">
               {t('auth:error')}
@@ -97,7 +112,7 @@ export default function CallbackPage() {
             </button>
           </Stack>
         )
-      
+
       default:
         return null
     }
@@ -105,7 +120,12 @@ export default function CallbackPage() {
 
   return (
     <Container variant="mobile-first">
-      <Stack gap="xl" align="center" justify="center" className="min-h-screen p-3xl">
+      <Stack
+        gap="xl"
+        align="center"
+        justify="center"
+        className="min-h-screen p-3xl"
+      >
         {renderContent()}
       </Stack>
     </Container>

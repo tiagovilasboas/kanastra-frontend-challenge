@@ -1,9 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import App from './App'
 import ArtistPage from '@/pages/ArtistPage'
 import CallbackPage from '@/pages/CallbackPage'
 import HomePage from '@/pages/HomePage'
+
+import App from './App'
 
 export const router = createBrowserRouter([
   {
