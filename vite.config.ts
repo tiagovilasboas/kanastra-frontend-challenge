@@ -15,10 +15,7 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    https: {
-      key: undefined,
-      cert: undefined,
-    },
+    host: '0.0.0.0',
   },
   test: {
     globals: true,

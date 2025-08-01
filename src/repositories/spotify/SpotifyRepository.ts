@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios'
 
 import { getApiConfig, getSpotifyConfig } from '@/config/environment'
 import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
+import { CookieManager } from '@/utils/cookies'
 
 import { RepositoryError } from '../base/BaseRepository'
 
@@ -64,26 +65,199 @@ export class SpotifyRepository {
     this.setupInterceptors()
   }
 
-  getAuthUrl(): string {
+  // PKCE Implementation based on Spotify's official documentation
+  private generateCodeVerifier(): string {
+    const array = new Uint8Array(32)
+    crypto.getRandomValues(array)
+    return btoa(String.fromCharCode(...array))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
+  private async generateCodeChallenge(codeVerifier: string): Promise<string> {
+    const encoder = new TextEncoder()
+    const data = encoder.encode(codeVerifier)
+    const digest = await crypto.subtle.digest('SHA-256', data)
+    return btoa(String.fromCharCode(...new Uint8Array(digest)))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
+  async getAuthUrl(): Promise<string> {
     const { clientId, redirectUri, scopes } = this.config
     const scopeString = scopes.join(' ')
 
-    return `${this.config.authUrl}?client_id=${clientId}&response_type=token&redirect_uri=${encodeURIComponent(
-      redirectUri,
-    )}&scope=${encodeURIComponent(scopeString)}`
+    console.log('🔐 Generating auth URL...')
+
+    // Generate PKCE parameters
+    const codeVerifier = this.generateCodeVerifier()
+    const codeChallenge = await this.generateCodeChallenge(codeVerifier)
+
+    console.log(
+      '📝 Code verifier generated:',
+      codeVerifier.substring(0, 10) + '...',
+    )
+    console.log(
+      '🔐 Code challenge generated:',
+      codeChallenge.substring(0, 10) + '...',
+    )
+
+    // Store code verifier securely
+    this.storeCodeVerifier(codeVerifier)
+
+    // Add state parameter with code verifier for persistence
+    const state = btoa(codeVerifier)
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+
+    // Build authorization URL
+    const params = new URLSearchParams({
+      client_id: clientId,
+      response_type: 'code',
+      redirect_uri: redirectUri,
+      scope: scopeString,
+      code_challenge: codeChallenge,
+      code_challenge_method: 'S256',
+      state: state,
+    })
+
+    const authUrl = `${this.config.authUrl}?${params.toString()}`
+    console.log('🌐 Auth URL generated:', authUrl.substring(0, 100) + '...')
+
+    return authUrl
   }
 
-  extractTokenFromUrl(url: string): string | null {
-    const hash = url.split('#')[1]
-    if (!hash) return null
+  private storeCodeVerifier(codeVerifier: string): void {
+    CookieManager.setCodeVerifier(codeVerifier)
+  }
 
-    const params = new URLSearchParams(hash)
-    return params.get('access_token')
+  private getCodeVerifier(): string | null {
+    return CookieManager.getCodeVerifier()
+  }
+
+  private clearCodeVerifier(): void {
+    CookieManager.clearCodeVerifier()
+  }
+
+  async exchangeCodeForToken(code: string, state?: string): Promise<string> {
+    console.log('🔄 Exchanging code for token...')
+    console.log('📝 Code received:', code.substring(0, 10) + '...')
+
+    let codeVerifier = this.getCodeVerifier()
+
+    // If code verifier not found in localStorage, try to extract from state parameter
+    if (!codeVerifier && state) {
+      try {
+        console.log(
+          '🔍 Trying to extract code verifier from state parameter...',
+        )
+        const decodedState = atob(state.replace(/-/g, '+').replace(/_/g, '/'))
+        codeVerifier = decodedState
+        console.log(
+          '✅ Code verifier extracted from state:',
+          codeVerifier.substring(0, 10) + '...',
+        )
+      } catch (error) {
+        console.error('❌ Failed to extract code verifier from state:', error)
+      }
+    }
+
+    if (!codeVerifier) {
+      throw new Error(
+        'Authentication session expired. Please try logging in again.',
+      )
+    }
+
+    const { clientId, redirectUri } = this.config
+    const tokenUrl = 'https://accounts.spotify.com/api/token'
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: redirectUri,
+      code_verifier: codeVerifier,
+    })
+
+    console.log('📤 Sending token exchange request...')
+
+    try {
+      const response = await fetch(tokenUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params,
+      })
+
+      console.log('📥 Response status:', response.status)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ Token exchange failed:', errorData)
+        throw new Error(
+          errorData.error_description ||
+            errorData.error ||
+            `Token exchange failed: ${response.status}`,
+        )
+      }
+
+      const data = await response.json()
+      console.log('✅ Token exchange successful')
+
+      // Clean up code verifier after successful exchange
+      this.clearCodeVerifier()
+
+      return data.access_token
+    } catch (error) {
+      console.error('❌ Token exchange error:', error)
+      // Clean up on error
+      this.clearCodeVerifier()
+      throw error
+    }
+  }
+
+  extractCodeFromUrl(url: string): {
+    code: string | null
+    state: string | null
+  } {
+    try {
+      const urlObj = new URL(url)
+      const code = urlObj.searchParams.get('code')
+      const state = urlObj.searchParams.get('state')
+      console.log(
+        '🔍 Code extracted from URL:',
+        code ? code.substring(0, 10) + '...' : 'null',
+      )
+      console.log(
+        '🔍 State extracted from URL:',
+        state ? state.substring(0, 10) + '...' : 'null',
+      )
+      return { code, state }
+    } catch {
+      // Fallback for older browsers or malformed URLs
+      const urlParams = new URLSearchParams(url.split('?')[1] || '')
+      const code = urlParams.get('code')
+      const state = urlParams.get('state')
+      console.log(
+        '🔍 Code extracted from URL (fallback):',
+        code ? code.substring(0, 10) + '...' : 'null',
+      )
+      console.log(
+        '🔍 State extracted from URL (fallback):',
+        state ? state.substring(0, 10) + '...' : 'null',
+      )
+      return { code, state }
+    }
   }
 
   setAccessToken(token: string): void {
     this.accessToken = token
     this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    console.log('🔑 Access token set')
   }
 
   getAccessToken(): string | null {
@@ -98,6 +272,8 @@ export class SpotifyRepository {
     this.accessToken = null
     delete this.api.defaults.headers.common['Authorization']
     localStorage.removeItem('spotify_token')
+    this.clearCodeVerifier()
+    console.log('🚪 Logged out and cleared all authentication data')
   }
 
   async searchArtists(
@@ -224,9 +400,17 @@ export class SpotifyRepository {
     return new RepositoryError(message, undefined, error)
   }
 
-  private handleTokenExpired(): void {
+  private async handleTokenExpired(): Promise<void> {
     this.accessToken = null
     delete this.api.defaults.headers.common['Authorization']
-    window.location.href = this.getAuthUrl()
+    this.clearCodeVerifier()
+
+    try {
+      const authUrl = await this.getAuthUrl()
+      window.location.href = authUrl
+    } catch (error) {
+      console.error('Failed to redirect to auth:', error)
+      window.location.href = '/'
+    }
   }
 }

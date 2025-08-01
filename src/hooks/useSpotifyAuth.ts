@@ -26,13 +26,19 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     }
   }, [])
 
-  const login = useCallback(() => {
-    window.location.href = spotifyRepository.getAuthUrl()
+  const login = useCallback(async () => {
+    try {
+      console.log('🚀 Starting login process...')
+      const authUrl = await spotifyRepository.getAuthUrl()
+      console.log('🌐 Redirecting to:', authUrl.substring(0, 100) + '...')
+      window.location.href = authUrl
+    } catch (error) {
+      console.error('❌ Error generating auth URL:', error)
+    }
   }, [])
 
   const logout = useCallback(() => {
     spotifyRepository.logout()
-    localStorage.removeItem('spotify_token')
     setIsAuthenticated(false)
 
     // Invalidate all Spotify-related queries
@@ -42,12 +48,20 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     navigate('/')
   }, [navigate, queryClient])
 
-  const handleCallback = useCallback((url: string) => {
-    const token = spotifyRepository.extractTokenFromUrl(url)
-    if (token) {
-      spotifyRepository.setAccessToken(token)
-      localStorage.setItem('spotify_token', token)
-      setIsAuthenticated(true)
+  const handleCallback = useCallback(async (url: string) => {
+    try {
+      const { code, state } = spotifyRepository.extractCodeFromUrl(url)
+      if (code) {
+        const token = await spotifyRepository.exchangeCodeForToken(
+          code,
+          state || undefined,
+        )
+        spotifyRepository.setAccessToken(token)
+        localStorage.setItem('spotify_token', token)
+        setIsAuthenticated(true)
+      }
+    } catch (error) {
+      console.error('Error exchanging code for token:', error)
     }
   }, [])
 

@@ -16,17 +16,31 @@ export default function CallbackPage() {
 
   useEffect(() => {
     const processCallback = async () => {
+      console.log('🔄 Processing callback...')
+      console.log('📍 Current URL:', window.location.href)
+
       try {
-        // Extrair token da URL
-        const token = spotifyRepository.extractTokenFromUrl(
+        // Extrair código e state da URL
+        const { code, state } = spotifyRepository.extractCodeFromUrl(
           window.location.href,
         )
 
-        if (!token) {
+        if (!code) {
+          console.log('❌ No code found in URL')
           setStatus('error')
           setErrorMessage(t('auth:tokenNotFound'))
           return
         }
+
+        console.log('✅ Code found, exchanging for token...')
+
+        // Trocar código por token
+        const token = await spotifyRepository.exchangeCodeForToken(
+          code,
+          state || undefined,
+        )
+
+        console.log('✅ Token received, setting up...')
 
         // Configurar token no repository
         spotifyRepository.setAccessToken(token)
@@ -42,9 +56,14 @@ export default function CallbackPage() {
           navigate('/')
         }, 2000)
       } catch (error) {
+        console.error('❌ Callback processing error:', error)
         setStatus('error')
         setErrorMessage(
-          error instanceof Error ? error.message : t('auth:unknownError'),
+          error instanceof Error
+            ? error.message.includes('Authentication session expired')
+              ? t('auth:codeVerifierNotFound')
+              : error.message
+            : t('auth:unknownError'),
         )
       }
     }

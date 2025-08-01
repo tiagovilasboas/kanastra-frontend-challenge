@@ -139,7 +139,10 @@ export default function HomePage() {
             variant="gradient"
             gradient={{ from: 'green', to: 'blue' }}
             size="xl"
-            onClick={login}
+            onClick={() => {
+              console.log('🔘 Login button clicked!')
+              login()
+            }}
             className="hero-button"
             leftSection={<Play size={20} />}
           >
@@ -243,7 +246,7 @@ export default function HomePage() {
   )
 
   return (
-    <div className="app-layout">
+    <div className="app-layout" data-testid="home-page">
       {renderSidebar()}
 
       <div className="main-content">

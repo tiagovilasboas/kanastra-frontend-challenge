@@ -23,6 +23,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:watch": "vitest --watch",
+    "test:e2e": "cypress run",
+    "test:e2e:open": "cypress open",
     "type-check": "tsc --noEmit",
     "prepare": "husky install",
     "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run"
@@ -50,6 +52,7 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
     "@vitest/coverage-v8": "^3.2.4",
+    "cypress": "^14.5.3",
     "eslint": "^9.29.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-formatjs": "^5.4.0",
