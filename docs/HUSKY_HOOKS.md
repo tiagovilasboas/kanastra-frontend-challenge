@@ -40,7 +40,7 @@ O Husky é configurado para garantir que apenas código de qualidade seja commit
 **Arquivo:** `.husky/commit-msg`
 
 **Executa após cada commit:**
-- ✅ **Commitlint** - Verifica formato da mensagem de commit
+
 
 **Bloqueia commit se:**
 - ❌ Mensagem não segue convenção

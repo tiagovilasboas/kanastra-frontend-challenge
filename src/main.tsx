@@ -1,8 +1,6 @@
 import './i18n'
-import './index.css'
 import '@mantine/core/styles.css'
 import './styles/globals.css'
-import './styles/components.css'
 
 import React from 'react'
 import ReactDOM from 'react-dom/client'
