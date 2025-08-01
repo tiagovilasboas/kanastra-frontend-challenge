@@ -1,15 +1,17 @@
-# Kanastra Frontend Challenge - Spotify API Integration
+# Spotify Explorer - Frontend Challenge
 
-Este projeto foi construído usando o [React Vite Boilerplate](https://github.com/tiagovilasboas/react-vite-boilerplate) como base, fornecendo uma estrutura robusta e moderna para desenvolvimento React com integração à **Spotify Web API**.
+Uma aplicação web moderna que permite explorar artistas, músicas e álbuns através da **Spotify Web API**, construída com React, TypeScript e seguindo princípios de Clean Code.
 
 ## 🎵 Sobre o Projeto
 
 Uma aplicação web moderna que permite aos usuários:
 
-- 🔍 Buscar artistas por nome
-- 👤 Visualizar detalhes dos artistas
+- 🔍 Buscar artistas por nome com resultados em tempo real
+- 👤 Visualizar detalhes completos dos artistas
 - 🎵 Explorar top músicas dos artistas
 - 💿 Navegar pelos álbuns com paginação
+- 🌐 Interface em português e inglês
+- 🎨 Tema escuro moderno e responsivo
 
 ## 🚀 Tecnologias
 
@@ -20,14 +22,24 @@ Uma aplicação web moderna que permite aos usuários:
 - 🧪 **Vitest & Testing Library:** Configuração de testes moderna e rápida
 - 📐 **ESLint & Prettier:** Qualidade de código e formatação garantidas
 - 🌐 **i18n:** Suporte para internacionalização (PT/EN)
-- 🏛️ **Arquitetura em Camadas:** Código organizado, escalável e fácil de testar
-- 🎧 **Spotify Web API:** Integração para dados de artistas, músicas e álbuns
+- 🎧 **Spotify Web API:** Integração completa para dados de artistas, músicas e álbuns
 - 📦 **Zustand:** Gerenciamento de estado simples e eficiente
+- 🔄 **React Query:** Gerenciamento de cache e estado de servidor otimizado
+- 🏗️ **Arquitetura Limpa:** Código organizado, escalável e fácil de testar
 
 ## 📦 Instalação
 
 ```bash
+# Clone o repositório
+git clone <repository-url>
+cd kanastra-frontend-challenge
+
+# Instale as dependências
 npm install
+
+# Configure as variáveis de ambiente
+cp env.example .env.local
+# Edite .env.local com suas credenciais do Spotify
 ```
 
 ## 🛠️ Scripts Disponíveis
@@ -42,145 +54,167 @@ npm install
 - `npm run format` - Formata o código com Prettier
 - `npm run type-check` - Verifica os tipos TypeScript
 
-### 🐕 Reviewdog - Revisões Automáticas
-
-- `npm run reviewdog` - Executa Reviewdog com configuração global
-- `npm run reviewdog:eslint` - ESLint com Reviewdog
-- `npm run reviewdog:typescript` - TypeScript com Reviewdog
-- `npm run reviewdog:prettier` - Prettier com Reviewdog
-
 ## 🏗️ Estrutura do Projeto
 
 ```
 src/
 ├── app/                  # Configurações globais, providers, rotas
+│   ├── providers/        # Providers (React Query, Mantine, i18n)
+│   └── router.tsx        # Configuração de rotas
 ├── components/           # Componentes de UI compartilhados
-├── features/             # Módulos/Features da aplicação
-│   ├── artists/          # Feature de artistas
-│   ├── albums/           # Feature de álbuns
-│   └── tracks/           # Feature de músicas
-├── hooks/                # Hooks globais
-├── lib/                  # Utilitários
+│   ├── layout/           # Componentes de layout (Header, Container)
+│   └── ui/               # Componentes de UI (Button, Card, etc.)
+├── config/               # Configurações centralizadas
+│   ├── cache.ts          # Configurações de cache (React Query)
+│   └── react-query.ts    # Configuração do React Query
+├── hooks/                # Hooks customizados
+│   ├── useSpotifySearch.ts    # Hook de busca de artistas
+│   ├── useArtistDetails.ts    # Hook de detalhes do artista
+│   ├── useArtistTopTracks.ts  # Hook de top tracks
+│   ├── useArtistAlbums.ts     # Hook de álbuns com paginação
+│   ├── useSpotifyAuth.ts      # Hook de autenticação
+│   └── usePrefetch.ts         # Hook de prefetch inteligente
 ├── pages/                # Páginas da aplicação
-├── services/             # Serviços de API (Spotify)
+│   ├── HomePage.tsx      # Página inicial com busca
+│   ├── ArtistPage.tsx    # Página de detalhes do artista
+│   └── CallbackPage.tsx  # Página de callback do Spotify
+├── repositories/         # Camada de acesso a dados
+│   └── spotify/          # Repository da Spotify API
 ├── stores/               # Stores globais (Zustand)
-└── types/                # Tipos globais da aplicação
+├── types/                # Tipos TypeScript
+└── utils/                # Utilitários e formatação
 ```
 
-## 🗺️ Roadmap
+## 🎧 Spotify Web API
 
-Para acompanhar o progresso do desenvolvimento e entender as próximas etapas, consulte o [ROADMAP_CHALLENGE.md](./docs/ROADMAP_CHALLENGE.md).
+### Endpoints Utilizados
 
-## 📚 Documentação
+- `GET /search` - Buscar artistas por nome
+- `GET /artists/{id}` - Detalhes completos do artista
+- `GET /artists/{id}/top-tracks` - Top músicas do artista
+- `GET /artists/{id}/albums` - Álbuns do artista com paginação
 
-- **[📋 REQUIREMENTS.md](./docs/REQUIREMENTS.md)** - Requisitos específicos do desafio
-- **[🗺️ ROADMAP_CHALLENGE.md](./docs/ROADMAP_CHALLENGE.md)** - Plano de desenvolvimento detalhado
-- **[📊 IMPLEMENTATION_STATUS.md](./docs/IMPLEMENTATION_STATUS.md)** - Status de implementação
-- **[🐕 REVIEWDOG.md](./docs/REVIEWDOG.md)** - Configuração de revisões automáticas
-- **[🔒 HUSKY_HOOKS.md](./docs/HUSKY_HOOKS.md)** - Configuração de Git hooks
+### Configuração
 
-### Fases Principais:
+Para usar a aplicação, você precisará:
 
-1. **🧭 Dia 0:** Planejamento e Setup - Configuração inicial e documentação
-2. **🎨 Dia 1:** Estrutura e Layout - Rotas, layout e componentes base
-3. **🎧 Dia 2:** Integração com API - Spotify Web API e busca de artistas
-4. **🔄 Dia 3:** Paginação e Estados - Filtros, paginação e gerenciamento de estado
-5. **🌍 Dia 4:** Polimento - Animações, i18n e acessibilidade
-6. **🧪 Dia 5:** Testes e Deploy - Testes, documentação e deploy
+1. Criar uma aplicação no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Configurar as variáveis de ambiente em `.env.local`:
+   ```
+   VITE_SPOTIFY_CLIENT_ID=seu_client_id
+   VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret
+   VITE_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
+   ```
 
-## 🎯 Status Atual
+## 🔄 React Query Optimizations
 
-### ✅ Concluído
+O projeto implementa otimizações avançadas do React Query:
 
-- [x] Setup inicial do projeto
-- [x] Configuração de TypeScript, ESLint e Prettier
-- [x] Configuração de testes com Vitest
-- [x] Configuração de internacionalização (i18n)
-- [x] Estrutura base de pastas
-- [x] Página inicial funcional
-- [x] Gerenciamento de estado com Zustand
-- [x] Suporte a idiomas (PT/EN) com seletor
+### 🎯 Configuração Centralizada
 
-### 🔄 Em Andamento
+- **Cache Times**: Configurações otimizadas por tipo de dado
+- **Stale Times**: Estratégias baseadas na frequência de mudança
+- **Retry Configs**: Configurações de retry inteligentes
+- **Query Keys**: Factory functions tipadas
 
-- [ ] Análise dos requisitos específicos do desafio
-- [ ] Definição da arquitetura de features
+### 🚀 Prefetch Inteligente
 
-### 📋 Próximos Passos
+- Prefetch de dados relacionados no hover
+- Cache otimizado para melhor UX
+- Fail silently para não impactar performance
 
-- [ ] Implementar integração com Spotify Web API
-- [ ] Criar feature de busca de artistas
-- [ ] Implementar página de detalhes do artista
-- [ ] Adicionar paginação de álbuns
-- [ ] Configurar o deploy
+### 📊 Estratégias de Cache
 
+- **SHORT (2min)**: Search results, dados temporários
+- **MEDIUM (10min)**: Artist details, álbuns
+- **LONG (30min)**: Top tracks, dados estáticos
+- **INFINITE**: Dados críticos
 
+## 🌐 Internacionalização
 
-## 🔤 Internacionalização
+O projeto suporta **português** e **inglês**:
 
-O projeto já está configurado com **i18next** + **react-i18next**:
-
-- Arquivos de tradução em `src/locales/{pt,en}/common.json`
-- Use o hook `useTranslation()` em qualquer componente
+- Arquivos de tradução em `src/locales/{pt,en}/`
+- Hook `useTranslation()` em todos os componentes
 - Idioma padrão: **PT-BR**
-- Seletor de idioma no header da aplicação
+- Seletor de idioma no header
 - Sincronização automática com Zustand store
 
 ## 📦 Gerenciamento de Estado
 
-O projeto utiliza **Zustand** para gerenciamento de estado:
+### Zustand (Estado Local)
 
-- Store principal em `src/stores/appStore.ts`
-- Persistência automática de configurações
-- Gerenciamento de idioma, tema, loading states e erros
-- API simples e intuitiva
+- Configurações de idioma e tema
+- Estados de loading e erro
+- Persistência automática
 
-## 🎧 Spotify Web API
+### React Query (Estado de Servidor)
 
-### Endpoints Principais
+- Cache de dados da API
+- Estados de loading, error e success
+- Invalidação inteligente
+- Prefetch otimizado
 
-- `GET /search` - Buscar artistas
-- `GET /artists/{id}` - Detalhes do artista
-- `GET /artists/{id}/top-tracks` - Top músicas
-- `GET /artists/{id}/albums` - Álbuns do artista
+## 🎨 Interface e UX
 
-### Configuração
+### Design System
 
-Para usar a API, você precisará:
+- **Mantine**: Componentes acessíveis e modernos
+- **Tema Escuro**: Interface moderna e elegante
+- **Responsivo**: Funciona em desktop e mobile
+- **Animações**: Transições suaves e feedback visual
 
-1. Criar uma aplicação no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Configurar as variáveis de ambiente:
-   ```
-   VITE_SPOTIFY_CLIENT_ID=seu_client_id
-   VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret
-   ```
+### Componentes Principais
 
-## 📊 Critérios de Avaliação
+- **SearchInput**: Busca com debounce e clear
+- **ArtistCard**: Card de artista com hover effects
+- **LoadingSkeleton**: Skeleton loading para melhor UX
+- **Pagination**: Paginação de álbuns
 
-O projeto será avaliado considerando:
+## 🧪 Testes
 
-- **Funcionalidade (40%)** - Integração com API, busca, paginação
-- **Código (30%)** - Código limpo, TypeScript e arquitetura
-- **UX/UI (20%)** - Interface intuitiva, responsiva e animações
-- **Testes (10%)** - Cobertura adequada de testes
+O projeto inclui testes automatizados:
+
+- **Vitest**: Framework de testes rápido
+- **Testing Library**: Testes focados em comportamento
+- **Cobertura**: Testes de componentes e utilitários
+- **CI/CD**: Execução automática nos commits
 
 ## 📚 Documentação
 
-- [📋 Requisitos](./docs/REQUIREMENTS.md) - Requisitos específicos do desafio
-- [🗺️ Roadmap](./docs/ROADMAP_CHALLENGE.md) - Plano de desenvolvimento detalhado
-- [🚀 Deploy](./docs/DEPLOY.md) - Instruções de deploy
-- [❓ FAQ](./docs/FAQ.md) - Perguntas frequentes
-- [📝 Changelog](./docs/CHANGELOG.md) - Histórico de versões
+- **[🎯 React Query Optimizations](./docs/REACT_QUERY_OPTIMIZATIONS.md)** - Otimizações implementadas
+- **[🔒 Environment Variables](./docs/ENVIRONMENT_VARIABLES.md)** - Configuração de variáveis
+- **[🐕 Reviewdog](./docs/REVIEWDOG.md)** - Revisões automáticas de código
+- **[🔧 Husky Hooks](./docs/HUSKY_HOOKS.md)** - Git hooks configurados
 
 ## 🚀 Deploy
 
 Para fazer o deploy:
 
 ```bash
+# Build de produção
 npm run build
+
+# Preview local
+npm run preview
 ```
 
-O build de produção será gerado na pasta `dist/` e pode ser deployado em qualquer plataforma (Vercel, Netlify, etc.).
+O build será gerado na pasta `dist/` e pode ser deployado em:
+
+- **Vercel**: Deploy automático
+- **Netlify**: Deploy automático
+- **GitHub Pages**: Deploy estático
+- **Qualquer servidor**: Build estático
+
+## 🎯 Clean Code Principles
+
+O projeto segue princípios de Clean Code:
+
+- **Single Responsibility**: Cada função/componente tem uma responsabilidade
+- **DRY**: Evita duplicação de código
+- **KISS**: Soluções simples e diretas
+- **SOLID**: Princípios de design orientado a objetos
+- **Type Safety**: TypeScript em todo o projeto
 
 ## 📝 Licença
 
