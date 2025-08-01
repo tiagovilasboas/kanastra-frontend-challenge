@@ -1,8 +1,11 @@
-import { Button, Stack, Text, Title } from '@mantine/core'
 import { Component, ErrorInfo, ReactNode } from 'react'
-import { WithTranslation, withTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 
-interface Props extends WithTranslation {
+import { Button } from '@/components/ui/Button'
+
+import styles from './ErrorBoundary.module.css'
+
+interface Props {
   children: ReactNode
   fallback?: ReactNode
 }
@@ -13,66 +16,72 @@ interface State {
   errorInfo?: ErrorInfo
 }
 
-class ErrorBoundaryBase extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false }
-  }
+// Wrapper component to provide translation
+// eslint-disable-next-line react/prop-types
+export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
+  const { t } = useTranslation()
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
-    this.setState({ error, errorInfo })
-  }
-
-  handleReset = () => {
-    this.setState({ hasError: false, error: undefined, errorInfo: undefined })
-  }
-
-  render() {
-    const { t } = this.props
-    if (this.state.hasError) {
-      if (this.props.fallback) {
-        return this.props.fallback
-      }
-
-      return (
-        <Stack gap="lg" align="center" className="p-xl text-center">
-          <Title order={1} c="red">
-            {t('errorBoundary:title', 'Oops! Something went wrong')}
-          </Title>
-
-          <Text color="dimmed" size="lg">
-            {t(
-              'errorBoundary:description',
-              'Sorry, an unexpected error occurred. Try reloading the page.',
-            )}
-          </Text>
-
-          {process.env.NODE_ENV === 'development' && this.state.error && (
-            <details className="text-left">
-              <summary>
-                {t('errorBoundary:details', 'Error details (development)')}
-              </summary>
-              <pre className="text-xs bg-gray-100 p-2 rounded mt-2 overflow-auto">
-                {this.state.error.toString()}
-                {this.state.errorInfo?.componentStack}
-              </pre>
-            </details>
-          )}
-
-          <Button onClick={this.handleReset} variant="filled" color="blue">
-            {t('errorBoundary:tryAgain', 'Try Again')}
-          </Button>
-        </Stack>
-      )
+  class ErrorBoundaryBase extends Component<{ t: typeof t }, State> {
+    constructor(props: { t: typeof t }) {
+      super(props)
+      this.state = { hasError: false }
     }
 
-    return this.props.children
-  }
-}
+    static getDerivedStateFromError(error: Error): State {
+      return { hasError: true, error }
+    }
 
-export const ErrorBoundary = withTranslation()(ErrorBoundaryBase)
+    componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+      console.error('ErrorBoundary caught an error:', error, errorInfo)
+      this.setState({ error, errorInfo })
+    }
+
+    handleReset = () => {
+      this.setState({ hasError: false, error: undefined, errorInfo: undefined })
+    }
+
+    render() {
+      const { t } = this.props
+      if (this.state.hasError) {
+        if (fallback) {
+          return fallback
+        }
+
+        return (
+          <div className={styles.errorContainer}>
+            <h1 className={styles.errorTitle}>
+              {t('ui:errorBoundary.title', 'Oops! Something went wrong')}
+            </h1>
+
+            <p className={styles.errorDescription}>
+              {t(
+                'ui:errorBoundary.description',
+                'Sorry, an unexpected error occurred. Try reloading the page.',
+              )}
+            </p>
+
+            {process.env.NODE_ENV === 'development' && this.state.error && (
+              <details className={styles.errorDetails}>
+                <summary>
+                  {t('ui:errorBoundary.details', 'Error details (development)')}
+                </summary>
+                <pre className={styles.errorStack}>
+                  {this.state.error.toString()}
+                  {this.state.errorInfo?.componentStack}
+                </pre>
+              </details>
+            )}
+
+            <Button onClick={this.handleReset} variant="primary">
+              {t('ui:errorBoundary.tryAgain', 'Try Again')}
+            </Button>
+          </div>
+        )
+      }
+
+      return children
+    }
+  }
+
+  return <ErrorBoundaryBase t={t} />
+}

@@ -1,0 +1,49 @@
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  min-height: 50vh;
+}
+
+.errorTitle {
+  color: var(--text-error);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: var(--spacing-lg);
+}
+
+.errorDescription {
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  margin-bottom: var(--spacing-xl);
+  max-width: 500px;
+}
+
+.errorDetails {
+  margin: var(--spacing-lg) 0;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+}
+
+.errorDetails summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-sm);
+}
+
+.errorStack {
+  font-size: 0.75rem;
+  background-color: var(--bg-secondary);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius);
+  margin-top: var(--spacing-sm);
+  overflow: auto;
+  white-space: pre-wrap;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+}
