@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next'
 
 import { usePrefetch } from '@/hooks'
 import { SpotifyArtist } from '@/types/spotify'
-import { formatFollowers, getPopularityColor } from '@/utils/formatters'
+import {
+  formatFollowers,
+  getPopularityColor,
+  translateGenres,
+} from '@/utils/formatters'
 
 import styles from './ArtistCard.module.css'
 
@@ -20,7 +24,7 @@ export function ArtistCard({
   showGenres = false,
   showFollowers = false,
 }: ArtistCardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { prefetchArtistData } = usePrefetch()
 
   const handleClick = () => {
@@ -34,6 +38,7 @@ export function ArtistCard({
 
   return (
     <div
+      data-testid="artist-card"
       className={styles.artistCard}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
@@ -50,24 +55,27 @@ export function ArtistCard({
       <div className={styles.cardOverlay}>
         <button
           className={styles.playButton}
-          aria-label={t('artistCard:playArtist', 'Play artist')}
+          aria-label={t('ui:artistCard.playArtist', 'Play artist')}
         >
           <Play size={24} />
         </button>
       </div>
 
       <div className={styles.artistContent}>
-        <h3 className={styles.artistName}>{artist.name}</h3>
+        <h3 data-testid="artist-name" className={styles.artistName}>
+          {artist.name}
+        </h3>
 
         <div className={styles.artistMetadata}>
           <div className={styles.artistPopularity}>
-            <span>{t('artistCard:popularity', 'Popularity')}</span>
+            <span>{t('ui:artistCard.popularity', 'Popularity')}</span>
             <div
+              data-testid="artist-popularity"
               className={styles.artistPopularityDot}
               style={{ backgroundColor: getPopularityColor(artist.popularity) }}
             />
             <span>
-              {t('artistCard:popularityWithValue', {
+              {t('ui:artistCard.popularityWithValue', {
                 value: artist.popularity,
                 defaultValue: '{{value}}%',
               })}
@@ -76,19 +84,23 @@ export function ArtistCard({
 
           {showFollowers && (
             <div className={styles.artistFollowers}>
-              <span>{t('artistCard:followers', 'Followers')}</span>
-              <span>{formatFollowers(artist.followers.total)}</span>
+              <span>{t('ui:artistCard.followers', 'Followers')}</span>
+              <span data-testid="artist-followers">
+                {formatFollowers(artist.followers.total)}
+              </span>
             </div>
           )}
         </div>
 
         {showGenres && artist.genres.length > 0 && (
           <div className={styles.artistGenres}>
-            {artist.genres.slice(0, 3).map((genre) => (
-              <span key={genre} className={styles.artistGenre}>
-                {genre}
-              </span>
-            ))}
+            {translateGenres(artist.genres.slice(0, 3), i18n.language).map(
+              (genre) => (
+                <span key={genre} className={styles.artistGenre}>
+                  {genre}
+                </span>
+              ),
+            )}
           </div>
         )}
       </div>

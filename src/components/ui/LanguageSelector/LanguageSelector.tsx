@@ -1,9 +1,17 @@
-import { ActionIcon, Group } from '@mantine/core'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAppStore } from '@/stores/appStore'
 
-export function LanguageSelector() {
+import styles from './LanguageSelector.module.css'
+
+interface LanguageSelectorProps {
+  size?: 'default' | 'compact'
+}
+
+export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
+  size = 'default',
+}) => {
   const { t } = useTranslation()
   const { language, setLanguage } = useAppStore()
 
@@ -11,26 +19,32 @@ export function LanguageSelector() {
     setLanguage(newLanguage)
   }
 
+  const isCompact = size === 'compact'
+
   return (
-    <Group gap="xs">
-      <ActionIcon
-        variant={language === 'pt' ? 'filled' : 'subtle'}
-        color={language === 'pt' ? 'blue' : 'gray'}
+    <div
+      className={`${styles.languageSelector} ${isCompact ? styles.compact : ''}`}
+      data-testid="language-selector"
+    >
+      <button
+        className={`${styles.languageButton} ${isCompact ? styles.compact : ''} ${language === 'pt' ? styles.active : ''}`}
         onClick={() => handleLanguageChange('pt')}
-        aria-label={t('common:language')}
-        title={t('common:language')}
+        aria-label={t('app:languages.portuguese')}
+        title={t('app:languages.portuguese')}
       >
-        {/* TODO: Flag emoji removed to satisfy formatjs/no-literal-string-in-jsx. Consider using an SVG icon or custom component for flags. */}
-      </ActionIcon>
-      <ActionIcon
-        variant={language === 'en' ? 'filled' : 'subtle'}
-        color={language === 'en' ? 'blue' : 'gray'}
+        {t('app:languages.portuguese').substring(0, 2).toUpperCase()}
+      </button>
+      <div
+        className={`${styles.separator} ${isCompact ? styles.compact : ''}`}
+      />
+      <button
+        className={`${styles.languageButton} ${isCompact ? styles.compact : ''} ${language === 'en' ? styles.active : ''}`}
         onClick={() => handleLanguageChange('en')}
-        aria-label={t('common:language')}
-        title={t('common:language')}
+        aria-label={t('app:languages.english')}
+        title={t('app:languages.english')}
       >
-        {/* TODO: Flag emoji removed to satisfy formatjs/no-literal-string-in-jsx. Consider using an SVG icon or custom component for flags. */}
-      </ActionIcon>
-    </Group>
+        {t('app:languages.english').substring(0, 2).toUpperCase()}
+      </button>
+    </div>
   )
 }

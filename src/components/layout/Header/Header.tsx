@@ -1,25 +1,41 @@
-import { Music } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+import { MusicIcon } from '@/components/ui/MusicIcon'
+import { SearchInput } from '@/components/ui/SearchInput'
+import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
-import styles from './Header.module.css'
+interface HeaderProps {
+  onSearch: (query: string) => void
+  searchPlaceholder?: string
+}
 
-export function Header() {
+export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
   const { t } = useTranslation()
+  const { isAuthenticated } = useSpotifyAuth()
 
   return (
-    <header className={styles.header}>
-      <div className={styles.headerContainer}>
-        <a href="/" className={styles.headerBrand}>
-          <Music className={styles.headerBrandIcon} />
-          {t('common:brand')}
-        </a>
-        
-        <div className={styles.headerActions}>
-          <LanguageSelector />
+    <header className="main-header">
+      <div className="header-content">
+        <div className="search-container">
+          <SearchInput
+            onSearch={onSearch}
+            placeholder={searchPlaceholder || t('search:placeholder')}
+          />
+        </div>
+        <div className="header-actions">
+          <div className="language-selector-container">
+            <LanguageSelector size="compact" />
+          </div>
+          {isAuthenticated && (
+            <div className="user-section">
+              <div className="user-avatar">
+                <MusicIcon size={20} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
   )
-} 
+}
