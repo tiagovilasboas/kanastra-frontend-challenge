@@ -47,10 +47,10 @@ export function SearchInput({
         <button
           type="button"
           onClick={handleClear}
-          className={styles.searchClear}
+          className={styles.clearButton}
           aria-label={t('searchInput:clearSearch', 'Clear search')}
         >
-          <X size={12} />
+          <X size={16} />
         </button>
       )}
     </div>
