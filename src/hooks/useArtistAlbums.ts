@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
-
+import { SpotifyAlbum } from '@/types/spotify'
 
 interface UseArtistAlbumsParams {
   artistId: string | undefined
@@ -11,7 +11,7 @@ interface UseArtistAlbumsParams {
 }
 
 interface UseArtistAlbumsReturn {
-  albums: unknown[]
+  albums: SpotifyAlbum[]
   totalPages: number
   totalItems: number
   isLoading: boolean
@@ -31,11 +31,11 @@ export function useArtistAlbums({
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
       const response = await spotifyRepository.getArtistAlbums(artistId, ['album', 'single'], limit, offset)
-              return {
-          albums: response,
-          total: response.length,
-          totalPages: Math.ceil(response.length / limit),
-        }
+      return {
+        albums: response,
+        total: response.length,
+        totalPages: Math.ceil(response.length / limit),
+      }
     },
     enabled: !!artistId,
     staleTime: cache.stale.OCCASIONAL, // Albums change occasionally
@@ -45,7 +45,7 @@ export function useArtistAlbums({
   })
 
   return {
-    albums: data?.albums || [],
+    albums: (data?.albums as unknown as SpotifyAlbum[]) || [],
     totalPages: data?.totalPages || 0,
     totalItems: data?.total || 0,
     isLoading,

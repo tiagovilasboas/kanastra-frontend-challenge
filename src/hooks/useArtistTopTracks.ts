@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
-
+import { SpotifyTrack } from '@/types/spotify'
 
 interface UseArtistTopTracksReturn {
-  tracks: unknown[]
+  tracks: SpotifyTrack[]
   isLoading: boolean
   error: Error | null
   refetch: () => void
@@ -29,7 +29,7 @@ export function useArtistTopTracks(
   })
 
   return {
-    tracks: data || [],
+    tracks: (data as unknown as SpotifyTrack[]) || [],
     isLoading,
     error: error as Error | null,
     refetch,

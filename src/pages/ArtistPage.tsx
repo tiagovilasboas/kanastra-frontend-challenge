@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core'
-import { Play, Share, ExternalLink } from 'lucide-react'
+import { Play, Share, ExternalLink, RefreshCw } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -37,11 +37,18 @@ export const ArtistPage: React.FC = () => {
     albums,
     currentPage,
     totalPages,
+    totalItems,
     isLoadingArtist,
     isLoadingTracks,
+    isLoadingAlbums,
     artistError,
+    tracksError,
+    albumsError,
     handlePageChange,
     handleBackToHome,
+    handleRefresh,
+    handlePrefetchNextPage,
+    handleInvalidateArtistData,
   } = useArtistPage(id)
 
   const [albumFilter, setAlbumFilter] = useState('')
@@ -52,6 +59,10 @@ export const ArtistPage: React.FC = () => {
 
   const handlePageChangeWrapper = (page: number) => {
     handlePageChange(page)
+    // Prefetch next page for better UX
+    if (page < totalPages) {
+      handlePrefetchNextPage()
+    }
   }
 
   const formatDuration = (ms: number) => {
@@ -121,9 +132,14 @@ export const ArtistPage: React.FC = () => {
           <Alert color="red" title={t('artist:errorTitle')}>
             {artistError.message}
           </Alert>
-          <SpotifyButton onClick={handleBackToHome}>
-            {t('artist:backToHome')}
-          </SpotifyButton>
+          <Group>
+            <SpotifyButton onClick={handleBackToHome}>
+              {t('artist:backToHome')}
+            </SpotifyButton>
+            <SpotifyButton variant="secondary" onClick={handleRefresh}>
+              {t('artist:retry', 'Retry')}
+            </SpotifyButton>
+          </Group>
         </Stack>
       </Container>
     )
@@ -182,7 +198,20 @@ export const ArtistPage: React.FC = () => {
           </SpotifyButton>
           
           <Group gap="sm">
-            <Tooltip label="Share artist">
+            <Tooltip label={t('artist:refresh', 'Refresh data')}>
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                onClick={handleRefresh}
+                aria-label="Refresh data"
+                loading={isLoadingArtist || isLoadingTracks || isLoadingAlbums}
+              >
+                <RefreshCw size={20} />
+              </ActionIcon>
+            </Tooltip>
+            
+            <Tooltip label={t('artist:share', 'Share artist')}>
               <ActionIcon
                 variant="subtle"
                 color="gray"
@@ -194,7 +223,7 @@ export const ArtistPage: React.FC = () => {
               </ActionIcon>
             </Tooltip>
             
-            <Tooltip label="Open in Spotify">
+            <Tooltip label={t('artist:openInSpotify', 'Open in Spotify')}>
               <ActionIcon
                 variant="subtle"
                 color="gray"
@@ -293,6 +322,10 @@ export const ArtistPage: React.FC = () => {
                 <Skeleton key={index} height={60} />
               ))}
             </Stack>
+          ) : tracksError ? (
+            <Alert color="red" title={t('artist:tracksError', 'Error loading tracks')}>
+              {tracksError.message}
+            </Alert>
           ) : !isAuthenticated ? (
             <Alert color="blue" title={t('artist:authRequired')}>
               {t('artist:authRequiredMessage')}
@@ -368,6 +401,7 @@ export const ArtistPage: React.FC = () => {
             
             <Text size="sm" c="dimmed">
               {filteredAlbums.length} {filteredAlbums.length === 1 ? 'album' : 'albums'}
+              {totalItems > 0 && ` of ${totalItems}`}
             </Text>
           </Group>
 
@@ -380,58 +414,74 @@ export const ArtistPage: React.FC = () => {
             />
           </div>
 
-          {/* Grid de álbuns */}
-          <Grid gutter="lg">
-            {filteredAlbums.map((album) => (
-              <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                <Card className="album-card" data-testid="album-card" withBorder>
-                  <Card.Section>
-                    <Image
-                      src={getAlbumImage(album)}
-                      alt={album.name}
-                      className="album-image"
-                      fallbackSrc="/placeholder-album.jpg"
-                      radius="md"
-                    />
-                  </Card.Section>
-                  
-                  <Stack gap="xs" className="mt-md">
-                    <Text className="album-name" data-testid="album-name" fw={500} lineClamp={2}>
-                      {album.name}
-                    </Text>
-                    
-                    <Text className="album-info" data-testid="album-info" size="sm" c="dimmed">
-                      {t('artist:albumInfo', {
-                        date: formatReleaseDate(album.release_date),
-                        tracks: album.total_tracks,
-                        defaultValue: '{{date}} • {{tracks}} tracks',
-                      })}
-                    </Text>
-                    
-                    <Group gap="xs">
-                      <Badge size="xs" variant="light" color="gray">
-                        {album.album_type}
-                      </Badge>
-                    </Group>
-                  </Stack>
-                </Card>
-              </Grid.Col>
-            ))}
-          </Grid>
+          {isLoadingAlbums ? (
+            <Grid gutter="lg">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Grid.Col key={index} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+                  <Skeleton height={250} radius="md" />
+                </Grid.Col>
+              ))}
+            </Grid>
+          ) : albumsError ? (
+            <Alert color="red" title={t('artist:albumsError', 'Error loading albums')}>
+              {albumsError.message}
+            </Alert>
+          ) : (
+            <>
+              {/* Grid de álbuns */}
+              <Grid gutter="lg">
+                {filteredAlbums.map((album) => (
+                  <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+                    <Card className="album-card" data-testid="album-card" withBorder>
+                      <Card.Section>
+                        <Image
+                          src={getAlbumImage(album)}
+                          alt={album.name}
+                          className="album-image"
+                          fallbackSrc="/placeholder-album.jpg"
+                          radius="md"
+                        />
+                      </Card.Section>
+                      
+                      <Stack gap="xs" className="mt-md">
+                        <Text className="album-name" data-testid="album-name" fw={500} lineClamp={2}>
+                          {album.name}
+                        </Text>
+                        
+                        <Text className="album-info" data-testid="album-info" size="sm" c="dimmed">
+                          {t('artist:albumInfo', {
+                            date: formatReleaseDate(album.release_date),
+                            tracks: album.total_tracks,
+                            defaultValue: '{{date}} • {{tracks}} tracks',
+                          })}
+                        </Text>
+                        
+                        <Group gap="xs">
+                          <Badge size="xs" variant="light" color="gray">
+                            {album.album_type}
+                          </Badge>
+                        </Group>
+                      </Stack>
+                    </Card>
+                  </Grid.Col>
+                ))}
+              </Grid>
 
-          {/* Paginação */}
-          {totalPages > 1 && (
-            <Flex justify="center" className="mt-xl">
-              <Pagination
-                data-testid="pagination"
-                total={totalPages}
-                value={currentPage}
-                onChange={handlePageChangeWrapper}
-                size="md"
-                radius="md"
-                className="spotify-pagination"
-              />
-            </Flex>
+              {/* Paginação */}
+              {totalPages > 1 && (
+                <Flex justify="center" className="mt-xl">
+                  <Pagination
+                    data-testid="pagination"
+                    total={totalPages}
+                    value={currentPage}
+                    onChange={handlePageChangeWrapper}
+                    size="md"
+                    radius="md"
+                    className="spotify-pagination"
+                  />
+                </Flex>
+              )}
+            </>
           )}
         </div>
       </Stack>
