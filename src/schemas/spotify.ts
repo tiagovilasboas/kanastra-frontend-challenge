@@ -128,7 +128,7 @@ export const SpotifyTokenResponseSchema = z.object({
   token_type: z.literal('Bearer'),
   expires_in: z.number(),
   refresh_token: z.string().optional(),
-  scope: z.string(),
+  scope: z.string().optional(), // Optional for client credentials flow
 })
 
 export const SpotifyErrorResponseSchema = z.object({

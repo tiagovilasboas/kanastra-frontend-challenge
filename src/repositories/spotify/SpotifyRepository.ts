@@ -79,6 +79,12 @@ export class SpotifyRepository {
       logger.debug('Getting client token')
       const config = getSpotifyConfig()
       
+      logger.debug('Making token request with config', {
+        clientId: config.clientId ? 'Present' : 'Missing',
+        clientSecret: config.clientSecret ? 'Present' : 'Missing',
+        redirectUri: config.redirectUri
+      })
+      
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
         new URLSearchParams({
@@ -93,6 +99,12 @@ export class SpotifyRepository {
         }
       )
 
+      logger.debug('Token response received', {
+        status: response.status,
+        hasData: !!response.data,
+        dataKeys: Object.keys(response.data || {})
+      })
+
       const tokenResponse = validateSpotifyTokenResponse(response.data)
 
       this.searchService.setClientToken(tokenResponse.access_token)
@@ -100,6 +112,11 @@ export class SpotifyRepository {
       logger.debug('Client token obtained successfully')
       return tokenResponse.access_token
     } catch (error) {
+      logger.error('Client token request failed', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        response: error instanceof Error && 'response' in error ? (error as { response?: { data?: unknown } }).response?.data : 'No response data'
+      })
+      
       const appError = errorHandler.handleAuthError(error, 'SpotifyRepository.getClientToken')
       throw appError
     }
