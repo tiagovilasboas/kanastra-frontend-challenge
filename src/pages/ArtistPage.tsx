@@ -17,11 +17,13 @@ import { useParams } from 'react-router-dom'
 import { Container } from '@/components/layout'
 import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useArtistPage } from '@/hooks/useArtistPage'
+import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
-export default function ArtistPage() {
+export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
+  const { isAuthenticated } = useSpotifyAuth()
 
   const {
     artist,
@@ -31,6 +33,7 @@ export default function ArtistPage() {
     totalPages,
     isLoadingArtist,
     isLoadingTracks,
+    artistError,
     handlePageChange,
     handleBackToHome,
   } = useArtistPage(id)
@@ -78,6 +81,22 @@ export default function ArtistPage() {
     album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
 
+  // Error state
+  if (artistError) {
+    return (
+      <Container variant="mobile-first">
+        <Stack gap="xl" className="p-xl">
+          <Alert color="red" title={t('artist:errorTitle')}>
+            {artistError.message}
+          </Alert>
+          <SpotifyButton onClick={handleBackToHome}>
+            {t('artist:backToHome')}
+          </SpotifyButton>
+        </Stack>
+      </Container>
+    )
+  }
+
   // Loading state
   if (isLoadingArtist) {
     return (
@@ -121,7 +140,7 @@ export default function ArtistPage() {
 
   return (
     <Container variant="mobile-first">
-      <Stack gap="xl" className="p-xl">
+      <Stack gap="xl" className="p-xl" data-testid="artist-page">
         {/* Header com botão voltar */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
@@ -143,12 +162,15 @@ export default function ArtistPage() {
             }}
           />
 
-          <Title order={1} className="artist-name">
+          <Title order={1} className="artist-name" data-testid="artist-name">
             {artist.name}
           </Title>
 
           <div className="artist-stats">
-            <Badge className="artist-popularity-badge">
+            <Badge
+              className="artist-popularity-badge"
+              data-testid="artist-popularity"
+            >
               {t('artist:popularityWithValue', {
                 value: artist.popularity,
                 defaultValue: '{{value}}% Popularity',
@@ -190,29 +212,49 @@ export default function ArtistPage() {
                 <Skeleton key={index} height={60} />
               ))}
             </Stack>
+          ) : !isAuthenticated ? (
+            <Alert color="blue" title={t('artist:authRequired')}>
+              {t('artist:authRequiredMessage')}
+            </Alert>
+          ) : !topTracks || topTracks.length === 0 ? (
+            <Alert color="yellow" title={t('artist:noTopTracks')}>
+              {t('artist:noTopTracksMessage')}
+            </Alert>
           ) : (
             <div className="track-list">
-              {topTracks.map((track: SpotifyTrack, index: number) => (
-                <div key={track.id} className="track-item">
-                  <div className="track-number">{index + 1}</div>
-                  <img
-                    src={getAlbumImage(track.album)}
-                    alt={track.album.name}
-                    className="track-album-image"
-                  />
-                  <div className="track-info">
-                    <Text className="track-name">{track.name}</Text>
-                    <Text className="track-artists">
-                      {track.artists
-                        .map((artist: SpotifyArtist) => artist.name)
-                        .join(', ')}
-                    </Text>
+              {Array.isArray(topTracks) &&
+                topTracks.map((track: SpotifyTrack, index: number) => (
+                  <div
+                    key={track.id}
+                    className="track-item"
+                    data-testid="track-item"
+                  >
+                    <div className="track-number" data-testid="track-number">
+                      {index + 1}
+                    </div>
+                    <img
+                      src={getAlbumImage(track.album)}
+                      alt={track.album.name}
+                      className="track-album-image"
+                    />
+                    <div className="track-info">
+                      <Text className="track-name" data-testid="track-name">
+                        {track.name}
+                      </Text>
+                      <Text className="track-artists">
+                        {track.artists
+                          .map((artist: SpotifyArtist) => artist.name)
+                          .join(', ')}
+                      </Text>
+                    </div>
+                    <div
+                      className="track-duration"
+                      data-testid="track-duration"
+                    >
+                      {formatDuration(track.duration_ms)}
+                    </div>
                   </div>
-                  <div className="track-duration">
-                    {formatDuration(track.duration_ms)}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>
@@ -228,44 +270,48 @@ export default function ArtistPage() {
           {/* Filtro de álbuns */}
           <div className="mb-lg">
             <SearchInput
+              data-testid="album-filter"
               onSearch={handleAlbumFilter}
               placeholder={t('artist:filterAlbums')}
-              debounceMs={300}
             />
           </div>
 
-          {/* Remover isLoadingAlbums não usado */}
-          {/* Corrigir tipagem dos maps */}
-          {filteredAlbums.map((album: SpotifyAlbum) => (
-            <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-              <div className="album-card">
-                <img
-                  src={getAlbumImage(album)}
-                  alt={album.name}
-                  className="album-image"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.src = '/placeholder-album.jpg'
-                  }}
-                />
-                <div>
-                  <Text className="album-name">{album.name}</Text>
-                  <Text className="album-info">
-                    {t('artist:albumInfo', {
-                      date: formatReleaseDate(album.release_date),
-                      tracks: album.total_tracks,
-                      defaultValue: '{{date}} • {{tracks}} tracks',
-                    })}
-                  </Text>
+          {/* Grid de álbuns */}
+          <Grid gutter="lg">
+            {filteredAlbums.map((album: SpotifyAlbum) => (
+              <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+                <div className="album-card" data-testid="album-card">
+                  <img
+                    src={getAlbumImage(album)}
+                    alt={album.name}
+                    className="album-image"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = '/placeholder-album.jpg'
+                    }}
+                  />
+                  <div>
+                    <Text className="album-name" data-testid="album-name">
+                      {album.name}
+                    </Text>
+                    <Text className="album-info" data-testid="album-info">
+                      {t('artist:albumInfo', {
+                        date: formatReleaseDate(album.release_date),
+                        tracks: album.total_tracks,
+                        defaultValue: '{{date}} • {{tracks}} tracks',
+                      })}
+                    </Text>
+                  </div>
                 </div>
-              </div>
-            </Grid.Col>
-          ))}
+              </Grid.Col>
+            ))}
+          </Grid>
 
           {/* Paginação */}
           {totalPages > 1 && (
             <div className="pagination-container">
               <Pagination
+                data-testid="pagination"
                 total={totalPages}
                 value={currentPage}
                 onChange={handlePageChangeWrapper}
