@@ -4,5 +4,10 @@
   "welcome": "Bem-vindo ao Spotify Explorer",
   "startExploring": "Comece a explorar artistas incríveis. Digite o nome de um artista para começar sua jornada musical.",
   "trendingArtists": "Artistas em Destaque",
-  "trendingDescription": "Descubra os artistas mais populares e trending no momento."
+  "trendingDescription": "Descubra os artistas mais populares e trending no momento.",
+  "heroTitle": "Descubra o Mundo da Música",
+  "heroSubtitle": "Explore artistas, álbuns e faixas com a API do Spotify",
+  "feature1": "Busque por qualquer artista",
+  "feature2": "Veja top tracks e álbuns",
+  "feature3": "Descubra novos talentos"
 }

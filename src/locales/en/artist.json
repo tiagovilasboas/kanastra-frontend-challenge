@@ -1,15 +1,13 @@
 {
-  "popularity": "popularity",
-  "followers": "followers",
+  "title": "Artist",
+  "backToHome": "Back to Home",
   "topTracks": "Top Tracks",
   "albums": "Albums",
-  "tracks": "tracks",
   "filterAlbums": "Filter albums...",
-  "backToHome": "Back to home",
-  "error": "Error loading artist",
-  "albumsError": "Error loading albums",
-  "backToHomeWithArrow": "← Back to Home",
-  "popularityWithValue": "{{value}}% Popularity",
-  "followersWithValue": "{{value}} followers",
-  "albumInfo": "{{date}} • {{tracks}} tracks"
+  "albumInfo": "{{date}} • {{tracks}} tracks",
+  "errorTitle": "Error loading artist",
+  "noTopTracks": "No top tracks available",
+  "noTopTracksMessage": "This artist doesn't have top tracks available at the moment.",
+  "authRequired": "Authentication required",
+  "authRequiredMessage": "Sign in with Spotify to view this artist's top tracks."
 }

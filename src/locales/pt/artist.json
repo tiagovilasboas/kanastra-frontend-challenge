@@ -1,15 +1,13 @@
 {
-  "popularity": "popularidade",
-  "followers": "seguidores",
-  "topTracks": "Principais Músicas",
+  "title": "Artista",
+  "backToHome": "Voltar ao Início",
+  "topTracks": "Top Tracks",
   "albums": "Álbuns",
-  "tracks": "músicas",
   "filterAlbums": "Filtrar álbuns...",
-  "backToHome": "Voltar ao início",
-  "error": "Erro ao carregar artista",
-  "albumsError": "Erro ao carregar álbuns",
-  "backToHomeWithArrow": "← Voltar para início",
-  "popularityWithValue": "{{value}}% Popularidade",
-  "followersWithValue": "{{value}} seguidores",
-  "albumInfo": "{{date}} • {{tracks}} faixas"
+  "albumInfo": "{{date}} • {{tracks}} faixas",
+  "errorTitle": "Erro ao carregar artista",
+  "noTopTracks": "Nenhuma top track disponível",
+  "noTopTracksMessage": "Este artista não possui top tracks disponíveis no momento.",
+  "authRequired": "Autenticação necessária",
+  "authRequiredMessage": "Faça login com o Spotify para ver as top tracks deste artista."
 }

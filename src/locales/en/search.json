@@ -3,8 +3,17 @@
   "clear": "Clear search",
   "results": "Search results",
   "resultsFor": "Results for",
-  "resultsForWithQuery": "Results for \"{query}\"",
   "noResults": "No results found",
   "noResultsMessage": "Try searching for another artist or check the spelling",
-  "error": "Search error"
+  "error": "Search error",
+  "resultsForWithQuery": "Results for \"{query}\"",
+  "welcomeTitle": "Welcome to Spotify Explorer",
+  "welcomeMessage": "Type an artist name to start your search and discover amazing music.",
+  "tip1": "Use full names for better results",
+  "tip2": "Explore artists from different genres",
+  "tip3": "Discover new musical talents",
+  "noResultsTitle": "No artists found",
+  "resultsTitle": "{{count}} artists found",
+  "errorTitle": "Search error",
+  "errorMessage": "An error occurred while searching for artists. Please try again."
 }
