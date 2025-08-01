@@ -1,12 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 
-import {
-  CACHE_TIMES,
-  queryKeys,
-  RETRY_CONFIGS,
-  STALE_TIMES,
-} from '@/config/react-query'
+import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/types/spotify'
 
@@ -35,10 +30,10 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       return response.artists.items
     },
     enabled: !!searchQuery,
-    staleTime: STALE_TIMES.FREQUENT, // Search results change frequently
-    gcTime: CACHE_TIMES.SHORT, // Keep in memory for short time
-    retry: RETRY_CONFIGS.OPTIONAL.retry,
-    retryDelay: RETRY_CONFIGS.OPTIONAL.retryDelay,
+    staleTime: cache.stale.FREQUENT, // Search results change frequently
+    gcTime: cache.times.SHORT, // Keep in memory for short time
+    retry: cache.retry.OPTIONAL.retry,
+    retryDelay: cache.retry.OPTIONAL.retryDelay,
   })
 
   const searchArtists = useCallback((query: string) => {

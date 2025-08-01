@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 
-import { queryKeys } from '@/config/react-query'
+import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 
 interface PrefetchOptions {
@@ -22,9 +22,9 @@ export function usePrefetch() {
       await queryClient.prefetchQuery({
         queryKey: queryKeys.artists.details(artistId),
         queryFn: () => spotifyRepository.getArtist(artistId),
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        gcTime: 10 * 60 * 1000, // 10 minutes
-        retry: 1,
+        staleTime: cache.stale.OCCASIONAL, // 5 minutes
+        gcTime: cache.times.MEDIUM, // 10 minutes
+        retry: cache.retry.OPTIONAL.retry,
       })
     },
     [queryClient],
@@ -40,9 +40,9 @@ export function usePrefetch() {
       await queryClient.prefetchQuery({
         queryKey: queryKeys.artists.topTracks(artistId),
         queryFn: () => spotifyRepository.getArtistTopTracks(artistId),
-        staleTime: 10 * 60 * 1000, // 10 minutes
-        gcTime: 15 * 60 * 1000, // 15 minutes
-        retry: 1,
+        staleTime: cache.stale.RARE, // 10 minutes
+        gcTime: cache.times.LONG, // 15 minutes
+        retry: cache.retry.OPTIONAL.retry,
       })
     },
     [queryClient],
@@ -59,9 +59,9 @@ export function usePrefetch() {
         queryKey: queryKeys.artists.albums(artistId, 1, 20),
         queryFn: () =>
           spotifyRepository.getArtistAlbums(artistId, { limit: 20, offset: 0 }),
-        staleTime: 5 * 60 * 1000, // 5 minutes
-        gcTime: 10 * 60 * 1000, // 10 minutes
-        retry: 1,
+        staleTime: cache.stale.OCCASIONAL, // 5 minutes
+        gcTime: cache.times.MEDIUM, // 10 minutes
+        retry: cache.retry.OPTIONAL.retry,
       })
     },
     [queryClient],
@@ -94,9 +94,9 @@ export function usePrefetch() {
       await queryClient.prefetchQuery({
         queryKey: queryKeys.search.byQuery(query),
         queryFn: () => spotifyRepository.searchArtists(query),
-        staleTime: 2 * 60 * 1000, // 2 minutes
-        gcTime: 5 * 60 * 1000, // 5 minutes
-        retry: 1,
+        staleTime: cache.stale.FREQUENT, // 2 minutes
+        gcTime: cache.times.SHORT, // 5 minutes
+        retry: cache.retry.OPTIONAL.retry,
       })
     },
     [queryClient],

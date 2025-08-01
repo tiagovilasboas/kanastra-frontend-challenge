@@ -1,11 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import {
-  CACHE_TIMES,
-  queryKeys,
-  RETRY_CONFIGS,
-  STALE_TIMES,
-} from '@/config/react-query'
+import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyAlbum } from '@/types/spotify'
 
@@ -46,10 +41,10 @@ export function useArtistAlbums({
       }
     },
     enabled: !!artistId,
-    staleTime: STALE_TIMES.OCCASIONAL, // Albums change occasionally
-    gcTime: CACHE_TIMES.MEDIUM, // Keep in memory for medium time
-    retry: RETRY_CONFIGS.IMPORTANT.retry,
-    retryDelay: RETRY_CONFIGS.IMPORTANT.retryDelay,
+    staleTime: cache.stale.OCCASIONAL, // Albums change occasionally
+    gcTime: cache.times.MEDIUM, // Keep in memory for medium time
+    retry: cache.retry.IMPORTANT.retry,
+    retryDelay: cache.retry.IMPORTANT.retryDelay,
   })
 
   return {

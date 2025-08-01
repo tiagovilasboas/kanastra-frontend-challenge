@@ -4,14 +4,43 @@ Este documento descreve as otimizações implementadas no React Query para melho
 
 ## 🎯 **Configuração Centralizada**
 
-### **Arquivo: `src/config/react-query.ts`**
+### **Arquivo: `src/config/cache.ts`**
 
-Configuração centralizada com constantes bem definidas para:
+Configuração centralizada para cache com namespace organizado:
 
 - **Cache Times**: Tempo que os dados ficam em memória
 - **Stale Times**: Tempo antes dos dados serem considerados obsoletos
 - **Retry Configs**: Configurações de retry para diferentes tipos de dados
+
+```typescript
+// Exemplo de uso com namespace
+import { cache } from '@/config/react-query'
+
+// Cache times
+cache.times.SHORT // 2 minutos
+cache.times.MEDIUM // 10 minutos
+cache.times.LONG // 30 minutos
+cache.times.INFINITE // Indefinido
+
+// Stale times
+cache.stale.FREQUENT // 1 minuto
+cache.stale.OCCASIONAL // 5 minutos
+cache.stale.RARE // 15 minutos
+cache.stale.STATIC // Indefinido
+
+// Retry configs
+cache.retry.CRITICAL // 3 tentativas
+cache.retry.IMPORTANT // 2 tentativas
+cache.retry.OPTIONAL // 1 tentativa
+cache.retry.NONE // Sem retry
+```
+
+### **Arquivo: `src/config/react-query.ts`**
+
+Configuração do React Query com:
+
 - **Query Keys**: Factory functions para chaves de query tipadas
+- **Query Client**: Configuração centralizada do cliente
 
 ```typescript
 // Exemplo de uso
@@ -217,6 +246,22 @@ function ArtistCard({ artist }) {
     </div>
   )
 }
+```
+
+### **Uso do Namespace Cache**
+
+```typescript
+import { cache, queryKeys } from '@/config/react-query'
+
+// Em um hook customizado
+const { data } = useQuery({
+  queryKey: queryKeys.artists.details(artistId),
+  queryFn: () => getArtist(artistId),
+  staleTime: cache.stale.OCCASIONAL, // 5 minutos
+  gcTime: cache.times.MEDIUM, // 10 minutos
+  retry: cache.retry.IMPORTANT.retry,
+  retryDelay: cache.retry.IMPORTANT.retryDelay,
+})
 ```
 
 ### **Optimistic Update**

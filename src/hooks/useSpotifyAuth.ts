@@ -2,12 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import {
-  CACHE_TIMES,
-  queryKeys,
-  RETRY_CONFIGS,
-  STALE_TIMES,
-} from '@/config/react-query'
+import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 
 interface UseSpotifyAuthReturn {
@@ -32,9 +27,9 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
       }
       return false
     },
-    staleTime: STALE_TIMES.STATIC, // Não revalidar automaticamente
-    gcTime: CACHE_TIMES.INFINITE, // Manter em memória indefinidamente
-    retry: RETRY_CONFIGS.NONE.retry,
+    staleTime: cache.stale.STATIC, // Não revalidar automaticamente
+    gcTime: cache.times.INFINITE, // Manter em memória indefinidamente
+    retry: cache.retry.NONE.retry,
   })
 
   const login = useCallback(() => {

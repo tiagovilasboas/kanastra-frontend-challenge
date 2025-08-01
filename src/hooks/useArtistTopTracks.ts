@@ -1,11 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import {
-  CACHE_TIMES,
-  queryKeys,
-  RETRY_CONFIGS,
-  STALE_TIMES,
-} from '@/config/react-query'
+import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyTrack } from '@/types/spotify'
 
@@ -27,10 +22,10 @@ export function useArtistTopTracks(
       return response.tracks
     },
     enabled: !!artistId,
-    staleTime: STALE_TIMES.RARE, // Top tracks rarely change
-    gcTime: CACHE_TIMES.LONG, // Keep in memory for longer
-    retry: RETRY_CONFIGS.IMPORTANT.retry,
-    retryDelay: RETRY_CONFIGS.IMPORTANT.retryDelay,
+    staleTime: cache.stale.RARE, // Top tracks rarely change
+    gcTime: cache.times.LONG, // Keep in memory for longer
+    retry: cache.retry.IMPORTANT.retry,
+    retryDelay: cache.retry.IMPORTANT.retryDelay,
   })
 
   return {
