@@ -58,23 +58,40 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       }
 
       try {
+        // Try authenticated search first if user is logged in
+        const token = localStorage.getItem('spotify_token')
+        if (token) {
+          logger.debug('Attempting authenticated search')
+          const response = await spotifyRepository.searchArtists(debouncedQuery)
+          logger.debug('Authenticated search successful', {
+            itemsCount: response.artists.items.length,
+          })
+          return response.artists.items
+        }
+
+        // Fallback to public search
         logger.debug('Attempting public search')
-        // Try public search first
-        const response =
-          await spotifyRepository.searchArtistsPublic(debouncedQuery)
+        const response = await spotifyRepository.searchArtistsPublic(debouncedQuery)
         logger.debug('Public search successful', {
           itemsCount: response.artists.items.length,
         })
         return response.artists.items
       } catch (error) {
-        logger.error('Public search failed', error)
-        logger.debug('Attempting authenticated search')
-        // Fallback to authenticated search if public fails
-        const response = await spotifyRepository.searchArtists(debouncedQuery)
-        logger.debug('Authenticated search successful', {
-          itemsCount: response.artists.items.length,
-        })
-        return response.artists.items
+        logger.error('Search failed', error)
+        
+        // If public search fails, try to get client token and retry
+        try {
+          logger.debug('Attempting to get client token and retry')
+          await spotifyRepository.getClientToken()
+          const response = await spotifyRepository.searchArtistsPublic(debouncedQuery)
+          logger.debug('Retry search successful', {
+            itemsCount: response.artists.items.length,
+          })
+          return response.artists.items
+        } catch (retryError) {
+          logger.error('Retry search also failed', retryError)
+          throw retryError
+        }
       }
     },
     enabled: !!debouncedQuery,

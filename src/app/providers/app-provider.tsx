@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { createQueryClient } from '@/config/react-query'
+import { useSpotifyInit } from '@/hooks/useSpotifyInit'
 import { useAppStore } from '@/stores/appStore'
 
 type AppProviderProps = {
@@ -23,12 +24,20 @@ export function AppProvider({ children }: AppProviderProps) {
   const { theme: appTheme } = useAppStore()
   const { i18n } = useTranslation()
   const { language } = useAppStore()
+  const { isInitialized, error } = useSpotifyInit()
 
   useEffect(() => {
     if (i18n.language !== language) {
       i18n.changeLanguage(language)
     }
   }, [language, i18n])
+
+  // Initialize Spotify in background
+  useEffect(() => {
+    if (!isInitialized && error) {
+      console.error('Spotify initialization error:', error)
+    }
+  }, [isInitialized, error])
 
   return (
     <ErrorBoundary>
