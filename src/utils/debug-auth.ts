@@ -23,7 +23,7 @@ export function validateAuthConfig() {
   console.log('🔍 Validating Auth Config:')
   console.log('✅ Client ID exists:', !!clientId)
   console.log('✅ Redirect URI exists:', !!redirectUri)
-  console.log('✅ Redirect URI is HTTP:', redirectUri?.startsWith('http://'))
+  console.log('✅ Redirect URI is HTTPS:', redirectUri?.startsWith('https://'))
   console.log(
     '✅ Redirect URI has callback:',
     redirectUri?.includes('/callback'),
@@ -32,8 +32,8 @@ export function validateAuthConfig() {
   const issues = []
   if (!clientId) issues.push('Missing VITE_SPOTIFY_CLIENT_ID')
   if (!redirectUri) issues.push('Missing VITE_SPOTIFY_REDIRECT_URI')
-  if (redirectUri && !redirectUri.startsWith('http://')) {
-    issues.push('Redirect URI should use HTTP (not HTTPS) for localhost')
+  if (redirectUri && !redirectUri.startsWith('https://')) {
+    issues.push('Redirect URI should use HTTPS for localhost')
   }
   if (redirectUri && !redirectUri.includes('/callback')) {
     issues.push('Redirect URI should end with /callback')

@@ -6,10 +6,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths(),
-  ],
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -18,6 +15,10 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    https: {
+      key: undefined,
+      cert: undefined,
+    },
   },
   test: {
     globals: true,

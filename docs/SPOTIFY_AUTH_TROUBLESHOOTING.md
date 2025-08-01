@@ -22,8 +22,8 @@ O redirect URI configurado no Spotify Developer Dashboard não corresponde ao qu
 2. **Selecione sua aplicação** (ID: `c6c3457349a542d59b8e0dcc39c4047a`)
 3. **Clique em "Settings"**
 4. **Na seção "Redirect URIs"**:
-   - ✅ **Adicione**: `http://localhost:5173/callback`
-   - ❌ **Remova**: Qualquer URI com `https://localhost`
+   - ✅ **Adicione**: `https://localhost:5173/callback`
+   - ❌ **Remova**: Qualquer URI com `http://localhost`
    - ❌ **Remova**: Outros domínios não utilizados
 5. **Clique em "Save"**
 
@@ -34,7 +34,7 @@ Certifique-se que o arquivo `.env` contém:
 ```bash
 # Spotify API Configuration
 VITE_SPOTIFY_CLIENT_ID=c6c3457349a542d59b8e0dcc39c4047a
-VITE_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
+VITE_SPOTIFY_REDIRECT_URI=https://localhost:5173/callback
 
 # Application Configuration
 VITE_APP_VERSION=1.0.0
@@ -53,7 +53,7 @@ NODE_ENV=development
 A aplicação está configurada para usar:
 
 - **Client ID**: `c6c3457349a542d59b8e0dcc39c4047a`
-- **Redirect URI**: `http://localhost:5173/callback`
+- **Redirect URI**: `https://localhost:5173/callback`
 - **Scopes**: `user-read-private user-read-email`
 
 ### **Debug da Configuração**
@@ -69,7 +69,7 @@ A aplicação inclui um utilitário de debug que pode ser acessado no console do
    🔍 Validating Auth Config:
    ✅ Client ID exists: true
    ✅ Redirect URI exists: true
-   ✅ Redirect URI is HTTP: true
+   ✅ Redirect URI is HTTPS: true
    ✅ Redirect URI has callback: true
    ✅ All validations passed!
    ```
@@ -79,22 +79,22 @@ A aplicação inclui um utilitário de debug que pode ser acessado no console do
 A aplicação gera a seguinte URL de autorização:
 
 ```
-https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fcallback&scope=user-read-private%20user-read-email
+https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047a&response_type=token&redirect_uri=https%3A%2F%2Flocalhost%3A5173%2Fcallback&scope=user-read-private%20user-read-email
 ```
 
 ### **Verificações Importantes**
 
 #### **✅ Checklist de Configuração**
 
-- [ ] **Spotify Dashboard**: Redirect URI configurado como `http://localhost:5173/callback`
+- [ ] **Spotify Dashboard**: Redirect URI configurado como `https://localhost:5173/callback`
 - [ ] **Variáveis de Ambiente**: `.env` com Client ID e Redirect URI corretos
-- [ ] **Protocolo HTTP**: Usando `http://` (não `https://`) para localhost
+- [ ] **Protocolo HTTPS**: Usando `https://` para localhost
 - [ ] **Porta Correta**: Porta 5173 (padrão do Vite)
 - [ ] **Path Correto**: `/callback` no final da URL
 
 #### **❌ Problemas Comuns**
 
-1. **HTTPS vs HTTP**: Localhost deve usar `http://`
+1. **HTTPS vs HTTP**: Localhost deve usar `https://`
 2. **Porta Incorreta**: Verificar se está usando porta 5173
 3. **Path Incorreto**: Deve terminar com `/callback`
 4. **Client ID Errado**: Verificar se o Client ID está correto
@@ -103,7 +103,7 @@ https://accounts.spotify.com/authorize?client_id=c6c3457349a542d59b8e0dcc39c4047
 ### **Teste da Configuração**
 
 1. **Inicie a aplicação**: `npm run dev`
-2. **Abra**: `http://localhost:5173`
+2. **Abra**: `https://localhost:5173`
 3. **Clique em "Conectar com Spotify"**
 4. **Verifique se redireciona corretamente**
 
