@@ -520,6 +520,11 @@ body {
 }
 
 /* App Layout */
+.app {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
 .app-layout {
   display: flex;
   height: 100vh;

@@ -9,7 +9,7 @@ import { AppProvider } from '../app/providers/app-provider'
 import App from './App'
 
 describe('App component', () => {
-  it('renders header with title', () => {
+  it('renders main content area', () => {
     render(
       <AppProvider>
         <MemoryRouter>
@@ -18,9 +18,8 @@ describe('App component', () => {
       </AppProvider>,
     )
 
-    const title = screen.getByRole('link', {
-      name: /kanastra frontend challenge/i,
-    })
-    expect(title).toBeInTheDocument()
+    const mainContent = screen.getByRole('main')
+    expect(mainContent).toBeInTheDocument()
+    expect(mainContent).toHaveClass('main-content')
   })
 })
