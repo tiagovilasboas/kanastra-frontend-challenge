@@ -4,12 +4,6 @@ import { cache } from './cache'
 
 // Query key factories for type safety
 export const queryKeys = {
-  // Authentication
-  auth: {
-    all: ['spotifyAuth'] as const,
-    status: () => [...queryKeys.auth.all, 'status'] as const,
-  },
-
   // Search
   search: {
     all: ['searchArtists'] as const,

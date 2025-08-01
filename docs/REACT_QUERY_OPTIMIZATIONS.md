@@ -1,6 +1,6 @@
-# React Query Optimizations
+# React Query Optimizations - Simplified
 
-Este documento descreve as otimizações implementadas no React Query para melhorar a performance e experiência do usuário.
+Este documento descreve as otimizações implementadas no React Query, focando apenas no que realmente importa para a performance e experiência do usuário.
 
 ## 🎯 **Configuração Centralizada**
 
@@ -66,83 +66,8 @@ const handleMouseEnter = () => {
 
 - ✅ Prefetch de detalhes do artista
 - ✅ Prefetch de top tracks
-- ✅ Prefetch de álbuns
-- ✅ Prefetch de resultados de busca
-- ✅ Prefetch de artistas populares
-
-## ⚡ **Optimistic Updates**
-
-### **Hook: `useOptimisticUpdates`**
-
-Atualizações otimistas para operações de mutação:
-
-```typescript
-const { optimisticallyUpdateArtist } = useOptimisticUpdates()
-
-const handleUpdateArtist = async () => {
-  const rollback = optimisticallyUpdateArtist(artistId, updates)
-
-  try {
-    await updateArtistAPI(artistId, updates)
-  } catch (error) {
-    rollback() // Reverte mudanças em caso de erro
-  }
-}
-```
-
-**Funcionalidades:**
-
-- ✅ Atualização otimista de artistas
-- ✅ Atualização otimista de álbuns
-- ✅ Atualização otimista de tracks
-- ✅ Adição/remoção otimista de álbuns
-- ✅ Rollback automático em caso de erro
-
-## 🔄 **Background Refetch**
-
-### **Hook: `useBackgroundRefetch`**
-
-Refetch automático de dados críticos:
-
-```typescript
-useBackgroundRefetch({
-  enabled: true,
-  interval: 5 * 60 * 1000, // 5 minutos
-  onSuccess: () => console.log('Refetch completed'),
-  onError: (error) => console.error('Refetch failed:', error),
-})
-```
-
-**Funcionalidades:**
-
-- ✅ Refetch em intervalos regulares
-- ✅ Refetch no foco da janela
-- ✅ Refetch na reconexão de rede
-- ✅ Controle de frequência de refetch
-
-## 📊 **Configurações de Cache**
-
-### **Cache Times (gcTime)**
-
-```typescript
-CACHE_TIMES = {
-  SHORT: 2 * 60 * 1000, // 2 minutos - dados temporários
-  MEDIUM: 10 * 60 * 1000, // 10 minutos - dados normais
-  LONG: 30 * 60 * 1000, // 30 minutos - dados estáticos
-  INFINITE: Infinity, // Indefinido - dados críticos
-}
-```
-
-### **Stale Times**
-
-```typescript
-STALE_TIMES = {
-  FREQUENT: 1 * 60 * 1000, // 1 minuto - dados que mudam muito
-  OCCASIONAL: 5 * 60 * 1000, // 5 minutos - dados que mudam ocasionalmente
-  RARE: 15 * 60 * 1000, // 15 minutos - dados que raramente mudam
-  STATIC: Infinity, // Indefinido - dados estáticos
-}
-```
+- ✅ Prefetch de álbuns (primeira página)
+- ✅ Fail silently para não impactar UX
 
 ## 🔧 **Query Keys Tipadas**
 
@@ -150,10 +75,6 @@ STALE_TIMES = {
 
 ```typescript
 queryKeys = {
-  auth: {
-    all: ['spotifyAuth'],
-    status: () => [...queryKeys.auth.all, 'status'],
-  },
   search: {
     all: ['searchArtists'],
     byQuery: (query: string) => [...queryKeys.search.all, query],
@@ -203,24 +124,23 @@ Todos os hooks existentes foram atualizados para usar as novas configurações:
 
 ### **useSpotifyAuth**
 
-- Query key tipada
-- Cache time infinito
-- Sem retry (dados críticos)
+- **Simplificado**: Usa `useState` em vez de React Query
+- **Motivo**: Autenticação é baseada em `localStorage` (dados locais)
+- **Benefício**: Menos complexidade, mesma funcionalidade
 
 ## 🚀 **Benefícios Implementados**
 
 ### **Performance**
 
 - ✅ Cache otimizado por tipo de dado
-- ✅ Prefetch inteligente
-- ✅ Background refetch controlado
+- ✅ Prefetch inteligente apenas onde necessário
+- ✅ Configurações de retry apropriadas
 - ✅ Invalidação seletiva
 
 ### **UX**
 
-- ✅ Carregamento mais rápido
+- ✅ Carregamento mais rápido com prefetch
 - ✅ Dados sempre atualizados
-- ✅ Feedback imediato com optimistic updates
 - ✅ Funcionamento offline melhorado
 
 ### **Manutenibilidade**
@@ -264,45 +184,49 @@ const { data } = useQuery({
 })
 ```
 
-### **Optimistic Update**
+## 🎯 **Princípios Aplicados**
 
-```typescript
-import { useOptimisticUpdates } from '@/hooks'
+### **React Query Apenas Onde Faz Sentido**
 
-function ArtistPage({ artistId }) {
-  const { optimisticallyUpdateArtist } = useOptimisticUpdates()
+- ✅ **APIs externas**: Spotify API
+- ✅ **Dados que mudam**: Search results, artist details
+- ✅ **Cache necessário**: Para evitar requests repetidos
+- ❌ **Dados locais**: localStorage (useState é suficiente)
+- ❌ **Dados estáticos**: Não precisam de optimistic updates
+- ❌ **Operações síncronas**: Não precisam de React Query
 
-  const handleLike = async () => {
-    const rollback = optimisticallyUpdateArtist(artistId, { liked: true })
+### **Simplicidade vs Complexidade**
 
-    try {
-      await likeArtistAPI(artistId)
-    } catch (error) {
-      rollback()
-    }
-  }
-}
-```
+- ✅ **Prefetch simples**: Apenas dados essenciais
+- ✅ **Cache apropriado**: Baseado na frequência de mudança
+- ✅ **Retry inteligente**: Apenas onde necessário
+- ❌ **Over-engineering**: Evitado em favor da simplicidade
 
-### **Background Refetch**
+## 🚨 **O que foi Removido (Over-Engineering)**
 
-```typescript
-import { useBackgroundRefetch } from '@/hooks'
+### **1. Optimistic Updates**
 
-function App() {
-  useBackgroundRefetch({
-    enabled: true,
-    interval: 5 * 60 * 1000,
-  })
+- **Motivo**: Dados do Spotify não são editáveis pelo usuário
+- **Substituição**: Não necessária
 
-  return <div>App content</div>
-}
-```
+### **2. Background Refetch**
 
-## 🔮 **Próximas Melhorias**
+- **Motivo**: Dados de artistas raramente mudam
+- **Substituição**: Cache time apropriado é suficiente
 
-- [ ] Implementar mutations com React Query
-- [ ] Adicionar cache persistence
-- [ ] Implementar infinite queries para paginação
-- [ ] Adicionar cache warming strategies
-- [ ] Implementar query deduplication
+### **3. React Query para Autenticação**
+
+- **Motivo**: localStorage é operação síncrona local
+- **Substituição**: useState + useEffect
+
+### **4. Prefetch Excessivo**
+
+- **Motivo**: Prefetch de dados que podem não ser usados
+- **Substituição**: Prefetch apenas de dados essenciais
+
+## ✅ **Resultado Final**
+
+- **Menos complexidade**: Código mais fácil de entender e manter
+- **Melhor performance**: Foco apenas no que realmente importa
+- **UX mantida**: Funcionalidades essenciais preservadas
+- **Clean Code**: Princípios SOLID aplicados corretamente
