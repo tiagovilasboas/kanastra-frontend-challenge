@@ -1,134 +1,198 @@
-/* Button Component Styles */
+/* Spotify Design System Button Styles */
+
 .button {
-  /* Base styles */
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--spacing-sm);
   border: none;
-  border-radius: 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  text-decoration: none;
-  font-family: inherit;
-}
-
-/* Size variants */
-.buttonSmall {
-  padding: 8px 16px;
-  font-size: 14px;
-}
-
-.buttonMedium {
-  padding: 12px 24px;
-  font-size: 16px;
-}
-
-.buttonLarge {
-  padding: 16px 32px;
-  font-size: 18px;
-}
-
-/* Variant styles */
-.buttonPrimary {
-  background-color: #1DB954;
-  color: white;
-}
-
-.buttonPrimary:hover {
-  background-color: #1ed760;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
-}
-
-.buttonPrimary:active {
-  transform: translateY(0);
-}
-
-.buttonSecondary {
-  background-color: transparent;
-  color: #6b7280;
-  border: 1px solid #d1d5db;
-}
-
-.buttonSecondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.buttonDanger {
-  background-color: #ef4444;
-  color: white;
-}
-
-.buttonDanger:hover {
-  background-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-}
-
-.buttonGhost {
-  background-color: transparent;
-  color: #6b7280;
-}
-
-.buttonGhost:hover {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.buttonSpotify {
-  background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
-  color: white;
-  font-weight: 700;
+  border-radius: var(--radius-lg);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
-.buttonSpotify:hover {
-  background: linear-gradient(135deg, #1ed760 0%, #1DB954 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(29, 185, 84, 0.4);
+/* Button Variants */
+.primary {
+  background: var(--spotify-green);
+  color: var(--spotify-black);
 }
 
-.buttonSpotify:active {
-  transform: translateY(0);
+.primary:hover:not(.disabled) {
+  background: #1ed760;
+  transform: scale(1.02);
 }
 
-/* Disabled state */
-.button:disabled {
-  opacity: 0.6;
+.primary:active:not(.disabled) {
+  transform: scale(0.98);
+}
+
+.secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.secondary:hover:not(.disabled) {
+  background: var(--hover-bg);
+  border-color: var(--spotify-green);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.ghost:hover:not(.disabled) {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.gradient {
+  background: linear-gradient(135deg, var(--spotify-green) 0%, #1ed760 100%);
+  color: var(--spotify-black);
+}
+
+.gradient:hover:not(.disabled) {
+  background: linear-gradient(135deg, #1ed760 0%, #1fdf64 100%);
+  transform: scale(1.02);
+}
+
+/* Button Sizes */
+.sm {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  min-height: 32px;
+}
+
+.md {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  min-height: 40px;
+}
+
+.lg {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  min-height: 48px;
+}
+
+.xl {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+  min-height: 56px;
+}
+
+/* Disabled State */
+.disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none !important;
 }
 
-.button:disabled:hover {
+.disabled:hover {
   transform: none !important;
-  box-shadow: none !important;
 }
 
-/* Loading state */
-.buttonLoading {
+/* Button Sections */
+.leftSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Focus States */
+.button:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Loading State */
+.loading {
   position: relative;
   color: transparent;
 }
 
-.buttonLoading::after {
+.loading::after {
   content: '';
   position: absolute;
-  width: 16px;
-  height: 16px;
   top: 50%;
   left: 50%;
-  margin-left: -8px;
-  margin-top: -8px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-} 
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .xl {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-md);
+    min-height: 48px;
+  }
+
+  .lg {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    min-height: 40px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .button {
+    border: 2px solid currentColor;
+  }
+
+  .primary {
+    border-color: var(--spotify-black);
+  }
+
+  .secondary {
+    border-color: var(--text-primary);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .primary:hover:not(.disabled),
+  .gradient:hover:not(.disabled) {
+    transform: none;
+  }
+}

@@ -1,6 +1,7 @@
 interface EnvironmentConfig {
   spotify: {
     clientId: string
+    clientSecret: string
     redirectUri: string
     scopes: string[]
     baseUrl: string
@@ -24,6 +25,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   // Validate required environment variables
   const requiredEnvVars = {
     VITE_SPOTIFY_CLIENT_ID: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
+    VITE_SPOTIFY_CLIENT_SECRET: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
     VITE_SPOTIFY_REDIRECT_URI: import.meta.env.VITE_SPOTIFY_REDIRECT_URI,
   }
 
@@ -41,6 +43,7 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
   return {
     spotify: {
       clientId: requiredEnvVars.VITE_SPOTIFY_CLIENT_ID!,
+      clientSecret: requiredEnvVars.VITE_SPOTIFY_CLIENT_SECRET!,
       redirectUri: requiredEnvVars.VITE_SPOTIFY_REDIRECT_URI!,
       scopes: ['user-read-private', 'user-read-email'],
       baseUrl: 'https://api.spotify.com/v1',

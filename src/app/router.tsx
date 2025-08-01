@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom'
 
-import ArtistPage from '@/pages/ArtistPage'
-import CallbackPage from '@/pages/CallbackPage'
-import HomePage from '@/pages/HomePage'
+import { ArtistPage } from '@/pages/ArtistPage'
+import { CallbackPage } from '@/pages/CallbackPage'
+import { HomePage } from '@/pages/HomePage'
 
-import App from './App'
+import { App } from './App'
 
 export const router = createBrowserRouter([
   {

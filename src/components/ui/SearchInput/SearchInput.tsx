@@ -1,5 +1,5 @@
 import { Search, X } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import styles from './SearchInput.module.css'
@@ -8,42 +8,21 @@ interface SearchInputProps {
   onSearch: (query: string) => void
   placeholder?: string
   disabled?: boolean
-  debounceMs?: number
 }
 
 export function SearchInput({
   onSearch,
   placeholder = 'Search...',
   disabled = false,
-  debounceMs = 300,
 }: SearchInputProps) {
   const { t } = useTranslation()
   const [value, setValue] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-    }
-
-    if (value.trim()) {
-      setIsLoading(true)
-      debounceRef.current = setTimeout(() => {
-        onSearch(value)
-        setIsLoading(false)
-      }, debounceMs)
-    } else {
-      onSearch('')
-      setIsLoading(false)
-    }
-
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-    }
-  }, [value, onSearch, debounceMs])
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value
+    setValue(newValue)
+    onSearch(newValue)
+  }
 
   const handleClear = () => {
     setValue('')
@@ -55,17 +34,16 @@ export function SearchInput({
       <Search className={styles.searchIcon} size={20} />
 
       <input
+        data-testid="search-input"
         type="text"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={handleChange}
         placeholder={placeholder}
         disabled={disabled}
         className={styles.searchInput}
       />
 
-      {isLoading && <div className={styles.searchLoading} />}
-
-      {value && !isLoading && (
+      {value && (
         <button
           type="button"
           onClick={handleClear}
