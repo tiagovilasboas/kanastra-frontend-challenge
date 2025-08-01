@@ -7,6 +7,7 @@ import { ArtistCard } from '@/components/ui/ArtistCard'
 import { AuthDebug } from '@/components/ui/AuthDebug'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { MusicIcon } from '@/components/ui/MusicIcon'
+import { SearchDebug } from '@/components/ui/SearchDebug'
 import { usePrefetch } from '@/hooks/usePrefetch'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
@@ -197,6 +198,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="app-layout" data-testid="home-page">
       <AuthDebug show={true} />
+      <SearchDebug />
       <Sidebar
         activeSection={activeSection}
         onNavItemClick={handleNavItemClick}

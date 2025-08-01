@@ -69,7 +69,11 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           return response.artists.items
         }
 
-        // Fallback to public search
+        // For public search, ensure we have a client token first
+        logger.debug('Ensuring client token is available for public search')
+        await spotifyRepository.getClientToken()
+        
+        // Now try public search
         logger.debug('Attempting public search')
         const response = await spotifyRepository.searchArtistsPublic(debouncedQuery)
         logger.debug('Public search successful', {
@@ -78,20 +82,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         return response.artists.items
       } catch (error) {
         logger.error('Search failed', error)
-        
-        // If public search fails, try to get client token and retry
-        try {
-          logger.debug('Attempting to get client token and retry')
-          await spotifyRepository.getClientToken()
-          const response = await spotifyRepository.searchArtistsPublic(debouncedQuery)
-          logger.debug('Retry search successful', {
-            itemsCount: response.artists.items.length,
-          })
-          return response.artists.items
-        } catch (retryError) {
-          logger.error('Retry search also failed', retryError)
-          throw retryError
-        }
+        throw error
       }
     },
     enabled: !!debouncedQuery,
