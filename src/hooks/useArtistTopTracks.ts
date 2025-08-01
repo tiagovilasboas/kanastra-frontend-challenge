@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
-import { SpotifyTrack } from '@/types/spotify'
+
 
 interface UseArtistTopTracksReturn {
-  tracks: SpotifyTrack[]
+  tracks: unknown[]
   isLoading: boolean
   error: Error | null
   refetch: () => void
@@ -19,7 +19,7 @@ export function useArtistTopTracks(
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
       const response = await spotifyRepository.getArtistTopTracks(artistId)
-      return response.tracks
+      return response
     },
     enabled: !!artistId,
     staleTime: cache.stale.RARE, // Top tracks rarely change

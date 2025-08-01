@@ -100,4 +100,75 @@ export class SpotifyAuthService {
   clearCodeVerifier(): void {
     CookieManager.clearCodeVerifier()
   }
+
+  async handleTokenExchange(code: string, state?: string): Promise<{ access_token: string }> {
+    console.log('🔄 Handling token exchange...')
+    console.log('📝 Code received:', code.substring(0, 10) + '...')
+
+    let codeVerifier = this.getCodeVerifier()
+
+    // If code verifier not found, try to extract from state parameter
+    if (!codeVerifier && state) {
+      try {
+        console.log('🔍 Trying to extract code verifier from state parameter...')
+        const decodedState = atob(state.replace(/-/g, '+').replace(/_/g, '/'))
+        codeVerifier = decodedState
+        console.log('✅ Code verifier extracted from state:', codeVerifier.substring(0, 10) + '...')
+      } catch (error) {
+        console.error('❌ Failed to extract code verifier from state:', error)
+      }
+    }
+
+    if (!codeVerifier) {
+      throw new Error('Authentication session expired. Please try logging in again.')
+    }
+
+    const { clientId, redirectUri } = this.config
+    const tokenUrl = 'https://accounts.spotify.com/api/token'
+
+    const params = new URLSearchParams({
+      client_id: clientId,
+      grant_type: 'authorization_code',
+      code: code,
+      redirect_uri: redirectUri,
+      code_verifier: codeVerifier,
+    })
+
+    console.log('📤 Sending token exchange request...')
+
+    try {
+      const response = await fetch(tokenUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params,
+      })
+
+      console.log('📥 Response status:', response.status)
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('❌ Token exchange failed:', errorData)
+        throw new Error(
+          errorData.error_description ||
+            errorData.error ||
+            `Token exchange failed: ${response.status}`,
+        )
+      }
+
+      const data = await response.json()
+      console.log('✅ Token exchange successful')
+
+      // Clean up code verifier after successful exchange
+      this.clearCodeVerifier()
+
+      return data
+    } catch (error) {
+      console.error('❌ Token exchange error:', error)
+      // Clean up on error
+      this.clearCodeVerifier()
+      throw error
+    }
+  }
 }

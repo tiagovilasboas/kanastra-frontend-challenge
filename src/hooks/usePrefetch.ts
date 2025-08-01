@@ -21,7 +21,7 @@ export function usePrefetch() {
         // Prefetch artist details
         await queryClient.prefetchQuery({
           queryKey: queryKeys.artists.details(artistId),
-          queryFn: () => spotifyRepository.getArtist(artistId),
+          queryFn: () => spotifyRepository.getArtistDetails(artistId),
           staleTime: cache.stale.OCCASIONAL,
           gcTime: cache.times.MEDIUM,
         })
@@ -38,10 +38,7 @@ export function usePrefetch() {
         await queryClient.prefetchQuery({
           queryKey: queryKeys.artists.albums(artistId, 1, 20),
           queryFn: () =>
-            spotifyRepository.getArtistAlbums(artistId, {
-              limit: 20,
-              offset: 0,
-            }),
+            spotifyRepository.getArtistAlbums(artistId, ['album', 'single']),
           staleTime: cache.stale.OCCASIONAL,
           gcTime: cache.times.MEDIUM,
         })

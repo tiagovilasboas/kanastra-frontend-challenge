@@ -23,7 +23,7 @@ export function useArtistDetails(
     queryKey: queryKeys.artists.details(artistId || ''),
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
-      return await spotifyRepository.getArtist(artistId)
+      return await spotifyRepository.getArtistDetails(artistId)
     },
     enabled: !!artistId,
     staleTime: cache.stale.OCCASIONAL, // Artist details change occasionally
