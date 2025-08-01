@@ -192,6 +192,12 @@ export class SpotifySearchService {
         },
       })
 
+      logger.debug('Validating albums response', {
+        artistId,
+        responseKeys: Object.keys(response.data || {}),
+        itemsCount: response.data?.items?.length || 0
+      })
+
       const validatedData = validateSpotifyAlbumsResponse(response.data)
       logger.debug('Artist albums retrieved successfully', { 
         artistId, 
@@ -200,6 +206,12 @@ export class SpotifySearchService {
 
       return validatedData.items
     } catch (error) {
+      logger.error('Album validation failed', {
+        artistId,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        responseData: error instanceof Error && 'response' in error ? (error as { response?: { data?: unknown } }).response?.data : 'No response data'
+      })
+      
       const appError = errorHandler.handleApiError(error, 'SpotifySearchService.getArtistAlbums')
       throw appError
     }

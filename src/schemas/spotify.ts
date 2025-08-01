@@ -20,7 +20,7 @@ export const SpotifyArtistSchema = z.object({
   href: z.string().url(),
   external_urls: SpotifyExternalUrlsSchema,
   images: z.array(SpotifyImageSchema),
-  popularity: z.number().min(0).max(100),
+  popularity: z.number().min(0).max(100).optional(), // Optional as it may not be present in all responses
   followers: z.object({
     href: z.string().nullable(),
     total: z.number().min(0),
@@ -48,7 +48,7 @@ export const SpotifyTrackSchema = z.object({
   uri: z.string(),
   href: z.string().url(),
   external_urls: SpotifyExternalUrlsSchema,
-  popularity: z.number().min(0).max(100),
+  popularity: z.number().min(0).max(100).optional(), // Optional as it may not be present in all responses
   duration_ms: z.number(),
   explicit: z.boolean(),
   is_playable: z.boolean().optional(),
@@ -96,7 +96,7 @@ export const SpotifyAlbumSchema = z.object({
     href: z.string().url(),
     external_urls: SpotifyExternalUrlsSchema,
   })),
-  popularity: z.number().min(0).max(100),
+  popularity: z.number().min(0).max(100).optional(), // Optional as it may not be present in all responses
 })
 
 export const SpotifyAlbumsResponseSchema = z.object({
