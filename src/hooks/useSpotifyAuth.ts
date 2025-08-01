@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { spotifyRepository } from '@/repositories'
@@ -12,15 +13,21 @@ interface UseSpotifyAuthReturn {
 
 export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const navigate = useNavigate()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    const token = localStorage.getItem('spotify_token')
-    if (token) {
-      spotifyRepository.setAccessToken(token)
-      setIsAuthenticated(true)
-    }
-  }, [])
+  // Query para verificar autenticação
+  const { data: isAuthenticated = false } = useQuery({
+    queryKey: ['spotifyAuth'],
+    queryFn: () => {
+      const token = localStorage.getItem('spotify_token')
+      if (token) {
+        spotifyRepository.setAccessToken(token)
+        return true
+      }
+      return false
+    },
+    staleTime: Infinity, // Não revalidar automaticamente
+  })
 
   const login = useCallback(() => {
     window.location.href = spotifyRepository.getAuthUrl()
@@ -28,18 +35,31 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
 
   const logout = useCallback(() => {
     spotifyRepository.logout()
-    setIsAuthenticated(false)
-    navigate('/')
-  }, [navigate])
+    localStorage.removeItem('spotify_token')
 
-  const handleCallback = useCallback((url: string) => {
-    const token = spotifyRepository.extractTokenFromUrl(url)
-    if (token) {
-      spotifyRepository.setAccessToken(token)
-      localStorage.setItem('spotify_token', token)
-      setIsAuthenticated(true)
-    }
-  }, [])
+    // Invalidar todas as queries relacionadas ao Spotify
+    queryClient.invalidateQueries({ queryKey: ['spotifyAuth'] })
+    queryClient.invalidateQueries({ queryKey: ['searchArtists'] })
+    queryClient.invalidateQueries({ queryKey: ['artist'] })
+    queryClient.invalidateQueries({ queryKey: ['artistTopTracks'] })
+    queryClient.invalidateQueries({ queryKey: ['artistAlbums'] })
+
+    navigate('/')
+  }, [navigate, queryClient])
+
+  const handleCallback = useCallback(
+    (url: string) => {
+      const token = spotifyRepository.extractTokenFromUrl(url)
+      if (token) {
+        spotifyRepository.setAccessToken(token)
+        localStorage.setItem('spotify_token', token)
+
+        // Atualizar a query de autenticação
+        queryClient.setQueryData(['spotifyAuth'], true)
+      }
+    },
+    [queryClient],
+  )
 
   return {
     isAuthenticated,

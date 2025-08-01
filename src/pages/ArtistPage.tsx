@@ -31,21 +31,18 @@ export default function ArtistPage() {
     totalPages,
     isLoadingArtist,
     isLoadingTracks,
-    getArtistAlbums,
+    handlePageChange,
     handleBackToHome,
   } = useArtistPage(id)
 
   const [albumFilter, setAlbumFilter] = useState('')
-  const itemsPerPage = 20
 
   const handleAlbumFilter = (query: string) => {
     setAlbumFilter(query)
   }
 
-  const handlePageChange = (page: number) => {
-    if (id) {
-      getArtistAlbums(id, page, itemsPerPage)
-    }
+  const handlePageChangeWrapper = (page: number) => {
+    handlePageChange(page)
   }
 
   const formatDuration = (ms: number) => {
@@ -271,7 +268,7 @@ export default function ArtistPage() {
               <Pagination
                 total={totalPages}
                 value={currentPage}
-                onChange={handlePageChange}
+                onChange={handlePageChangeWrapper}
                 size="md"
                 radius="md"
                 className="spotify-pagination"
