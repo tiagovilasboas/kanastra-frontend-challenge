@@ -1,15 +1,21 @@
 import {
+  ActionIcon,
   Alert,
   Badge,
+  Card,
   Divider,
+  Flex,
   Grid,
   Group,
+  Image,
   Pagination,
   Skeleton,
   Stack,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core'
+import { Play, Share, ExternalLink } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -18,7 +24,7 @@ import { Container } from '@/components/layout'
 import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useArtistPage } from '@/hooks/useArtistPage'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
-import { SpotifyAlbum, SpotifyArtist } from '@/types/spotify'
+import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
@@ -62,6 +68,16 @@ export const ArtistPage: React.FC = () => {
     })
   }
 
+  const formatFollowers = (followers: number) => {
+    if (followers >= 1000000) {
+      return `${(followers / 1000000).toFixed(1)}M`
+    }
+    if (followers >= 1000) {
+      return `${(followers / 1000).toFixed(1)}K`
+    }
+    return followers.toString()
+  }
+
   const getArtistImage = (artist: SpotifyArtist) => {
     if (artist.images && artist.images.length > 0) {
       return artist.images[0].url
@@ -76,9 +92,24 @@ export const ArtistPage: React.FC = () => {
     return '/placeholder-album.jpg'
   }
 
+  const handlePlayTrack = (track: SpotifyTrack) => {
+    // TODO: Implement play functionality
+    console.log('Playing track:', track.name)
+  }
+
+  const handleShareArtist = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: artist?.name,
+        url: window.location.href,
+      })
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+    }
+  }
+
   // Filtrar álbuns por nome
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filteredAlbums = albums.filter((album: any) =>
+  const filteredAlbums = albums.filter((album) =>
     album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
 
@@ -142,70 +173,119 @@ export const ArtistPage: React.FC = () => {
   return (
     <Container variant="mobile-first">
       <Stack gap="xl" className="p-xl" data-testid="artist-page">
-        {/* Header com botão voltar */}
+        {/* Header com botão voltar e ações */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
             {t('artist:backToHomeWithArrow', {
               defaultValue: '← Back to Home',
             })}
           </SpotifyButton>
+          
+          <Group gap="sm">
+            <Tooltip label="Share artist">
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                onClick={handleShareArtist}
+                aria-label="Share artist"
+              >
+                <Share size={20} />
+              </ActionIcon>
+            </Tooltip>
+            
+            <Tooltip label="Open in Spotify">
+              <ActionIcon
+                variant="subtle"
+                color="gray"
+                size="lg"
+                component="a"
+                href={artist.external_urls?.spotify || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open in Spotify"
+              >
+                <ExternalLink size={20} />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
         </Group>
 
-        {/* Informações do artista */}
-        <div className="artist-header">
-          <img
-            src={getArtistImage(artist)}
-            alt={artist.name}
-            className="artist-image"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.src = '/placeholder-artist.jpg'
-            }}
-          />
-
-          <Title order={1} className="artist-name" data-testid="artist-name">
-            {artist.name}
-          </Title>
-
-          <div className="artist-stats">
-            <Badge
-              className="artist-popularity-badge"
-              data-testid="artist-popularity"
-            >
-              {t('artist:popularityWithValue', {
-                value: artist.popularity,
-                defaultValue: '{{value}}% Popularity',
-              })}
-            </Badge>
-
-            {artist.followers && (
-              <Text className="artist-followers">
-                {t('artist:followersWithValue', {
-                  value: artist.followers.total.toLocaleString(),
-                  defaultValue: '{{value}} followers',
-                })}
-              </Text>
-            )}
-          </div>
-
-          {artist.genres && artist.genres.length > 0 && (
-            <div className="artist-genres">
-              {artist.genres.slice(0, 5).map((genre: string, index: number) => (
-                <Badge key={index} size="sm" variant="outline">
-                  {genre}
-                </Badge>
-              ))}
+        {/* Hero Section do Artista */}
+        <div className="artist-hero">
+          <div className="artist-hero-content">
+            <div className="artist-image-container">
+              <Image
+                src={getArtistImage(artist)}
+                alt={artist.name}
+                className="artist-hero-image"
+                fallbackSrc="/placeholder-artist.jpg"
+                radius="xl"
+              />
             </div>
-          )}
+            
+            <div className="artist-hero-info">
+              <Title order={1} className="artist-hero-name" data-testid="artist-name">
+                {artist.name}
+              </Title>
+
+              <Group gap="md" className="artist-hero-stats">
+                {artist.popularity && (
+                  <Badge
+                    className="artist-popularity-badge"
+                    data-testid="artist-popularity"
+                    variant="light"
+                    color="green"
+                  >
+                    {t('artist:popularityWithValue', {
+                      value: artist.popularity,
+                      defaultValue: '{{value}}% Popularity',
+                    })}
+                  </Badge>
+                )}
+
+                {artist.followers && (
+                  <Text className="artist-followers" size="lg">
+                    {t('artist:followersWithValue', {
+                      value: formatFollowers(artist.followers.total),
+                      defaultValue: '{{value}} followers',
+                    })}
+                  </Text>
+                )}
+              </Group>
+
+              {artist.genres && artist.genres.length > 0 && (
+                <Group gap="sm" className="artist-genres">
+                  {artist.genres.slice(0, 5).map((genre: string, index: number) => (
+                    <Badge key={index} size="sm" variant="outline" color="gray">
+                      {genre}
+                    </Badge>
+                  ))}
+                </Group>
+              )}
+            </div>
+          </div>
         </div>
 
         <Divider className="border-tertiary" />
 
         {/* Top Músicas */}
         <div>
-          <Title order={2} className="text-primary font-bold text-2xl mb-lg">
-            {t('artist:topTracks')}
-          </Title>
+          <Group justify="space-between" align="center" className="mb-lg">
+            <Title order={2} className="text-primary font-bold text-2xl">
+              {t('artist:topTracks')}
+            </Title>
+            
+            {isAuthenticated && topTracks && topTracks.length > 0 && (
+              <SpotifyButton
+                variant="secondary"
+                size="sm"
+                leftSection={<Play size={16} />}
+              >
+                {t('artist:playAll', 'Play All')}
+              </SpotifyButton>
+            )}
+          </Group>
 
           {isLoadingTracks ? (
             <Stack gap="md">
@@ -222,42 +302,58 @@ export const ArtistPage: React.FC = () => {
               {t('artist:noTopTracksMessage')}
             </Alert>
           ) : (
-            <div className="track-list">
-              {Array.isArray(topTracks) &&
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                topTracks.map((track: any, index: number) => (
-                  <div
-                    key={track.id}
-                    className="track-item"
-                    data-testid="track-item"
-                  >
-                    <div className="track-number" data-testid="track-number">
-                      {index + 1}
-                    </div>
-                    <img
-                      src={getAlbumImage(track.album)}
-                      alt={track.album.name}
-                      className="track-album-image"
-                    />
-                    <div className="track-info">
-                      <Text className="track-name" data-testid="track-name">
-                        {track.name}
-                      </Text>
-                      <Text className="track-artists">
-                        {track.artists
-                          .map((artist: SpotifyArtist) => artist.name)
-                          .join(', ')}
-                      </Text>
-                    </div>
+            <Card className="tracks-card">
+              <Stack gap="xs">
+                {Array.isArray(topTracks) &&
+                  topTracks.map((track, index) => (
                     <div
-                      className="track-duration"
-                      data-testid="track-duration"
+                      key={track.id}
+                      className="track-item"
+                      data-testid="track-item"
                     >
-                      {formatDuration(track.duration_ms)}
+                      <div className="track-number" data-testid="track-number">
+                        {index + 1}
+                      </div>
+                      
+                      <Image
+                        src={getAlbumImage(track.album)}
+                        alt={track.album.name}
+                        className="track-album-image"
+                        fallbackSrc="/placeholder-album.jpg"
+                        radius="sm"
+                      />
+                      
+                      <div className="track-info">
+                        <Text className="track-name" data-testid="track-name" fw={500}>
+                          {track.name}
+                        </Text>
+                        <Text className="track-artists" size="sm" c="dimmed">
+                          {track.artists
+                            .map((artist: SpotifyArtist) => artist.name)
+                            .join(', ')}
+                        </Text>
+                      </div>
+                      
+                      <div className="track-actions">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          onClick={() => handlePlayTrack(track)}
+                        >
+                          <Play size={16} />
+                        </ActionIcon>
+                      </div>
+                      
+                      <div
+                        className="track-duration"
+                        data-testid="track-duration"
+                      >
+                        {formatDuration(track.duration_ms)}
+                      </div>
                     </div>
-                  </div>
-                ))}
-            </div>
+                  ))}
+              </Stack>
+            </Card>
           )}
         </div>
 
@@ -265,9 +361,15 @@ export const ArtistPage: React.FC = () => {
 
         {/* Álbuns */}
         <div>
-          <Title order={2} className="text-primary font-bold text-2xl mb-lg">
-            {t('artist:albums')}
-          </Title>
+          <Group justify="space-between" align="center" className="mb-lg">
+            <Title order={2} className="text-primary font-bold text-2xl">
+              {t('artist:albums')}
+            </Title>
+            
+            <Text size="sm" c="dimmed">
+              {filteredAlbums.length} {filteredAlbums.length === 1 ? 'album' : 'albums'}
+            </Text>
+          </Group>
 
           {/* Filtro de álbuns */}
           <div className="mb-lg">
@@ -280,39 +382,46 @@ export const ArtistPage: React.FC = () => {
 
           {/* Grid de álbuns */}
           <Grid gutter="lg">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {filteredAlbums.map((album: any) => (
+            {filteredAlbums.map((album) => (
               <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                <div className="album-card" data-testid="album-card">
-                  <img
-                    src={getAlbumImage(album)}
-                    alt={album.name}
-                    className="album-image"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = '/placeholder-album.jpg'
-                    }}
-                  />
-                  <div>
-                    <Text className="album-name" data-testid="album-name">
+                <Card className="album-card" data-testid="album-card" withBorder>
+                  <Card.Section>
+                    <Image
+                      src={getAlbumImage(album)}
+                      alt={album.name}
+                      className="album-image"
+                      fallbackSrc="/placeholder-album.jpg"
+                      radius="md"
+                    />
+                  </Card.Section>
+                  
+                  <Stack gap="xs" className="mt-md">
+                    <Text className="album-name" data-testid="album-name" fw={500} lineClamp={2}>
                       {album.name}
                     </Text>
-                    <Text className="album-info" data-testid="album-info">
+                    
+                    <Text className="album-info" data-testid="album-info" size="sm" c="dimmed">
                       {t('artist:albumInfo', {
                         date: formatReleaseDate(album.release_date),
                         tracks: album.total_tracks,
                         defaultValue: '{{date}} • {{tracks}} tracks',
                       })}
                     </Text>
-                  </div>
-                </div>
+                    
+                    <Group gap="xs">
+                      <Badge size="xs" variant="light" color="gray">
+                        {album.album_type}
+                      </Badge>
+                    </Group>
+                  </Stack>
+                </Card>
               </Grid.Col>
             ))}
           </Grid>
 
           {/* Paginação */}
           {totalPages > 1 && (
-            <div className="pagination-container">
+            <Flex justify="center" className="mt-xl">
               <Pagination
                 data-testid="pagination"
                 total={totalPages}
@@ -322,11 +431,8 @@ export const ArtistPage: React.FC = () => {
                 radius="md"
                 className="spotify-pagination"
               />
-            </div>
+            </Flex>
           )}
-
-          {/* Erro ao carregar álbuns */}
-          {/* Remover artistAlbums.error não usado */}
         </div>
       </Stack>
     </Container>
