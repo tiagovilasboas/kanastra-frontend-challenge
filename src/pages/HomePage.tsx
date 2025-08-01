@@ -25,7 +25,6 @@ import { ArtistCard, SearchInput } from '@/components/ui'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { SpotifyArtist } from '@/types/spotify'
-import { debugAuthUrl, validateAuthConfig } from '@/utils/debug-auth'
 
 export default function HomePage() {
   const { t } = useTranslation()
@@ -33,15 +32,6 @@ export default function HomePage() {
   const { isAuthenticated, login } = useSpotifyAuth()
   const { searchResults, searchArtists, clearSearch, isLoading, error } =
     useSpotifySearch()
-
-  // Debug authentication configuration
-  useEffect(() => {
-    if (import.meta.env.DEV) {
-      console.log('🔍 Debugging Spotify Auth Configuration...')
-      validateAuthConfig()
-      debugAuthUrl()
-    }
-  }, [])
 
   const [searchQuery, setSearchQuery] = useState('')
 
