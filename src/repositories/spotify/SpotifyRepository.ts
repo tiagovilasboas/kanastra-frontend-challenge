@@ -53,6 +53,7 @@ export interface SpotifyError {
 export class SpotifyRepository {
   private api: AxiosInstance
   private accessToken: string | null = null
+  private clientToken: string | null = null
   private config = getSpotifyConfig()
   private apiConfig = getApiConfig()
 
@@ -276,6 +277,101 @@ export class SpotifyRepository {
     console.log('🚪 Logged out and cleared all authentication data')
   }
 
+  // Client Credentials Flow for public search
+  private async getClientToken(): Promise<string> {
+    if (this.clientToken) {
+      console.log('🔄 Using cached client token')
+      return this.clientToken
+    }
+
+    try {
+      console.log('🔑 Getting client token for public search...')
+      console.log('🔧 Config:', {
+        clientId: this.config.clientId ? 'Present' : 'Missing',
+        clientSecret: this.config.clientSecret ? 'Present' : 'Missing',
+        baseUrl: this.config.baseUrl,
+      })
+
+      const authString = `${this.config.clientId}:${this.config.clientSecret}`
+      const encodedAuth = btoa(authString)
+
+      console.log('🔐 Auth string length:', authString.length)
+      console.log('🔐 Encoded auth length:', encodedAuth.length)
+
+      const response = await axios.post(
+        'https://accounts.spotify.com/api/token',
+        'grant_type=client_credentials',
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Basic ${encodedAuth}`,
+          },
+        },
+      )
+
+      console.log('📊 Token response status:', response.status)
+      console.log('📊 Token response data:', {
+        access_token: response.data.access_token ? 'Present' : 'Missing',
+        token_type: response.data.token_type,
+        expires_in: response.data.expires_in,
+      })
+
+      this.clientToken = response.data.access_token as string
+      console.log('✅ Client token obtained successfully')
+
+      return this.clientToken
+    } catch (error) {
+      console.error('❌ Failed to get client token:', error)
+      console.error('❌ Error details:', error)
+      throw new Error('Failed to get client token for public search')
+    }
+  }
+
+  // Public search without authentication
+  async searchArtistsPublic(
+    query: string,
+    params: SearchParams = { query, type: 'artist', limit: 20, offset: 0 },
+  ): Promise<SpotifySearchResponse> {
+    try {
+      console.log('🔍 Searching artists publicly:', query)
+      console.log('🔧 Search params:', params)
+
+      const token = await this.getClientToken()
+      console.log('✅ Got client token:', token ? 'Token obtained' : 'No token')
+
+      const requestConfig = {
+        params: {
+          q: params.query,
+          type: params.type,
+          limit: params.limit || 20,
+          offset: params.offset || 0,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+
+      console.log('🌐 Making request to:', `${this.config.baseUrl}/search`)
+      console.log('📝 Request config:', requestConfig)
+
+      const response = await this.api.get('/search', requestConfig)
+
+      console.log('✅ Public search successful')
+      console.log('📊 Response data:', response.data)
+      return response.data
+    } catch (error) {
+      console.error('❌ Public search failed:', error)
+      console.error('❌ Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        response:
+          error instanceof Error && 'response' in error
+            ? error.response
+            : 'No response',
+      })
+      throw this.handleError(error, 'Failed to search artists publicly')
+    }
+  }
+
   async searchArtists(
     query: string,
     params: SearchParams = { query, type: 'artist', limit: 20, offset: 0 },
@@ -350,7 +446,9 @@ export class SpotifyRepository {
   private setupInterceptors(): void {
     this.api.interceptors.request.use(
       (config) => {
-        if (this.accessToken) {
+        // Only add user token if no Authorization header is already set
+        // This allows public search to use its own client token
+        if (this.accessToken && !config.headers.Authorization) {
           config.headers.Authorization = `Bearer ${this.accessToken}`
         }
         return config
