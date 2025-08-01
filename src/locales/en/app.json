@@ -1,0 +1,15 @@
+{
+  "appName": "Spotify Explorer",
+  "brand": "Kanastra Frontend Challenge",
+  "loading": "Loading...",
+  "language": "Language",
+  "languages": {
+    "portuguese": "Português",
+    "english": "English"
+  },
+  "flags": {
+    "brazil": "🇧🇷",
+    "usa": "🇺🇸"
+  },
+  "colon": ":"
+}

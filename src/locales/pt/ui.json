@@ -1,0 +1,35 @@
+{
+  "increment": "Incrementar",
+  "decrement": "Decrementar",
+  "fetch": "Buscar valor",
+  "currentValue": "Valor atual: {{value}}",
+  "name": "Nome",
+  "email": "Email",
+  "submit": "Enviar",
+  "validation": {
+    "required": "Campo obrigatório",
+    "invalidEmail": "Email inválido"
+  },
+  "welcome": {
+    "title": "Bem-vindo ao Kanastra Frontend Challenge",
+    "subtitle": "Este é o ponto de partida para o seu projeto. Comece a construir suas features aqui!"
+  },
+  "footer": {
+    "madeBy": "Feito com ❤️ por {{author}}"
+  },
+  "errorBoundary": {
+    "title": "Ops! Algo deu errado",
+    "description": "Desculpe, ocorreu um erro inesperado. Tente recarregar a página.",
+    "details": "Detalhes do erro (desenvolvimento)",
+    "tryAgain": "Tentar Novamente"
+  },
+  "artistCard": {
+    "playArtist": "Reproduzir artista",
+    "popularity": "Popularidade",
+    "followers": "Seguidores",
+    "popularityWithValue": "{{value}}%"
+  },
+  "searchInput": {
+    "clearSearch": "Limpar busca"
+  }
+}

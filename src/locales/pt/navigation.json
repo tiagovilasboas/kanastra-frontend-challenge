@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre"
+  },
+  "home": "Início",
+  "library": "Sua Biblioteca",
+  "create": "Criar Playlist",
+  "likedSongs": "Músicas Curtidas",
+  "downloads": "Downloads",
+  "settings": "Configurações",
+  "profile": "Perfil",
+  "libraryMessage": "Sua biblioteca de músicas aparecerá aqui.",
+  "libraryMessageUnauth": "Faça login para ver sua biblioteca.",
+  "createMessage": "Crie suas playlists personalizadas aqui.",
+  "createMessageUnauth": "Faça login para criar playlists."
+}
