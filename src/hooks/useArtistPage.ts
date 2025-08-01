@@ -1,9 +1,10 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
 
 import { queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
+
 import { useArtistAlbums } from './useArtistAlbums'
 import { useArtistDetails } from './useArtistDetails'
 import { useArtistTopTracks } from './useArtistTopTracks'

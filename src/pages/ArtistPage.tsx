@@ -15,7 +15,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core'
-import { Play, Share, ExternalLink, RefreshCw } from 'lucide-react'
+import { ExternalLink, Play, RefreshCw,Share } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
@@ -48,7 +48,6 @@ export const ArtistPage: React.FC = () => {
     handleBackToHome,
     handleRefresh,
     handlePrefetchNextPage,
-    handleInvalidateArtistData,
   } = useArtistPage(id)
 
   const [albumFilter, setAlbumFilter] = useState('')
@@ -198,32 +197,32 @@ export const ArtistPage: React.FC = () => {
           </SpotifyButton>
           
           <Group gap="sm">
-            <Tooltip label={t('artist:refresh', 'Refresh data')}>
+            <Tooltip label={t('artist:refresh')}>
               <ActionIcon
                 variant="subtle"
                 color="gray"
                 size="lg"
                 onClick={handleRefresh}
-                aria-label="Refresh data"
+                aria-label={t('artist:refresh')}
                 loading={isLoadingArtist || isLoadingTracks || isLoadingAlbums}
               >
                 <RefreshCw size={20} />
               </ActionIcon>
             </Tooltip>
             
-            <Tooltip label={t('artist:share', 'Share artist')}>
+            <Tooltip label={t('artist:share')}>
               <ActionIcon
                 variant="subtle"
                 color="gray"
                 size="lg"
                 onClick={handleShareArtist}
-                aria-label="Share artist"
+                aria-label={t('artist:share')}
               >
                 <Share size={20} />
               </ActionIcon>
             </Tooltip>
             
-            <Tooltip label={t('artist:openInSpotify', 'Open in Spotify')}>
+            <Tooltip label={t('artist:openInSpotify')}>
               <ActionIcon
                 variant="subtle"
                 color="gray"
@@ -232,7 +231,7 @@ export const ArtistPage: React.FC = () => {
                 href={artist.external_urls?.spotify || '#'}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Open in Spotify"
+                aria-label={t('artist:openInSpotify')}
               >
                 <ExternalLink size={20} />
               </ActionIcon>
@@ -400,8 +399,11 @@ export const ArtistPage: React.FC = () => {
             </Title>
             
             <Text size="sm" c="dimmed">
-              {filteredAlbums.length} {filteredAlbums.length === 1 ? 'album' : 'albums'}
-              {totalItems > 0 && ` of ${totalItems}`}
+              {t('artist:albumsCount', {
+                count: filteredAlbums.length,
+                total: totalItems,
+                defaultValue: '{{count}} {{count, plural, one {album} other {albums}}} of {{total}}'
+              })}
             </Text>
           </Group>
 

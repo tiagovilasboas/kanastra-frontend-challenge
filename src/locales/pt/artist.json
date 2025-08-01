@@ -1,13 +1,26 @@
 {
   "title": "Artista",
   "backToHome": "Voltar ao Início",
+  "backToHomeWithArrow": "← Voltar ao Início",
   "topTracks": "Top Tracks",
   "albums": "Álbuns",
   "filterAlbums": "Filtrar álbuns...",
   "albumInfo": "{{date}} • {{tracks}} faixas",
   "errorTitle": "Erro ao carregar artista",
+  "error": "Erro",
+  "artistNotFound": "Artista não encontrado",
+  "retry": "Tentar novamente",
+  "refresh": "Atualizar dados",
+  "share": "Compartilhar artista",
+  "openInSpotify": "Abrir no Spotify",
+  "popularityWithValue": "{{value}}% Popularidade",
+  "followersWithValue": "{{value}} seguidores",
+  "playAll": "Tocar Tudo",
   "noTopTracks": "Nenhuma top track disponível",
   "noTopTracksMessage": "Este artista não possui top tracks disponíveis no momento.",
   "authRequired": "Autenticação necessária",
-  "authRequiredMessage": "Faça login com o Spotify para ver as top tracks deste artista."
+  "authRequiredMessage": "Faça login com o Spotify para ver as top tracks deste artista.",
+  "tracksError": "Erro ao carregar tracks",
+  "albumsError": "Erro ao carregar álbuns",
+  "albumsCount": "{{count}} {{count, plural, one {álbum} other {álbuns}}} de {{total}}"
 }

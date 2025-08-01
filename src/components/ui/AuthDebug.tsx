@@ -1,5 +1,5 @@
-import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { spotifyRepository } from '@/repositories'

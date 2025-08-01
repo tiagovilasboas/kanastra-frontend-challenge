@@ -13,6 +13,9 @@ export interface SpotifyArtist {
     total: number
   }
   genres: string[]
+  external_urls?: {
+    spotify: string
+  }
 }
 
 export interface SpotifyAlbum {
