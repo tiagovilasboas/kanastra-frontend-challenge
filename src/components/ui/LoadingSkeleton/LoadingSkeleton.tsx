@@ -1,7 +1,12 @@
 import { Skeleton } from '@mantine/core'
 
 interface LoadingSkeletonProps {
-  variant?: 'artist-card' | 'track-item' | 'album-item' | 'custom'
+  variant?:
+    | 'artist-card'
+    | 'track-item'
+    | 'album-item'
+    | 'search-results'
+    | 'custom'
   count?: number
   className?: string
 }
@@ -39,6 +44,28 @@ export function LoadingSkeleton({
     </div>
   )
 
+  const renderSearchResultsSkeleton = () => (
+    <div className="search-results-skeleton">
+      {/* Header with search info */}
+      <div className="search-header-skeleton mb-lg">
+        <Skeleton height={24} width="200px" className="mb-sm" />
+        <Skeleton height={16} width="150px" />
+      </div>
+
+      {/* Results grid */}
+      <div className="results-grid-skeleton">
+        {Array.from({ length: Math.min(count, 8) }).map((_, index) => (
+          <div key={index} className="artist-card-skeleton">
+            <Skeleton height={180} radius="lg" className="mb-md" />
+            <Skeleton height={20} width="85%" className="mb-sm" />
+            <Skeleton height={16} width="65%" className="mb-sm" />
+            <Skeleton height={14} width="45%" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
   const renderSkeleton = () => {
     switch (variant) {
       case 'artist-card':
@@ -47,6 +74,8 @@ export function LoadingSkeleton({
         return renderTrackItemSkeleton()
       case 'album-item':
         return renderAlbumItemSkeleton()
+      case 'search-results':
+        return renderSearchResultsSkeleton()
       case 'custom':
         return (
           <div className={className}>
@@ -59,12 +88,19 @@ export function LoadingSkeleton({
     }
   }
 
+  if (variant === 'search-results') {
+    return renderSearchResultsSkeleton()
+  }
+
   if (count === 1) {
     return renderSkeleton()
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
+    <div
+      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md"
+      data-testid="loading-skeleton"
+    >
       {Array.from({ length: count }).map((_, index) => (
         <div key={index}>{renderSkeleton()}</div>
       ))}
