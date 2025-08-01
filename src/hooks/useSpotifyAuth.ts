@@ -18,14 +18,33 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const queryClient = useQueryClient()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
-  // Check authentication on mount
+  // Check authentication on mount and when localStorage changes
   useEffect(() => {
-    const token = localStorage.getItem('spotify_token')
-    if (token) {
-      spotifyRepository.setAccessToken(token)
-      setIsAuthenticated(true)
+    const checkAuth = () => {
+      const token = localStorage.getItem('spotify_token')
+      if (token) {
+        spotifyRepository.setAccessToken(token)
+        setIsAuthenticated(true)
+        logger.debug('User authenticated with token')
+      } else {
+        setIsAuthenticated(false)
+        logger.debug('No authentication token found')
+      }
     }
-  }, []) // spotifyRepository is stable, no need to add to deps
+
+    // Check immediately
+    checkAuth()
+
+    // Listen for storage changes (in case token is set from another tab/window)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'spotify_token') {
+        checkAuth()
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   const login = useCallback(async () => {
     try {
@@ -41,6 +60,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   }, [])
 
   const logout = useCallback(() => {
+    logger.debug('Logging out user')
     spotifyRepository.logout()
     setIsAuthenticated(false)
 
@@ -48,11 +68,12 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     queryClient.invalidateQueries({ queryKey: queryKeys.search.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.artists.all })
 
-    navigate('/')
+    navigate('/', { replace: true })
   }, [navigate, queryClient])
 
   const handleCallback = useCallback(async (url: string) => {
     try {
+      logger.debug('Handling callback URL')
       const { code, state } = spotifyRepository.extractCodeFromUrl(url)
       if (code) {
         const token = await spotifyRepository.exchangeCodeForToken(
@@ -62,9 +83,11 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
         spotifyRepository.setAccessToken(token)
         localStorage.setItem('spotify_token', token)
         setIsAuthenticated(true)
+        logger.debug('Authentication successful via callback')
       }
     } catch (error) {
       logger.error('Error exchanging code for token', error)
+      setIsAuthenticated(false)
     }
   }, [])
 

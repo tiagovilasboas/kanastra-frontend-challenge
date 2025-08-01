@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Header, Sidebar } from '@/components/layout'
 import { ArtistCard } from '@/components/ui/ArtistCard'
+import { AuthDebug } from '@/components/ui/AuthDebug'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { MusicIcon } from '@/components/ui/MusicIcon'
 import { usePrefetch } from '@/hooks/usePrefetch'
@@ -195,6 +196,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="app-layout" data-testid="home-page">
+      <AuthDebug show={true} />
       <Sidebar
         activeSection={activeSection}
         onNavItemClick={handleNavItemClick}

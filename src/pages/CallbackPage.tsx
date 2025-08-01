@@ -51,20 +51,31 @@ export const CallbackPage: React.FC = () => {
         // Marcar como sucesso
         setStatus('success')
 
-        // Redirecionar após 2 segundos
-        setTimeout(() => {
-          navigate('/')
-        }, 2000)
+        // Redirecionar imediatamente após sucesso
+        logger.debug('Redirecting to home page')
+        navigate('/', { replace: true })
       } catch (error) {
         logger.error('Callback processing error', error)
         setStatus('error')
-        setErrorMessage(
-          error instanceof Error
-            ? error.message.includes('Authentication session expired')
-              ? t('auth:codeVerifierNotFound')
-              : error.message
-            : t('auth:unknownError'),
-        )
+        
+        // Melhorar tratamento de erros específicos
+        let message = t('auth:unknownError')
+        
+        if (error instanceof Error) {
+          if (error.message.includes('Authentication session expired')) {
+            message = t('auth:codeVerifierNotFound')
+          } else if (error.message.includes('INVALID_CLIENT')) {
+            message = 'Configuração do cliente inválida. Verifique suas credenciais.'
+          } else if (error.message.includes('redirect_uri')) {
+            message = 'URI de redirecionamento inválida. Verifique sua configuração.'
+          } else if (error.message.includes('code_verifier')) {
+            message = 'Falha na verificação do código de autenticação. Tente novamente.'
+          } else {
+            message = error.message
+          }
+        }
+        
+        setErrorMessage(message)
       }
     }
 
@@ -101,7 +112,7 @@ export const CallbackPage: React.FC = () => {
               {t('auth:success')}
             </Title>
             <Text className="text-secondary text-base text-center">
-              {t('auth:successMessage')}
+              {t('auth:redirecting', 'Redirecionando...')}
             </Text>
           </Stack>
         )
@@ -124,7 +135,7 @@ export const CallbackPage: React.FC = () => {
               {errorMessage || t('auth:errorMessage')}
             </Text>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/', { replace: true })}
               className="btn-spotify btn-secondary"
             >
               {t('auth:backToHome')}

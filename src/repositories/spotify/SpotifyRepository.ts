@@ -134,12 +134,26 @@ export class SpotifyRepository {
   // Utility methods
   logout(): void {
     logger.debug('Logging out')
+    
+    // Clear access token
     this.accessToken = undefined
 
+    // Clear search service tokens
     this.searchService.setAccessToken('')
     this.searchService.setClientToken('')
+    
+    // Clear localStorage
     localStorage.removeItem('spotify_token')
+    
+    // Clear cookies
     CookieManager.clearCodeVerifier()
+    
+    // Clear any cached data
+    if (typeof window !== 'undefined' && window.location) {
+      // Force page reload to clear any cached state
+      window.location.href = '/'
+    }
+    
     logger.debug('Logout completed')
   }
 
