@@ -2,6 +2,12 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import {
+  CACHE_TIMES,
+  queryKeys,
+  RETRY_CONFIGS,
+  STALE_TIMES,
+} from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 
 interface UseSpotifyAuthReturn {
@@ -17,7 +23,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
 
   // Query para verificar autenticação
   const { data: isAuthenticated = false } = useQuery({
-    queryKey: ['spotifyAuth'],
+    queryKey: queryKeys.auth.status(),
     queryFn: () => {
       const token = localStorage.getItem('spotify_token')
       if (token) {
@@ -26,7 +32,9 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
       }
       return false
     },
-    staleTime: Infinity, // Não revalidar automaticamente
+    staleTime: STALE_TIMES.STATIC, // Não revalidar automaticamente
+    gcTime: CACHE_TIMES.INFINITE, // Manter em memória indefinidamente
+    retry: RETRY_CONFIGS.NONE.retry,
   })
 
   const login = useCallback(() => {
@@ -38,11 +46,9 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     localStorage.removeItem('spotify_token')
 
     // Invalidar todas as queries relacionadas ao Spotify
-    queryClient.invalidateQueries({ queryKey: ['spotifyAuth'] })
-    queryClient.invalidateQueries({ queryKey: ['searchArtists'] })
-    queryClient.invalidateQueries({ queryKey: ['artist'] })
-    queryClient.invalidateQueries({ queryKey: ['artistTopTracks'] })
-    queryClient.invalidateQueries({ queryKey: ['artistAlbums'] })
+    queryClient.invalidateQueries({ queryKey: queryKeys.auth.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.search.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.artists.all })
 
     navigate('/')
   }, [navigate, queryClient])
@@ -55,7 +61,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
         localStorage.setItem('spotify_token', token)
 
         // Atualizar a query de autenticação
-        queryClient.setQueryData(['spotifyAuth'], true)
+        queryClient.setQueryData(queryKeys.auth.status(), true)
       }
     },
     [queryClient],

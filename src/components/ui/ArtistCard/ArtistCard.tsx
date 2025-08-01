@@ -1,6 +1,7 @@
 import { Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { usePrefetch } from '@/hooks'
 import { SpotifyArtist } from '@/types/spotify'
 import { formatFollowers, getPopularityColor } from '@/utils/formatters'
 
@@ -20,13 +21,23 @@ export function ArtistCard({
   showFollowers = false,
 }: ArtistCardProps) {
   const { t } = useTranslation()
+  const { prefetchArtistData } = usePrefetch()
 
   const handleClick = () => {
     onClick?.(artist)
   }
 
+  const handleMouseEnter = () => {
+    // Prefetch artist data on hover for better UX
+    prefetchArtistData(artist.id, { enabled: true })
+  }
+
   return (
-    <div className={styles.artistCard} onClick={handleClick}>
+    <div
+      className={styles.artistCard}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+    >
       <img
         src={artist.images[0]?.url || '/placeholder-artist.jpg'}
         alt={artist.name}

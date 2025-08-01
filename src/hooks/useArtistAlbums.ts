@@ -1,5 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 
+import {
+  CACHE_TIMES,
+  queryKeys,
+  RETRY_CONFIGS,
+  STALE_TIMES,
+} from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyAlbum } from '@/types/spotify'
 
@@ -26,7 +32,7 @@ export function useArtistAlbums({
   const offset = (page - 1) * limit
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['artistAlbums', artistId, page, limit],
+    queryKey: queryKeys.artists.albums(artistId || '', page, limit),
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
       const response = await spotifyRepository.getArtistAlbums(artistId, {
@@ -40,8 +46,10 @@ export function useArtistAlbums({
       }
     },
     enabled: !!artistId,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: STALE_TIMES.OCCASIONAL, // Albums change occasionally
+    gcTime: CACHE_TIMES.MEDIUM, // Keep in memory for medium time
+    retry: RETRY_CONFIGS.IMPORTANT.retry,
+    retryDelay: RETRY_CONFIGS.IMPORTANT.retryDelay,
   })
 
   return {
