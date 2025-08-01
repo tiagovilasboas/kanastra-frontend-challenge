@@ -1,0 +1,279 @@
+/* Spotify Design System Loading Skeleton Styles */
+
+.skeletonContainer {
+  display: grid;
+  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.skeletonItem {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 200px;
+}
+
+/* Skeleton Elements */
+.skeletonImage {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-sm);
+  background: var(--spotify-skeleton);
+  animation: loading 1.5s infinite;
+}
+
+.skeletonTitle {
+  height: 20px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.1s;
+}
+
+.skeletonSubtitle {
+  height: 16px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.2s;
+  width: 70%;
+}
+
+.skeletonText {
+  height: 14px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.3s;
+  width: 50%;
+}
+
+/* Artist Card Skeleton */
+.artistSkeleton {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 200px;
+}
+
+.artistSkeletonImage {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-sm);
+  background: var(--spotify-skeleton);
+  animation: loading 1.5s infinite;
+}
+
+.artistSkeletonName {
+  height: 20px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.1s;
+}
+
+.artistSkeletonMetadata {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.artistSkeletonPopularity {
+  height: 16px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.2s;
+  width: 60%;
+}
+
+.artistSkeletonFollowers {
+  height: 14px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.3s;
+  width: 40%;
+}
+
+/* Album Skeleton */
+.albumSkeleton {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 180px;
+}
+
+.albumSkeletonImage {
+  width: 100%;
+  height: 100px;
+  border-radius: var(--radius-sm);
+  background: var(--spotify-skeleton);
+  animation: loading 1.5s infinite;
+}
+
+.albumSkeletonName {
+  height: 18px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.1s;
+}
+
+.albumSkeletonInfo {
+  height: 14px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.2s;
+  width: 80%;
+}
+
+/* Track Skeleton */
+.trackSkeleton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  background: var(--bg-secondary);
+}
+
+.trackSkeletonImage {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--spotify-skeleton);
+  animation: loading 1.5s infinite;
+  flex-shrink: 0;
+}
+
+.trackSkeletonContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.trackSkeletonName {
+  height: 16px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.1s;
+  width: 80%;
+}
+
+.trackSkeletonArtist {
+  height: 14px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.2s;
+  width: 60%;
+}
+
+.trackSkeletonDuration {
+  width: 40px;
+  height: 14px;
+  background: var(--spotify-skeleton);
+  border-radius: var(--radius-sm);
+  animation: loading 1.5s infinite;
+  animation-delay: 0.3s;
+  flex-shrink: 0;
+}
+
+/* Loading Animation */
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Spotify Skeleton Background */
+:root {
+  --spotify-skeleton: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    var(--hover-bg) 50%,
+    var(--bg-secondary) 75%
+  );
+  --spotify-skeleton-size: 200% 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .skeletonContainer {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .skeletonItem,
+  .artistSkeleton,
+  .albumSkeleton {
+    min-height: 160px;
+    padding: var(--spacing-sm);
+  }
+
+  .skeletonImage,
+  .artistSkeletonImage {
+    height: 100px;
+  }
+
+  .albumSkeletonImage {
+    height: 80px;
+  }
+
+  .trackSkeleton {
+    padding: var(--spacing-xs);
+  }
+
+  .trackSkeletonImage {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .skeletonItem,
+  .artistSkeleton,
+  .albumSkeleton,
+  .trackSkeleton {
+    border: 1px solid var(--border-color);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .skeletonImage,
+  .skeletonTitle,
+  .skeletonSubtitle,
+  .skeletonText,
+  .artistSkeletonImage,
+  .artistSkeletonName,
+  .artistSkeletonPopularity,
+  .artistSkeletonFollowers,
+  .albumSkeletonImage,
+  .albumSkeletonName,
+  .albumSkeletonInfo,
+  .trackSkeletonImage,
+  .trackSkeletonName,
+  .trackSkeletonArtist,
+  .trackSkeletonDuration {
+    animation: none;
+    background: var(--bg-tertiary);
+  }
+}

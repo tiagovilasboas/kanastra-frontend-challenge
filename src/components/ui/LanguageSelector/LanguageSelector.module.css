@@ -1,0 +1,160 @@
+/* Spotify Design System Language Selector Styles */
+
+.languageSelector {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xs);
+  transition: all var(--transition-normal);
+}
+
+/* Compact variant for header */
+.languageSelector.compact {
+  padding: 2px;
+  gap: 1px;
+}
+
+.languageSelector:hover {
+  border-color: var(--spotify-gray);
+  background: var(--hover-bg);
+}
+
+.languageSelector:focus-within {
+  border-color: var(--spotify-green);
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+}
+
+/* Language Button */
+.languageButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  min-width: 32px;
+  height: 32px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Compact button variant */
+.languageButton.compact {
+  padding: 4px 6px;
+  font-size: var(--font-size-xs);
+  min-width: 28px;
+  height: 28px;
+}
+
+.languageButton:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.languageButton.active {
+  background: var(--spotify-green);
+  color: var(--spotify-black);
+  font-weight: var(--font-weight-bold);
+}
+
+.languageButton:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Separator */
+.separator {
+  width: 1px;
+  height: 16px;
+  background: var(--border-light);
+  margin: 0 var(--spacing-xs);
+}
+
+/* Compact separator */
+.separator.compact {
+  height: 12px;
+  margin: 0 2px;
+}
+
+/* Language Icon */
+.languageIcon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .languageSelector {
+    padding: 2px;
+  }
+
+  .languageButton {
+    padding: 4px 6px;
+    font-size: var(--font-size-xs);
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .separator {
+    height: 12px;
+    margin: 0 4px;
+  }
+
+  .languageIcon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .languageSelector {
+    border-width: 2px;
+  }
+
+  .languageButton {
+    border: 1px solid transparent;
+  }
+
+  .languageButton:hover {
+    border-color: var(--text-primary);
+  }
+
+  .languageButton.active {
+    border-color: var(--spotify-black);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .languageSelector,
+  .languageButton {
+    transition: none;
+  }
+}
+
+/* Dark/Light Theme Support */
+@media (prefers-color-scheme: light) {
+  .languageSelector {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+  }
+
+  .languageSelector:hover {
+    background: var(--hover-bg);
+  }
+}
