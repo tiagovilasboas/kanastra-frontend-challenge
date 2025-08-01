@@ -24,6 +24,14 @@
     "subtitle": "This is the starting point for your project. Start building your features here!"
   },
   "language": "Language",
+  "home": "Home",
+  "search": "Search",
+  "library": "Library",
+  "createPlaylist": "Create Playlist",
+  "likedSongs": "Liked Songs",
+  "downloads": "Downloads",
+  "settings": "Settings",
+  "profile": "Profile",
   "languages": {
     "portuguese": "Portuguese",
     "english": "English"

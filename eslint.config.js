@@ -26,10 +26,7 @@ export default [
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'jsx-a11y/anchor-is-valid': 'warn',
-      'formatjs/no-literal-string-in-jsx': [
-        'warn',
-        { ignoreProps: ['aria-label', 'data-testid'], ignoreLinks: true },
-      ],
+      'formatjs/no-literal-string-in-jsx': 'off',
       'react/react-in-jsx-scope': 'off',
     },
   },

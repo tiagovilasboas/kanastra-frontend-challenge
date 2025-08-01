@@ -1,5 +1,8 @@
 {
   "title": "Descubra Artistas Incríveis",
-  "subtitle": "Busque por seus artistas favoritos e descubra novos talentos com a API do Spotify",
-  "welcome": "Bem-vindo ao Spotify Explorer"
-} 
+  "subtitle": "Busque por seus artistas favoritos e descubra novos talentos com a API do Spotify. Explore biografias, top tracks e álbuns completos.",
+  "welcome": "Bem-vindo ao Spotify Explorer",
+  "startExploring": "Comece a explorar artistas incríveis. Digite o nome de um artista para começar sua jornada musical.",
+  "trendingArtists": "Artistas em Destaque",
+  "trendingDescription": "Descubra os artistas mais populares e trending no momento."
+}
