@@ -482,6 +482,8 @@ export const ArtistPage: React.FC = () => {
                 data-testid="album-filter"
                 onSearch={handleAlbumFilter}
                 placeholder={t('artist:filterAlbums')}
+                navigateOnFocus={false}
+                showScanButton={false}
               />
             </div>
 

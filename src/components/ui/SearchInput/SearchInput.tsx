@@ -11,6 +11,7 @@ interface SearchInputProps {
   disabled?: boolean
   showScanButton?: boolean
   onScanClick?: () => void
+  navigateOnFocus?: boolean
 }
 
 export function SearchInput({
@@ -19,6 +20,7 @@ export function SearchInput({
   disabled = false,
   showScanButton = true,
   onScanClick,
+  navigateOnFocus = true,
 }: SearchInputProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -37,8 +39,8 @@ export function SearchInput({
   }
 
   const handleFocus = () => {
-    // If we're not on HomePage, navigate back
-    if (location.pathname !== '/') {
+    // Only navigate if navigateOnFocus is true and we're not on HomePage
+    if (navigateOnFocus && location.pathname !== '/') {
       navigate('/')
     }
   }
