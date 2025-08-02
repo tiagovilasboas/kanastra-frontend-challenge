@@ -1284,10 +1284,11 @@ select {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--border-light);
   transition: all var(--transition-normal);
   cursor: pointer;
+  min-height: 48px;
 }
 
 .track-item-modern:last-child {
@@ -1303,14 +1304,14 @@ select {
 }
 
 .track-play-section {
-  width: 24px;
+  width: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .track-number-modern {
-  width: 32px;
+  width: 28px;
   text-align: center;
   font-weight: var(--font-weight-medium);
   color: var(--text-muted);
@@ -1328,16 +1329,16 @@ select {
 
 .track-name-modern {
   color: var(--text-primary);
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  line-height: 1.3;
+  line-height: 1.2;
   margin: 0;
 }
 
 .track-artists-modern {
   color: var(--text-muted);
-  font-size: var(--font-size-sm);
-  line-height: 1.3;
+  font-size: var(--font-size-xs);
+  line-height: 1.2;
   margin: 0;
 }
 
@@ -1353,9 +1354,9 @@ select {
   background: var(--spotify-green) !important;
   color: var(--text-primary) !important;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
 }
 
 .track-play-button:hover {
@@ -1367,7 +1368,7 @@ select {
   color: var(--text-muted);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  min-width: 48px;
+  min-width: 40px;
   text-align: right;
   font-family: var(--font-family-mono);
 }
@@ -1375,12 +1376,13 @@ select {
 /* Responsive styles for modern track items */
 @media (max-width: 768px) {
   .track-item-modern {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
+    min-height: 40px;
   }
 
   .track-name-modern {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
   }
 
   .track-artists-modern {
@@ -1388,13 +1390,21 @@ select {
   }
 
   .track-play-button {
-    width: 20px;
-    height: 20px;
-    min-width: 20px;
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
   }
 
   .track-play-section {
-    width: 20px;
+    width: 18px;
+  }
+
+  .track-number-modern {
+    width: 24px;
+  }
+
+  .track-duration-modern {
+    min-width: 36px;
   }
 }
 
