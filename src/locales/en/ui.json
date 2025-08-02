@@ -31,5 +31,25 @@
   },
   "searchInput": {
     "clearSearch": "Clear search"
-  }
+  },
+  "albums": {
+    "title": "Albums",
+    "counter": "{{count}} of {{total}}",
+    "filterPlaceholder": "Filter albums...",
+    "noAlbumsFound": "No albums found"
+  },
+  "trackCount": "{{count}} track",
+  "separator": "•",
+  "likeSong": "Like song",
+  "pause": "Pause",
+  "play": "Play",
+  "toggleDebugPanel": "Toggle Debug Panel",
+  "debugIcon": "🔧",
+  "globalDebug": "Global Debug",
+  "closeIcon": "✕",
+  "close": "Close",
+  "runDebug": "Run Debug",
+  "reloadToken": "Reload Token",
+  "clearAll": "Clear All",
+  "settings": "Settings"
 }

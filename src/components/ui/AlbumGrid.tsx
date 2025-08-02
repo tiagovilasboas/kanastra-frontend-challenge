@@ -32,7 +32,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation()
-  const defaultTitle = t('albums:title', 'Álbuns')
+  const defaultTitle = t('ui:albums.title', 'Álbuns')
   const [searchQuery, setSearchQuery] = React.useState('')
 
   const filteredAlbums = albums.filter(album =>
@@ -52,7 +52,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
         <div className="album-grid-title-section">
           <h1 className="album-grid-title">{title || defaultTitle}</h1>
           <span className="album-grid-counter">
-            {t('albums:counter', '{{count}} de {{total}}', { count: filteredAlbums.length, total: albums.length })}
+            {t('ui:albums.counter', '{{count}} de {{total}}', { count: filteredAlbums.length, total: albums.length })}
           </span>
         </div>
         
@@ -62,7 +62,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder={t('albums:filterPlaceholder', 'Filtrar álbuns...')}
+              placeholder={t('ui:albums.filterPlaceholder', 'Filtrar álbuns...')}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               className="album-grid-search-field"
@@ -92,7 +92,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
       {filteredAlbums.length === 0 && (
         <div className="album-grid-empty">
-          <p>{t('albums:noAlbumsFound', 'Nenhum álbum encontrado')}</p>
+          <p>{t('ui:albums.noAlbumsFound', 'Nenhum álbum encontrado')}</p>
         </div>
       )}
     </div>
