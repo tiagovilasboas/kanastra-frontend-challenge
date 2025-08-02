@@ -56,7 +56,7 @@ export class SpotifyAuthService {
     // Store code verifier securely (try cookies first, fallback to localStorage)
     try {
       CookieManager.setCodeVerifier(codeVerifier)
-    } catch (error) {
+    } catch {
       console.warn('⚠️ Failed to store code verifier in cookies, using localStorage as fallback')
       localStorage.setItem('spotify_code_verifier', codeVerifier)
     }
