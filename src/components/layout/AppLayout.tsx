@@ -5,15 +5,28 @@ import { Header, Sidebar } from '@/components/layout'
 interface AppLayoutProps {
   children: React.ReactNode
   onSearch?: (query: string) => void
+  activeSection?: 'home' | 'library' | 'create'
+  onSectionChange?: (section: 'home' | 'library' | 'create') => void
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children, onSearch }) => {
-  const [activeSection, setActiveSection] = useState<
+export const AppLayout: React.FC<AppLayoutProps> = ({ 
+  children, 
+  onSearch, 
+  activeSection: externalActiveSection,
+  onSectionChange 
+}) => {
+  const [internalActiveSection, setInternalActiveSection] = useState<
     'home' | 'library' | 'create'
   >('home')
 
+  const activeSection = externalActiveSection || internalActiveSection
+
   const handleNavItemClick = (section: 'home' | 'library' | 'create') => {
-    setActiveSection(section)
+    if (onSectionChange) {
+      onSectionChange(section)
+    } else {
+      setInternalActiveSection(section)
+    }
   }
 
   return (
