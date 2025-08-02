@@ -17,7 +17,7 @@ interface UsePopularArtistsReturn {
 }
 
 // Lista de artistas populares conhecidos para buscar detalhes
-// Esta é uma abordagem mais realista já que a API do Spotify não oferece trending
+// This is a more realistic approach since Spotify API doesn't provide trending
 const POPULAR_ARTIST_IDS = [
   '1uNFoZAHBGtllmzznpCI3s', // Justin Bieber
   '6eUKZXaKkcviH0Ku9w2n3V', // Ed Sheeran
@@ -44,10 +44,10 @@ export function usePopularArtists({
     queryKey: queryKeys.artists.popular(limit),
     queryFn: async () => {
       const artists: SpotifyArtist[] = []
-      
+
       // Buscar detalhes de artistas populares conhecidos
       const artistIdsToFetch = POPULAR_ARTIST_IDS.slice(0, limit)
-      
+
       for (const artistId of artistIdsToFetch) {
         try {
           const artist = await spotifyRepository.getArtistDetails(artistId)
@@ -80,4 +80,4 @@ export function usePopularArtists({
     error: error as Error | null,
     refetch,
   }
-} 
+}

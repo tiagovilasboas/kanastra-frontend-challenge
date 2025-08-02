@@ -362,7 +362,7 @@ select {
 .language-selector-container {
   display: flex;
   align-items: center;
-  /* Garantir que o container mantenha suas dimensões */
+  /* Ensure container maintains its dimensions */
   min-width: fit-content;
   height: 32px;
 }

@@ -132,7 +132,7 @@ export const ArtistPage: React.FC = () => {
     }
   }
 
-  // Filtrar álbuns por nome
+  // Filter albums by name
   const filteredAlbums = albums.filter((album) =>
     album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
@@ -234,7 +234,7 @@ export const ArtistPage: React.FC = () => {
     <AppLayout>
       <div className="artist-page-container" data-testid="artist-page">
         <Stack gap="xl">
-          {/* Header com botão voltar e ações */}
+          {/* Header with back button and actions */}
           <Group justify="space-between" align="center">
             <SpotifyButton variant="ghost" onClick={handleBackToHome}>
               {t('artist:backToHomeWithArrow', {
@@ -287,7 +287,7 @@ export const ArtistPage: React.FC = () => {
             </Group>
           </Group>
 
-          {/* Hero Section do Artista */}
+          {/* Artist Hero Section */}
           <div className="artist-hero">
             <div className="artist-hero-content">
               <div className="artist-image-container">
@@ -356,7 +356,7 @@ export const ArtistPage: React.FC = () => {
 
           <Divider className="border-tertiary" />
 
-          {/* Top Músicas */}
+          {/* Top Tracks */}
           <div>
             <Group
               justify="space-between"
@@ -457,7 +457,7 @@ export const ArtistPage: React.FC = () => {
 
           <Divider className="border-tertiary" />
 
-          {/* Álbuns */}
+          {/* Albums */}
           <div>
             <Group
               justify="space-between"
@@ -476,7 +476,7 @@ export const ArtistPage: React.FC = () => {
               </Text>
             </Group>
 
-            {/* Filtro de álbuns */}
+            {/* Album filter */}
             <div className="mb-xl">
               <SearchInput
                 data-testid="album-filter"
@@ -505,7 +505,7 @@ export const ArtistPage: React.FC = () => {
               </Alert>
             ) : (
               <>
-                {/* Grid de álbuns */}
+                {/* Albums grid */}
                 <Grid gutter="lg">
                   {filteredAlbums.map((album) => (
                     <Grid.Col
@@ -563,7 +563,7 @@ export const ArtistPage: React.FC = () => {
                   ))}
                 </Grid>
 
-                {/* Paginação */}
+                {/* Pagination */}
                 {totalPages > 1 && (
                   <Flex justify="center" className="mt-xl">
                     <Pagination

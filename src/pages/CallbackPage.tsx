@@ -20,7 +20,7 @@ export const CallbackPage: React.FC = () => {
       logger.debug('Processing callback', { url: window.location.href })
 
       try {
-        // Extrair código e state da URL
+        // Extract code and state from URL
         const { code, state } = spotifyRepository.extractCodeFromUrl(
           window.location.href,
         )
@@ -34,7 +34,7 @@ export const CallbackPage: React.FC = () => {
 
         logger.debug('Code found, exchanging for token')
 
-        // Trocar código por token
+        // Exchange code for token
         const token = await spotifyRepository.exchangeCodeForToken(
           code,
           state || undefined,
@@ -51,39 +51,50 @@ export const CallbackPage: React.FC = () => {
         // Marcar como sucesso
         setStatus('success')
 
-        // Redirecionar imediatamente após sucesso
+        // Redirect immediately after success
         logger.debug('Redirecting to home page')
         navigate('/', { replace: true })
       } catch (error) {
         logger.error('Callback processing error', error)
         setStatus('error')
-        
-        // Melhorar tratamento de erros específicos
+
+        // Improve specific error handling
         let message = t('auth:unknownError')
-        
+
         if (error instanceof Error) {
           const errorMessage = error.message.toLowerCase()
-          
-          if (errorMessage.includes('authentication session expired') || 
-              errorMessage.includes('code verifier not found')) {
-            message = 'Sessão de autenticação expirada. Por favor, faça login novamente.'
+
+          if (
+            errorMessage.includes('authentication session expired') ||
+            errorMessage.includes('code verifier not found')
+          ) {
+            message =
+              'Sessão de autenticação expirada. Por favor, faça login novamente.'
           } else if (errorMessage.includes('invalid authorization code')) {
-            message = 'Código de autorização inválido ou já utilizado. Por favor, faça login novamente.'
+            message =
+              'Código de autorização inválido ou já utilizado. Por favor, faça login novamente.'
           } else if (errorMessage.includes('authorization code expired')) {
-            message = 'Código de autorização expirado. Por favor, faça login novamente.'
+            message =
+              'Código de autorização expirado. Por favor, faça login novamente.'
           } else if (errorMessage.includes('invalid_client')) {
-            message = 'Configuração do cliente inválida. Verifique suas credenciais do Spotify.'
+            message =
+              'Configuração do cliente inválida. Verifique suas credenciais do Spotify.'
           } else if (errorMessage.includes('redirect_uri')) {
-            message = 'URI de redirecionamento inválida. Verifique sua configuração do Spotify.'
+            message =
+              'URI de redirecionamento inválida. Verifique sua configuração do Spotify.'
           } else if (errorMessage.includes('code_verifier')) {
-            message = 'Falha na verificação do código de autenticação. Tente novamente.'
-          } else if (errorMessage.includes('missing required environment variables')) {
-            message = 'Configuração de ambiente incompleta. Verifique o arquivo .env'
+            message =
+              'Falha na verificação do código de autenticação. Tente novamente.'
+          } else if (
+            errorMessage.includes('missing required environment variables')
+          ) {
+            message =
+              'Configuração de ambiente incompleta. Verifique o arquivo .env'
           } else {
             message = error.message
           }
         }
-        
+
         setErrorMessage(message)
       }
     }
@@ -150,9 +161,9 @@ export const CallbackPage: React.FC = () => {
               >
                 {t('auth:backToHome')}
               </button>
-              
+
               {/* Show retry button for specific auth errors */}
-              {(errorMessage.includes('Código de autorização inválido') || 
+              {(errorMessage.includes('Código de autorização inválido') ||
                 errorMessage.includes('Código de autorização expirado')) && (
                 <button
                   onClick={() => {
@@ -167,8 +178,6 @@ export const CallbackPage: React.FC = () => {
                 </button>
               )}
             </div>
-            
-
           </Stack>
         )
 

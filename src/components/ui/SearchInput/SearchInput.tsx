@@ -33,7 +33,7 @@ export function SearchInput({
   }
 
   const handleFocus = () => {
-    // Se não estivermos na HomePage, navegar de volta
+    // If we're not on HomePage, navigate back
     if (location.pathname !== '/') {
       navigate('/')
     }

@@ -51,7 +51,7 @@
   height: 32px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  /* Garantir que o conteúdo não cause mudanças de layout */
+  /* Ensure content doesn't cause layout changes */
   line-height: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -75,7 +75,7 @@
 .languageButton:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
-  /* Garantir que não haja mudanças de layout */
+  /* Ensure no layout changes */
   min-width: 32px;
   width: 32px;
   height: 32px;
@@ -85,9 +85,9 @@
   background: var(--spotify-green);
   color: var(--spotify-black);
   font-weight: var(--font-weight-bold);
-  /* Manter as mesmas dimensões para evitar "pulo" */
+  /* Keep same dimensions to avoid "jump" */
   transform: none;
-  /* Garantir que não haja mudanças de layout */
+  /* Ensure no layout changes */
   min-width: 32px;
   width: 32px;
   height: 32px;
