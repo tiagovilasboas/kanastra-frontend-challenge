@@ -22,7 +22,9 @@ interface SpotifyPlaylist {
 
 interface UsePlaylistCreationReturn {
   createPlaylist: (params: CreatePlaylistParams) => Promise<SpotifyPlaylist>
-  addTracksToPlaylist: (params: AddTracksToPlaylistParams) => Promise<{ success: boolean }>
+  addTracksToPlaylist: (
+    params: AddTracksToPlaylistParams,
+  ) => Promise<{ success: boolean }>
   isCreating: boolean
   isAddingTracks: boolean
   error: Error | null
@@ -41,7 +43,12 @@ export function usePlaylistCreation(): UsePlaylistCreationReturn {
       // TODO: Implement when we have playlist-modify-public/private scope
       // return await spotifyRepository.createPlaylist(params)
       console.log('Creating playlist:', params)
-      return { id: 'mock-playlist-id', ...params }
+      return {
+        id: 'mock-playlist-id',
+        name: params.name,
+        description: params.description,
+        public: params.isPublic || false,
+      }
     },
     onSuccess: () => {
       // Invalidate user playlists cache
@@ -78,4 +85,4 @@ export function usePlaylistCreation(): UsePlaylistCreationReturn {
     isAddingTracks,
     error: (createError || addTracksError) as Error | null,
   }
-} 
+}

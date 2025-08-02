@@ -20,8 +20,6 @@ export interface SpotifyArtist {
   }
 }
 
-
-
 export interface SpotifyTrack {
   id: string
   name: string
@@ -50,7 +48,7 @@ export interface SpotifyArtistTopTracksResponse {
 }
 
 export interface SpotifyArtistAlbumsResponse {
-  items: SpotifyAlbum[]
+  items: SpotifyAlbumSchema[]
   total: number
   limit: number
   offset: number
@@ -85,4 +83,4 @@ export interface PaginationInfo {
   itemsPerPage: number
   hasNext: boolean
   hasPrevious: boolean
-} 
+}

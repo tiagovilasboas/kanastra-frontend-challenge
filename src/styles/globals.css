@@ -30,6 +30,7 @@ body {
 :root {
   /* Spotify Design System Colors */
   --spotify-green: #1db954;
+  --spotify-green-hover: #1ed760;
   --spotify-black: #191414;
   --spotify-white: #ffffff;
   --spotify-gray: #b3b3b3;
@@ -317,8 +318,6 @@ select {
   flex-shrink: 0;
 }
 
-
-
 .sidebar-footer {
   padding: var(--spacing-sm) 0;
 }
@@ -388,6 +387,7 @@ select {
 .user-avatar:hover {
   background: var(--spotify-green-hover);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
 }
 
 /* User Menu Styles */
@@ -586,6 +586,7 @@ select {
 /* Popular Artists Section */
 .popular-artists-section {
   margin-bottom: var(--spacing-2xl);
+  padding: 0 var(--spacing-lg);
 }
 
 .popular-artists-header {
@@ -1304,7 +1305,6 @@ select {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-
   .artist-hero-skeleton {
     padding: var(--spacing-lg);
   }
@@ -1350,22 +1350,22 @@ select {
   .artist-hero-name {
     font-size: var(--font-size-xl);
   }
-  
+
   .track-item {
     padding: var(--spacing-sm);
     gap: var(--spacing-sm);
   }
-  
+
   .track-album-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .track-number {
     width: 25px;
     font-size: var(--font-size-xs);
   }
-  
+
   .track-duration {
     min-width: 40px;
     font-size: var(--font-size-xs);
@@ -1456,11 +1456,11 @@ select {
   .album-card:hover {
     transform: none;
   }
-  
+
   .album-card:hover .album-image {
     transform: none;
   }
-  
+
   .track-item:hover {
     background: var(--bg-secondary);
   }
@@ -1476,11 +1476,11 @@ select {
 }
 
 /* Additional tooltip overrides for better positioning */
-.mantine-Tooltip-dropdown[data-popper-placement*="top"] {
+.mantine-Tooltip-dropdown[data-popper-placement*='top'] {
   z-index: 1002 !important;
 }
 
-.mantine-Tooltip-dropdown[data-popper-placement*="bottom"] {
+.mantine-Tooltip-dropdown[data-popper-placement*='bottom'] {
   z-index: 1002 !important;
 }
 
@@ -1499,12 +1499,12 @@ select {
     background: var(--spotify-black);
     border: 2px solid var(--spotify-green);
   }
-  
+
   .track-item:hover {
     background: var(--spotify-green);
     color: var(--spotify-black);
   }
-  
+
   .album-card:hover {
     border-color: var(--spotify-green);
     box-shadow: 0 0 0 2px var(--spotify-green);
@@ -1815,7 +1815,8 @@ select {
 .album-grid-search-field {
   width: 100%;
   min-width: 200px;
-  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) calc(var(--spacing-sm) * 2 + 16px);
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm)
+    calc(var(--spacing-sm) * 2 + 16px);
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -1915,69 +1916,73 @@ select {
   .mobile-layout {
     display: flex;
   }
-  
+
   .app-layout {
     display: none;
   }
-  
+
   .desktop-only {
     display: none;
   }
-  
+
   .mobile-only {
     display: block;
   }
-  
+
   .artist-page-container {
     padding: var(--spacing-sm);
     gap: var(--spacing-lg);
   }
-  
+
   .album-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
   }
-  
+
   .album-grid-container {
     padding: var(--spacing-md);
   }
-  
+
+  .popular-artists-section {
+    padding: 0 var(--spacing-md);
+  }
+
   .popular-artists-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
   }
-  
+
   .popular-artists-title {
     font-size: var(--font-size-xl);
   }
-  
+
   .popular-artists-description {
     font-size: var(--font-size-sm);
   }
-  
+
   .album-grid-title {
     font-size: var(--font-size-xl);
   }
-  
+
   .horizontal-card {
     width: 100%;
   }
-  
+
   .horizontal-card-title {
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-xs);
   }
-  
+
   .horizontal-card-subtitle {
     font-size: var(--font-size-xs);
     margin-bottom: var(--spacing-xs);
   }
-  
+
   .horizontal-card-date {
     font-size: var(--font-size-xs);
     margin-bottom: var(--spacing-xs);
   }
-  
+
   .horizontal-card-type {
     font-size: var(--font-size-xs);
   }
@@ -1987,15 +1992,15 @@ select {
   .mobile-layout {
     display: none;
   }
-  
+
   .app-layout {
     display: flex;
   }
-  
+
   .desktop-only {
     display: block;
   }
-  
+
   .mobile-only {
     display: none;
   }
@@ -2005,10 +2010,18 @@ select {
   .album-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  .popular-artists-section {
+    padding: 0 var(--spacing-xl);
+  }
 }
 
 @media (min-width: 1440px) {
   .album-grid {
     grid-template-columns: repeat(5, 1fr);
+  }
+
+  .popular-artists-section {
+    padding: 0 var(--spacing-2xl);
   }
 }
