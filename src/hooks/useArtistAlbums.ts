@@ -30,11 +30,24 @@ export function useArtistAlbums({
     queryKey: queryKeys.artists.albums(artistId || '', page, limit),
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
-      const response = await spotifyRepository.getArtistAlbums(artistId, ['album', 'single'], limit, offset)
+
+      // Get albums for current page
+      const albums = await spotifyRepository.getArtistAlbums(
+        artistId,
+        ['album', 'single'],
+        limit,
+        offset,
+      )
+
+      // Estimate total based on current page and limit
+      // This is a workaround since we don't have direct access to total
+      const estimatedTotal =
+        offset + albums.length + (albums.length === limit ? 1 : 0)
+
       return {
-        albums: response,
-        total: response.length,
-        totalPages: Math.ceil(response.length / limit),
+        albums,
+        total: estimatedTotal,
+        totalPages: Math.ceil(estimatedTotal / limit),
       }
     },
     enabled: !!artistId,
