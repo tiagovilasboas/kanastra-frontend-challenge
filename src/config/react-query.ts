@@ -21,6 +21,14 @@ export const queryKeys = {
     popular: (limit: number) =>
       [...queryKeys.artists.all, 'popular', limit] as const,
   },
+
+  // User Library & Playlists
+  user: {
+    all: ['user'] as const,
+    likedTracks: () => [...queryKeys.user.all, 'likedTracks'] as const,
+    savedAlbums: () => [...queryKeys.user.all, 'savedAlbums'] as const,
+    playlists: () => [...queryKeys.user.all, 'playlists'] as const,
+  },
 } as const
 
 // Query client configuration
