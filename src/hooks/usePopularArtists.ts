@@ -16,51 +16,52 @@ interface UsePopularArtistsReturn {
   refetch: () => void
 }
 
-// Termos populares para buscar artistas em alta
-const POPULAR_SEARCH_TERMS = [
-  'pop',
-  'rock',
-  'hip hop',
-  'rap',
-  'electronic',
-  'r&b',
-  'country',
-  'latin',
-  'k-pop',
-  'indie'
+// Lista de artistas populares conhecidos para buscar detalhes
+// Esta é uma abordagem mais realista já que a API do Spotify não oferece trending
+const POPULAR_ARTIST_IDS = [
+  '1uNFoZAHBGtllmzznpCI3s', // Justin Bieber
+  '6eUKZXaKkcviH0Ku9w2n3V', // Ed Sheeran
+  '0TnOYISbd1XYRBk9myaseg', // Michael Jackson
+  '3HqSLMAZ3g3d5poNaI7GOU', // Ariana Grande
+  '4gzpq5DPGxSnKTe4SA8HAU', // Coldplay
+  '0du5cEVh5yTK9QJze8zA0C', // Bruno Mars
+  '1vCWHaC5f2uS3yhpwWbIA6', // Avicii
+  '5K4W6rqBFWDnAN6FQUkS6x', // Kanye West
+  '7dGJo4pcD2V6oG8kP0tJRR', // Eminem
+  '4YRxDV8wJFPHPTeXepOstw', // Drake
+  '1mYsTxnqsietFxj1OgoGbG', // Rihanna
+  '5f4QpKfy7ptCHwTqspnSJI', // Lady Gaga
+  '2CIMQHirSU0MQqyYHq0eOx', // Deadmau5
+  '0TnOYISbd1XYRBk9myaseg', // Michael Jackson
+  '3HqSLMAZ3g3d5poNaI7GOU', // Ariana Grande
 ]
 
 export function usePopularArtists({
-  limit = 12,
+  limit = 6,
   enabled = true,
 }: UsePopularArtistsParams = {}): UsePopularArtistsReturn {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.artists.popular(limit),
     queryFn: async () => {
-      // Buscar artistas usando termos populares
-      const allArtists: SpotifyArtist[] = []
+      const artists: SpotifyArtist[] = []
       
-      // Buscar por cada termo popular
-      for (const term of POPULAR_SEARCH_TERMS.slice(0, 5)) { // Limitar a 5 termos para performance
+      // Buscar detalhes de artistas populares conhecidos
+      const artistIdsToFetch = POPULAR_ARTIST_IDS.slice(0, limit)
+      
+      for (const artistId of artistIdsToFetch) {
         try {
-          const response = await spotifyRepository.searchArtistsPublic(term)
-          if (response.artists?.items) {
-            allArtists.push(...response.artists.items)
+          const artist = await spotifyRepository.getArtistDetails(artistId)
+          if (artist && artist.popularity && artist.popularity > 30) {
+            artists.push(artist)
           }
         } catch (error) {
-          console.warn(`Failed to search for term "${term}":`, error)
-          // Continuar com outros termos mesmo se um falhar
+          console.warn(`Failed to fetch artist ${artistId}:`, error)
+          // Continuar com outros artistas mesmo se um falhar
         }
       }
 
-      // Remover duplicatas baseado no ID
-      const uniqueArtists = allArtists.filter((artist, index, self) => 
-        index === self.findIndex(a => a.id === artist.id)
-      )
-
-      // Ordenar por popularidade (mais alta primeiro) e pegar os top N
-      const sortedArtists = uniqueArtists
-        .filter(artist => artist.popularity && artist.popularity > 50) // Filtrar apenas artistas populares
+      // Ordenar por popularidade (mais alta primeiro)
+      const sortedArtists = artists
         .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
         .slice(0, limit)
 
