@@ -477,7 +477,7 @@ export const ArtistPage: React.FC = () => {
             </Group>
 
             {/* Filtro de álbuns */}
-            <div className="mb-lg">
+            <div className="mb-xl">
               <SearchInput
                 data-testid="album-filter"
                 onSearch={handleAlbumFilter}
