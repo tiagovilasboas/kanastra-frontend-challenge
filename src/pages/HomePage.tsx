@@ -1,53 +1,33 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { Header, Sidebar } from '@/components/layout'
-import { ArtistCard } from '@/components/ui/ArtistCard'
-import { AuthDebug } from '@/components/ui/AuthDebug'
+import { AppLayout, MobileLayout } from '@/components/layout'
+import { SEOHead, StructuredData } from '@/components/SEO'
+import { ArtistCard } from '@/components/ui'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { MusicIcon } from '@/components/ui/MusicIcon'
-import { SearchDebug } from '@/components/ui/SearchDebug'
-import { usePrefetch } from '@/hooks/usePrefetch'
+import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 
 export const HomePage: React.FC = () => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const { isAuthenticated } = useSpotifyAuth()
-  const { prefetchArtistData } = usePrefetch()
+  const { prefetchArtistData } = useArtistPrefetch()
+  const navigate = useNavigate()
 
-  const [activeSection, setActiveSection] = useState<
-    'home' | 'library' | 'create'
-  >('home')
   const { searchResults, isLoading, error, searchArtists, searchQuery } =
     useSpotifySearch()
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artist/${artistId}`)
     prefetchArtistData(artistId)
-  }
-
-  const handleNavItemClick = (section: 'home' | 'library' | 'create') => {
-    setActiveSection(section)
-
-    switch (section) {
-      case 'home':
-        searchArtists('') // Clear search
-        break
-      case 'library':
-        // TODO: Implement library functionality
-        break
-      case 'create':
-        // TODO: Implement create playlist functionality
-        break
-    }
+    navigate(`/artist/${artistId}`)
   }
 
   const renderMainContent = () => {
-    // Show hero section only when on home and not authenticated
-    if (!isAuthenticated && activeSection === 'home' && !searchQuery) {
+    // Show hero section only when not authenticated and no search query
+    if (!isAuthenticated && !searchQuery) {
       return (
         <div className="hero-section">
           <div className="hero-content">
@@ -71,38 +51,6 @@ export const HomePage: React.FC = () => {
                 <span className="feature-text">{t('home:feature3')}</span>
               </div>
             </div>
-          </div>
-        </div>
-      )
-    }
-
-    // Show library section
-    if (activeSection === 'library') {
-      return (
-        <div className="library-section">
-          <div className="library-content">
-            <h2 className="library-title">{t('navigation:library')}</h2>
-            <p className="library-message">
-              {isAuthenticated
-                ? t('navigation:libraryMessage')
-                : t('navigation:libraryMessageUnauth')}
-            </p>
-          </div>
-        </div>
-      )
-    }
-
-    // Show create playlist section
-    if (activeSection === 'create') {
-      return (
-        <div className="create-section">
-          <div className="create-content">
-            <h2 className="create-title">{t('navigation:create')}</h2>
-            <p className="create-message">
-              {isAuthenticated
-                ? t('navigation:createMessage')
-                : t('navigation:createMessageUnauth')}
-            </p>
           </div>
         </div>
       )
@@ -196,16 +144,30 @@ export const HomePage: React.FC = () => {
   }
 
   return (
-    <div className="app-layout" data-testid="home-page">
-      <AuthDebug show={true} />
-      <SearchDebug />
-      <Sidebar
-        activeSection={activeSection}
-        onNavItemClick={handleNavItemClick}
+    <div data-testid="home-page">
+      <SEOHead 
+        title={t('seo:homeTitle')}
+        description={t('seo:homeDescription')}
+        keywords={t('seo:defaultKeywords')}
       />
-      <div className="main-area">
-        <Header onSearch={searchArtists} />
-        <main className="main-content">{renderMainContent()}</main>
+      <StructuredData
+        type="website"
+        title={t('seo:homeTitle')}
+        description={t('seo:homeDescription')}
+        url={window.location.href}
+        image="/og-image.jpg"
+      />
+      
+      {/* Desktop Layout */}
+      <div className="desktop-only">
+        <AppLayout onSearch={searchArtists}>
+          {renderMainContent()}
+        </AppLayout>
+      </div>
+      
+      {/* Mobile Layout */}
+      <div className="mobile-only">
+        <MobileLayout onSearch={searchArtists} />
       </div>
     </div>
   )

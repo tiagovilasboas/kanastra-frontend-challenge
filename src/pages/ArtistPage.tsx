@@ -20,7 +20,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
-import { Container } from '@/components/layout'
+import { AppLayout } from '@/components/layout'
 import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useArtistPage } from '@/hooks/useArtistPage'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
@@ -126,7 +126,7 @@ export const ArtistPage: React.FC = () => {
   // Error state
   if (artistError) {
     return (
-      <Container variant="mobile-first">
+      <AppLayout>
         <Stack gap="xl" className="p-xl">
           <Alert color="red" title={t('artist:errorTitle')}>
             {artistError.message}
@@ -140,14 +140,14 @@ export const ArtistPage: React.FC = () => {
             </SpotifyButton>
           </Group>
         </Stack>
-      </Container>
+      </AppLayout>
     )
   }
 
   // Loading state
   if (isLoadingArtist) {
     return (
-      <Container variant="mobile-first">
+      <AppLayout>
         <Stack gap="xl" className="p-xl">
           <Skeleton height={60} width="200px" />
           <Skeleton height={200} radius="50%" width={200} className="mx-auto" />
@@ -161,14 +161,14 @@ export const ArtistPage: React.FC = () => {
             ))}
           </Stack>
         </Stack>
-      </Container>
+      </AppLayout>
     )
   }
 
   // Error state - if artist is null, show error
   if (!artist) {
     return (
-      <Container variant="mobile-first">
+      <AppLayout>
         <Stack gap="xl" className="p-xl">
           <Alert
             title={t('artist:error')}
@@ -181,13 +181,14 @@ export const ArtistPage: React.FC = () => {
             {t('artist:backToHome')}
           </SpotifyButton>
         </Stack>
-      </Container>
+      </AppLayout>
     )
   }
 
   return (
-    <Container variant="mobile-first">
-      <Stack gap="xl" className="p-xl" data-testid="artist-page">
+    <AppLayout>
+      <div className="artist-page-container" data-testid="artist-page">
+        <Stack gap="xl">
         {/* Header com botão voltar e ações */}
         <Group justify="space-between" align="center">
           <SpotifyButton variant="ghost" onClick={handleBackToHome}>
@@ -486,7 +487,8 @@ export const ArtistPage: React.FC = () => {
             </>
           )}
         </div>
-      </Stack>
-    </Container>
+        </Stack>
+      </div>
+    </AppLayout>
   )
 }

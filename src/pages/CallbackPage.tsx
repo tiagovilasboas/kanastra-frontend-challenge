@@ -62,14 +62,23 @@ export const CallbackPage: React.FC = () => {
         let message = t('auth:unknownError')
         
         if (error instanceof Error) {
-          if (error.message.includes('Authentication session expired')) {
-            message = t('auth:codeVerifierNotFound')
-          } else if (error.message.includes('INVALID_CLIENT')) {
-            message = 'Configuração do cliente inválida. Verifique suas credenciais.'
-          } else if (error.message.includes('redirect_uri')) {
-            message = 'URI de redirecionamento inválida. Verifique sua configuração.'
-          } else if (error.message.includes('code_verifier')) {
+          const errorMessage = error.message.toLowerCase()
+          
+          if (errorMessage.includes('authentication session expired') || 
+              errorMessage.includes('code verifier not found')) {
+            message = 'Sessão de autenticação expirada. Por favor, faça login novamente.'
+          } else if (errorMessage.includes('invalid authorization code')) {
+            message = 'Código de autorização inválido ou já utilizado. Por favor, faça login novamente.'
+          } else if (errorMessage.includes('authorization code expired')) {
+            message = 'Código de autorização expirado. Por favor, faça login novamente.'
+          } else if (errorMessage.includes('invalid_client')) {
+            message = 'Configuração do cliente inválida. Verifique suas credenciais do Spotify.'
+          } else if (errorMessage.includes('redirect_uri')) {
+            message = 'URI de redirecionamento inválida. Verifique sua configuração do Spotify.'
+          } else if (errorMessage.includes('code_verifier')) {
             message = 'Falha na verificação do código de autenticação. Tente novamente.'
+          } else if (errorMessage.includes('missing required environment variables')) {
+            message = 'Configuração de ambiente incompleta. Verifique o arquivo .env'
           } else {
             message = error.message
           }
@@ -134,12 +143,32 @@ export const CallbackPage: React.FC = () => {
             <Text className="text-secondary text-base text-center">
               {errorMessage || t('auth:errorMessage')}
             </Text>
-            <button
-              onClick={() => navigate('/', { replace: true })}
-              className="btn-spotify btn-secondary"
-            >
-              {t('auth:backToHome')}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate('/', { replace: true })}
+                className="btn-spotify btn-secondary"
+              >
+                {t('auth:backToHome')}
+              </button>
+              
+              {/* Show retry button for specific auth errors */}
+              {(errorMessage.includes('Código de autorização inválido') || 
+                errorMessage.includes('Código de autorização expirado')) && (
+                <button
+                  onClick={() => {
+                    // Clear any existing auth data and redirect to login
+                    localStorage.removeItem('spotify_token')
+                    localStorage.removeItem('spotify_code_verifier')
+                    window.location.href = '/'
+                  }}
+                  className="btn-spotify btn-primary"
+                >
+                  {t('auth:tryAgain', 'Tentar Novamente')}
+                </button>
+              )}
+            </div>
+            
+
           </Stack>
         )
 
