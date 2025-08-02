@@ -26,6 +26,9 @@ export interface SpotifyAlbum {
   total_tracks: number
   album_type: string
   artists: SpotifyArtist[]
+  external_urls?: {
+    spotify: string
+  }
 }
 
 export interface SpotifyTrack {

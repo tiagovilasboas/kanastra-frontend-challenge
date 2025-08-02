@@ -12,6 +12,7 @@ interface Album {
   releaseDate: string
   trackCount: number
   albumType: string
+  spotifyUrl?: string
 }
 
 interface AlbumGridProps {
@@ -81,6 +82,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             subtitle={album.artist}
             image={album.image}
             onClick={() => onAlbumClick?.(album.id)}
+            spotifyUrl={album.spotifyUrl}
             showDetails={true}
             releaseDate={album.releaseDate}
             trackCount={album.trackCount}

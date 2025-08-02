@@ -7,6 +7,7 @@ interface HorizontalCardProps {
   subtitle?: string
   image?: string
   onClick?: () => void
+  spotifyUrl?: string
   className?: string
   showDetails?: boolean
   releaseDate?: string
@@ -19,6 +20,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   subtitle,
   image,
   onClick,
+  spotifyUrl,
   className = '',
   showDetails = false,
   releaseDate,
@@ -26,16 +28,25 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   albumType,
 }) => {
   const { t } = useTranslation()
+  
+  const handleClick = () => {
+    if (spotifyUrl) {
+      window.open(spotifyUrl, '_blank', 'noopener,noreferrer')
+    } else {
+      onClick?.()
+    }
+  }
+  
   return (
     <div
       className={`horizontal-card ${className}`}
-      onClick={onClick}
+      onClick={handleClick}
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
-          onClick?.()
+          handleClick()
         }
       }}
     >

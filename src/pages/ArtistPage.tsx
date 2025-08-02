@@ -107,6 +107,14 @@ export const ArtistPage: React.FC = () => {
     console.log('Playing track:', track.name)
   }
 
+  const handleAlbumClick = (album: SpotifyAlbum) => {
+    if (album.external_urls?.spotify) {
+      window.open(album.external_urls.spotify, '_blank', 'noopener,noreferrer')
+    } else {
+      console.warn('No Spotify URL available for album:', album.name)
+    }
+  }
+
   const handleShareArtist = () => {
     if (navigator.share) {
       navigator.share({
@@ -466,7 +474,13 @@ export const ArtistPage: React.FC = () => {
               <Grid gutter="lg">
                 {filteredAlbums.map((album) => (
                   <Grid.Col key={album.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-                    <Card className="album-card" data-testid="album-card" withBorder>
+                    <Card 
+                      className="album-card" 
+                      data-testid="album-card" 
+                      withBorder
+                      onClick={() => handleAlbumClick(album)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <Card.Section>
                         <Image
                           src={getAlbumImage(album)}
