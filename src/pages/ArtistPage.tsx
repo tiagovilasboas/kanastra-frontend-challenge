@@ -148,19 +148,50 @@ export const ArtistPage: React.FC = () => {
   if (isLoadingArtist) {
     return (
       <AppLayout>
-        <Stack gap="xl" className="p-xl">
-          <Skeleton height={60} width="200px" />
-          <Skeleton height={200} radius="50%" width={200} className="mx-auto" />
-          <Skeleton height={40} width="300px" className="mx-auto" />
-          <Skeleton height={20} width="150px" className="mx-auto" />
-          <Divider />
-          <Skeleton height={30} width="200px" />
-          <Stack gap="md">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Skeleton key={index} height={60} />
-            ))}
+        <div className="artist-page-container">
+          <Stack gap="xl">
+            {/* Header skeleton */}
+            <Group justify="space-between" align="center">
+              <Skeleton height={40} width="150px" />
+              <Group gap="sm">
+                <Skeleton height={40} width={40} radius="md" />
+                <Skeleton height={40} width={40} radius="md" />
+                <Skeleton height={40} width={40} radius="md" />
+              </Group>
+            </Group>
+
+            {/* Hero skeleton */}
+            <div className="artist-hero-skeleton">
+              <div className="artist-hero-skeleton-content">
+                <div className="artist-hero-skeleton-image" />
+                <div className="artist-hero-skeleton-info">
+                  <div className="artist-hero-skeleton-name" />
+                  <div className="artist-hero-skeleton-stats">
+                    <div className="artist-hero-skeleton-stat" />
+                    <div className="artist-hero-skeleton-stat" />
+                  </div>
+                  <div className="artist-hero-skeleton-genres">
+                    <div className="artist-hero-skeleton-genre" />
+                    <div className="artist-hero-skeleton-genre" />
+                    <div className="artist-hero-skeleton-genre" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Divider />
+
+            {/* Tracks skeleton */}
+            <div>
+              <Skeleton height={30} width="200px" className="mb-lg" />
+              <Stack gap="md">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Skeleton key={index} height={60} radius="md" />
+                ))}
+              </Stack>
+            </div>
           </Stack>
-        </Stack>
+        </div>
       </AppLayout>
     )
   }
