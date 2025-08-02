@@ -469,11 +469,9 @@ export const ArtistPage: React.FC = () => {
               </Title>
 
               <Text size="sm" c="dimmed">
-                {t('artist:albumsCount', {
+                {t('ui:albums.counter', '{{count}} de {{total}}', {
                   count: filteredAlbums.length,
                   total: totalItems,
-                  defaultValue:
-                    '{{count}} {{count, plural, one {album} other {albums}}} of {{total}}',
                 })}
               </Text>
             </Group>
