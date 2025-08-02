@@ -109,7 +109,6 @@ export const ArtistPage: React.FC = () => {
   }
 
   const handleAlbumClick = (album: SpotifyAlbum) => {
-    console.log('Album clicked:', album.name, 'External URLs:', album.external_urls)
     if (album.external_urls?.spotify) {
       window.open(album.external_urls.spotify, '_blank', 'noopener,noreferrer')
     } else {
