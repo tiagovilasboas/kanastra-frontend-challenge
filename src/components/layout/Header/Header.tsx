@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
-import { MusicIcon } from '@/components/ui/MusicIcon'
 import { SearchInput } from '@/components/ui/SearchInput'
+import { UserMenu } from '@/components/ui/UserMenu'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
 interface HeaderProps {
@@ -27,13 +27,7 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
           <div className="language-selector-container">
             <LanguageSelector size="compact" />
           </div>
-          {isAuthenticated && (
-            <div className="user-section">
-              <div className="user-avatar">
-                <MusicIcon size={20} />
-              </div>
-            </div>
-          )}
+          {isAuthenticated && <UserMenu />}
         </div>
       </div>
     </header>
