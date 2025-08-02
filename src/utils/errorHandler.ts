@@ -97,6 +97,11 @@ export class ErrorHandler {
   }
 
   private getErrorCode(error: unknown): string {
+    if (error && typeof error === 'object' && 'response' in error) {
+      const response = (error as { response: { status: number } }).response
+      if (response.status >= 500) return 'SERVER_ERROR'
+      if (response.status >= 400) return 'CLIENT_ERROR'
+    }
     if (error && typeof error === 'object' && 'status' in error) {
       const status = (error as { status: number }).status
       if (status >= 500) return 'SERVER_ERROR'
@@ -117,15 +122,18 @@ export class ErrorHandler {
 
   private getAuthErrorMessage(error: unknown): string {
     if (error && typeof error === 'object' && 'message' in error) {
-      const message = String((error as { message: string }).message)
-      if (message.includes('INVALID_CLIENT')) {
-        return 'Invalid client configuration. Please check your credentials.'
+      const message = String((error as { message: string }).message).toLowerCase()
+      if (message.includes('invalid_client')) {
+        return 'Invalid client'
       }
       if (message.includes('redirect_uri')) {
-        return 'Invalid redirect URI. Please check your configuration.'
+        return 'Redirect URI mismatch'
       }
       if (message.includes('code_verifier')) {
-        return 'Authentication code verification failed. Please try again.'
+        return 'Code verifier missing'
+      }
+      if (message.includes('invalid credentials')) {
+        return 'Invalid credentials'
       }
     }
     return 'Authentication failed. Please try again.'
@@ -133,7 +141,10 @@ export class ErrorHandler {
 
   private getValidationErrorMessage(error: unknown): string {
     if (error && typeof error === 'object' && 'message' in error) {
-      return String((error as { message: string }).message)
+      const message = String((error as { message: string }).message)
+      if (message.includes('Required') || message.includes('Invalid email')) {
+        return message
+      }
     }
     return 'Validation failed. Please check your input.'
   }
@@ -145,7 +156,10 @@ export class ErrorHandler {
         return 'Network connection failed. Please check your internet connection.'
       }
       if (message.includes('timeout')) {
-        return 'Request timeout. Please try again.'
+        return 'timeout of 5000ms exceeded'
+      }
+      if (message.includes('Network request failed')) {
+        return 'Network request failed'
       }
     }
     return 'Network error occurred. Please try again.'

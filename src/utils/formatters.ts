@@ -1,11 +1,12 @@
 export function formatFollowers(followers: number): string {
+  if (followers < 0) return '0'
   if (followers >= 1000000) {
     return `${(followers / 1000000).toFixed(1)}M`
   }
   if (followers >= 1000) {
     return `${(followers / 1000).toFixed(1)}K`
   }
-  return followers.toString()
+  return Math.floor(followers).toString()
 }
 
 export function getPopularityColor(popularity: number): string {
@@ -142,15 +143,31 @@ export function translateGenres(
 }
 
 export function formatDuration(ms: number): string {
+  if (ms < 0) return '0:00'
   const minutes = Math.floor(ms / 60000)
   const seconds = Math.floor((ms % 60000) / 1000)
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 export function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('pt-BR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  try {
+    const date = new Date(dateString)
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid date')
+    }
+    
+    // Handle timezone issues by using UTC for consistent results
+    const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+    
+    return utcDate.toLocaleDateString('pt-BR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC'
+    })
+  } catch {
+    throw new Error('Invalid date format')
+  }
 }

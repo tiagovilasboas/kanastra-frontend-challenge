@@ -15,7 +15,7 @@ export class CookieManager {
     path: '/',
     secure: false, // Allow HTTP for development
     sameSite: 'Lax', // Allow cross-site requests for OAuth
-    maxAge: 300, // 5 minutos (tempo suficiente para o fluxo OAuth)
+    maxAge: 600, // 10 minutos (aumentado para dar mais tempo para o fluxo OAuth)
   }
 
   static setCodeVerifier(codeVerifier: string): void {
@@ -28,8 +28,20 @@ export class CookieManager {
         this.COOKIE_OPTIONS,
       )
 
+      console.log('🔧 Setting cookie:', cookieName)
+      console.log('🔧 Cookie string:', cookieString)
+      
       document.cookie = cookieString
-      console.log('✅ Code verifier stored in secure cookie')
+      
+      // Verify that the cookie was set
+      const allCookies = document.cookie
+      console.log('🔧 All cookies after setting:', allCookies)
+      
+      if (allCookies.includes(cookieName)) {
+        console.log('✅ Code verifier stored in secure cookie')
+      } else {
+        console.warn('⚠️ Cookie may not have been set properly')
+      }
     } catch (error) {
       console.error('❌ Failed to store code verifier in cookie:', error)
       throw new Error('Unable to store authentication data securely')
@@ -39,10 +51,14 @@ export class CookieManager {
   static getCodeVerifier(): string | null {
     try {
       const cookieName = this.COOKIE_PREFIX + this.CODE_VERIFIER_KEY
+      console.log('🔍 Looking for cookie:', cookieName)
+      console.log('🔍 All cookies:', document.cookie)
+      
       const cookies = document.cookie.split(';')
 
       for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=')
+        console.log('🔍 Checking cookie:', name, 'value:', value ? 'present' : 'missing')
         if (name === cookieName && value) {
           const decodedValue = this.decodeValue(value)
           console.log('✅ Code verifier found in secure cookie')
@@ -51,6 +67,7 @@ export class CookieManager {
       }
 
       console.log('❌ Code verifier not found in cookies')
+      console.log('🔍 Available cookies:', cookies.map(c => c.trim().split('=')[0]))
       return null
     } catch (error) {
       console.error('❌ Failed to read code verifier from cookie:', error)
