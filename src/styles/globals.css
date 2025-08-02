@@ -1272,6 +1272,120 @@ select {
   text-align: right;
 }
 
+/* Modern Track Item Styles */
+.tracks-container {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+}
+
+.track-item-modern {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--border-light);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.track-item-modern:last-child {
+  border-bottom: none;
+}
+
+.track-item-modern:hover {
+  background: var(--hover-bg);
+}
+
+.track-item-modern:hover .track-play-button {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.track-number-modern {
+  width: 32px;
+  text-align: center;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-mono);
+}
+
+.track-info-modern {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.track-name-modern {
+  color: var(--text-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.track-artists-modern {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.track-actions-modern {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.track-play-button {
+  opacity: 0;
+  transition: all var(--transition-normal);
+  background: var(--spotify-green) !important;
+  color: var(--text-primary) !important;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+}
+
+.track-play-button:hover {
+  background: var(--spotify-green-hover) !important;
+  transform: scale(1.1);
+}
+
+.track-duration-modern {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  min-width: 48px;
+  text-align: right;
+  font-family: var(--font-family-mono);
+}
+
+/* Responsive styles for modern track items */
+@media (max-width: 768px) {
+  .track-item-modern {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .track-name-modern {
+    font-size: var(--font-size-sm);
+  }
+
+  .track-artists-modern {
+    font-size: var(--font-size-xs);
+  }
+
+  .track-play-button {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Album Card Styles */
 .albums-section-title {
   margin-bottom: var(--spacing-lg);

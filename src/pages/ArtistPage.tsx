@@ -390,68 +390,60 @@ export const ArtistPage: React.FC = () => {
                 {t('artist:noTopTracksMessage')}
               </Alert>
             ) : (
-              <Card className="tracks-card">
-                <Stack gap="xs">
-                  {Array.isArray(topTracks) &&
-                    topTracks.map((track, index) => (
+              <div className="tracks-container">
+                {Array.isArray(topTracks) &&
+                  topTracks.map((track, index) => (
+                    <div
+                      key={track.id}
+                      className="track-item-modern"
+                      data-testid="track-item"
+                    >
                       <div
-                        key={track.id}
-                        className="track-item"
-                        data-testid="track-item"
+                        className="track-number-modern"
+                        data-testid="track-number"
                       >
-                        <div
-                          className="track-number"
-                          data-testid="track-number"
-                        >
-                          {index + 1}
-                        </div>
-
-                        <Image
-                          src={
-                            track.album.images?.[0]?.url ||
-                            '/placeholder-album.jpg'
-                          }
-                          alt={track.album.name}
-                          className="track-album-image"
-                          fallbackSrc="/placeholder-album.jpg"
-                          radius="sm"
-                        />
-
-                        <div className="track-info">
-                          <Text
-                            className="track-name"
-                            data-testid="track-name"
-                            fw={500}
-                          >
-                            {track.name}
-                          </Text>
-                          <Text className="track-artists" size="sm" c="dimmed">
-                            {track.artists
-                              .map((artist) => artist.name)
-                              .join(', ')}
-                          </Text>
-                        </div>
-
-                        <div className="track-actions">
-                          <ActionIcon
-                            variant="subtle"
-                            color="gray"
-                            onClick={() => handlePlayTrack(track)}
-                          >
-                            <Play size={16} />
-                          </ActionIcon>
-                        </div>
-
-                        <div
-                          className="track-duration"
-                          data-testid="track-duration"
-                        >
-                          {formatDuration(track.duration_ms)}
-                        </div>
+                        {index + 1}
                       </div>
-                    ))}
-                </Stack>
-              </Card>
+
+                      <div className="track-info-modern">
+                        <Text
+                          className="track-name-modern"
+                          data-testid="track-name"
+                          fw={500}
+                        >
+                          {track.name}
+                        </Text>
+                        <Text
+                          className="track-artists-modern"
+                          size="sm"
+                          c="dimmed"
+                        >
+                          {track.artists
+                            .map((artist) => artist.name)
+                            .join(', ')}
+                        </Text>
+                      </div>
+
+                      <div className="track-actions-modern">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          onClick={() => handlePlayTrack(track)}
+                          className="track-play-button"
+                        >
+                          <Play size={16} />
+                        </ActionIcon>
+                      </div>
+
+                      <div
+                        className="track-duration-modern"
+                        data-testid="track-duration"
+                      >
+                        {formatDuration(track.duration_ms)}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             )}
           </div>
 
