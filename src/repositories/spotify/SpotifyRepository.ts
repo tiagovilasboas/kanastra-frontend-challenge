@@ -14,10 +14,9 @@ export class SpotifyRepository {
   private searchService: SpotifySearchService
   private accessToken?: string
 
-
   constructor() {
     const config = getSpotifyConfig()
-    
+
     this.authService = new SpotifyAuthService({
       clientId: config.clientId,
       clientSecret: config.clientSecret,
@@ -30,7 +29,7 @@ export class SpotifyRepository {
     })
 
     this.setupAxiosInterceptors()
-    
+
     // Try to load token from localStorage on initialization
     this.loadTokenFromStorage()
   }
@@ -43,7 +42,10 @@ export class SpotifyRepository {
       logger.debug('Auth URL generated successfully')
       return authUrl
     } catch (error) {
-      const appError = errorHandler.handleAuthError(error, 'SpotifyRepository.getAuthUrl')
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyRepository.getAuthUrl',
+      )
       throw appError
     }
   }
@@ -51,17 +53,26 @@ export class SpotifyRepository {
   async exchangeCodeForToken(code: string, state?: string): Promise<string> {
     try {
       logger.debug('Exchanging code for token')
-      const tokenResponse = await this.authService.handleTokenExchange(code, state)
+      const tokenResponse = await this.authService.handleTokenExchange(
+        code,
+        state,
+      )
       this.setAccessToken(tokenResponse.access_token)
       logger.debug('Token exchange successful')
       return tokenResponse.access_token
     } catch (error) {
-      const appError = errorHandler.handleAuthError(error, 'SpotifyRepository.exchangeCodeForToken')
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyRepository.exchangeCodeForToken',
+      )
       throw appError
     }
   }
 
-  extractCodeFromUrl(url: string): { code: string | null; state: string | null } {
+  extractCodeFromUrl(url: string): {
+    code: string | null
+    state: string | null
+  } {
     return this.authService.extractCodeFromUrl(url)
   }
 
@@ -69,10 +80,10 @@ export class SpotifyRepository {
     this.accessToken = token
     this.searchService.setAccessToken(token)
     localStorage.setItem('spotify_token', token)
-    logger.debug('Access token set', { 
-      hasToken: !!token, 
+    logger.debug('Access token set', {
+      hasToken: !!token,
       tokenLength: token?.length || 0,
-      searchServiceHasToken: this.searchService.hasAccessToken()
+      searchServiceHasToken: this.searchService.hasAccessToken(),
     })
   }
 
@@ -92,7 +103,7 @@ export class SpotifyRepository {
     return {
       hasAccessToken: !!this.accessToken,
       hasClientToken: this.searchService.hasClientToken(),
-      localStorageToken: !!localStorage.getItem('spotify_token')
+      localStorageToken: !!localStorage.getItem('spotify_token'),
     }
   }
 
@@ -115,13 +126,13 @@ export class SpotifyRepository {
     try {
       logger.debug('Getting client token')
       const config = getSpotifyConfig()
-      
+
       logger.debug('Making token request with config', {
         clientId: config.clientId ? 'Present' : 'Missing',
         clientSecret: config.clientSecret ? 'Present' : 'Missing',
-        redirectUri: config.redirectUri
+        redirectUri: config.redirectUri,
       })
-      
+
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
         new URLSearchParams({
@@ -133,13 +144,13 @@ export class SpotifyRepository {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        }
+        },
       )
 
       logger.debug('Token response received', {
         status: response.status,
         hasData: !!response.data,
-        dataKeys: Object.keys(response.data || {})
+        dataKeys: Object.keys(response.data || {}),
       })
 
       const tokenResponse = validateSpotifyTokenResponse(response.data)
@@ -147,20 +158,26 @@ export class SpotifyRepository {
       logger.debug('Client token response validated', {
         hasAccessToken: !!tokenResponse.access_token,
         tokenLength: tokenResponse.access_token?.length || 0,
-        tokenType: tokenResponse.token_type
+        tokenType: tokenResponse.token_type,
       })
 
       this.searchService.setClientToken(tokenResponse.access_token)
-      
+
       logger.debug('Client token obtained and set successfully')
       return tokenResponse.access_token
     } catch (error) {
       logger.error('Client token request failed', {
         error: error instanceof Error ? error.message : 'Unknown error',
-        response: error instanceof Error && 'response' in error ? (error as { response?: { data?: unknown } }).response?.data : 'No response data'
+        response:
+          error instanceof Error && 'response' in error
+            ? (error as { response?: { data?: unknown } }).response?.data
+            : 'No response data',
       })
-      
-      const appError = errorHandler.handleAuthError(error, 'SpotifyRepository.getClientToken')
+
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyRepository.getClientToken',
+      )
       throw appError
     }
   }
@@ -189,7 +206,7 @@ export class SpotifyRepository {
         throw new Error('Authentication required for top tracks')
       }
     }
-    
+
     return this.searchService.getArtistTopTracks(artistId, market)
   }
 
@@ -197,34 +214,39 @@ export class SpotifyRepository {
     artistId: string,
     includeGroups: string[] = ['album', 'single'],
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ) {
-    return this.searchService.getArtistAlbums(artistId, includeGroups, limit, offset)
+    return this.searchService.getArtistAlbums(
+      artistId,
+      includeGroups,
+      limit,
+      offset,
+    )
   }
 
   // Utility methods
   logout(): void {
     logger.debug('Logging out')
-    
+
     // Clear access token
     this.accessToken = undefined
 
     // Clear search service tokens
     this.searchService.setAccessToken('')
     this.searchService.setClientToken('')
-    
+
     // Clear localStorage
     localStorage.removeItem('spotify_token')
-    
+
     // Clear cookies
     CookieManager.clearCodeVerifier()
-    
+
     // Clear any cached data
     if (typeof window !== 'undefined' && window.location) {
       // Force page reload to clear any cached state
       window.location.href = '/'
     }
-    
+
     logger.debug('Logout completed')
   }
 
@@ -248,7 +270,7 @@ export class SpotifyRepository {
       (error) => {
         logger.error('Global request interceptor error', error)
         return Promise.reject(error)
-      }
+      },
     )
 
     // Global response interceptor
@@ -256,12 +278,17 @@ export class SpotifyRepository {
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          logger.warn('Token expired, redirecting to auth')
-          const authUrl = await this.handleTokenExpired()
-          window.location.href = authUrl
+          logger.warn('Token expired, handling gracefully')
+
+          // Don't redirect immediately, let the component handle it
+          // This prevents breaking the entire app
+          const customError = new Error('Authentication required')
+          customError.name = 'AUTH_REQUIRED'
+
+          return Promise.reject(customError)
         }
         return Promise.reject(error)
-      }
+      },
     )
   }
 }

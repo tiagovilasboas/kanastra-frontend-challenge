@@ -6,6 +6,8 @@ import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/types/spotify'
 import { logger } from '@/utils/logger'
 
+import { useSpotifyAuth } from './useSpotifyAuth'
+
 interface UseSpotifySearchReturn {
   isLoading: boolean
   error: string | null
@@ -20,6 +22,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const queryClient = useQueryClient()
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const { checkAuthError } = useSpotifyAuth()
 
   // Debounce effect - similar to betalent-desafio-frontend
   useEffect(() => {
@@ -72,16 +75,24 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         // For public search, ensure we have a client token first
         logger.debug('Ensuring client token is available for public search')
         await spotifyRepository.getClientToken()
-        
+
         // Now try public search
         logger.debug('Attempting public search')
-        const response = await spotifyRepository.searchArtistsPublic(debouncedQuery)
+        const response =
+          await spotifyRepository.searchArtistsPublic(debouncedQuery)
         logger.debug('Public search successful', {
           itemsCount: response.artists.items.length,
         })
         return response.artists.items
       } catch (error) {
         logger.error('Search failed', error)
+
+        // Check if it's an auth error and handle it gracefully
+        if (checkAuthError(error)) {
+          // Return empty results instead of throwing
+          return []
+        }
+
         throw error
       }
     },

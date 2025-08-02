@@ -12,6 +12,8 @@ interface UseSpotifyAuthReturn {
   login: () => void
   logout: () => void
   handleCallback: (url: string) => void
+  handleAuthError: () => Promise<void>
+  checkAuthError: (error: unknown) => boolean
 }
 
 export function useSpotifyAuth(): UseSpotifyAuthReturn {
@@ -94,11 +96,39 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     }
   }, [])
 
+  const handleAuthError = useCallback(async () => {
+    logger.debug('Handling authentication error')
+    setIsLoading(true)
+
+    try {
+      const authUrl = await spotifyRepository.getAuthUrl()
+      spotifyRepository.logout()
+      window.location.href = authUrl
+    } catch (error) {
+      logger.error('Failed to handle auth error', error)
+      setIsLoading(false)
+    }
+  }, [])
+
+  const checkAuthError = useCallback(
+    (error: unknown) => {
+      if (error instanceof Error && error.name === 'AUTH_REQUIRED') {
+        logger.debug('Authentication error detected, redirecting to auth')
+        handleAuthError()
+        return true
+      }
+      return false
+    },
+    [handleAuthError],
+  )
+
   return {
     isAuthenticated,
     isLoading,
     login,
     logout,
     handleCallback,
+    handleAuthError,
+    checkAuthError,
   }
 }
