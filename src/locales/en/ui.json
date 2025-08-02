@@ -30,7 +30,8 @@
     "popularityWithValue": "{{value}}%"
   },
   "searchInput": {
-    "clearSearch": "Clear search"
+    "clearSearch": "Clear search",
+    "scanCode": "Scan code"
   },
   "albums": {
     "title": "Albums",

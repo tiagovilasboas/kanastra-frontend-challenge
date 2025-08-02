@@ -1,37 +1,63 @@
-/* Spotify Design System Search Input Styles */
+/* Modern Spotify Design System Search Input Styles */
 
 .searchContainer {
   position: relative;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+  display: flex;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-sm);
+  transition: all var(--transition-normal);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.searchContainer:hover {
+  border-color: var(--spotify-gray);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.searchContainer:focus-within {
+  border-color: var(--spotify-green);
+  box-shadow:
+    0 0 0 2px rgba(29, 185, 84, 0.2),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--bg-tertiary);
+}
+
+.searchIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: var(--spacing-sm);
+  color: var(--text-muted);
+  transition: color var(--transition-normal);
+}
+
+.searchContainer:focus-within .searchIconWrapper {
+  color: var(--spotify-green);
+}
+
+.searchIcon {
+  width: 20px;
+  height: 20px;
 }
 
 .searchInput {
-  width: 100%;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-sm) var(--spacing-md);
-  padding-left: calc(var(--spacing-md) + 20px); /* Space for icon */
-  padding-right: calc(var(--spacing-md) + 20px); /* Space for clear button */
+  flex: 1;
+  background: transparent;
+  border: none;
   color: var(--text-primary);
   font-family: var(--font-family);
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-normal);
-  transition: all var(--transition-normal);
   outline: none;
-  position: relative;
-}
-
-.searchInput:focus {
-  border-color: var(--spotify-green);
-  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
-  background: var(--bg-tertiary);
-}
-
-.searchInput:hover:not(:focus) {
-  border-color: var(--spotify-gray);
-  background: var(--hover-bg);
+  padding: var(--spacing-sm) 0;
+  min-width: 0;
 }
 
 .searchInput::placeholder {
@@ -43,31 +69,20 @@
 .searchInput:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background: var(--bg-tertiary);
 }
 
-/* Search Icon */
-.searchIcon {
-  position: absolute;
-  left: var(--spacing-sm);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 16px;
-  pointer-events: none;
-  transition: color var(--transition-normal);
+.searchActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-left: var(--spacing-sm);
 }
 
-.searchInput:focus + .searchIcon {
-  color: var(--spotify-green);
-}
-
-/* Clear Button */
-.clearButton {
-  position: absolute;
-  right: var(--spacing-sm);
-  top: 50%;
-  transform: translateY(-50%);
+.clearButton,
+.scanButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -75,23 +90,31 @@
   padding: var(--spacing-xs);
   border-radius: var(--radius-sm);
   transition: all var(--transition-normal);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  z-index: 10;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
 }
 
-.clearButton:hover {
+.clearButton:hover,
+.scanButton:hover {
   color: var(--text-primary);
   background: var(--hover-bg);
-  transform: translateY(-50%) scale(1.1);
+  transform: scale(1.05);
 }
 
-.clearButton:focus-visible {
+.clearButton:focus-visible,
+.scanButton:focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
+}
+
+.scanButton {
+  color: var(--spotify-gray);
+}
+
+.scanButton:hover {
+  color: var(--spotify-green);
+  background: rgba(29, 185, 84, 0.1);
 }
 
 /* Loading State */
@@ -123,12 +146,12 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-top: none;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
   box-shadow: var(--shadow-lg);
   z-index: 1000;
   max-height: 300px;
   overflow-y: auto;
-  margin-top: -1px; /* Overlap border */
+  margin-top: 4px;
 }
 
 .searchResultItem {
@@ -196,25 +219,31 @@
 @media (max-width: 768px) {
   .searchContainer {
     max-width: 100%;
+    padding: var(--spacing-xs);
   }
 
   .searchInput {
     font-size: var(--font-size-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    padding-left: calc(var(--spacing-sm) + 16px);
-    padding-right: calc(var(--spacing-sm) + 16px);
+    padding: var(--spacing-xs) 0;
+  }
+
+  .searchIconWrapper {
+    width: 28px;
+    height: 28px;
+    margin-right: var(--spacing-xs);
   }
 
   .searchIcon {
-    font-size: 14px;
-    left: var(--spacing-xs);
-  }
-
-  .clearButton {
-    right: var(--spacing-xs);
-    padding: 2px;
     width: 18px;
     height: 18px;
+  }
+
+  .clearButton,
+  .scanButton {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    padding: 2px;
   }
 
   .searchResults {
@@ -238,19 +267,20 @@
 
 /* High Contrast Mode */
 @media (prefers-contrast: high) {
-  .searchInput {
+  .searchContainer {
     border-width: 2px;
   }
 
-  .searchInput:focus {
+  .searchContainer:focus-within {
     border-width: 3px;
   }
 }
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
-  .searchInput,
+  .searchContainer,
   .clearButton,
+  .scanButton,
   .searchResultItem {
     transition: none;
   }
@@ -262,12 +292,12 @@
 
 /* Dark/Light Theme Support */
 @media (prefers-color-scheme: light) {
-  .searchInput {
+  .searchContainer {
     background: var(--bg-secondary);
     border-color: var(--border-color);
   }
 
-  .searchInput:focus {
+  .searchContainer:focus-within {
     background: var(--bg-tertiary);
   }
 
