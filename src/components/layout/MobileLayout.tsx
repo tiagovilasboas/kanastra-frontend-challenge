@@ -181,7 +181,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       <header className="mobile-header">
         <div className="mobile-header-content">
           <h1 className="mobile-greeting">{getGreeting()}</h1>
-          <button className="mobile-settings-button" aria-label="Configurações">
+          <button className="mobile-settings-button" aria-label={t('ui:settings', 'Configurações')}>
             <Settings size={24} />
           </button>
         </div>

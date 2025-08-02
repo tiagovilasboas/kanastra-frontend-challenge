@@ -1,9 +1,11 @@
 import { Button, Card, Stack, Title } from '@mantine/core'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { CookieManager } from '@/utils/cookies'
 
 export const GlobalDebug: React.FC = () => {
+  const { t } = useTranslation()
   const [debugInfo, setDebugInfo] = useState<string>('')
   const [isVisible, setIsVisible] = useState(false)
 
@@ -89,9 +91,9 @@ export const GlobalDebug: React.FC = () => {
       <button
         className="global-debug-toggle"
         onClick={() => setIsVisible(!isVisible)}
-        title="Toggle Debug Panel"
+        title={t('ui:toggleDebugPanel', 'Toggle Debug Panel')}
       >
-        🔧
+        {t('ui:debugIcon', '🔧')}
       </button>
 
       {isVisible && (
@@ -100,25 +102,26 @@ export const GlobalDebug: React.FC = () => {
             <Stack gap="md">
               <div className="flex justify-between items-center">
                 <Title order={3} className="text-lg font-semibold">
-                  🔧 Global Debug
+                  {t('ui:debugIcon', '🔧')} {t('ui:globalDebug', 'Global Debug')}
                 </Title>
                 <button
                   onClick={() => setIsVisible(false)}
                   className="text-gray-500 hover:text-gray-700"
+                  aria-label={t('ui:close', 'Close')}
                 >
-                  ✕
+                  {t('ui:closeIcon', '✕')}
                 </button>
               </div>
               
               <div className="flex gap-2">
                 <Button onClick={runDebug} size="sm" variant="outline">
-                  Run Debug
+                  {t('ui:runDebug', 'Run Debug')}
                 </Button>
                 <Button onClick={reloadToken} size="sm" variant="outline">
-                  Reload Token
+                  {t('ui:reloadToken', 'Reload Token')}
                 </Button>
                 <Button onClick={clearAll} size="sm" variant="outline" color="red">
-                  Clear All
+                  {t('ui:clearAll', 'Clear All')}
                 </Button>
               </div>
 

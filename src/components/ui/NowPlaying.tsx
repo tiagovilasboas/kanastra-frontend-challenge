@@ -1,5 +1,6 @@
 import { Heart, Pause,Play } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface NowPlayingProps {
   track?: {
@@ -18,6 +19,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
   onPlayPause,
   onLike,
 }) => {
+  const { t } = useTranslation()
   if (!track) {
     return null
   }
@@ -41,14 +43,14 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
           <button
             className="now-playing-button"
             onClick={onLike}
-            aria-label="Curtir música"
+            aria-label={t('ui:likeSong', 'Curtir música')}
           >
             <Heart size={20} />
           </button>
           <button
             className="now-playing-button play-button"
             onClick={onPlayPause}
-            aria-label={isPlaying ? 'Pausar' : 'Reproduzir'}
+            aria-label={isPlaying ? t('ui:pause', 'Pausar') : t('ui:play', 'Reproduzir')}
           >
             {isPlaying ? <Pause size={20} /> : <Play size={20} />}
           </button>

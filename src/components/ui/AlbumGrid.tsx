@@ -1,5 +1,6 @@
 import { Search } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { HorizontalCard } from './HorizontalCard'
 
@@ -25,11 +26,13 @@ interface AlbumGridProps {
 
 export const AlbumGrid: React.FC<AlbumGridProps> = ({
   albums,
-  title = 'Álbuns',
+  title,
   onAlbumClick,
   onSearch,
   className = '',
 }) => {
+  const { t } = useTranslation()
+  const defaultTitle = t('albums:title', 'Álbuns')
   const [searchQuery, setSearchQuery] = React.useState('')
 
   const filteredAlbums = albums.filter(album =>
@@ -47,9 +50,9 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
       {/* Header */}
       <div className="album-grid-header">
         <div className="album-grid-title-section">
-          <h1 className="album-grid-title">{title}</h1>
+          <h1 className="album-grid-title">{title || defaultTitle}</h1>
           <span className="album-grid-counter">
-            {filteredAlbums.length} de {albums.length}
+            {t('albums:counter', '{{count}} de {{total}}', { count: filteredAlbums.length, total: albums.length })}
           </span>
         </div>
         
@@ -59,7 +62,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder="Filtrar álbuns..."
+              placeholder={t('albums:filterPlaceholder', 'Filtrar álbuns...')}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               className="album-grid-search-field"
@@ -89,7 +92,7 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
 
       {filteredAlbums.length === 0 && (
         <div className="album-grid-empty">
-          <p>Nenhum álbum encontrado</p>
+          <p>{t('albums:noAlbumsFound', 'Nenhum álbum encontrado')}</p>
         </div>
       )}
     </div>

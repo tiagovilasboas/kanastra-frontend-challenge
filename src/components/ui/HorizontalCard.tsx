@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface HorizontalCardProps {
   id: string
@@ -24,6 +25,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   trackCount,
   albumType,
 }) => {
+  const { t } = useTranslation()
   return (
     <div
       className={`horizontal-card ${className}`}
@@ -51,7 +53,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
         {showDetails && releaseDate && trackCount && (
           <div className="horizontal-card-details">
             <span className="horizontal-card-date">
-              {releaseDate} • {trackCount} {trackCount === 1 ? 'faixa' : 'faixas'}
+              {releaseDate} {t('ui:separator', '•')} {t('ui:trackCount', '{{count}} faixa', { count: trackCount })}
             </span>
             {albumType && (
               <span className="horizontal-card-type">{albumType}</span>
