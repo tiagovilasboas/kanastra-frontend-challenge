@@ -1216,8 +1216,8 @@ select {
 .track-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
-  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
   border-radius: var(--radius-md);
   transition: background-color var(--transition-fast);
   cursor: pointer;
@@ -1249,7 +1249,7 @@ select {
 
 .track-name {
   color: var(--text-primary);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 2px;
   font-weight: var(--font-weight-medium);
 }
 
@@ -1363,8 +1363,8 @@ select {
   }
 
   .track-item {
-    padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    padding: var(--spacing-xs);
+    gap: var(--spacing-xs);
   }
 
   .track-album-image {
