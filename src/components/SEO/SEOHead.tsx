@@ -26,9 +26,9 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   useEffect(() => {
     // Update document title
     const baseTitle = 'Spotify Artist Explorer'
-    const fullTitle = title 
-      ? `${title} - ${baseTitle}`
-      : artistName 
+    const fullTitle = title
+      ? title // Use title as-is since it already includes the base title
+      : artistName
         ? `${artistName} - ${baseTitle}`
         : baseTitle
 
@@ -37,7 +37,10 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]')
     if (metaDescription) {
-      metaDescription.setAttribute('content', description || t('seo:defaultDescription'))
+      metaDescription.setAttribute(
+        'content',
+        description || t('seo:defaultDescription'),
+      )
     }
 
     // Update meta keywords
@@ -52,9 +55,14 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       ogTitle.setAttribute('content', fullTitle)
     }
 
-    const ogDescription = document.querySelector('meta[property="og:description"]')
+    const ogDescription = document.querySelector(
+      'meta[property="og:description"]',
+    )
     if (ogDescription) {
-      ogDescription.setAttribute('content', description || t('seo:defaultDescription'))
+      ogDescription.setAttribute(
+        'content',
+        description || t('seo:defaultDescription'),
+      )
     }
 
     const ogImage = document.querySelector('meta[property="og:image"]')
@@ -73,17 +81,26 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     }
 
     // Update Twitter tags
-    const twitterTitle = document.querySelector('meta[property="twitter:title"]')
+    const twitterTitle = document.querySelector(
+      'meta[property="twitter:title"]',
+    )
     if (twitterTitle) {
       twitterTitle.setAttribute('content', fullTitle)
     }
 
-    const twitterDescription = document.querySelector('meta[property="twitter:description"]')
+    const twitterDescription = document.querySelector(
+      'meta[property="twitter:description"]',
+    )
     if (twitterDescription) {
-      twitterDescription.setAttribute('content', description || t('seo:defaultDescription'))
+      twitterDescription.setAttribute(
+        'content',
+        description || t('seo:defaultDescription'),
+      )
     }
 
-    const twitterImage = document.querySelector('meta[property="twitter:image"]')
+    const twitterImage = document.querySelector(
+      'meta[property="twitter:image"]',
+    )
     if (twitterImage) {
       twitterImage.setAttribute('content', image)
     }
@@ -101,7 +118,6 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       document.head.appendChild(canonical)
     }
     canonical.setAttribute('href', url || window.location.href)
-
   }, [title, description, keywords, image, url, type, artistName, t])
 
   return null // This component doesn't render anything
@@ -115,4 +131,4 @@ SEOHead.propTypes = {
   url: PropTypes.string,
   type: PropTypes.oneOf(['website', 'article']),
   artistName: PropTypes.string,
-} 
+}
