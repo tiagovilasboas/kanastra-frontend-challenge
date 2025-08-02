@@ -637,7 +637,8 @@ select {
 }
 
 .search-input::placeholder {
-  color: var(--text-muted);
+  color: var(--spotify-gray);
+  opacity: 0.8;
 }
 
 /* Spotify-like Navigation */
@@ -1826,7 +1827,8 @@ select {
 }
 
 .album-grid-search-field::placeholder {
-  color: var(--spotify-text-secondary);
+  color: var(--spotify-gray);
+  opacity: 0.8;
 }
 
 .album-grid-search-field:focus {

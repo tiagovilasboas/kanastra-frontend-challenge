@@ -35,8 +35,9 @@
 }
 
 .searchInput::placeholder {
-  color: var(--text-muted);
+  color: var(--spotify-gray);
   font-weight: var(--font-weight-normal);
+  opacity: 0.8;
 }
 
 .searchInput:disabled {
