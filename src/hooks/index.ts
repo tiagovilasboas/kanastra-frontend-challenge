@@ -1,6 +1,8 @@
 export { useArtistAlbums } from './useArtistAlbums'
 export { useArtistDetails } from './useArtistDetails'
+export { useArtistDetailsOptimized } from './useArtistDetailsOptimized'
 export { useArtistPage } from './useArtistPage'
+export { useArtistPrefetch } from './useArtistPrefetch'
 export { useArtistTopTracks } from './useArtistTopTracks'
 export { usePrefetch } from './usePrefetch'
 export { useSpotifyAuth } from './useSpotifyAuth'

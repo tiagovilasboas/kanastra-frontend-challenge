@@ -1,9 +1,10 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { act, renderHook, waitFor } from '@testing-library/react'
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { spotifyRepository } from '@/repositories'
 
 import { useSpotifySearch } from '../useSpotifySearch'
-import { spotifyRepository } from '@/repositories'
 
 // Mock dependencies
 vi.mock('@/repositories', () => ({
@@ -106,12 +107,12 @@ describe('useSpotifySearch', () => {
 
       // Fast-forward time to trigger debounce
       act(() => {
-        vi.advanceTimersByTime(500)
+        vi.advanceTimersByTime(300)
       })
 
       await waitFor(() => {
         expect(result.current.searchQuery).toBe('drake')
-      })
+      }, { timeout: 1000 })
     })
   })
 
@@ -159,14 +160,14 @@ describe('useSpotifySearch', () => {
       })
 
       act(() => {
-        vi.advanceTimersByTime(500)
+        vi.advanceTimersByTime(300)
       })
 
       await waitFor(() => {
         expect(mockSpotifyRepository.searchArtists).toHaveBeenCalledWith('drake')
         expect(mockSpotifyRepository.searchArtistsPublic).not.toHaveBeenCalled()
         expect(result.current.searchResults).toEqual(mockArtists)
-      })
+      }, { timeout: 1000 })
     })
 
     it('should handle authenticated search errors', async () => {

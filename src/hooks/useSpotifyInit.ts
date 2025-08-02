@@ -10,12 +10,23 @@ export function useSpotifyInit() {
   useEffect(() => {
     const initializeSpotify = async () => {
       try {
+        logger.debug('=== SPOTIFY INITIALIZATION STARTED ===')
         logger.debug('Initializing Spotify with client token')
         
         // Get client token for public API access
         await spotifyRepository.getClientToken()
         
-        logger.debug('Spotify initialized successfully')
+        // Check if user token exists and load it
+        const userToken = localStorage.getItem('spotify_token')
+        if (userToken) {
+          logger.debug('Loading user token from localStorage')
+          spotifyRepository.setAccessToken(userToken)
+        }
+        
+        logger.debug('Spotify initialized successfully', {
+          hasClientToken: true,
+          hasUserToken: !!userToken
+        })
         setIsInitialized(true)
         setError(null)
       } catch (err) {
