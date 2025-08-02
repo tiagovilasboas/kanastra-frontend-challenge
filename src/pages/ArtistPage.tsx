@@ -459,25 +459,25 @@ export const ArtistPage: React.FC = () => {
 
           {/* Albums */}
           <div>
-            <Group
-              justify="space-between"
-              align="center"
-              className="albums-section-title"
-            >
-              <Title order={2} className="text-primary font-bold text-2xl">
-                {t('artist:albums')}
-              </Title>
+            <Stack gap="lg">
+              <Group
+                justify="space-between"
+                align="center"
+                className="albums-section-title"
+              >
+                <Title order={2} className="text-primary font-bold text-2xl">
+                  {t('artist:albums')}
+                </Title>
 
-              <Text size="sm" c="dimmed">
-                {t('ui:albums.counter', '{{count}} de {{total}}', {
-                  count: filteredAlbums.length,
-                  total: totalItems,
-                })}
-              </Text>
-            </Group>
+                <Text size="sm" c="dimmed">
+                  {t('ui:albums.counter', '{{count}} de {{total}}', {
+                    count: filteredAlbums.length,
+                    total: totalItems,
+                  })}
+                </Text>
+              </Group>
 
-            {/* Album filter */}
-            <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
+              {/* Album filter integrated with section */}
               <SearchInput
                 data-testid="album-filter"
                 onSearch={handleAlbumFilter}
@@ -485,7 +485,7 @@ export const ArtistPage: React.FC = () => {
                 navigateOnFocus={false}
                 showScanButton={false}
               />
-            </div>
+            </Stack>
 
             {isLoadingAlbums ? (
               <Grid gutter="lg">
