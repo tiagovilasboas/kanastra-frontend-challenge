@@ -357,8 +357,12 @@ export const ArtistPage: React.FC = () => {
           <Divider className="border-tertiary" />
 
           {/* Top Músicas */}
-          <div className="tracks-section">
-            <Group justify="space-between" align="center" className="mb-lg">
+          <div>
+            <Group
+              justify="space-between"
+              align="center"
+              className="tracks-section-title"
+            >
               <Title order={2} className="text-primary font-bold text-2xl">
                 {t('artist:topTracks')}
               </Title>
@@ -464,8 +468,12 @@ export const ArtistPage: React.FC = () => {
           <Divider className="border-tertiary" />
 
           {/* Álbuns */}
-          <div className="albums-section">
-            <Group justify="space-between" align="center" className="mb-lg">
+          <div>
+            <Group
+              justify="space-between"
+              align="center"
+              className="albums-section-title"
+            >
               <Title order={2} className="text-primary font-bold text-2xl">
                 {t('artist:albums')}
               </Title>

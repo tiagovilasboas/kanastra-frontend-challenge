@@ -1203,8 +1203,8 @@ select {
 }
 
 /* Track List Styles */
-.tracks-section {
-  margin-top: var(--spacing-xl);
+.tracks-section-title {
+  margin-bottom: var(--spacing-lg);
 }
 
 .tracks-card {
@@ -1273,8 +1273,8 @@ select {
 }
 
 /* Album Card Styles */
-.albums-section {
-  margin-top: var(--spacing-xl);
+.albums-section-title {
+  margin-bottom: var(--spacing-lg);
 }
 
 .album-card {
@@ -1946,12 +1946,12 @@ select {
     gap: var(--spacing-lg);
   }
 
-  .tracks-section {
-    margin-top: var(--spacing-lg);
+  .tracks-section-title {
+    margin-bottom: var(--spacing-md);
   }
 
-  .albums-section {
-    margin-top: var(--spacing-lg);
+  .albums-section-title {
+    margin-bottom: var(--spacing-md);
   }
 
   .album-grid {
