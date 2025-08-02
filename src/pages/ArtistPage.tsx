@@ -487,6 +487,9 @@ export const ArtistPage: React.FC = () => {
               />
             </Stack>
 
+            {/* Spacing between filter and content */}
+            <div style={{ marginTop: 'var(--spacing-xl)' }} />
+
             {isLoadingAlbums ? (
               <Grid gutter="lg">
                 {Array.from({ length: 8 }).map((_, index) => (
