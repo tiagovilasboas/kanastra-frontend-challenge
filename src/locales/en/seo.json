@@ -1,0 +1,20 @@
+{
+  "defaultTitle": "Spotify Artist Explorer - Discover Artists and Music",
+  "defaultDescription": "Explore artists, albums and music on Spotify. Discover new artists, listen to their top tracks and browse complete discographies.",
+  "defaultKeywords": "spotify, artists, music, albums, discovery, playlist, streaming, international artists",
+  "homeTitle": "Home - Spotify Artist Explorer",
+  "homeDescription": "Discover new artists and music on Spotify. Explore complete discographies, listen to top tracks and find your next favorite song.",
+  "searchTitle": "Search Artists - Spotify Artist Explorer",
+  "searchDescription": "Search for artists on Spotify. Find musicians by name, genre or popularity. Explore complete discographies and listen to top tracks.",
+  "artistTitle": "{{artistName}} - Spotify Artist Explorer",
+  "artistDescription": "Discover {{artistName}} on Spotify. Listen to top tracks, explore albums and singles, discover the artist's complete discography.",
+  "artistKeywords": "{{artistName}}, spotify, music, albums, tracks, discography, artist",
+  "libraryTitle": "Library - Spotify Artist Explorer",
+  "libraryDescription": "Access your personal Spotify library. View saved artists, favorite playlists and liked songs.",
+  "createTitle": "Create Playlist - Spotify Artist Explorer",
+  "createDescription": "Create your own playlists on Spotify. Organize your favorite songs and share with friends.",
+  "errorTitle": "Error - Spotify Artist Explorer",
+  "errorDescription": "An error occurred while loading the page. Please try again or contact us.",
+  "notFoundTitle": "Page not found - Spotify Artist Explorer",
+  "notFoundDescription": "The page you are looking for was not found. Return to home and continue exploring artists on Spotify."
+} 
