@@ -18,13 +18,18 @@ export const HomePage: React.FC = () => {
   const { prefetchArtistData } = useArtistPrefetch()
   const navigate = useNavigate()
 
-  const [activeSection, setActiveSection] = useState<'home' | 'library' | 'create'>('home')
+  const [activeSection, setActiveSection] = useState<
+    'home' | 'library' | 'create'
+  >('home')
 
   const { searchResults, isLoading, error, searchArtists, searchQuery } =
     useSpotifySearch()
 
-  const { artists: popularArtists, isLoading: isLoadingPopular, error: popularError } = 
-    usePopularArtists({ limit: 6, enabled: !searchQuery })
+  const {
+    artists: popularArtists,
+    isLoading: isLoadingPopular,
+    error: popularError,
+  } = usePopularArtists({ limit: 6, enabled: !searchQuery })
 
   const handleArtistClick = (artistId: string) => {
     prefetchArtistData(artistId)
@@ -171,7 +176,9 @@ export const HomePage: React.FC = () => {
               <p className="welcome-message">{t('search:welcomeMessage')}</p>
               <div className="search-tips">
                 <div className="tip">
-                  <span className="tip-icon">{t('icons:icons.microphone')}</span>
+                  <span className="tip-icon">
+                    {t('icons:icons.microphone')}
+                  </span>
                   <span className="tip-text">{t('search:tip1')}</span>
                 </div>
                 <div className="tip">
@@ -195,22 +202,22 @@ export const HomePage: React.FC = () => {
 
   return (
     <div data-testid="home-page">
-      <SEOHead 
-        title={t('seo:homeTitle')}
+      <SEOHead
+        title={isAuthenticated ? t('seo:homeTitle') : t('seo:defaultTitle')}
         description={t('seo:homeDescription')}
         keywords={t('seo:defaultKeywords')}
       />
       <StructuredData
         type="website"
-        title={t('seo:homeTitle')}
+        title={isAuthenticated ? t('seo:homeTitle') : t('seo:defaultTitle')}
         description={t('seo:homeDescription')}
         url={window.location.href}
         image="/og-image.jpg"
       />
-      
+
       {/* Desktop Layout */}
       <div className="desktop-only">
-        <AppLayout 
+        <AppLayout
           onSearch={searchArtists}
           activeSection={activeSection}
           onSectionChange={setActiveSection}
@@ -218,7 +225,7 @@ export const HomePage: React.FC = () => {
           {renderMainContent()}
         </AppLayout>
       </div>
-      
+
       {/* Mobile Layout */}
       <div className="mobile-only">
         <MobileLayout onSearch={searchArtists} />
