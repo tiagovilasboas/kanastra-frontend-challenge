@@ -1,4 +1,10 @@
-import { SpotifyAlbum as SpotifyAlbumSchema } from '@/schemas/spotify'
+import {
+  SpotifyAlbum as SpotifyAlbumSchema,
+  SpotifyTrack,
+} from '@/schemas/spotify'
+
+// Re-export SpotifyTrack for backward compatibility
+export type { SpotifyTrack }
 
 export interface SpotifyImage {
   url: string
@@ -20,17 +26,7 @@ export interface SpotifyArtist {
   }
 }
 
-export interface SpotifyTrack {
-  id: string
-  name: string
-  duration_ms: number
-  track_number: number
-  disc_number: number
-  explicit: boolean
-  popularity: number
-  artists: SpotifyArtist[]
-  album: SpotifyAlbumSchema
-}
+// SpotifyTrack is now imported from @/schemas/spotify
 
 export interface SpotifySearchResponse {
   artists: {

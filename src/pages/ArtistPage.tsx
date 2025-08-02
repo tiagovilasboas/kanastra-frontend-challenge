@@ -25,7 +25,8 @@ import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useArtistPage } from '@/hooks/useArtistPage'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { SpotifyAlbum } from '@/schemas/spotify'
-import { SpotifyArtist, SpotifyTrack } from '@/types/spotify'
+import { SpotifyTrack } from '@/schemas/spotify'
+import { SpotifyArtist } from '@/types/spotify'
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
@@ -104,8 +105,12 @@ export const ArtistPage: React.FC = () => {
   }
 
   const handlePlayTrack = (track: SpotifyTrack) => {
-    // TODO: Implement play functionality
-    console.log('Playing track:', track.name)
+    // Open track in Spotify
+    if (track.external_urls?.spotify) {
+      window.open(track.external_urls.spotify, '_blank', 'noopener,noreferrer')
+    } else {
+      console.warn('No Spotify URL available for track:', track.name)
+    }
   }
 
   const handleAlbumClick = (album: SpotifyAlbum) => {
@@ -408,7 +413,10 @@ export const ArtistPage: React.FC = () => {
                         </div>
 
                         <Image
-                          src={getAlbumImage(track.album)}
+                          src={
+                            track.album.images?.[0]?.url ||
+                            '/placeholder-album.jpg'
+                          }
                           alt={track.album.name}
                           className="track-album-image"
                           fallbackSrc="/placeholder-album.jpg"
@@ -425,7 +433,7 @@ export const ArtistPage: React.FC = () => {
                           </Text>
                           <Text className="track-artists" size="sm" c="dimmed">
                             {track.artists
-                              .map((artist: SpotifyArtist) => artist.name)
+                              .map((artist) => artist.name)
                               .join(', ')}
                           </Text>
                         </div>
