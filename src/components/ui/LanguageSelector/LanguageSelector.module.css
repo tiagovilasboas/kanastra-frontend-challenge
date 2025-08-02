@@ -8,7 +8,9 @@
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xs);
-  transition: all var(--transition-normal);
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 /* Compact variant for header */
@@ -41,7 +43,9 @@
   font-weight: var(--font-weight-medium);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all var(--transition-normal);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
   min-width: 32px;
   width: 32px;
   height: 32px;
@@ -62,9 +66,19 @@
   height: 28px;
 }
 
+.languageButton.compact.active {
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+}
+
 .languageButton:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
+  /* Garantir que não haja mudanças de layout */
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .languageButton.active {
@@ -73,6 +87,10 @@
   font-weight: var(--font-weight-bold);
   /* Manter as mesmas dimensões para evitar "pulo" */
   transform: none;
+  /* Garantir que não haja mudanças de layout */
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
 }
 
 .languageButton:focus-visible {
