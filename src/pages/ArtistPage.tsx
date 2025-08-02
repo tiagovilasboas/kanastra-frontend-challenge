@@ -398,6 +398,17 @@ export const ArtistPage: React.FC = () => {
                       className="track-item-modern"
                       data-testid="track-item"
                     >
+                      <div className="track-play-section">
+                        <ActionIcon
+                          variant="subtle"
+                          color="gray"
+                          onClick={() => handlePlayTrack(track)}
+                          className="track-play-button"
+                        >
+                          <Play size={14} />
+                        </ActionIcon>
+                      </div>
+
                       <div
                         className="track-number-modern"
                         data-testid="track-number"
@@ -422,17 +433,6 @@ export const ArtistPage: React.FC = () => {
                             .map((artist) => artist.name)
                             .join(', ')}
                         </Text>
-                      </div>
-
-                      <div className="track-actions-modern">
-                        <ActionIcon
-                          variant="subtle"
-                          color="gray"
-                          onClick={() => handlePlayTrack(track)}
-                          className="track-play-button"
-                        >
-                          <Play size={16} />
-                        </ActionIcon>
                       </div>
 
                       <div

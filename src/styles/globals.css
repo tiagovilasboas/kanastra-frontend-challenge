@@ -1283,7 +1283,7 @@ select {
 .track-item-modern {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--border-light);
   transition: all var(--transition-normal);
@@ -1300,7 +1300,13 @@ select {
 
 .track-item-modern:hover .track-play-button {
   opacity: 1;
-  transform: scale(1.1);
+}
+
+.track-play-section {
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .track-number-modern {
@@ -1347,13 +1353,14 @@ select {
   background: var(--spotify-green) !important;
   color: var(--text-primary) !important;
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
 }
 
 .track-play-button:hover {
   background: var(--spotify-green-hover) !important;
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .track-duration-modern {
@@ -1369,7 +1376,7 @@ select {
 @media (max-width: 768px) {
   .track-item-modern {
     padding: var(--spacing-sm);
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .track-name-modern {
@@ -1381,8 +1388,13 @@ select {
   }
 
   .track-play-button {
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+  }
+
+  .track-play-section {
+    width: 20px;
   }
 }
 
