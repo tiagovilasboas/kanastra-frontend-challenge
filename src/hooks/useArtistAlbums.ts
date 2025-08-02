@@ -39,15 +39,12 @@ export function useArtistAlbums({
         offset,
       )
 
-      // Estimate total based on current page and limit
-      // This is a workaround since we don't have direct access to total
-      const estimatedTotal =
-        offset + albums.length + (albums.length === limit ? 1 : 0)
-
+      // For now, just show the albums we have
+      // Pagination will be handled by showing/hiding based on current page
       return {
         albums,
-        total: estimatedTotal,
-        totalPages: Math.ceil(estimatedTotal / limit),
+        total: albums.length,
+        totalPages: 1, // Start with single page until we implement proper pagination
       }
     },
     enabled: !!artistId,
