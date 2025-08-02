@@ -477,7 +477,7 @@ export const ArtistPage: React.FC = () => {
             </Group>
 
             {/* Album filter */}
-            <div className="mb-xl">
+            <div style={{ marginBottom: 'var(--spacing-2xl)' }}>
               <SearchInput
                 data-testid="album-filter"
                 onSearch={handleAlbumFilter}
