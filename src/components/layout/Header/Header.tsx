@@ -1,5 +1,7 @@
+import { Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from '@/components/ui/Button'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { SearchInput } from '@/components/ui/SearchInput'
 import { UserMenu } from '@/components/ui/UserMenu'
@@ -12,7 +14,7 @@ interface HeaderProps {
 
 export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
   const { t } = useTranslation()
-  const { isAuthenticated } = useSpotifyAuth()
+  const { isAuthenticated, login } = useSpotifyAuth()
 
   return (
     <header className="main-header">
@@ -27,7 +29,19 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
           <div className="language-selector-container">
             <LanguageSelector size="compact" />
           </div>
-          {isAuthenticated && <UserMenu />}
+          {isAuthenticated ? (
+            <UserMenu />
+          ) : (
+            <Button
+              variant="gradient"
+              size="sm"
+              onClick={login}
+              className="spotify-login-button"
+              leftSection={<Play size={16} />}
+            >
+              {t('auth:loginWithSpotify')}
+            </Button>
+          )}
         </div>
       </div>
     </header>
