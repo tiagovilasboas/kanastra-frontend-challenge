@@ -27,7 +27,8 @@
     "test:e2e:open": "cypress open",
     "type-check": "tsc --noEmit",
     "prepare": "husky install",
-    "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run"
+    "pre-commit-check": "npm run lint && npm run type-check && npm run test -- --run",
+    "check-env": "node scripts/check-env.js"
   },
   "dependencies": {
     "@mantine/core": "^8.1.2",
@@ -48,6 +49,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^24.0.10",
+    "@types/prop-types": "^15.7.15",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",

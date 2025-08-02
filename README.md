@@ -98,13 +98,36 @@ src/
 
 Para usar a aplicação, você precisará:
 
-1. Criar uma aplicação no [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
-2. Configurar as variáveis de ambiente em `.env.local`:
+1. **Criar uma conta no Spotify Developer Dashboard**
+   - Acesse [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+   - Faça login com sua conta do Spotify
+   - Clique em "Create App"
+
+2. **Configurar o App**
+   - Nome: `Spotify Explorer` (ou qualquer nome)
+   - Descrição: `Aplicação para explorar artistas e músicas`
+   - Website: `http://localhost:5173`
+   - Redirect URI: `http://127.0.0.1:5173/callback`
+
+3. **Configurar Variáveis de Ambiente**
+   ```bash
+   # Copie o arquivo de exemplo
+   cp env.example .env
+   
+   # Edite o arquivo .env com suas credenciais
+   VITE_SPOTIFY_CLIENT_ID=seu_client_id_aqui
+   VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret_aqui
+   VITE_SPOTIFY_REDIRECT_URI=http://127.0.0.1:5173/callback
    ```
-   VITE_SPOTIFY_CLIENT_ID=seu_client_id
-   VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret
-   VITE_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
+
+4. **Verificar Configuração**
+   ```bash
+   npm run check-env
    ```
+
+### Troubleshooting
+
+Se você encontrar o erro "Code verifier not found in cookies", consulte o [guia de troubleshooting](docs/AUTHENTICATION_TROUBLESHOOTING.md) para soluções detalhadas.
 
 ## 🔄 React Query Optimizations
 
