@@ -8,7 +8,7 @@ export interface SpotifyArtist {
   id: string
   name: string
   images: SpotifyImage[]
-  popularity: number
+  popularity?: number
   followers: {
     total: number
   }
