@@ -105,6 +105,7 @@ body {
     var(--bg-secondary) 75%
   );
   --spotify-skeleton-size: 200% 100%;
+  --skeleton-bg: var(--bg-tertiary);
 }
 
 * {
@@ -316,18 +317,7 @@ select {
   flex-shrink: 0;
 }
 
-.auth-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) 0;
-}
 
-.auth-section .spotify-button {
-  width: 100%;
-  max-width: 200px;
-  margin: 0 auto;
-}
 
 .sidebar-footer {
   padding: var(--spacing-sm) 0;
@@ -372,6 +362,9 @@ select {
 .language-selector-container {
   display: flex;
   align-items: center;
+  /* Garantir que o container mantenha suas dimensões */
+  min-width: fit-content;
+  height: 32px;
 }
 
 .user-section {
@@ -1115,13 +1108,13 @@ select {
 .artist-hero {
   background: linear-gradient(135deg, #1db954 0%, #191414 100%);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-lg);
 }
 
 .artist-hero-content {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-lg);
   flex-wrap: wrap;
 }
 
@@ -1130,27 +1123,27 @@ select {
 }
 
 .artist-hero-image {
-  width: 200px;
-  height: 200px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-lg);
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .artist-hero-info {
   flex: 1;
-  min-width: 300px;
+  min-width: 250px;
 }
 
 .artist-hero-name {
   color: var(--spotify-white);
-  margin-bottom: var(--spacing-md);
-  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
 }
 
 .artist-hero-stats {
-  margin-bottom: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
 }
 
 .artist-followers {
@@ -1159,7 +1152,7 @@ select {
 }
 
 .artist-genres {
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-sm);
 }
 
 /* Track List Styles */
@@ -1269,24 +1262,50 @@ select {
 /* Responsive Design */
 @media (max-width: 768px) {
 
+  .artist-hero-skeleton {
+    padding: var(--spacing-lg);
+  }
+
+  .artist-hero-skeleton-content {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-md);
+  }
+
+  .artist-hero-skeleton-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .artist-hero-skeleton-info {
+    align-items: center;
+  }
+
+  .artist-hero-skeleton-stats {
+    justify-content: center;
+  }
+
+  .artist-hero-skeleton-genres {
+    justify-content: center;
+  }
 
   .artist-hero {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
   }
 
   .artist-hero-content {
     flex-direction: column;
     text-align: center;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
   }
 
   .artist-hero-image {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
   }
 
   .artist-hero-name {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
   }
   
   .track-item {
@@ -1314,8 +1333,67 @@ select {
 .artist-hero-skeleton {
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-2xl);
+  padding: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.artist-hero-skeleton-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.artist-hero-skeleton-image {
+  flex-shrink: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--skeleton-bg);
+}
+
+.artist-hero-skeleton-info {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.artist-hero-skeleton-name {
+  height: 32px;
+  width: 200px;
+  border-radius: var(--radius-sm);
+  background: var(--skeleton-bg);
+}
+
+.artist-hero-skeleton-stats {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.artist-hero-skeleton-stat {
+  height: 24px;
+  width: 120px;
+  border-radius: var(--radius-sm);
+  background: var(--skeleton-bg);
+}
+
+.artist-hero-skeleton-genres {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.artist-hero-skeleton-genre {
+  height: 20px;
+  width: 80px;
+  border-radius: var(--radius-sm);
+  background: var(--skeleton-bg);
 }
 
 .tracks-skeleton {
@@ -1343,6 +1421,33 @@ select {
   .track-item:hover {
     background: var(--bg-secondary);
   }
+}
+
+/* Tooltip Styles - Ensure they appear above header */
+.mantine-Tooltip-root {
+  z-index: 1002 !important;
+}
+
+.mantine-Tooltip-dropdown {
+  z-index: 1002 !important;
+}
+
+/* Additional tooltip overrides for better positioning */
+.mantine-Tooltip-dropdown[data-popper-placement*="top"] {
+  z-index: 1002 !important;
+}
+
+.mantine-Tooltip-dropdown[data-popper-placement*="bottom"] {
+  z-index: 1002 !important;
+}
+
+/* Ensure tooltips work within artist page container */
+.artist-page-container .mantine-Tooltip-root {
+  z-index: 1002 !important;
+}
+
+.artist-page-container .mantine-Tooltip-dropdown {
+  z-index: 1002 !important;
 }
 
 /* High Contrast Mode */
