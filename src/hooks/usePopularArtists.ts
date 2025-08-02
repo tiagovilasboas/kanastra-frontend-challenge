@@ -4,6 +4,8 @@ import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/schemas/spotify'
 
+import { useSpotifyAuth } from './useSpotifyAuth'
+
 interface UsePopularArtistsParams {
   limit?: number
   enabled?: boolean
@@ -40,6 +42,8 @@ export function usePopularArtists({
   limit = 6,
   enabled = true,
 }: UsePopularArtistsParams = {}): UsePopularArtistsReturn {
+  const { checkAuthError } = useSpotifyAuth()
+
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.artists.popular(limit),
     queryFn: async () => {
@@ -56,6 +60,13 @@ export function usePopularArtists({
           }
         } catch (error) {
           console.warn(`Failed to fetch artist ${artistId}:`, error)
+
+          // Check if it's an auth error and handle it gracefully
+          if (checkAuthError(error)) {
+            // Return empty results instead of throwing
+            return []
+          }
+
           // Continuar com outros artistas mesmo se um falhar
         }
       }
