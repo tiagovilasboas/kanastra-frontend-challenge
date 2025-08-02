@@ -1,9 +1,7 @@
-import { Home, Library, Play, Plus } from 'lucide-react'
+import { Home, Library, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/Button'
 import { MusicIcon } from '@/components/ui/MusicIcon'
-import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
 interface SidebarProps {
   activeSection: 'home' | 'library' | 'create'
@@ -12,7 +10,6 @@ interface SidebarProps {
 
 export function Sidebar({ activeSection, onNavItemClick }: SidebarProps) {
   const { t } = useTranslation()
-  const { isAuthenticated, login } = useSpotifyAuth()
 
   return (
     <div className="sidebar">
@@ -51,22 +48,6 @@ export function Sidebar({ activeSection, onNavItemClick }: SidebarProps) {
           </div>
         </div>
       </nav>
-
-      {!isAuthenticated && (
-        <div className="auth-section">
-          <Button
-            variant="gradient"
-            size="lg"
-            onClick={() => {
-              login()
-            }}
-            className="spotify-button"
-            leftSection={<Play size={18} />}
-          >
-            {t('auth:loginWithSpotify')}
-          </Button>
-        </div>
-      )}
     </div>
   )
 }
