@@ -366,16 +366,6 @@ export const ArtistPage: React.FC = () => {
               <Title order={2} className="text-primary font-bold text-2xl">
                 {t('artist:topTracks')}
               </Title>
-
-              {isAuthenticated && topTracks && topTracks.length > 0 && (
-                <SpotifyButton
-                  variant="secondary"
-                  size="sm"
-                  leftSection={<Play size={16} />}
-                >
-                  {t('artist:playAll', 'Play All')}
-                </SpotifyButton>
-              )}
             </Group>
 
             {isLoadingTracks ? (
