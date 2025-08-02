@@ -53,8 +53,13 @@ export class SpotifyAuthService {
       codeChallenge.substring(0, 10) + '...',
     )
 
-    // Store code verifier securely
-    CookieManager.setCodeVerifier(codeVerifier)
+    // Store code verifier securely (try cookies first, fallback to localStorage)
+    try {
+      CookieManager.setCodeVerifier(codeVerifier)
+    } catch (error) {
+      console.warn('⚠️ Failed to store code verifier in cookies, using localStorage as fallback')
+      localStorage.setItem('spotify_code_verifier', codeVerifier)
+    }
 
     // Build authorization URL
     const params = new URLSearchParams({
@@ -94,11 +99,31 @@ export class SpotifyAuthService {
   }
 
   getCodeVerifier(): string | null {
-    return CookieManager.getCodeVerifier()
+    // Try cookies first
+    const cookieVerifier = CookieManager.getCodeVerifier()
+    if (cookieVerifier) {
+      return cookieVerifier
+    }
+
+    // Fallback to localStorage
+    console.log('🔍 Trying localStorage fallback for code verifier')
+    const localStorageVerifier = localStorage.getItem('spotify_code_verifier')
+    if (localStorageVerifier) {
+      console.log('✅ Code verifier found in localStorage')
+      return localStorageVerifier
+    }
+
+    console.log('❌ Code verifier not found in cookies or localStorage')
+    return null
   }
 
   clearCodeVerifier(): void {
+    // Clear from cookies
     CookieManager.clearCodeVerifier()
+    
+    // Clear from localStorage
+    localStorage.removeItem('spotify_code_verifier')
+    console.log('🧹 Code verifier cleared from both cookies and localStorage')
   }
 
   async handleTokenExchange(code: string, state?: string): Promise<{ access_token: string }> {
@@ -166,8 +191,23 @@ export class SpotifyAuthService {
       return data
     } catch (error) {
       console.error('❌ Token exchange error:', error)
-      // Clean up on error
-      this.clearCodeVerifier()
+      
+      // Don't clear code verifier for specific errors that might be retryable
+      if (error instanceof Error) {
+        const errorMessage = error.message.toLowerCase()
+        if (errorMessage.includes('invalid authorization code') || 
+            errorMessage.includes('authorization code expired')) {
+          console.log('⚠️ Authorization code error - keeping code verifier for potential retry')
+          // Don't clear code verifier for these specific errors
+        } else {
+          // Clear code verifier for other errors
+          this.clearCodeVerifier()
+        }
+      } else {
+        // Clear code verifier for unknown errors
+        this.clearCodeVerifier()
+      }
+      
       throw error
     }
   }

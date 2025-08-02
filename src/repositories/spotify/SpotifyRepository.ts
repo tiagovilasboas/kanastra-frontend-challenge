@@ -30,6 +30,9 @@ export class SpotifyRepository {
     })
 
     this.setupAxiosInterceptors()
+    
+    // Try to load token from localStorage on initialization
+    this.loadTokenFromStorage()
   }
 
   // Authentication methods
@@ -66,11 +69,45 @@ export class SpotifyRepository {
     this.accessToken = token
     this.searchService.setAccessToken(token)
     localStorage.setItem('spotify_token', token)
-    logger.debug('Access token set')
+    logger.debug('Access token set', { 
+      hasToken: !!token, 
+      tokenLength: token?.length || 0,
+      searchServiceHasToken: this.searchService.hasAccessToken()
+    })
   }
 
   getAccessToken(): string | undefined {
     return this.accessToken
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.accessToken
+  }
+
+  getAuthStatus(): {
+    hasAccessToken: boolean
+    hasClientToken: boolean
+    localStorageToken: boolean
+  } {
+    return {
+      hasAccessToken: !!this.accessToken,
+      hasClientToken: this.searchService.hasClientToken(),
+      localStorageToken: !!localStorage.getItem('spotify_token')
+    }
+  }
+
+  private loadTokenFromStorage(): void {
+    try {
+      const token = localStorage.getItem('spotify_token')
+      if (token) {
+        this.setAccessToken(token)
+        logger.debug('Token loaded from localStorage on initialization')
+      } else {
+        logger.debug('No token found in localStorage on initialization')
+      }
+    } catch (error) {
+      logger.error('Error loading token from localStorage', error)
+    }
   }
 
   // Client credentials flow
@@ -107,9 +144,15 @@ export class SpotifyRepository {
 
       const tokenResponse = validateSpotifyTokenResponse(response.data)
 
+      logger.debug('Client token response validated', {
+        hasAccessToken: !!tokenResponse.access_token,
+        tokenLength: tokenResponse.access_token?.length || 0,
+        tokenType: tokenResponse.token_type
+      })
+
       this.searchService.setClientToken(tokenResponse.access_token)
       
-      logger.debug('Client token obtained successfully')
+      logger.debug('Client token obtained and set successfully')
       return tokenResponse.access_token
     } catch (error) {
       logger.error('Client token request failed', {
@@ -136,6 +179,17 @@ export class SpotifyRepository {
   }
 
   async getArtistTopTracks(artistId: string, market: string = 'US') {
+    // Ensure we have either access token or client token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      logger.warn('No tokens available, trying to get client token first')
+      try {
+        await this.getClientToken()
+      } catch (error) {
+        logger.error('Failed to get client token for top tracks', error)
+        throw new Error('Authentication required for top tracks')
+      }
+    }
+    
     return this.searchService.getArtistTopTracks(artistId, market)
   }
 

@@ -42,7 +42,19 @@ export class SpotifySearchService {
 
   setClientToken(token: string): void {
     this.clientToken = token
-    logger.debug('Client token set for search service')
+    logger.debug('Client token set for search service', {
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+      tokenPreview: token ? token.substring(0, 10) + '...' : 'none'
+    })
+  }
+
+  hasAccessToken(): boolean {
+    return !!this.accessToken
+  }
+
+  hasClientToken(): boolean {
+    return !!this.clientToken
   }
 
   // Search artists with user authentication
@@ -137,19 +149,43 @@ export class SpotifySearchService {
     }
   }
 
-  // Get artist top tracks
+  // Get artist top tracks - UPDATED VERSION
   async getArtistTopTracks(artistId: string, market: string = 'US'): Promise<SpotifyTrack[]> {
     try {
-      logger.debug('Getting artist top tracks', { artistId, market })
+      logger.debug('=== TOP TRACKS METHOD CALLED - UPDATED VERSION ===')
+      logger.debug('Getting artist top tracks', { 
+        artistId, 
+        market,
+        hasAccessToken: !!this.accessToken,
+        hasClientToken: !!this.clientToken,
+        accessTokenLength: this.accessToken?.length || 0,
+        clientTokenLength: this.clientToken?.length || 0
+      })
 
-      if (!this.accessToken) {
-        throw new Error('Access token required for top tracks')
+      // Use access token if available, otherwise use client token
+      const token = this.accessToken || this.clientToken
+      const tokenType = this.accessToken ? 'access' : 'client'
+
+      if (!token) {
+        logger.error('No tokens available for top tracks', {
+          artistId,
+          hasAccessToken: !!this.accessToken,
+          hasClientToken: !!this.clientToken,
+          accessTokenLength: this.accessToken?.length || 0,
+          clientTokenLength: this.clientToken?.length || 0
+        })
+        throw new Error('Authentication token required for top tracks')
       }
+
+      logger.debug(`Using ${tokenType} token for top tracks`, {
+        tokenLength: token.length,
+        tokenPreview: token.substring(0, 10) + '...'
+      })
 
       const response = await this.axiosInstance.get(`/artists/${artistId}/top-tracks`, {
         params: { market },
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
       })
 

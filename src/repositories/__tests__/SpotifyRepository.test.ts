@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { SpotifyRepository } from '../spotify/SpotifyRepository'
 import { getSpotifyConfig } from '@/config/environment'
 import { errorHandler } from '@/utils/errorHandler'
+
+import { SpotifyRepository } from '../spotify/SpotifyRepository'
 
 // Mock dependencies
 vi.mock('@/config/environment', () => ({
@@ -70,8 +71,14 @@ describe('SpotifyRepository', () => {
       const mockAuthUrl = 'https://accounts.spotify.com/authorize?client_id=test'
       
       // Mock the auth service method
-      vi.spyOn(repository as any, 'authService', 'get').mockReturnValue({
+      const mockAuthService = {
         generateAuthUrl: vi.fn().mockResolvedValue(mockAuthUrl),
+      }
+      
+      // Mock the private property
+      Object.defineProperty(repository, 'authService', {
+        value: mockAuthService,
+        writable: true,
       })
 
       const result = await repository.getAuthUrl()
@@ -82,8 +89,14 @@ describe('SpotifyRepository', () => {
     it('should handle auth URL generation errors', async () => {
       const mockError = new Error('Auth URL generation failed')
       
-      vi.spyOn(repository as any, 'authService', 'get').mockReturnValue({
+      const mockAuthService = {
         generateAuthUrl: vi.fn().mockRejectedValue(mockError),
+      }
+      
+      // Mock the private property
+      Object.defineProperty(repository, 'authService', {
+        value: mockAuthService,
+        writable: true,
       })
 
       mockErrorHandler.handleAuthError.mockReturnValue({
