@@ -1,6 +1,7 @@
 import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import styles from './SearchInput.module.css'
 
@@ -16,6 +17,8 @@ export function SearchInput({
   disabled = false,
 }: SearchInputProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [value, setValue] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,6 +32,13 @@ export function SearchInput({
     onSearch('')
   }
 
+  const handleFocus = () => {
+    // Se não estivermos na HomePage, navegar de volta
+    if (location.pathname !== '/') {
+      navigate('/')
+    }
+  }
+
   return (
     <div className={styles.searchContainer}>
       <Search className={styles.searchIcon} size={20} />
@@ -38,6 +48,7 @@ export function SearchInput({
         type="text"
         value={value}
         onChange={handleChange}
+        onFocus={handleFocus}
         placeholder={placeholder}
         disabled={disabled}
         className={styles.searchInput}
