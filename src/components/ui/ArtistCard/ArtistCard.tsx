@@ -1,7 +1,7 @@
 import { Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
-import { usePrefetch } from '@/hooks'
+import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
 import { SpotifyArtist } from '@/types/spotify'
 import {
   formatFollowers,
@@ -25,15 +25,27 @@ export function ArtistCard({
   showFollowers = false,
 }: ArtistCardProps) {
   const { t, i18n } = useTranslation()
-  const { prefetchArtistData } = usePrefetch()
+  const { prefetchArtistOnHover, prefetchArtistOnFocus } = useArtistPrefetch()
 
   const handleClick = () => {
     onClick?.(artist)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onClick?.(artist)
+    }
+  }
+
   const handleMouseEnter = () => {
     // Prefetch artist data on hover for better UX
-    prefetchArtistData(artist.id, { enabled: true })
+    prefetchArtistOnHover(artist.id)
+  }
+
+  const handleFocus = () => {
+    // Prefetch artist data on focus for keyboard navigation
+    prefetchArtistOnFocus(artist.id)
   }
 
   return (
@@ -41,7 +53,10 @@ export function ArtistCard({
       data-testid="artist-card"
       className={styles.artistCard}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       onMouseEnter={handleMouseEnter}
+      onFocus={handleFocus}
+      tabIndex={0}
     >
       <img
         src={artist.images[0]?.url || '/placeholder-artist.jpg'}
@@ -72,17 +87,17 @@ export function ArtistCard({
             <div
               data-testid="artist-popularity"
               className={styles.artistPopularityDot}
-              style={{ backgroundColor: getPopularityColor(artist.popularity) }}
+              style={{ backgroundColor: getPopularityColor(artist.popularity || 0) }}
             />
             <span>
               {t('ui:artistCard.popularityWithValue', {
-                value: artist.popularity,
+                value: artist.popularity || 0,
                 defaultValue: '{{value}}%',
               })}
             </span>
           </div>
 
-          {showFollowers && (
+          {showFollowers && artist.followers?.total && (
             <div className={styles.artistFollowers}>
               <span>{t('ui:artistCard.followers', 'Followers')}</span>
               <span data-testid="artist-followers">
@@ -92,7 +107,7 @@ export function ArtistCard({
           )}
         </div>
 
-        {showGenres && artist.genres.length > 0 && (
+        {showGenres && artist.genres?.length > 0 && (
           <div className={styles.artistGenres}>
             {translateGenres(artist.genres.slice(0, 3), i18n.language).map(
               (genre) => (

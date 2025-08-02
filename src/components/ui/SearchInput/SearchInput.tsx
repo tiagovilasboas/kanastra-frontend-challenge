@@ -43,7 +43,7 @@ export function SearchInput({
         className={styles.searchInput}
       />
 
-      {value && (
+      {value && !disabled && (
         <button
           type="button"
           onClick={handleClear}

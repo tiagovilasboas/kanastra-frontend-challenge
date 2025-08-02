@@ -1,84 +1,74 @@
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Button, Card, Stack, Title } from '@mantine/core'
+import { useState } from 'react'
 
-import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
-import { spotifyRepository } from '@/repositories'
+import { CookieManager } from '@/utils/cookies'
 
-interface AuthDebugProps {
-  show?: boolean
-}
+export const AuthDebug: React.FC = () => {
+  const [debugInfo, setDebugInfo] = useState<string>('')
 
-export const AuthDebug: React.FC<AuthDebugProps> = ({ show = false }) => {
-  const { t } = useTranslation()
-  const { isAuthenticated } = useSpotifyAuth()
-  const [debugInfo, setDebugInfo] = useState({
-    hasToken: false,
-    tokenLength: 0,
-    hasCodeVerifier: false,
-    currentUrl: '',
-    userAgent: '',
-  })
+  const runDebug = () => {
+    const info = []
 
-  useEffect(() => {
-    const updateDebugInfo = () => {
-      const token = localStorage.getItem('spotify_token')
-      const codeVerifier = document.cookie.includes('spotify_code_verifier')
-      
-      setDebugInfo({
-        hasToken: !!token,
-        tokenLength: token?.length || 0,
-        hasCodeVerifier: codeVerifier,
-        currentUrl: window.location.href,
-        userAgent: navigator.userAgent,
-      })
-    }
+    // Check cookies
+    info.push('=== COOKIES ===')
+    info.push(`All cookies: ${document.cookie || 'No cookies found'}`)
+    
+    const cookieVerifier = CookieManager.getCodeVerifier()
+    info.push(`Code verifier from cookies: ${cookieVerifier ? 'Found' : 'Not found'}`)
 
-    updateDebugInfo()
-    const interval = setInterval(updateDebugInfo, 1000)
-    return () => clearInterval(interval)
-  }, [])
+    // Check localStorage
+    info.push('\n=== LOCALSTORAGE ===')
+    const localStorageToken = localStorage.getItem('spotify_token')
+    const localStorageVerifier = localStorage.getItem('spotify_code_verifier')
+    info.push(`Access token: ${localStorageToken ? 'Found' : 'Not found'}`)
+    info.push(`Code verifier: ${localStorageVerifier ? 'Found' : 'Not found'}`)
 
-  if (!show) return null
+    // Check environment variables
+    info.push('\n=== ENVIRONMENT ===')
+    info.push(`Client ID: ${import.meta.env.VITE_SPOTIFY_CLIENT_ID ? 'Set' : 'Not set'}`)
+    info.push(`Client Secret: ${import.meta.env.VITE_SPOTIFY_CLIENT_SECRET ? 'Set' : 'Not set'}`)
+    info.push(`Redirect URI: ${import.meta.env.VITE_SPOTIFY_REDIRECT_URI || 'Not set'}`)
+
+    // Check URL parameters
+    info.push('\n=== URL PARAMETERS ===')
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+    const state = urlParams.get('state')
+    info.push(`Code: ${code ? 'Present' : 'Not present'}`)
+    info.push(`State: ${state ? 'Present' : 'Not present'}`)
+
+    setDebugInfo(info.join('\n'))
+  }
+
+  const clearAll = () => {
+    CookieManager.clearCodeVerifier()
+    localStorage.removeItem('spotify_token')
+    localStorage.removeItem('spotify_code_verifier')
+    setDebugInfo('All authentication data cleared')
+  }
 
   return (
-    <div className="auth-debug" style={{
-      position: 'fixed',
-      top: '10px',
-      right: '10px',
-      background: '#1a1a1a',
-      color: '#fff',
-      padding: '10px',
-      borderRadius: '5px',
-      fontSize: '12px',
-      fontFamily: 'monospace',
-      zIndex: 9999,
-      maxWidth: '300px',
-      wordBreak: 'break-all'
-    }}>
-      <h4>🔍 Auth Debug</h4>
-      <div>Authenticated: {isAuthenticated ? '✅' : '❌'}</div>
-      <div>Has Token: {debugInfo.hasToken ? '✅' : '❌'}</div>
-      <div>Token Length: {debugInfo.tokenLength}</div>
-      <div>Has Code Verifier: {debugInfo.hasCodeVerifier ? '✅' : '❌'}</div>
-      <div>URL: {debugInfo.currentUrl}</div>
-      <button
-        onClick={() => {
-          console.log('Auth Debug Info:', debugInfo)
-          console.log('Spotify Repository Token:', spotifyRepository.getAccessToken())
-          console.log('LocalStorage Token:', localStorage.getItem('spotify_token'))
-        }}
-        style={{
-          background: '#1DB954',
-          color: '#fff',
-          border: 'none',
-          padding: '5px 10px',
-          borderRadius: '3px',
-          cursor: 'pointer',
-          marginTop: '5px'
-        }}
-      >
-        Log to Console
-      </button>
-    </div>
+    <Card className="p-4 border border-gray-200 rounded-lg">
+      <Stack gap="md">
+        <Title order={3} className="text-lg font-semibold">
+          🔧 Auth Debug
+        </Title>
+        
+        <div className="flex gap-2">
+          <Button onClick={runDebug} size="sm" variant="outline">
+            Run Debug
+          </Button>
+          <Button onClick={clearAll} size="sm" variant="outline" color="red">
+            Clear All
+          </Button>
+        </div>
+
+        {debugInfo && (
+          <div className="bg-gray-100 p-3 rounded text-sm font-mono whitespace-pre-wrap">
+            {debugInfo}
+          </div>
+        )}
+      </Stack>
+    </Card>
   )
 } 
