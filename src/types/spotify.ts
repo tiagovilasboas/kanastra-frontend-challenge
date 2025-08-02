@@ -1,3 +1,5 @@
+import { SpotifyAlbum as SpotifyAlbumSchema } from '@/schemas/spotify'
+
 export interface SpotifyImage {
   url: string
   height: number
@@ -18,18 +20,7 @@ export interface SpotifyArtist {
   }
 }
 
-export interface SpotifyAlbum {
-  id: string
-  name: string
-  images: SpotifyImage[]
-  release_date: string
-  total_tracks: number
-  album_type: string
-  artists: SpotifyArtist[]
-  external_urls?: {
-    spotify: string
-  }
-}
+
 
 export interface SpotifyTrack {
   id: string
@@ -40,7 +31,7 @@ export interface SpotifyTrack {
   explicit: boolean
   popularity: number
   artists: SpotifyArtist[]
-  album: SpotifyAlbum
+  album: SpotifyAlbumSchema
 }
 
 export interface SpotifySearchResponse {

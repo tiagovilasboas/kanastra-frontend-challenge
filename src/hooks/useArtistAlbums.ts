@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
-import { SpotifyAlbum } from '@/types/spotify'
+import { SpotifyAlbum } from '@/schemas/spotify'
 
 interface UseArtistAlbumsParams {
   artistId: string | undefined

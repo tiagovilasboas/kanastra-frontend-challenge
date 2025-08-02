@@ -24,7 +24,8 @@ import { AppLayout } from '@/components/layout'
 import { Button as SpotifyButton, SearchInput } from '@/components/ui'
 import { useArtistPage } from '@/hooks/useArtistPage'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
-import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
+import { SpotifyAlbum } from '@/schemas/spotify'
+import { SpotifyArtist, SpotifyTrack } from '@/types/spotify'
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
@@ -108,6 +109,7 @@ export const ArtistPage: React.FC = () => {
   }
 
   const handleAlbumClick = (album: SpotifyAlbum) => {
+    console.log('Album clicked:', album.name, 'External URLs:', album.external_urls)
     if (album.external_urls?.spotify) {
       window.open(album.external_urls.spotify, '_blank', 'noopener,noreferrer')
     } else {
