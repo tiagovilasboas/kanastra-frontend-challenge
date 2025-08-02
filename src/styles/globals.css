@@ -356,6 +356,7 @@ select {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  min-width: fit-content;
 }
 
 .language-selector-container {

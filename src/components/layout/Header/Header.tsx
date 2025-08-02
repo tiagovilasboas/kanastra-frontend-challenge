@@ -14,7 +14,7 @@ interface HeaderProps {
 
 export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
   const { t } = useTranslation()
-  const { isAuthenticated, login } = useSpotifyAuth()
+  const { isAuthenticated, isLoading, login } = useSpotifyAuth()
 
   return (
     <header className="main-header">
@@ -29,18 +29,22 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
           <div className="language-selector-container">
             <LanguageSelector size="compact" />
           </div>
-          {isAuthenticated ? (
-            <UserMenu />
-          ) : (
-            <Button
-              variant="gradient"
-              size="sm"
-              onClick={login}
-              className="spotify-login-button"
-              leftSection={<Play size={16} />}
-            >
-              {t('auth:loginWithSpotify')}
-            </Button>
+          {!isLoading && (
+            <>
+              {isAuthenticated ? (
+                <UserMenu />
+              ) : (
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  onClick={login}
+                  className="spotify-login-button"
+                  leftSection={<Play size={16} />}
+                >
+                  {t('auth:loginWithSpotify')}
+                </Button>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -8,6 +8,7 @@ import { logger } from '@/utils/logger'
 
 interface UseSpotifyAuthReturn {
   isAuthenticated: boolean
+  isLoading: boolean
   login: () => void
   logout: () => void
   handleCallback: (url: string) => void
@@ -17,6 +18,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Check authentication on mount and when localStorage changes
   useEffect(() => {
@@ -30,6 +32,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
         setIsAuthenticated(false)
         logger.debug('No authentication token found')
       }
+      setIsLoading(false)
     }
 
     // Check immediately
@@ -93,6 +96,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
 
   return {
     isAuthenticated,
+    isLoading,
     login,
     logout,
     handleCallback,
