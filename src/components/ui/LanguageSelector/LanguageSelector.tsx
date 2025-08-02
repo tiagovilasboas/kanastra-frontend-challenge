@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useAppStore } from '@/stores/appStore'
@@ -15,9 +15,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const { t } = useTranslation()
   const { language, setLanguage } = useAppStore()
 
-  const handleLanguageChange = (newLanguage: string) => {
+  const handleLanguageChange = useCallback((newLanguage: string) => {
     setLanguage(newLanguage)
-  }
+  }, [setLanguage])
 
   const isCompact = size === 'compact'
 
@@ -31,6 +31,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         onClick={() => handleLanguageChange('pt')}
         aria-label={t('app:languages.portuguese')}
         title={t('app:languages.portuguese')}
+        type="button"
       >
         {t('app:languages.portuguese').substring(0, 2).toUpperCase()}
       </button>
@@ -42,6 +43,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         onClick={() => handleLanguageChange('en')}
         aria-label={t('app:languages.english')}
         title={t('app:languages.english')}
+        type="button"
       >
         {t('app:languages.english').substring(0, 2).toUpperCase()}
       </button>
