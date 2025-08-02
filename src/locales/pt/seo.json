@@ -2,7 +2,7 @@
   "defaultTitle": "Spotify Artist Explorer - Descubra Artistas e Músicas",
   "defaultDescription": "Explore artistas, álbuns e músicas do Spotify. Descubra novos artistas, ouça suas principais faixas e navegue por discografias completas.",
   "defaultKeywords": "spotify, artistas, música, álbuns, descoberta, playlist, streaming, música brasileira, artistas internacionais",
-  "homeTitle": "Início - Spotify Artist Explorer",
+  "homeTitle": "Início",
   "homeDescription": "Descubra novos artistas e músicas no Spotify. Explore discografias completas, ouça as principais faixas e encontre sua próxima música favorita.",
   "searchTitle": "Buscar Artistas - Spotify Artist Explorer",
   "searchDescription": "Busque por artistas no Spotify. Encontre músicos por nome, gênero ou popularidade. Explore discografias completas e ouça as principais faixas.",
@@ -17,4 +17,4 @@
   "errorDescription": "Ocorreu um erro ao carregar a página. Tente novamente ou entre em contato conosco.",
   "notFoundTitle": "Página não encontrada - Spotify Artist Explorer",
   "notFoundDescription": "A página que você está procurando não foi encontrada. Volte ao início e continue explorando artistas no Spotify."
-} 
+}

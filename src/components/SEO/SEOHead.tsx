@@ -27,7 +27,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     // Update document title
     const baseTitle = 'Spotify Artist Explorer'
     const fullTitle = title
-      ? title // Use title as-is since it already includes the base title
+      ? `${title} - ${baseTitle}` // Add base title to all titles
       : artistName
         ? `${artistName} - ${baseTitle}`
         : baseTitle
