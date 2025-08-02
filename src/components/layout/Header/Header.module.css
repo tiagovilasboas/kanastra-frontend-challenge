@@ -79,6 +79,31 @@
   font-size: 16px;
 }
 
+.spotifyLoginButton {
+  background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(29, 185, 84, 0.2);
+}
+
+.spotifyLoginButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(29, 185, 84, 0.3);
+}
+
+.spotifyLoginButton:active {
+  transform: translateY(0);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .headerContainer {
@@ -95,6 +120,11 @@
   
   .headerLanguageButton {
     padding: 6px;
+    font-size: 12px;
+  }
+  
+  .spotifyLoginButton {
+    padding: 6px 12px;
     font-size: 12px;
   }
 } 
