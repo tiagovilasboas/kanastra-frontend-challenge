@@ -576,6 +576,49 @@ select {
   box-shadow: var(--shadow-md);
 }
 
+/* Home Content */
+.home-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+/* Popular Artists Section */
+.popular-artists-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.popular-artists-header {
+  margin-bottom: var(--spacing-lg);
+}
+
+.popular-artists-title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--spotify-white);
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.popular-artists-description {
+  font-size: var(--font-size-md);
+  color: var(--spotify-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.popular-artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.popular-artists-error {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--spotify-text-secondary);
+}
+
 /* Spotify-like Search Input */
 .search-input {
   background: var(--bg-secondary);
@@ -1897,6 +1940,19 @@ select {
   
   .album-grid-container {
     padding: var(--spacing-md);
+  }
+  
+  .popular-artists-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
+  
+  .popular-artists-title {
+    font-size: var(--font-size-xl);
+  }
+  
+  .popular-artists-description {
+    font-size: var(--font-size-sm);
   }
   
   .album-grid-title {

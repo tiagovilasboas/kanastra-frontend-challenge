@@ -18,6 +18,8 @@ export const queryKeys = {
       [...queryKeys.artists.all, id, 'topTracks'] as const,
     albums: (id: string, page: number, limit: number) =>
       [...queryKeys.artists.all, id, 'albums', page, limit] as const,
+    popular: (limit: number) =>
+      [...queryKeys.artists.all, 'popular', limit] as const,
   },
 } as const
 

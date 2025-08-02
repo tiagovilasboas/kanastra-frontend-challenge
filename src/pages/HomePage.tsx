@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { AppLayout, MobileLayout } from '@/components/layout'
 import { SEOHead, StructuredData } from '@/components/SEO'
-import { ArtistCard } from '@/components/ui'
+import { ArtistCard, PopularArtistsSection } from '@/components/ui'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { MusicIcon } from '@/components/ui/MusicIcon'
 import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
+import { usePopularArtists } from '@/hooks/usePopularArtists'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 
@@ -21,6 +22,9 @@ export const HomePage: React.FC = () => {
 
   const { searchResults, isLoading, error, searchArtists, searchQuery } =
     useSpotifySearch()
+
+  const { artists: popularArtists, isLoading: isLoadingPopular, error: popularError } = 
+    usePopularArtists({ limit: 6, enabled: !searchQuery })
 
   const handleArtistClick = (artistId: string) => {
     prefetchArtistData(artistId)
@@ -151,22 +155,33 @@ export const HomePage: React.FC = () => {
     // Show welcome section when no search query and activeSection is home
     if (!searchQuery && activeSection === 'home') {
       return (
-        <div className="welcome-section">
-          <div className="welcome-content">
-            <h2 className="welcome-title">{t('search:welcomeTitle')}</h2>
-            <p className="welcome-message">{t('search:welcomeMessage')}</p>
-            <div className="search-tips">
-              <div className="tip">
-                <span className="tip-icon">{t('icons:icons.microphone')}</span>
-                <span className="tip-text">{t('search:tip1')}</span>
-              </div>
-              <div className="tip">
-                <span className="tip-icon">{t('icons:icons.guitar')}</span>
-                <span className="tip-text">{t('search:tip2')}</span>
-              </div>
-              <div className="tip">
-                <span className="tip-icon">{t('icons:icons.piano')}</span>
-                <span className="tip-text">{t('search:tip3')}</span>
+        <div className="home-content">
+          {/* Popular Artists Section */}
+          <PopularArtistsSection
+            artists={popularArtists}
+            isLoading={isLoadingPopular}
+            error={popularError}
+            onArtistClick={handleArtistClick}
+          />
+
+          {/* Welcome Section */}
+          <div className="welcome-section">
+            <div className="welcome-content">
+              <h2 className="welcome-title">{t('search:welcomeTitle')}</h2>
+              <p className="welcome-message">{t('search:welcomeMessage')}</p>
+              <div className="search-tips">
+                <div className="tip">
+                  <span className="tip-icon">{t('icons:icons.microphone')}</span>
+                  <span className="tip-text">{t('search:tip1')}</span>
+                </div>
+                <div className="tip">
+                  <span className="tip-icon">{t('icons:icons.guitar')}</span>
+                  <span className="tip-text">{t('search:tip2')}</span>
+                </div>
+                <div className="tip">
+                  <span className="tip-icon">{t('icons:icons.piano')}</span>
+                  <span className="tip-text">{t('search:tip3')}</span>
+                </div>
               </div>
             </div>
           </div>
