@@ -42,7 +42,7 @@ export function usePopularArtists({
   limit = 6,
   enabled = true,
 }: UsePopularArtistsParams = {}): UsePopularArtistsReturn {
-  const { checkAuthError } = useSpotifyAuth()
+  const { checkAuthError, isAuthenticated } = useSpotifyAuth()
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.artists.popular(limit),
@@ -78,7 +78,7 @@ export function usePopularArtists({
 
       return sortedArtists
     },
-    enabled,
+    enabled: enabled && isAuthenticated, // Only enable when user is authenticated
     staleTime: cache.stale.OCCASIONAL, // Popular artists change occasionally
     gcTime: cache.times.MEDIUM, // Keep in memory for medium time
     retry: cache.retry.IMPORTANT.retry,

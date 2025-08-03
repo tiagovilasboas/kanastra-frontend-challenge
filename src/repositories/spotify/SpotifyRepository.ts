@@ -192,9 +192,11 @@ export class SpotifyRepository {
   }
 
   async getArtistDetails(artistId: string) {
-    // Ensure we have either access token or client token
+    // Only get client token if we don't have access token and don't already have client token
     if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.warn('No tokens available, trying to get client token first')
+      logger.debug(
+        'No tokens available for artist details, getting client token',
+      )
       try {
         await this.getClientToken()
       } catch (error) {
@@ -207,9 +209,9 @@ export class SpotifyRepository {
   }
 
   async getArtistTopTracks(artistId: string, market: string = 'US') {
-    // Ensure we have either access token or client token
+    // Only get client token if we don't have access token and don't already have client token
     if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.warn('No tokens available, trying to get client token first')
+      logger.debug('No tokens available for top tracks, getting client token')
       try {
         await this.getClientToken()
       } catch (error) {
@@ -227,9 +229,11 @@ export class SpotifyRepository {
     limit: number = 20,
     offset: number = 0,
   ) {
-    // Ensure we have either access token or client token
+    // Only get client token if we don't have access token and don't already have client token
     if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.warn('No tokens available, trying to get client token first')
+      logger.debug(
+        'No tokens available for artist albums, getting client token',
+      )
       try {
         await this.getClientToken()
       } catch (error) {
