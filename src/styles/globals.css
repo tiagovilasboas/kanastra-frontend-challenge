@@ -2222,10 +2222,10 @@ select {
 
   /* Compact login button for mobile */
   .mobile-compact {
-    max-width: 48px;
-    min-width: 48px;
-    width: 48px;
-    height: 48px;
+    max-width: 40px;
+    min-width: 40px;
+    width: 40px;
+    height: 40px;
     padding: var(--spacing-xs);
     border-radius: 50%;
     display: flex;
@@ -2350,10 +2350,10 @@ select {
 
   /* Even more compact login button for small screens */
   .mobile-compact {
-    max-width: 44px;
-    min-width: 44px;
-    width: 44px;
-    height: 44px;
+    max-width: 36px;
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
     padding: var(--spacing-xs);
     border-radius: 50%;
   }

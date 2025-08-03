@@ -65,9 +65,9 @@
 .languageButton.compact {
   padding: 0;
   font-size: var(--font-size-xs);
-  min-width: 28px;
-  width: 28px;
-  height: 28px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 /* Compact first button - left side */
@@ -81,9 +81,9 @@
 }
 
 .languageButton.compact.active {
-  min-width: 28px;
-  width: 28px;
-  height: 28px;
+  min-width: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 .languageButton.active {
@@ -127,9 +127,9 @@
   .languageButton {
     padding: 0;
     font-size: var(--font-size-xs);
-    min-width: 28px;
-    width: 28px;
-    height: 28px;
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
   }
 
   .languageButton:active {
