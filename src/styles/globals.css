@@ -2285,10 +2285,11 @@ select {
   }
 
   .header-actions {
-    gap: var(--spacing-sm);
-    justify-content: space-between;
+    gap: var(--spacing-md);
+    justify-content: flex-start;
     order: 2;
     width: 100%;
+    align-items: center;
   }
 
   /* Improve container */
@@ -2326,9 +2327,10 @@ select {
   }
 
   .header-actions {
-    justify-content: space-between;
-    gap: var(--spacing-xs);
+    justify-content: flex-start;
+    gap: var(--spacing-sm);
     width: 100%;
+    align-items: center;
   }
 
   .card {
