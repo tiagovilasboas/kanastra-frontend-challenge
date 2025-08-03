@@ -15,6 +15,7 @@ interface UseSpotifySearchReturn {
   searchArtists: (query: string) => void
   clearSearch: () => void
   searchQuery: string
+  debouncedQuery: string
 }
 
 export function useSpotifySearch(): UseSpotifySearchReturn {
@@ -130,5 +131,6 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     searchArtists,
     clearSearch,
     searchQuery,
+    debouncedQuery,
   }
 }

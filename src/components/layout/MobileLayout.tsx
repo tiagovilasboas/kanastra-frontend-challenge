@@ -27,7 +27,8 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
   >('home')
 
   // Real data hooks - same as desktop
-  const { searchResults, isLoading, error, searchQuery } = useSpotifySearch()
+  const { searchResults, isLoading, error, searchQuery, debouncedQuery } =
+    useSpotifySearch()
 
   const {
     artists: popularArtists,
@@ -92,57 +93,63 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
         {searchQuery && (
           <div className="mobile-search-content">
             {/* Show loading skeleton when searching */}
-            {isLoading && (
+            {(isLoading || (searchQuery && !debouncedQuery)) && (
               <LoadingSkeleton variant="search-results" count={6} />
             )}
 
             {/* Show search results */}
-            {!isLoading && searchResults && searchResults.length > 0 && (
-              <div className="mobile-search-results">
-                <h2 className="mobile-results-title">
-                  {t('search:resultsTitle', { count: searchResults.length })}
-                </h2>
-                <div className="mobile-results-grid">
-                  {searchResults.map((artist) => (
-                    <div
-                      key={artist.id}
-                      className="mobile-artist-card"
-                      onClick={() => handleArtistClick(artist.id)}
-                    >
-                      <div className="mobile-artist-image">
-                        {artist.images?.[0]?.url ? (
-                          <img
-                            src={artist.images[0].url}
-                            alt={artist.name}
-                            className="mobile-artist-img"
-                          />
-                        ) : (
-                          <div className="mobile-artist-placeholder">
-                            <span>{artist.name.charAt(0)}</span>
-                          </div>
-                        )}
+            {debouncedQuery &&
+              !isLoading &&
+              searchResults &&
+              searchResults.length > 0 && (
+                <div className="mobile-search-results">
+                  <h2 className="mobile-results-title">
+                    {t('search:resultsTitle', { count: searchResults.length })}
+                  </h2>
+                  <div className="mobile-results-grid">
+                    {searchResults.map((artist) => (
+                      <div
+                        key={artist.id}
+                        className="mobile-artist-card"
+                        onClick={() => handleArtistClick(artist.id)}
+                      >
+                        <div className="mobile-artist-image">
+                          {artist.images?.[0]?.url ? (
+                            <img
+                              src={artist.images[0].url}
+                              alt={artist.name}
+                              className="mobile-artist-img"
+                            />
+                          ) : (
+                            <div className="mobile-artist-placeholder">
+                              <span>{artist.name.charAt(0)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="mobile-artist-info">
+                          <h3 className="mobile-artist-name">{artist.name}</h3>
+                          <p className="mobile-artist-followers">
+                            {t('artist:followers', {
+                              count: artist.followers?.total || 0,
+                            })}
+                          </p>
+                        </div>
                       </div>
-                      <div className="mobile-artist-info">
-                        <h3 className="mobile-artist-name">{artist.name}</h3>
-                        <p className="mobile-artist-followers">
-                          {t('artist:followers', {
-                            count: artist.followers?.total || 0,
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* Show no results */}
-            {!isLoading && searchResults && searchResults.length === 0 && (
-              <div className="mobile-no-results">
-                <h2>{t('search:noResultsTitle')}</h2>
-                <p>{t('search:noResultsMessage')}</p>
-              </div>
-            )}
+            {debouncedQuery &&
+              !isLoading &&
+              searchResults &&
+              searchResults.length === 0 && (
+                <div className="mobile-no-results">
+                  <h2>{t('search:noResultsTitle')}</h2>
+                  <p>{t('search:noResultsMessage')}</p>
+                </div>
+              )}
           </div>
         )}
 

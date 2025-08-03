@@ -55,8 +55,14 @@ export const HomePage: React.FC = () => {
     navigate(newUrl, { replace: true })
   }
 
-  const { searchResults, isLoading, error, searchArtists, searchQuery } =
-    useSpotifySearch()
+  const {
+    searchResults,
+    isLoading,
+    error,
+    searchArtists,
+    searchQuery,
+    debouncedQuery,
+  } = useSpotifySearch()
 
   const {
     artists: popularArtists,
@@ -109,7 +115,10 @@ export const HomePage: React.FC = () => {
     }
 
     // Show loading skeleton when searching (only for home section)
-    if (isLoading && searchQuery && activeSection === 'home') {
+    if (
+      (isLoading || (searchQuery && !debouncedQuery)) &&
+      activeSection === 'home'
+    ) {
       return (
         <div className="main-content">
           <LoadingSkeleton variant="search-results" count={8} />
@@ -120,6 +129,7 @@ export const HomePage: React.FC = () => {
     // Show results when search is complete and has results (only for home section)
     if (
       searchQuery &&
+      debouncedQuery &&
       !isLoading &&
       searchResults?.length > 0 &&
       activeSection === 'home'
@@ -149,6 +159,7 @@ export const HomePage: React.FC = () => {
     // Show no results only when search is complete and no results found (only for home section)
     if (
       searchQuery &&
+      debouncedQuery &&
       !isLoading &&
       searchResults?.length === 0 &&
       activeSection === 'home'
