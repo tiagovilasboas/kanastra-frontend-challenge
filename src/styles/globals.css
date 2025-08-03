@@ -2344,6 +2344,10 @@ select {
     align-items: center;
   }
 
+  .language-selector-container {
+    height: 20px;
+  }
+
   .card {
     padding: var(--spacing-md);
   }
