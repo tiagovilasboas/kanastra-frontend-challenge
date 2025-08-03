@@ -76,8 +76,40 @@ export const HomePage: React.FC = () => {
       // Continue showing the previous content or loading state
     }
 
-    // Show loading skeleton when searching
-    if (isLoading && searchQuery) {
+    // Show library section when activeSection is library (highest priority)
+    if (activeSection === 'library') {
+      return (
+        <div className="library-section">
+          <div className="library-content">
+            <h2 className="library-title">{t('navigation:library')}</h2>
+            <p className="library-message">
+              {isAuthenticated
+                ? t('navigation:libraryMessage')
+                : t('navigation:libraryMessageUnauth')}
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    // Show create playlist section when activeSection is create (highest priority)
+    if (activeSection === 'create') {
+      return (
+        <div className="create-section">
+          <div className="create-content">
+            <h2 className="create-title">{t('navigation:create')}</h2>
+            <p className="create-message">
+              {isAuthenticated
+                ? t('navigation:createMessage')
+                : t('navigation:createMessageUnauth')}
+            </p>
+          </div>
+        </div>
+      )
+    }
+
+    // Show loading skeleton when searching (only for home section)
+    if (isLoading && searchQuery && activeSection === 'home') {
       return (
         <div className="main-content">
           <LoadingSkeleton variant="search-results" count={8} />
@@ -85,8 +117,13 @@ export const HomePage: React.FC = () => {
       )
     }
 
-    // Show results when search is complete and has results
-    if (searchQuery && !isLoading && searchResults?.length > 0) {
+    // Show results when search is complete and has results (only for home section)
+    if (
+      searchQuery &&
+      !isLoading &&
+      searchResults?.length > 0 &&
+      activeSection === 'home'
+    ) {
       return (
         <div className="results-section">
           <div className="results-header">
@@ -109,46 +146,19 @@ export const HomePage: React.FC = () => {
       )
     }
 
-    // Show no results only when search is complete and no results found
-    if (searchQuery && !isLoading && searchResults?.length === 0) {
+    // Show no results only when search is complete and no results found (only for home section)
+    if (
+      searchQuery &&
+      !isLoading &&
+      searchResults?.length === 0 &&
+      activeSection === 'home'
+    ) {
       return (
         <div className="no-results-section">
           <div className="no-results-content">
             <span className="no-results-icon">{t('icons:icons.note')}</span>
             <h2 className="no-results-title">{t('search:noResultsTitle')}</h2>
             <p className="no-results-message">{t('search:noResultsMessage')}</p>
-          </div>
-        </div>
-      )
-    }
-
-    // Show library section when activeSection is library
-    if (activeSection === 'library') {
-      return (
-        <div className="library-section">
-          <div className="library-content">
-            <h2 className="library-title">{t('navigation:library')}</h2>
-            <p className="library-message">
-              {isAuthenticated
-                ? t('navigation:libraryMessage')
-                : t('navigation:libraryMessageUnauth')}
-            </p>
-          </div>
-        </div>
-      )
-    }
-
-    // Show create playlist section when activeSection is create
-    if (activeSection === 'create') {
-      return (
-        <div className="create-section">
-          <div className="create-content">
-            <h2 className="create-title">{t('navigation:create')}</h2>
-            <p className="create-message">
-              {isAuthenticated
-                ? t('navigation:createMessage')
-                : t('navigation:createMessageUnauth')}
-            </p>
           </div>
         </div>
       )
