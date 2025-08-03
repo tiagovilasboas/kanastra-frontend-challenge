@@ -16,7 +16,7 @@ interface MobileLayoutProps {
   onSearch?: (query: string) => void
 }
 
-export const MobileLayout: React.FC<MobileLayoutProps> = () => {
+export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { showError } = useToast()
@@ -27,8 +27,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
   >('home')
 
   // Real data hooks - same as desktop
-  const { searchResults, isLoading, error, searchQuery, searchArtists } =
-    useSpotifySearch()
+  const { searchResults, isLoading, error, searchQuery } = useSpotifySearch()
 
   const {
     artists: popularArtists,
@@ -47,7 +46,9 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
 
   const handleSearch = (query: string) => {
     console.log('Mobile search triggered:', query)
-    searchArtists(query)
+    if (onSearch) {
+      onSearch(query)
+    }
   }
 
   // Handle errors with toasts
