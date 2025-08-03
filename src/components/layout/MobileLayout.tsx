@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { MobileNavigation } from '@/components/layout'
 import { AlbumGrid, NowPlaying } from '@/components/ui'
 import { HorizontalSection } from '@/components/ui'
+import { LanguageSelector } from '@/components/ui/LanguageSelector'
 
 interface MobileLayoutProps {
   onSearch?: (query: string) => void
@@ -22,19 +23,19 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '1',
       title: 'Pagonejo',
       subtitle: 'Pagonejo 2025 | Melhores do Pagod...',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '2',
       title: 'O melhor da década pra você',
       subtitle: 'O melhor da década pra você',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '3',
       title: 'JOÃO CAR MELHORE!',
       subtitle: 'Sertanejo universitário',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
   ]
 
@@ -43,19 +44,19 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '4',
       title: 'PAGODEIRA',
       subtitle: 'Pagodeira',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '5',
       title: 'ESQUENTA SERTANEJO',
       subtitle: 'Esquenta Sertanejo',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '6',
       title: 'TOP BRA',
       subtitle: 'Top Brasil',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
   ]
 
@@ -64,19 +65,19 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '7',
       title: 'Buteco Sertanejo',
       subtitle: 'Sertanejo raiz',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '8',
       title: 'Modão Sertanejo',
       subtitle: 'Sertanejo tradicional',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
     {
       id: '9',
       title: 'Festa Sertan',
       subtitle: 'Sertanejo universitário',
-      image: '/placeholder-album.jpg',
+      image: undefined,
     },
   ]
 
@@ -86,7 +87,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '10',
       title: 'Os Caras da Rua, Pt. 1 (Ao Vivo)',
       artist: 'Os Caras da Rua',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '19 de dezembro de 2024',
       trackCount: 9,
       albumType: 'ALBUM',
@@ -95,7 +96,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '11',
       title: 'Pagobinho 2.0 (Ao Vivo)',
       artist: 'Pagobinho',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '22 de outubro de 2024',
       trackCount: 13,
       albumType: 'ALBUM',
@@ -104,7 +105,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '12',
       title: 'Pagobinho, Pt. 2',
       artist: 'Pagobinho',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '12 de setembro de 2024',
       trackCount: 10,
       albumType: 'ALBUM',
@@ -113,7 +114,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '13',
       title: 'Pagobinho',
       artist: 'Pagobinho & Fabinho',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '16 de fevereiro de 2024',
       trackCount: 7,
       albumType: 'ALBUM',
@@ -122,7 +123,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '14',
       title: 'Churrasco Universitário',
       artist: 'Churrasco Universitário',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '7 de fevereiro de 2016',
       trackCount: 13,
       albumType: 'ALBUM',
@@ -131,7 +132,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '15',
       title: 'Não Falta Nada Lá em Casa (Ao Vivo)',
       artist: 'Os Caras da Rua',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '29 de junho de 2025',
       trackCount: 1,
       albumType: 'SINGLE',
@@ -140,7 +141,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '16',
       title: 'Pra Decidir (Os Caras Da Rua)',
       artist: 'Os Caras da Rua',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '12 de junho de 2025',
       trackCount: 1,
       albumType: 'SINGLE',
@@ -149,7 +150,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       id: '17',
       title: 'Cadê Ela',
       artist: 'Pagobinho',
-      image: '/placeholder-album.jpg',
+      image: undefined,
       releaseDate: '26 de dezembro de 2024',
       trackCount: 1,
       albumType: 'SINGLE',
@@ -159,7 +160,7 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
   const mockTrack = {
     name: 'Caso Indefinido - Ao Vivo',
     artist: 'Cristiano Araújo',
-    albumArt: '/placeholder-album.jpg',
+    albumArt: undefined,
   }
 
   const handleSectionChange = (section: typeof activeSection) => {
@@ -183,12 +184,15 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       <header className="mobile-header">
         <div className="mobile-header-content">
           <h1 className="mobile-greeting">{getGreeting()}</h1>
-          <button
-            className="mobile-settings-button"
-            aria-label={t('ui:settings', 'Configurações')}
-          >
-            <Settings size={24} />
-          </button>
+          <div className="mobile-header-actions">
+            <LanguageSelector size="compact" />
+            <button
+              className="mobile-settings-button"
+              aria-label={t('ui:settings', 'Configurações')}
+            >
+              <Settings size={24} />
+            </button>
+          </div>
         </div>
       </header>
 

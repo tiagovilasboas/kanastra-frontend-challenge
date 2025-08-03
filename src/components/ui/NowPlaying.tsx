@@ -1,6 +1,8 @@
-import { Heart, Pause,Play } from 'lucide-react'
+import { Heart, Pause, Play } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { ImagePlaceholder } from './ImagePlaceholder'
 
 interface NowPlayingProps {
   track?: {
@@ -28,17 +30,25 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
     <div className="now-playing-bar">
       <div className="now-playing-content">
         <div className="now-playing-info">
-          <img
-            src={track.albumArt || '/placeholder-album.jpg'}
-            alt={track.name}
-            className="now-playing-artwork"
-          />
+          {track.albumArt ? (
+            <img
+              src={track.albumArt}
+              alt={track.name}
+              className="now-playing-artwork"
+            />
+          ) : (
+            <ImagePlaceholder
+              className="now-playing-artwork compact"
+              width={40}
+              height={40}
+            />
+          )}
           <div className="now-playing-text">
             <div className="now-playing-title">{track.name}</div>
             <div className="now-playing-artist">{track.artist}</div>
           </div>
         </div>
-        
+
         <div className="now-playing-controls">
           <button
             className="now-playing-button"
@@ -50,7 +60,9 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
           <button
             className="now-playing-button play-button"
             onClick={onPlayPause}
-            aria-label={isPlaying ? t('ui:pause', 'Pausar') : t('ui:play', 'Reproduzir')}
+            aria-label={
+              isPlaying ? t('ui:pause', 'Pausar') : t('ui:play', 'Reproduzir')
+            }
           >
             {isPlaying ? <Pause size={20} /> : <Play size={20} />}
           </button>
@@ -58,4 +70,4 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
       </div>
     </div>
   )
-} 
+}

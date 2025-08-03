@@ -7,19 +7,14 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-xs);
+  padding: 0;
   position: relative;
 }
 
 /* Compact variant for header */
 .languageSelector.compact {
-  padding: 2px;
+  padding: 0;
   gap: 0;
-}
-
-.languageSelector:hover {
-  border-color: var(--spotify-gray);
-  background: var(--hover-bg);
 }
 
 .languageSelector:focus-within {
@@ -56,21 +51,14 @@
   box-sizing: border-box;
 }
 
-/* Language Button */
-.languageButton {
-  border-radius: var(--radius-sm);
+/* First button - left side */
+.languageButton:first-child {
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
 }
 
-/* Text Separator */
-.separator {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  padding: 0 var(--spacing-xs);
-  user-select: none;
+/* Last button - right side */
+.languageButton:last-child {
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
 }
 
 /* Compact button variant */
@@ -82,19 +70,20 @@
   height: 28px;
 }
 
+/* Compact first button - left side */
+.languageButton.compact:first-child {
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+
+/* Compact last button - right side */
+.languageButton.compact:last-child {
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
 .languageButton.compact.active {
   min-width: 28px;
   width: 28px;
   height: 28px;
-}
-
-.languageButton:hover {
-  background: var(--hover-bg);
-  color: var(--text-primary);
-  /* Prevent any transform effects */
-  transform: none !important;
-  /* Prevent border changes */
-  border: none;
 }
 
 .languageButton.active {
@@ -168,10 +157,6 @@
     border: 1px solid transparent;
   }
 
-  .languageButton:hover {
-    border-color: var(--text-primary);
-  }
-
   .languageButton.active {
     border-color: var(--spotify-black);
   }
@@ -190,9 +175,5 @@
   .languageSelector {
     background: var(--bg-secondary);
     border-color: var(--border-color);
-  }
-
-  .languageSelector:hover {
-    background: var(--hover-bg);
   }
 }

@@ -1679,6 +1679,12 @@ select {
   align-items: center;
 }
 
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 .mobile-greeting {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);

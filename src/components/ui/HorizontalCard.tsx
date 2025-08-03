@@ -1,6 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { ImagePlaceholder } from './ImagePlaceholder'
+
 interface HorizontalCardProps {
   id: string
   title: string
@@ -28,7 +30,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
   albumType,
 }) => {
   const { t } = useTranslation()
-  
+
   const handleClick = () => {
     if (spotifyUrl) {
       window.open(spotifyUrl, '_blank', 'noopener,noreferrer')
@@ -36,7 +38,7 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
       onClick?.()
     }
   }
-  
+
   return (
     <div
       className={`horizontal-card ${className}`}
@@ -51,20 +53,21 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
       }}
     >
       <div className="horizontal-card-image">
-        <img
-          src={image || '/placeholder-album.jpg'}
-          alt={title}
-          className="horizontal-card-img"
-        />
+        {image ? (
+          <img src={image} alt={title} className="horizontal-card-img" />
+        ) : (
+          <ImagePlaceholder className="horizontal-card-img album" />
+        )}
       </div>
       <div className="horizontal-card-content">
         <h3 className="horizontal-card-title">{title}</h3>
         {subtitle && <p className="horizontal-card-subtitle">{subtitle}</p>}
-        
+
         {showDetails && releaseDate && trackCount && (
           <div className="horizontal-card-details">
             <span className="horizontal-card-date">
-              {releaseDate} {t('ui:separator', '•')} {t('ui:trackCount', '{{count}} faixa', { count: trackCount })}
+              {releaseDate} {t('ui:separator', '•')}{' '}
+              {t('ui:trackCount', '{{count}} faixa', { count: trackCount })}
             </span>
             {albumType && (
               <span className="horizontal-card-type">{albumType}</span>
@@ -74,4 +77,4 @@ export const HorizontalCard: React.FC<HorizontalCardProps> = ({
       </div>
     </div>
   )
-} 
+}

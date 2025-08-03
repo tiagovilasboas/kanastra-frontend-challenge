@@ -38,7 +38,6 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
       >
         {t('app:languages.pt')}
       </button>
-      <div className={styles.separator}>{t('app:separator')}</div>
       <button
         className={`${styles.languageButton} ${isCompact ? styles.compact : ''} ${language === 'en' ? styles.active : ''}`}
         onClick={() => handleLanguageChange('en')}
