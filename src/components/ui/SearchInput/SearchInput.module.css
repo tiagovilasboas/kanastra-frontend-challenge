@@ -218,6 +218,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .searchContainer {
+    width: 100%;
     max-width: 100%;
     padding: var(--spacing-md);
     border-radius: var(--radius-lg);
@@ -272,6 +273,8 @@
 /* Mobile específico - telas pequenas */
 @media (max-width: 480px) {
   .searchContainer {
+    width: 100%;
+    max-width: 100%;
     padding: var(--spacing-sm);
     min-height: 44px;
   }
