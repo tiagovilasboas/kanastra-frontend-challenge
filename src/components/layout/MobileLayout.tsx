@@ -1,11 +1,15 @@
 import { Settings } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { MobileNavigation } from '@/components/layout'
-import { AlbumGrid, NowPlaying } from '@/components/ui'
-import { HorizontalSection } from '@/components/ui'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
+import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
+import { usePopularArtists } from '@/hooks/usePopularArtists'
+import { useSpotifySearch } from '@/hooks/useSpotifySearch'
+import { useToast } from '@/hooks/useToast'
 
 interface MobileLayoutProps {
   onSearch?: (query: string) => void
@@ -13,169 +17,39 @@ interface MobileLayoutProps {
 
 export const MobileLayout: React.FC<MobileLayoutProps> = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { showError } = useToast()
+  const { prefetchArtistData } = useArtistPrefetch()
+
   const [activeSection, setActiveSection] = useState<
     'home' | 'search' | 'library' | 'download' | 'profile'
   >('home')
 
-  // Mock data for demonstration
-  const mockPlaylists = [
-    {
-      id: '1',
-      title: 'Pagonejo',
-      subtitle: 'Pagonejo 2025 | Melhores do Pagod...',
-      image: undefined,
-    },
-    {
-      id: '2',
-      title: 'O melhor da década pra você',
-      subtitle: 'O melhor da década pra você',
-      image: undefined,
-    },
-    {
-      id: '3',
-      title: 'JOÃO CAR MELHORE!',
-      subtitle: 'Sertanejo universitário',
-      image: undefined,
-    },
-  ]
+  // Real data hooks - same as desktop
+  const { searchResults, isLoading, error, searchQuery } = useSpotifySearch()
 
-  const mockHits = [
-    {
-      id: '4',
-      title: 'PAGODEIRA',
-      subtitle: 'Pagodeira',
-      image: undefined,
-    },
-    {
-      id: '5',
-      title: 'ESQUENTA SERTANEJO',
-      subtitle: 'Esquenta Sertanejo',
-      image: undefined,
-    },
-    {
-      id: '6',
-      title: 'TOP BRA',
-      subtitle: 'Top Brasil',
-      image: undefined,
-    },
-  ]
-
-  const mockRecommendations = [
-    {
-      id: '7',
-      title: 'Buteco Sertanejo',
-      subtitle: 'Sertanejo raiz',
-      image: undefined,
-    },
-    {
-      id: '8',
-      title: 'Modão Sertanejo',
-      subtitle: 'Sertanejo tradicional',
-      image: undefined,
-    },
-    {
-      id: '9',
-      title: 'Festa Sertan',
-      subtitle: 'Sertanejo universitário',
-      image: undefined,
-    },
-  ]
-
-  // Mock albums data similar to the image
-  const mockAlbums = [
-    {
-      id: '10',
-      title: 'Os Caras da Rua, Pt. 1 (Ao Vivo)',
-      artist: 'Os Caras da Rua',
-      image: undefined,
-      releaseDate: '19 de dezembro de 2024',
-      trackCount: 9,
-      albumType: 'ALBUM',
-    },
-    {
-      id: '11',
-      title: 'Pagobinho 2.0 (Ao Vivo)',
-      artist: 'Pagobinho',
-      image: undefined,
-      releaseDate: '22 de outubro de 2024',
-      trackCount: 13,
-      albumType: 'ALBUM',
-    },
-    {
-      id: '12',
-      title: 'Pagobinho, Pt. 2',
-      artist: 'Pagobinho',
-      image: undefined,
-      releaseDate: '12 de setembro de 2024',
-      trackCount: 10,
-      albumType: 'ALBUM',
-    },
-    {
-      id: '13',
-      title: 'Pagobinho',
-      artist: 'Pagobinho & Fabinho',
-      image: undefined,
-      releaseDate: '16 de fevereiro de 2024',
-      trackCount: 7,
-      albumType: 'ALBUM',
-    },
-    {
-      id: '14',
-      title: 'Churrasco Universitário',
-      artist: 'Churrasco Universitário',
-      image: undefined,
-      releaseDate: '7 de fevereiro de 2016',
-      trackCount: 13,
-      albumType: 'ALBUM',
-    },
-    {
-      id: '15',
-      title: 'Não Falta Nada Lá em Casa (Ao Vivo)',
-      artist: 'Os Caras da Rua',
-      image: undefined,
-      releaseDate: '29 de junho de 2025',
-      trackCount: 1,
-      albumType: 'SINGLE',
-    },
-    {
-      id: '16',
-      title: 'Pra Decidir (Os Caras Da Rua)',
-      artist: 'Os Caras da Rua',
-      image: undefined,
-      releaseDate: '12 de junho de 2025',
-      trackCount: 1,
-      albumType: 'SINGLE',
-    },
-    {
-      id: '17',
-      title: 'Cadê Ela',
-      artist: 'Pagobinho',
-      image: undefined,
-      releaseDate: '26 de dezembro de 2024',
-      trackCount: 1,
-      albumType: 'SINGLE',
-    },
-  ]
-
-  const mockTrack = {
-    name: 'Caso Indefinido - Ao Vivo',
-    artist: 'Cristiano Araújo',
-    albumArt: undefined,
-  }
+  const {
+    artists: popularArtists,
+    isLoading: isLoadingPopular,
+    error: popularError,
+  } = usePopularArtists({ limit: 6, enabled: !searchQuery })
 
   const handleSectionChange = (section: typeof activeSection) => {
     setActiveSection(section)
   }
 
-  const handlePlaylistClick = (id: string) => {
-    console.log('Playlist clicked:', id)
+  const handleArtistClick = (artistId: string) => {
+    prefetchArtistData(artistId)
+    navigate(`/artist/${artistId}`)
   }
 
-  const getGreeting = () => {
-    const hour = new Date().getHours()
-    if (hour < 12) return t('greeting:goodMorning', 'Bom dia')
-    if (hour < 18) return t('greeting:goodAfternoon', 'Boa tarde')
-    return t('greeting:goodEvening', 'Boa noite')
+  // Handle errors with toasts
+  if (error) {
+    showError('search:errorMessage')
+  }
+
+  if (popularError) {
+    showError('home:trendingError')
   }
 
   return (
@@ -183,7 +57,9 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       {/* Header */}
       <header className="mobile-header">
         <div className="mobile-header-content">
-          <h1 className="mobile-greeting">{getGreeting()}</h1>
+          <h1 className="mobile-app-title">
+            {t('app:title', 'Spotify Explorer')}
+          </h1>
           <div className="mobile-header-actions">
             <LanguageSelector size="compact" />
             <button
@@ -200,33 +76,117 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
       <main className="mobile-main-content">
         {activeSection === 'home' && (
           <div className="mobile-home-content">
-            <HorizontalSection
-              title=""
-              items={mockPlaylists}
-              onItemClick={handlePlaylistClick}
-            />
+            {/* Show loading skeleton when searching */}
+            {isLoading && searchQuery && (
+              <LoadingSkeleton variant="search-results" count={6} />
+            )}
 
-            <HorizontalSection
-              title={t('home:biggestHits', 'Os maiores hits do momento')}
-              items={mockHits}
-              onItemClick={handlePlaylistClick}
-            />
+            {/* Show search results */}
+            {searchQuery &&
+              !isLoading &&
+              searchResults &&
+              searchResults.length > 0 && (
+                <div className="mobile-search-results">
+                  <h2 className="mobile-results-title">
+                    {t('search:resultsTitle', { count: searchResults.length })}
+                  </h2>
+                  <div className="mobile-results-grid">
+                    {searchResults.map((artist) => (
+                      <div
+                        key={artist.id}
+                        className="mobile-artist-card"
+                        onClick={() => handleArtistClick(artist.id)}
+                      >
+                        <div className="mobile-artist-image">
+                          {artist.images?.[0]?.url ? (
+                            <img
+                              src={artist.images[0].url}
+                              alt={artist.name}
+                              className="mobile-artist-img"
+                            />
+                          ) : (
+                            <div className="mobile-artist-placeholder">
+                              <span>{artist.name.charAt(0)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="mobile-artist-info">
+                          <h3 className="mobile-artist-name">{artist.name}</h3>
+                          <p className="mobile-artist-followers">
+                            {t('artist:followers', {
+                              count: artist.followers?.total || 0,
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-            <HorizontalSection
-              title={t('home:moreOfWhatYouLike', 'Mais do que você curte')}
-              items={mockRecommendations}
-              onItemClick={handlePlaylistClick}
-            />
+            {/* Show no results */}
+            {searchQuery &&
+              !isLoading &&
+              searchResults &&
+              searchResults.length === 0 && (
+                <div className="mobile-no-results">
+                  <h2>{t('search:noResultsTitle')}</h2>
+                  <p>{t('search:noResultsMessage')}</p>
+                </div>
+              )}
+
+            {/* Show popular artists when no search */}
+            {!searchQuery && (
+              <div className="mobile-popular-artists">
+                <h2 className="mobile-section-title">
+                  {t('home:trendingArtists')}
+                </h2>
+                {isLoadingPopular ? (
+                  <LoadingSkeleton variant="search-results" count={6} />
+                ) : (
+                  <div className="mobile-artists-grid">
+                    {popularArtists?.map((artist) => (
+                      <div
+                        key={artist.id}
+                        className="mobile-artist-card"
+                        onClick={() => handleArtistClick(artist.id)}
+                      >
+                        <div className="mobile-artist-image">
+                          {artist.images?.[0]?.url ? (
+                            <img
+                              src={artist.images[0].url}
+                              alt={artist.name}
+                              className="mobile-artist-img"
+                            />
+                          ) : (
+                            <div className="mobile-artist-placeholder">
+                              <span>{artist.name.charAt(0)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="mobile-artist-info">
+                          <h3 className="mobile-artist-name">{artist.name}</h3>
+                          <p className="mobile-artist-followers">
+                            {t('artist:followers', {
+                              count: artist.followers?.total || 0,
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
         {activeSection === 'search' && (
           <div className="mobile-search-content">
-            <AlbumGrid
-              albums={mockAlbums}
-              title="Álbuns"
-              onAlbumClick={handlePlaylistClick}
-            />
+            <div className="mobile-search-placeholder">
+              <h2>{t('search:title')}</h2>
+              <p>{t('search:description')}</p>
+            </div>
           </div>
         )}
 
@@ -266,14 +226,6 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
           </div>
         )}
       </main>
-
-      {/* Now Playing Bar */}
-      <NowPlaying
-        track={mockTrack}
-        isPlaying={false}
-        onPlayPause={() => console.log('Play/Pause clicked')}
-        onLike={() => console.log('Like clicked')}
-      />
 
       {/* Mobile Navigation */}
       <MobileNavigation
