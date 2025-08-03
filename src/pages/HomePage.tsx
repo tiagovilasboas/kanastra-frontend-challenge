@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { AppLayout, MobileLayout } from '@/components/layout'
 import { SEOHead, StructuredData } from '@/components/SEO'
@@ -18,11 +18,42 @@ export const HomePage: React.FC = () => {
   const { isAuthenticated } = useSpotifyAuth()
   const { prefetchArtistData } = useArtistPrefetch()
   const navigate = useNavigate()
+  const location = useLocation()
   const { showError } = useToast()
 
   const [activeSection, setActiveSection] = useState<
     'home' | 'library' | 'create'
   >('home')
+
+  // Sync activeSection with URL
+  useEffect(() => {
+    const path = location.pathname
+    const searchParams = new URLSearchParams(location.search)
+    const section = searchParams.get('section')
+
+    if (section && ['home', 'library', 'create'].includes(section)) {
+      setActiveSection(section as 'home' | 'library' | 'create')
+    } else if (path === '/') {
+      setActiveSection('home')
+    }
+  }, [location.pathname, location.search])
+
+  // Function to handle section changes and update URL
+  const handleSectionChange = (section: 'home' | 'library' | 'create') => {
+    setActiveSection(section)
+
+    // Update URL with section parameter
+    const searchParams = new URLSearchParams(location.search)
+    if (section === 'home') {
+      searchParams.delete('section')
+    } else {
+      searchParams.set('section', section)
+    }
+
+    const newSearch = searchParams.toString()
+    const newUrl = newSearch ? `/?${newSearch}` : '/'
+    navigate(newUrl, { replace: true })
+  }
 
   const { searchResults, isLoading, error, searchArtists, searchQuery } =
     useSpotifySearch()
@@ -216,7 +247,7 @@ export const HomePage: React.FC = () => {
         <AppLayout
           onSearch={searchArtists}
           activeSection={activeSection}
-          onSectionChange={setActiveSection}
+          onSectionChange={handleSectionChange}
         >
           {renderMainContent()}
         </AppLayout>
