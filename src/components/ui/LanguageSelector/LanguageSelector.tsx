@@ -15,9 +15,12 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const { t } = useTranslation()
   const { language, setLanguage } = useAppStore()
 
-  const handleLanguageChange = useCallback((newLanguage: string) => {
-    setLanguage(newLanguage)
-  }, [setLanguage])
+  const handleLanguageChange = useCallback(
+    (newLanguage: string) => {
+      setLanguage(newLanguage)
+    },
+    [setLanguage],
+  )
 
   const isCompact = size === 'compact'
 
@@ -33,11 +36,9 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         title={t('app:languages.portuguese')}
         type="button"
       >
-        {t('app:languages.portuguese').substring(0, 2).toUpperCase()}
+        {t('app:languages.pt')}
       </button>
-      <div
-        className={`${styles.separator} ${isCompact ? styles.compact : ''}`}
-      />
+      <div className={styles.separator}>{t('app:separator')}</div>
       <button
         className={`${styles.languageButton} ${isCompact ? styles.compact : ''} ${language === 'en' ? styles.active : ''}`}
         onClick={() => handleLanguageChange('en')}
@@ -45,7 +46,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         title={t('app:languages.english')}
         type="button"
       >
-        {t('app:languages.english').substring(0, 2).toUpperCase()}
+        {t('app:languages.en')}
       </button>
     </div>
   )

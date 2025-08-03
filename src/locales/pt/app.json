@@ -5,11 +5,14 @@
   "language": "Idioma",
   "languages": {
     "portuguese": "Português",
-    "english": "Inglês"
+    "english": "Inglês",
+    "pt": "PT",
+    "en": "EN"
   },
   "flags": {
     "brazil": "🇧🇷",
     "usa": "🇺🇸"
   },
-  "colon": ":"
+  "colon": ":",
+  "separator": "|"
 }

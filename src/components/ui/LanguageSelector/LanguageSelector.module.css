@@ -3,19 +3,18 @@
 .languageSelector {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: 0;
   background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xs);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
 /* Compact variant for header */
 .languageSelector.compact {
   padding: 2px;
-  gap: 1px;
+  gap: 0;
 }
 
 .languageSelector:hover {
@@ -33,16 +32,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
-  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 32px;
   width: 32px;
   height: 32px;
@@ -53,11 +50,32 @@
   white-space: nowrap;
   overflow: hidden;
   position: relative;
+  /* Prevent any transform effects */
+  transform: none !important;
+  /* Prevent any layout shifts */
+  box-sizing: border-box;
+}
+
+/* Language Button */
+.languageButton {
+  border-radius: var(--radius-sm);
+}
+
+/* Text Separator */
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: 0 var(--spacing-xs);
+  user-select: none;
 }
 
 /* Compact button variant */
 .languageButton.compact {
-  padding: 4px 6px;
+  padding: 0;
   font-size: var(--font-size-xs);
   min-width: 28px;
   width: 28px;
@@ -73,46 +91,33 @@
 .languageButton:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
-  /* Ensure no layout changes */
-  min-width: 32px;
-  width: 32px;
-  height: 32px;
+  /* Prevent any transform effects */
+  transform: none !important;
+  /* Prevent border changes */
+  border: none;
 }
 
 .languageButton.active {
   background: var(--spotify-green);
   color: var(--spotify-black);
   font-weight: var(--font-weight-bold);
-  /* Ensure no layout changes */
-  min-width: 32px;
-  width: 32px;
-  height: 32px;
   box-shadow: 0 2px 4px rgba(29, 185, 84, 0.3);
+  /* Prevent any transform effects */
+  transform: none !important;
+  /* Prevent border changes */
+  border: none;
 }
 
 .languageButton:active {
-  transform: scale(0.95);
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--active-bg, rgba(29, 185, 84, 0.8));
+  /* Prevent any transform effects */
+  transform: none !important;
+  /* Prevent border changes */
+  border: none;
 }
 
 .languageButton:focus-visible {
-  outline: 2px solid var(--focus-ring);
-  outline-offset: 2px;
-}
-
-/* Separator */
-.separator {
-  width: 1px;
-  height: 16px;
-  background: var(--border-light);
-  margin: 0 var(--spacing-xs);
-  flex-shrink: 0;
-}
-
-/* Compact separator */
-.separator.compact {
-  height: 12px;
-  margin: 0 2px;
+  outline: none;
 }
 
 /* Language Icon */
@@ -131,7 +136,7 @@
   }
 
   .languageButton {
-    padding: 4px 6px;
+    padding: 0;
     font-size: var(--font-size-xs);
     min-width: 28px;
     width: 28px;
@@ -139,12 +144,11 @@
   }
 
   .languageButton:active {
-    transform: scale(0.98);
-  }
-
-  .separator {
-    height: 12px;
-    margin: 0 4px;
+    background: var(--active-bg, rgba(29, 185, 84, 0.8));
+    /* Prevent any transform effects */
+    transform: none !important;
+    /* Prevent border changes */
+    border: none;
   }
 
   .languageIcon {
@@ -177,7 +181,7 @@
 @media (prefers-reduced-motion: reduce) {
   .languageSelector,
   .languageButton {
-    transition: none;
+    /* No transitions needed as they're already removed */
   }
 }
 

@@ -5,7 +5,6 @@ import { initReactI18next } from 'react-i18next'
 import enApp from '../locales/en/app.json'
 import enArtist from '../locales/en/artist.json'
 import enAuth from '../locales/en/auth.json'
-import enCommon from '../locales/en/common.json'
 import enGenres from '../locales/en/genres.json'
 import enHome from '../locales/en/home.json'
 import enIcons from '../locales/en/icons.json'
@@ -16,7 +15,6 @@ import enUi from '../locales/en/ui.json'
 import ptApp from '../locales/pt/app.json'
 import ptArtist from '../locales/pt/artist.json'
 import ptAuth from '../locales/pt/auth.json'
-import ptCommon from '../locales/pt/common.json'
 import ptGenres from '../locales/pt/genres.json'
 import ptHome from '../locales/pt/home.json'
 import ptIcons from '../locales/pt/icons.json'
@@ -33,7 +31,6 @@ i18n.use(initReactI18next).init({
       app: enApp,
       artist: enArtist,
       auth: enAuth,
-      common: enCommon,
       genres: enGenres,
       home: enHome,
       icons: enIcons,
@@ -45,7 +42,6 @@ i18n.use(initReactI18next).init({
       app: ptApp,
       artist: ptArtist,
       auth: ptAuth,
-      common: ptCommon,
       genres: ptGenres,
       home: ptHome,
       icons: ptIcons,
@@ -58,7 +54,6 @@ i18n.use(initReactI18next).init({
     'app',
     'artist',
     'auth',
-    'common',
     'genres',
     'home',
     'icons',
@@ -66,7 +61,7 @@ i18n.use(initReactI18next).init({
     'search',
     'ui',
   ],
-  defaultNS: 'common',
+  defaultNS: 'app',
   interpolation: {
     escapeValue: false,
   },
