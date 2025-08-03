@@ -8,9 +8,8 @@
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: var(--spacing-xs);
-  transition:
-    border-color var(--transition-fast),
-    background-color var(--transition-fast);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 /* Compact variant for header */
@@ -22,6 +21,8 @@
 .languageSelector:hover {
   border-color: var(--spotify-gray);
   background: var(--hover-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .languageSelector:focus-within {
@@ -43,9 +44,7 @@
   font-weight: var(--font-weight-medium);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 32px;
   width: 32px;
   height: 32px;
@@ -55,6 +54,7 @@
   line-height: 1;
   white-space: nowrap;
   overflow: hidden;
+  position: relative;
 }
 
 /* Compact button variant */
@@ -75,6 +75,7 @@
 .languageButton:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
+  transform: scale(1.05);
   /* Ensure no layout changes */
   min-width: 32px;
   width: 32px;
@@ -85,12 +86,16 @@
   background: var(--spotify-green);
   color: var(--spotify-black);
   font-weight: var(--font-weight-bold);
-  /* Keep same dimensions to avoid "jump" */
-  transform: none;
   /* Ensure no layout changes */
   min-width: 32px;
   width: 32px;
   height: 32px;
+  box-shadow: 0 2px 4px rgba(29, 185, 84, 0.3);
+}
+
+.languageButton:active {
+  transform: scale(0.95);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .languageButton:focus-visible {
@@ -128,12 +133,25 @@
     padding: 2px;
   }
 
+  .languageSelector:hover {
+    transform: translateY(-0.5px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+
   .languageButton {
     padding: 4px 6px;
     font-size: var(--font-size-xs);
     min-width: 28px;
     width: 28px;
     height: 28px;
+  }
+
+  .languageButton:hover {
+    transform: scale(1.02);
+  }
+
+  .languageButton:active {
+    transform: scale(0.98);
   }
 
   .separator {
