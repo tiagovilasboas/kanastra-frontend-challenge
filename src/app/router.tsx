@@ -21,10 +21,9 @@ const CallbackPage = lazy(() =>
 )
 
 // Loading component for Suspense
-// eslint-disable-next-line react/prop-types
-const PageSuspense: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => <Suspense fallback={<PageLoading />}>{children}</Suspense>
+const PageSuspense = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<PageLoading />}>{children}</Suspense>
+)
 
 export const router = createBrowserRouter([
   {
