@@ -2221,16 +2221,21 @@ select {
   }
 
   /* Compact login button for mobile */
-  .mobile-compact {
+  .header-controls .mobile-compact {
     max-width: 40px;
     min-width: 40px;
     width: 40px;
     height: 40px;
+    min-height: 40px;
     padding: var(--spacing-xs);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .header-controls .language-selector-container {
+    height: 24px;
   }
 
   .mobile-text {
@@ -2344,7 +2349,7 @@ select {
     align-items: center;
   }
 
-  .language-selector-container {
+  .header-controls .language-selector-container {
     height: 20px;
   }
 
@@ -2353,11 +2358,12 @@ select {
   }
 
   /* Even more compact login button for small screens */
-  .mobile-compact {
+  .header-controls .mobile-compact {
     max-width: 36px;
     min-width: 36px;
     width: 36px;
     height: 36px;
+    min-height: 36px;
     padding: var(--spacing-xs);
     border-radius: 50%;
   }
