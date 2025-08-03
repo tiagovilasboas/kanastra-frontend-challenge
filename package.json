@@ -16,7 +16,7 @@
     "format": "prettier --write . && npm run lint --fix",
     "clean": "rimraf dist .vite",
     "dev:open": "kill-port 5173 && vite --open",
-    "build": "tsc -b && vite build",
+    "build": "rm -rf node_modules package-lock.json && npm install && tsc -b && vite build",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",
     "lint:check": "eslint . --max-warnings=0 --format=unix",
