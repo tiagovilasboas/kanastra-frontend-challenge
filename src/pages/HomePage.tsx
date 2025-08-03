@@ -11,12 +11,14 @@ import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
+import { useToast } from '@/hooks/useToast'
 
 export const HomePage: React.FC = () => {
   const { t } = useTranslation()
   const { isAuthenticated } = useSpotifyAuth()
   const { prefetchArtistData } = useArtistPrefetch()
   const navigate = useNavigate()
+  const { showError, showInfo } = useToast()
 
   const [activeSection, setActiveSection] = useState<
     'home' | 'library' | 'create'
@@ -37,23 +39,17 @@ export const HomePage: React.FC = () => {
   }
 
   const renderMainContent = () => {
+    // Show error toast if there's an error
+    if (error) {
+      showError('search:errorMessage')
+      // Continue showing the previous content or loading state
+    }
+
     // Show loading skeleton when searching
     if (isLoading && searchQuery) {
       return (
         <div className="main-content">
           <LoadingSkeleton variant="search-results" count={8} />
-        </div>
-      )
-    }
-
-    if (error) {
-      return (
-        <div className="error-section">
-          <div className="error-content">
-            <span className="error-icon">{t('icons:icons.note')}</span>
-            <h2 className="error-title">{t('search:errorTitle')}</h2>
-            <p className="error-message">{t('search:errorMessage')}</p>
-          </div>
         </div>
       )
     }
@@ -84,6 +80,8 @@ export const HomePage: React.FC = () => {
 
     // Show no results only when search is complete and no results found
     if (searchQuery && !isLoading && searchResults?.length === 0) {
+      // Show info toast for no results
+      showInfo('search:noResultsMessage')
       return (
         <div className="no-results-section">
           <div className="no-results-content">

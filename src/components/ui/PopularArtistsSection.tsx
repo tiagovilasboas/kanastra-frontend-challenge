@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useToast } from '@/hooks/useToast'
 import { SpotifyArtist } from '@/schemas/spotify'
 
 import { ArtistCard } from './ArtistCard'
@@ -22,6 +23,7 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation()
+  const { showError } = useToast()
 
   if (isLoading) {
     return (
@@ -31,7 +33,10 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
             {t('home:trendingArtists', 'Artistas em Alta')}
           </h2>
           <p className="popular-artists-description">
-            {t('home:trendingDescription', 'Descubra os artistas mais populares no momento')}
+            {t(
+              'home:trendingDescription',
+              'Descubra os artistas mais populares no momento',
+            )}
           </p>
         </div>
         <LoadingSkeleton variant="search-results" count={6} />
@@ -40,18 +45,8 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
   }
 
   if (error) {
-    return (
-      <div className={`popular-artists-section ${className}`}>
-        <div className="popular-artists-header">
-          <h2 className="popular-artists-title">
-            {t('home:trendingArtists', 'Artistas em Alta')}
-          </h2>
-        </div>
-        <div className="popular-artists-error">
-          <p>{t('home:trendingError', 'Não foi possível carregar os artistas populares')}</p>
-        </div>
-      </div>
-    )
+    showError('home:trendingError')
+    return null
   }
 
   if (!artists || artists.length === 0) {
@@ -65,7 +60,10 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
           {t('home:trendingArtists', 'Artistas em Alta')}
         </h2>
         <p className="popular-artists-description">
-          {t('home:trendingDescription', 'Descubra os artistas mais populares no momento')}
+          {t(
+            'home:trendingDescription',
+            'Descubra os artistas mais populares no momento',
+          )}
         </p>
       </div>
 
@@ -82,4 +80,4 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
       </div>
     </div>
   )
-} 
+}
