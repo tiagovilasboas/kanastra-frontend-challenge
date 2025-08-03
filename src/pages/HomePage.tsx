@@ -1,29 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { AppLayout } from '@/components/layout'
+import { Header } from '@/components/layout/Header'
+import { Sidebar } from '@/components/layout/Sidebar/Sidebar'
 import { SEOHead, StructuredData } from '@/components/SEO'
-import { ArtistCard, PopularArtistsSection } from '@/components/ui'
+import { ArtistCard } from '@/components/ui/ArtistCard'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
 import { MusicIcon } from '@/components/ui/MusicIcon'
+import { PopularArtistsSection } from '@/components/ui/PopularArtistsSection'
 import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useToast } from '@/hooks/useToast'
+import { useNavigationStore } from '@/stores'
 
 export const HomePage: React.FC = () => {
   const { t } = useTranslation()
   const { isAuthenticated } = useSpotifyAuth()
+  const { activeSection, setActiveSection } = useNavigationStore()
   const { prefetchArtistData } = useArtistPrefetch()
   const navigate = useNavigate()
   const location = useLocation()
   const { showError } = useToast()
-
-  const [activeSection, setActiveSection] = useState<
-    'home' | 'library' | 'create'
-  >('home')
 
   // Sync activeSection with URL
   useEffect(() => {
@@ -36,32 +36,19 @@ export const HomePage: React.FC = () => {
     } else if (path === '/') {
       setActiveSection('home')
     }
-  }, [location.pathname, location.search])
-
-  // Function to handle section changes and update URL
-  const handleSectionChange = (section: 'home' | 'library' | 'create') => {
-    setActiveSection(section)
-
-    // Update URL with section parameter
-    const searchParams = new URLSearchParams(location.search)
-    if (section === 'home') {
-      searchParams.delete('section')
-    } else {
-      searchParams.set('section', section)
-    }
-
-    const newSearch = searchParams.toString()
-    const newUrl = newSearch ? `/?${newSearch}` : '/'
-    navigate(newUrl, { replace: true })
-  }
+  }, [location.pathname, location.search, setActiveSection])
 
   const {
     searchResults,
     isLoading,
+    isLoadingMore,
     error,
     searchArtists,
     searchQuery,
     debouncedQuery,
+    hasMore,
+    loadMore,
+    totalResults,
   } = useSpotifySearch()
 
   const {
@@ -138,7 +125,7 @@ export const HomePage: React.FC = () => {
         <div className="results-section">
           <div className="results-header">
             <h2 className="results-title">
-              {t('search:resultsTitle', { count: searchResults?.length || 0 })}
+              {t('search:resultsTitle', { count: totalResults || 0 })}
             </h2>
           </div>
 
@@ -152,6 +139,23 @@ export const HomePage: React.FC = () => {
               />
             ))}
           </div>
+
+          {/* Load More Button */}
+          {hasMore && (
+            <div className="load-more-section">
+              <button
+                className="load-more-button"
+                onClick={loadMore}
+                disabled={isLoadingMore}
+              >
+                {isLoadingMore ? (
+                  <span>{t('search:loadingMore', 'Carregando...')}</span>
+                ) : (
+                  <span>{t('search:loadMore', 'Carregar mais artistas')}</span>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       )
     }
@@ -263,13 +267,16 @@ export const HomePage: React.FC = () => {
         image="/og-image.jpg"
       />
 
-      <AppLayout
-        onSearch={searchArtists}
-        activeSection={activeSection}
-        onSectionChange={handleSectionChange}
-      >
-        {renderMainContent()}
-      </AppLayout>
+      <div className="app-layout">
+        <Sidebar
+          activeSection={activeSection}
+          onNavItemClick={setActiveSection}
+        />
+        <div className="main-area">
+          <Header onSearch={searchArtists} />
+          <main className="main-content">{renderMainContent()}</main>
+        </div>
+      </div>
     </div>
   )
 }
