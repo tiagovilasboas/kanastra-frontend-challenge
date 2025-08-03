@@ -46,8 +46,12 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
   }
 
   const handleSearch = (query: string) => {
+    console.log('MobileLayout handleSearch called with:', query)
     if (onSearch) {
+      console.log('Calling onSearch with:', query)
       onSearch(query)
+    } else {
+      console.log('onSearch is not available')
     }
   }
 

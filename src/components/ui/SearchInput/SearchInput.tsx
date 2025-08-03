@@ -29,6 +29,7 @@ export function SearchInput({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
+    console.log('SearchInput handleChange called with:', newValue)
     setValue(newValue)
     onSearch(newValue)
   }
