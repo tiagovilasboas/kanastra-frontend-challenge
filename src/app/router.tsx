@@ -1,10 +1,30 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
-import { ArtistPage } from '@/pages/ArtistPage'
-import { CallbackPage } from '@/pages/CallbackPage'
-import { HomePage } from '@/pages/HomePage'
+import { PageLoading } from '@/components/ui/LoadingSkeleton'
 
 import { App } from './App'
+
+// Lazy load pages
+const HomePage = lazy(() =>
+  import('@/pages/HomePage').then((module) => ({ default: module.HomePage })),
+)
+const ArtistPage = lazy(() =>
+  import('@/pages/ArtistPage').then((module) => ({
+    default: module.ArtistPage,
+  })),
+)
+const CallbackPage = lazy(() =>
+  import('@/pages/CallbackPage').then((module) => ({
+    default: module.CallbackPage,
+  })),
+)
+
+// Loading component for Suspense
+// eslint-disable-next-line react/prop-types
+const PageSuspense: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => <Suspense fallback={<PageLoading />}>{children}</Suspense>
 
 export const router = createBrowserRouter([
   {
@@ -13,16 +33,28 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: (
+          <PageSuspense>
+            <HomePage />
+          </PageSuspense>
+        ),
       },
       {
         path: '/artist/:id',
-        element: <ArtistPage />,
+        element: (
+          <PageSuspense>
+            <ArtistPage />
+          </PageSuspense>
+        ),
       },
     ],
   },
   {
     path: '/callback',
-    element: <CallbackPage />,
+    element: (
+      <PageSuspense>
+        <CallbackPage />
+      </PageSuspense>
+    ),
   },
 ])
