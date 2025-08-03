@@ -203,7 +203,7 @@ export const HomePage: React.FC = () => {
   return (
     <div data-testid="home-page">
       <SEOHead
-        title={isAuthenticated ? t('seo:homeTitle') : t('seo:defaultTitle')}
+        title={isAuthenticated ? t('seo:homeTitle') : undefined}
         description={t('seo:homeDescription')}
         keywords={t('seo:defaultKeywords')}
       />
