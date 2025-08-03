@@ -43,7 +43,12 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
                   className="spotify-login-button mobile-compact"
                   leftSection={<Play size={14} />}
                 >
-                  {t('auth:loginWithSpotify')}
+                  <span className="mobile-text">
+                    {t('auth:loginWithSpotifyShort')}
+                  </span>
+                  <span className="desktop-text">
+                    {t('auth:loginWithSpotify')}
+                  </span>
                 </Button>
               )}
             </>

@@ -39,7 +39,16 @@ export const PopularArtistsSection: React.FC<PopularArtistsSectionProps> = ({
             )}
           </p>
         </div>
-        <LoadingSkeleton variant="search-results" count={6} />
+        <div className="popular-artists-grid">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <LoadingSkeleton
+              key={index}
+              height="200px"
+              width="100%"
+              className="artist-card-skeleton"
+            />
+          ))}
+        </div>
       </div>
     )
   }

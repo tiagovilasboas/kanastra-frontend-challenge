@@ -1,1 +1,1 @@
-export { LoadingSkeleton } from './LoadingSkeleton'
+export { LoadingSkeleton, PageLoading } from './LoadingSkeleton'

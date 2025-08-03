@@ -16,15 +16,68 @@ export default defineConfig({
     minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks: (id) => {
           // Vendor chunks
-          'react-vendor': ['react', 'react-dom'],
-          'router-vendor': ['react-router-dom'],
-          'query-vendor': ['@tanstack/react-query'],
-          'i18n-vendor': ['react-i18next', 'i18next'],
-          'ui-vendor': ['lucide-react'],
-          'utils-vendor': ['axios', 'zustand'],
-          'validation-vendor': ['zod'],
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor'
+            }
+            if (id.includes('react-router')) {
+              return 'router-vendor'
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'query-vendor'
+            }
+            if (id.includes('react-i18next') || id.includes('i18next')) {
+              return 'i18n-vendor'
+            }
+            if (id.includes('lucide-react')) {
+              return 'ui-vendor'
+            }
+            if (id.includes('axios') || id.includes('zustand')) {
+              return 'utils-vendor'
+            }
+            if (id.includes('zod')) {
+              return 'validation-vendor'
+            }
+            // Other node_modules
+            return 'vendor'
+          }
+
+          // Page chunks
+          if (id.includes('/pages/')) {
+            if (id.includes('HomePage')) {
+              return 'page-home'
+            }
+            if (id.includes('ArtistPage')) {
+              return 'page-artist'
+            }
+            if (id.includes('CallbackPage')) {
+              return 'page-callback'
+            }
+            return 'pages'
+          }
+
+          // Component chunks
+          if (id.includes('/components/')) {
+            if (id.includes('/ui/')) {
+              return 'components-ui'
+            }
+            if (id.includes('/layout/')) {
+              return 'components-layout'
+            }
+            return 'components'
+          }
+
+          // Hook chunks
+          if (id.includes('/hooks/')) {
+            return 'hooks'
+          }
+
+          // Repository chunks
+          if (id.includes('/repositories/')) {
+            return 'repositories'
+          }
         },
         // Optimize chunk naming
         chunkFileNames: (chunkInfo) => {
@@ -52,7 +105,7 @@ export default defineConfig({
       },
     },
     // Optimize chunk size warnings
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 500, // Reduced from 1000
     // Enable source maps for debugging
     sourcemap: false,
   },

@@ -362,6 +362,14 @@ select {
   min-width: fit-content;
 }
 
+.mobile-text {
+  display: none;
+}
+
+.desktop-text {
+  display: block;
+}
+
 .language-selector-container {
   display: flex;
   align-items: center;
@@ -2207,6 +2215,15 @@ select {
     text-overflow: ellipsis;
     font-size: var(--font-size-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
+    min-width: 100px;
+  }
+
+  .mobile-text {
+    display: block;
+  }
+
+  .desktop-text {
+    display: none;
   }
 
   /* Improve card spacing */
@@ -2314,8 +2331,20 @@ select {
   /* Even more compact login button for small screens */
   .mobile-compact {
     max-width: 100px;
+    min-width: 80px;
     font-size: var(--font-size-xs);
     padding: var(--spacing-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-text {
+    display: block;
+  }
+
+  .desktop-text {
+    display: none;
   }
 
   h1 {

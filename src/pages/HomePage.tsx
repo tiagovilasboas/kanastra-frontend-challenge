@@ -108,7 +108,16 @@ export const HomePage: React.FC = () => {
     ) {
       return (
         <div className="main-content">
-          <LoadingSkeleton variant="search-results" count={8} />
+          <div className="results-grid">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <LoadingSkeleton
+                key={index}
+                height="200px"
+                width="100%"
+                className="artist-card-skeleton"
+              />
+            ))}
+          </div>
         </div>
       )
     }
