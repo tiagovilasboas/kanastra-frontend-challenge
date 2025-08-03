@@ -15,6 +15,7 @@ Uma aplicação web moderna que permite aos usuários:
 - 📱 Layout mobile otimizado com funcionalidades completas
 - 🔔 Sistema de notificações toast para feedback
 - 🎯 Experiência unificada entre desktop e mobile
+- ⚡ **100% React Query**: Todos os dados gerenciados com cache inteligente
 
 ## 🚀 Tecnologias
 
@@ -72,12 +73,15 @@ src/
 ├── config/               # Configurações centralizadas
 │   ├── cache.ts          # Configurações de cache (React Query)
 │   └── react-query.ts    # Configuração do React Query
-├── hooks/                # Hooks customizados
+├── hooks/                # Hooks customizados (100% React Query)
 │   ├── useSpotifySearch.ts    # Hook de busca de artistas
 │   ├── useArtistDetails.ts    # Hook de detalhes do artista
 │   ├── useArtistTopTracks.ts  # Hook de top tracks
 │   ├── useArtistAlbums.ts     # Hook de álbuns com paginação
 │   ├── useSpotifyAuth.ts      # Hook de autenticação
+│   ├── usePopularArtists.ts   # Hook de artistas populares
+│   ├── useUserLibrary.ts      # Hook de biblioteca do usuário
+│   ├── usePlaylistCreation.ts # Hook de criação de playlists
 │   ├── useToast.ts            # Hook para toast notifications
 │   └── usePrefetch.ts         # Hook de prefetch inteligente
 ├── pages/                # Páginas da aplicação
@@ -137,22 +141,30 @@ Para usar a aplicação, você precisará:
 
 Se você encontrar o erro "Code verifier not found in cookies", consulte o [guia de troubleshooting](docs/AUTHENTICATION_TROUBLESHOOTING.md) para soluções detalhadas.
 
-## 🔄 React Query Optimizations
+## 🔄 React Query - **100% dos Dados**
 
-O projeto implementa otimizações avançadas do React Query:
+O projeto usa React Query para **TODOS** os dados da aplicação:
 
-### 🎯 Configuração Centralizada
+### 🎯 Hooks com React Query
 
-- **Cache Times**: Configurações otimizadas por tipo de dado
+- **useSpotifySearch**: Busca de artistas com debounce
+- **useArtistDetails**: Detalhes completos do artista
+- **useArtistTopTracks**: Top músicas do artista
+- **useArtistAlbums**: Álbuns com paginação
+- **usePopularArtists**: Artistas populares
+- **useUserLibrary**: Biblioteca do usuário
+- **usePlaylistCreation**: Criação de playlists (mutations)
+- **useSpotifyAuth**: Autenticação e tokens
+- **usePrefetch**: Prefetch inteligente de dados
+
+### 🚀 Otimizações Implementadas
+
+- **Cache Inteligente**: Configurações otimizadas por tipo de dado
 - **Stale Times**: Estratégias baseadas na frequência de mudança
-- **Retry Configs**: Configurações de retry inteligentes
+- **Retry Logic**: Configurações de retry inteligentes
 - **Query Keys**: Factory functions tipadas
-
-### 🚀 Prefetch Inteligente
-
-- Prefetch de dados relacionados no hover
-- Cache otimizado para melhor UX
-- Fail silently para não impactar performance
+- **Prefetch**: Dados relacionados carregados no hover
+- **Mutations**: Operações de escrita otimizadas
 
 ### 📊 Estratégias de Cache
 
@@ -173,18 +185,22 @@ O projeto suporta **português** e **inglês**:
 
 ## 📦 Gerenciamento de Estado
 
+### React Query (Estado de Servidor) - **100% dos Dados**
+
+- **Cache Inteligente**: Todos os dados da API com cache otimizado
+- **Estados Automáticos**: Loading, error e success para todas as queries
+- **Invalidação Inteligente**: Cache invalidation baseado em dependências
+- **Prefetch Otimizado**: Prefetch de dados relacionados no hover
+- **Mutations**: Operações de escrita (criação de playlists)
+- **Query Keys**: Factory functions tipadas para todas as queries
+- **Stale Times**: Configurações otimizadas por tipo de dado
+- **Retry Logic**: Retry automático com configurações inteligentes
+
 ### Zustand (Estado Local)
 
 - Configurações de idioma e tema
 - Estados de loading e erro
 - Persistência automática
-
-### React Query (Estado de Servidor)
-
-- Cache de dados da API
-- Estados de loading, error e success
-- Invalidação inteligente
-- Prefetch otimizado
 
 ## 🎨 Interface e UX
 
