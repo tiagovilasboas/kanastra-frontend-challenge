@@ -219,18 +219,70 @@
 @media (max-width: 768px) {
   .searchContainer {
     max-width: 100%;
-    padding: var(--spacing-xs);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    min-height: 48px; /* Garantir altura mínima para toque */
+  }
+
+  .searchInput {
+    font-size: var(--font-size-md); /* Manter tamanho legível */
+    padding: var(--spacing-sm) 0;
+    min-height: 24px; /* Altura mínima para o input */
+  }
+
+  .searchIconWrapper {
+    width: 32px; /* Manter tamanho para toque */
+    height: 32px;
+    margin-right: var(--spacing-sm);
+  }
+
+  .searchIcon {
+    width: 20px; /* Manter tamanho do ícone */
+    height: 20px;
+  }
+
+  .clearButton,
+  .scanButton {
+    width: 32px; /* Aumentar para melhor toque */
+    height: 32px;
+    min-width: 32px;
+    padding: var(--spacing-sm);
+  }
+
+  .searchResults {
+    max-height: 250px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  .searchResultItem {
+    padding: var(--spacing-md) var(--spacing-lg); /* Aumentar padding para toque */
+    min-height: 48px; /* Altura mínima para toque */
+  }
+
+  .searchResultImage {
+    width: 32px; /* Manter tamanho */
+    height: 32px;
+  }
+
+  .searchResultName {
+    font-size: var(--font-size-md); /* Manter legível */
+  }
+}
+
+/* Mobile específico - telas pequenas */
+@media (max-width: 480px) {
+  .searchContainer {
+    padding: var(--spacing-sm);
+    min-height: 44px;
   }
 
   .searchInput {
     font-size: var(--font-size-sm);
-    padding: var(--spacing-xs) 0;
   }
 
   .searchIconWrapper {
     width: 28px;
     height: 28px;
-    margin-right: var(--spacing-xs);
   }
 
   .searchIcon {
@@ -240,23 +292,9 @@
 
   .clearButton,
   .scanButton {
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    padding: 2px;
-  }
-
-  .searchResults {
-    max-height: 250px;
-  }
-
-  .searchResultItem {
-    padding: var(--spacing-xs) var(--spacing-sm);
-  }
-
-  .searchResultImage {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
   }
 }
 

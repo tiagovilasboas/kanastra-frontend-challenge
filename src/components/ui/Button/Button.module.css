@@ -157,16 +157,86 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .xl {
+  /* Mobile button improvements */
+  .button {
+    min-height: 44px; /* Garantir altura mínima para toque */
+  }
+
+  .sm {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    min-height: 40px;
+  }
+
+  .md {
     padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-md);
+    min-height: 44px;
+  }
+
+  .lg {
+    padding: var(--spacing-md) var(--spacing-xl);
     font-size: var(--font-size-md);
     min-height: 48px;
   }
 
+  .xl {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-lg);
+    min-height: 52px;
+  }
+
+  /* Improve touch targets */
+  .button:active:not(.disabled) {
+    transform: scale(0.98);
+  }
+
+  /* Better focus for touch */
+  .button:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .button {
+    min-height: 48px; /* Aumentar ainda mais para telas pequenas */
+  }
+
+  .sm {
+    min-height: 44px;
+  }
+
+  .md {
+    min-height: 48px;
+  }
+
   .lg {
-    padding: var(--spacing-xs) var(--spacing-md);
-    font-size: var(--font-size-sm);
-    min-height: 40px;
+    min-height: 52px;
+  }
+
+  .xl {
+    min-height: 56px;
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .button {
+    min-height: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .primary:hover:not(.disabled),
+  .gradient:hover:not(.disabled) {
+    transform: none;
+  }
+
+  /* Improve active states for touch */
+  .primary:active:not(.disabled),
+  .gradient:active:not(.disabled) {
+    transform: scale(0.98);
   }
 }
 

@@ -167,6 +167,45 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .artistCard {
+    min-height: 180px; /* Aumentar altura mínima para mobile */
+    padding: var(--spacing-md); /* Manter padding adequado */
+    border-radius: var(--radius-lg); /* Bordas mais arredondadas */
+  }
+
+  .artistImage {
+    height: 120px; /* Manter altura da imagem */
+    border-radius: var(--radius-md);
+  }
+
+  .artistName {
+    font-size: var(--font-size-md); /* Manter tamanho legível */
+    line-height: 1.3;
+  }
+
+  .artistMetadata {
+    gap: var(--spacing-sm); /* Aumentar espaçamento */
+  }
+
+  .artistPopularity,
+  .artistFollowers {
+    font-size: var(--font-size-sm); /* Manter legível */
+  }
+
+  /* Melhorar touch target */
+  .artistCard:active {
+    transform: scale(0.98);
+  }
+
+  /* Melhorar focus para touch */
+  .artistCard:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .artistCard {
     min-height: 160px;
     padding: var(--spacing-sm);
   }
@@ -179,8 +218,36 @@
     font-size: var(--font-size-sm);
   }
 
-  .artistMetadata {
+  .artistPopularity,
+  .artistFollowers {
     font-size: var(--font-size-xs);
+  }
+}
+
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  .artistCard {
+    min-height: 180px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .artistCard:hover {
+    transform: none;
+  }
+
+  .artistCard:hover .artistImage {
+    transform: none;
+  }
+
+  /* Improve active states for touch */
+  .artistCard:active {
+    transform: scale(0.98);
+    background: var(--hover-bg);
+  }
+
+  /* Always show badge on touch devices */
+  .spotifyBadge {
+    opacity: 1;
   }
 }
 

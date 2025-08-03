@@ -2163,7 +2163,7 @@ select {
   line-height: 1.2;
 }
 
-/* Responsive adjustments for mobile */
+/* Mobile Responsive Improvements */
 @media (max-width: 768px) {
   /* Hide sidebar and show mobile menu button */
   .sidebar {
@@ -2171,100 +2171,164 @@ select {
   }
 
   .mobile-menu-button {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
   }
 
+  /* Adjust main area margin */
   .main-area {
     margin-left: 0;
   }
 
-  .artist-page-container {
-    padding: var(--spacing-sm);
+  /* Improve button sizes for touch */
+  .btn {
+    min-height: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Improve card spacing */
+  .card {
+    padding: var(--spacing-lg);
+  }
+
+  /* Improve grid layouts */
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: var(--spacing-lg);
   }
 
-  .tracks-section-title {
-    margin-bottom: var(--spacing-md);
+  .artist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
   }
 
-  .albums-section-title {
-    margin-bottom: var(--spacing-md);
+  /* Improve typography for mobile */
+  h1 {
+    font-size: var(--font-size-2xl);
+    line-height: 1.2;
   }
 
-  .album-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--spacing-md);
+  h2 {
+    font-size: var(--font-size-xl);
+    line-height: 1.3;
   }
 
-  .album-grid-container {
+  h3 {
+    font-size: var(--font-size-lg);
+    line-height: 1.4;
+  }
+
+  /* Improve spacing */
+  .p-xl {
+    padding: var(--spacing-lg);
+  }
+
+  .p-lg {
     padding: var(--spacing-md);
   }
 
-  .popular-artists-section {
-    margin-top: var(--spacing-lg);
-    padding: 0 var(--spacing-md);
+  .gap-xl {
+    gap: var(--spacing-lg);
   }
 
-  .popular-artists-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .gap-lg {
     gap: var(--spacing-md);
   }
 
-  .popular-artists-title {
+  /* Improve header */
+  .header {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .header-actions {
+    gap: var(--spacing-sm);
+  }
+
+  /* Improve container */
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  /* Improve load more button */
+  .load-more-button {
+    min-height: 48px;
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .artist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  h1 {
     font-size: var(--font-size-xl);
   }
 
-  .popular-artists-description {
-    font-size: var(--font-size-sm);
+  h2 {
+    font-size: var(--font-size-lg);
   }
 
-  .album-grid-title {
-    font-size: var(--font-size-xl);
-  }
-
-  .horizontal-card {
-    width: 100%;
-  }
-
-  .horizontal-card-title {
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .horizontal-card-subtitle {
-    font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .horizontal-card-date {
-    font-size: var(--font-size-xs);
-    margin-bottom: var(--spacing-xs);
-  }
-
-  .horizontal-card-type {
-    font-size: var(--font-size-xs);
+  h3 {
+    font-size: var(--font-size-md);
   }
 }
 
-@media (min-width: 769px) {
-}
-
-@media (min-width: 1024px) {
-  .album-grid {
-    grid-template-columns: repeat(4, 1fr);
+/* Touch-friendly improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets */
+  button,
+  .btn,
+  .card,
+  .artist-card {
+    min-height: 44px;
   }
 
-  .popular-artists-section {
-    padding: 0 var(--spacing-xl);
-  }
-}
-
-@media (min-width: 1440px) {
-  .album-grid {
-    grid-template-columns: repeat(5, 1fr);
+  /* Improve spacing for touch */
+  .gap-sm {
+    gap: var(--spacing-md);
   }
 
-  .popular-artists-section {
-    padding: 0 var(--spacing-2xl);
+  .gap-md {
+    gap: var(--spacing-lg);
+  }
+
+  /* Improve focus states for touch */
+  button:focus-visible,
+  .btn:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
   }
 }
