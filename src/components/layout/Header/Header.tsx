@@ -1,6 +1,7 @@
 import { Play } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { MobileNavigation } from '@/components/layout/MobileNavigation'
 import { Button } from '@/components/ui/Button'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { SearchInput } from '@/components/ui/SearchInput'
@@ -26,6 +27,7 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
           />
         </div>
         <div className="header-actions">
+          <MobileNavigation />
           <div className="language-selector-container">
             <LanguageSelector size="compact" />
           </div>

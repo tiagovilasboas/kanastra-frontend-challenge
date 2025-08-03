@@ -13,5 +13,7 @@
   "libraryMessage": "Your music library will appear here.",
   "libraryMessageUnauth": "Sign in to view your library.",
   "createMessage": "Create your personalized playlists here.",
-  "createMessageUnauth": "Sign in to create playlists."
+  "createMessageUnauth": "Sign in to create playlists.",
+  "menu": "Menu",
+  "close": "Close"
 }
