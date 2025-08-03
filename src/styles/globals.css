@@ -394,6 +394,42 @@ select {
   height: 36px;
 }
 
+/* Header controls responsive adjustments */
+@media (max-width: 768px) {
+  .header-controls .language-selector-container {
+    height: 28px;
+  }
+
+  .header-controls .mobile-compact {
+    max-width: 28px;
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: var(--spacing-xs);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-controls .language-selector-container {
+    height: 28px;
+  }
+
+  .header-controls .mobile-compact {
+    max-width: 28px;
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    min-height: 28px;
+    padding: var(--spacing-xs);
+    border-radius: 50%;
+  }
+}
+
 .user-section {
   display: flex;
   align-items: center;
@@ -2225,22 +2261,13 @@ select {
     font-size: var(--font-size-sm);
   }
 
-  /* Compact login button for mobile */
-  .header-controls .mobile-compact {
-    max-width: 28px;
-    min-width: 28px;
-    width: 28px;
-    height: 28px;
-    min-height: 28px;
-    padding: var(--spacing-xs);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Mobile text visibility */
+  .mobile-text {
+    display: block;
   }
 
-  .header-controls .language-selector-container {
-    height: 28px;
+  .desktop-text {
+    display: none;
   }
 
   .mobile-text {
@@ -2370,23 +2397,8 @@ select {
     align-items: center;
   }
 
-  .header-controls .language-selector-container {
-    height: 28px;
-  }
-
   .card {
     padding: var(--spacing-md);
-  }
-
-  /* Even more compact login button for small screens */
-  .header-controls .mobile-compact {
-    max-width: 28px;
-    min-width: 28px;
-    width: 28px;
-    height: 28px;
-    min-height: 28px;
-    padding: var(--spacing-xs);
-    border-radius: 50%;
   }
 
   .mobile-text {
