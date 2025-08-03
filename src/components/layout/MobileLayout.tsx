@@ -51,6 +51,14 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
     }
   }
 
+  // Debug logs
+  console.log('MobileLayout state:', {
+    searchQuery,
+    isLoading,
+    searchResults: searchResults?.length,
+    activeSection,
+  })
+
   // Handle errors with toasts
   if (error) {
     showError('search:errorMessage')
