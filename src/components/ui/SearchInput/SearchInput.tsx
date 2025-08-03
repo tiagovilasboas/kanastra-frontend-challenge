@@ -1,4 +1,4 @@
-import { Camera, Search, X } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -9,8 +9,6 @@ interface SearchInputProps {
   onSearch: (query: string) => void
   placeholder?: string
   disabled?: boolean
-  showScanButton?: boolean
-  onScanClick?: () => void
   navigateOnFocus?: boolean
 }
 
@@ -18,8 +16,6 @@ export function SearchInput({
   onSearch,
   placeholder = 'O que você quer ouvir?',
   disabled = false,
-  showScanButton = true,
-  onScanClick,
   navigateOnFocus = true,
 }: SearchInputProps) {
   const { t } = useTranslation()
@@ -43,15 +39,6 @@ export function SearchInput({
     // Only navigate if navigateOnFocus is true and we're not on HomePage
     if (navigateOnFocus && location.pathname !== '/') {
       navigate('/')
-    }
-  }
-
-  const handleScanClick = () => {
-    if (onScanClick) {
-      onScanClick()
-    } else {
-      // Default behavior - could open camera or show scan options
-      console.log('Scan button clicked')
     }
   }
 
@@ -84,16 +71,7 @@ export function SearchInput({
           </button>
         )}
 
-        {showScanButton && (
-          <button
-            type="button"
-            onClick={handleScanClick}
-            className={styles.scanButton}
-            aria-label={t('searchInput:scanCode', 'Scan code')}
-          >
-            <Camera size={18} />
-          </button>
-        )}
+        {/* Removed scan button for cleaner mobile experience */}
       </div>
     </div>
   )

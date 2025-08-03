@@ -481,7 +481,6 @@ export const ArtistPage: React.FC = () => {
                 onSearch={handleAlbumFilter}
                 placeholder={t('artist:filterAlbums')}
                 navigateOnFocus={false}
-                showScanButton={false}
               />
             </Stack>
 
