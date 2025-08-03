@@ -1625,29 +1625,29 @@ select {
 
 /* Tooltip Styles - Ensure they appear above header */
 .mantine-Tooltip-root {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 .mantine-Tooltip-dropdown {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 /* Additional tooltip overrides for better positioning */
 .mantine-Tooltip-dropdown[data-popper-placement*='top'] {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 .mantine-Tooltip-dropdown[data-popper-placement*='bottom'] {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 /* Ensure tooltips work within artist page container */
 .artist-page-container .mantine-Tooltip-root {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 .artist-page-container .mantine-Tooltip-dropdown {
-  z-index: 1002 !important;
+  z-index: 1003 !important;
 }
 
 /* High Contrast Mode */
