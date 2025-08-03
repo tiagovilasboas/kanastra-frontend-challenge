@@ -220,15 +220,15 @@
   .searchContainer {
     width: 100%;
     max-width: 100%;
-    padding: var(--spacing-md);
+    padding: var(--spacing-sm);
     border-radius: var(--radius-lg);
-    min-height: 48px; /* Garantir altura mínima para toque */
+    min-height: 40px; /* Altura menor para mobile */
   }
 
   .searchInput {
     font-size: var(--font-size-md); /* Manter tamanho legível */
-    padding: var(--spacing-sm) 0;
-    min-height: 24px; /* Altura mínima para o input */
+    padding: var(--spacing-xs) 0;
+    min-height: 20px; /* Altura menor para o input */
   }
 
   .searchIconWrapper {
@@ -275,8 +275,8 @@
   .searchContainer {
     width: 100%;
     max-width: 100%;
-    padding: var(--spacing-sm);
-    min-height: 44px;
+    padding: var(--spacing-xs);
+    min-height: 36px;
   }
 
   .searchInput {
