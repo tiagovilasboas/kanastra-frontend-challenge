@@ -991,8 +991,7 @@ select {
   }
 
   .header-content {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column;
     gap: var(--spacing-sm);
   }
 
@@ -1000,6 +999,7 @@ select {
     width: 100%;
     max-width: 100%;
     min-height: 40px;
+    order: 1;
   }
 
   .hero-section,
@@ -2287,6 +2287,8 @@ select {
   .header-actions {
     gap: var(--spacing-sm);
     justify-content: space-between;
+    order: 2;
+    width: 100%;
   }
 
   /* Improve container */
@@ -2326,6 +2328,7 @@ select {
   .header-actions {
     justify-content: space-between;
     gap: var(--spacing-xs);
+    width: 100%;
   }
 
   .card {
