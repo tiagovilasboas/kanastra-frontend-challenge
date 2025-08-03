@@ -1353,7 +1353,7 @@ select {
 .track-play-button {
   opacity: 0;
   transition: all var(--transition-normal);
-  background: var(--spotify-green) !important;
+  background: transparent !important;
   color: var(--text-primary) !important;
   border-radius: 50%;
   width: 20px;
@@ -1362,7 +1362,7 @@ select {
 }
 
 .track-play-button:hover {
-  background: var(--spotify-green-hover) !important;
+  background: var(--hover-bg) !important;
   transform: scale(1.05);
 }
 
