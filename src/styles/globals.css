@@ -362,6 +362,17 @@ select {
   min-width: fit-content;
 }
 
+.header-menu {
+  display: flex;
+  align-items: center;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
 .mobile-text {
   display: none;
 }
@@ -2286,7 +2297,7 @@ select {
 
   .header-actions {
     gap: var(--spacing-md);
-    justify-content: flex-end;
+    justify-content: space-between;
     order: 2;
     width: 100%;
     align-items: center;
@@ -2327,7 +2338,7 @@ select {
   }
 
   .header-actions {
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: var(--spacing-sm);
     width: 100%;
     align-items: center;
