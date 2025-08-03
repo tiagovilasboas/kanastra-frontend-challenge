@@ -14,6 +14,7 @@ interface UseSpotifyAuthReturn {
   handleCallback: (url: string) => void
   handleAuthError: () => Promise<void>
   checkAuthError: (error: unknown) => boolean
+  hasValidToken: () => boolean
 }
 
 export function useSpotifyAuth(): UseSpotifyAuthReturn {
@@ -122,6 +123,24 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     [handleAuthError],
   )
 
+  const hasValidToken = useCallback(() => {
+    // Check if we have a token in memory (repository)
+    const repositoryToken = spotifyRepository.getAccessToken()
+    if (repositoryToken) {
+      return true
+    }
+
+    // Check if we have a token in localStorage
+    const localStorageToken = localStorage.getItem('spotify_token')
+    if (localStorageToken) {
+      // If token exists in localStorage but not in repository, sync it
+      spotifyRepository.setAccessToken(localStorageToken)
+      return true
+    }
+
+    return false
+  }, [])
+
   return {
     isAuthenticated,
     isLoading,
@@ -130,5 +149,6 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     handleCallback,
     handleAuthError,
     checkAuthError,
+    hasValidToken,
   }
 }

@@ -16,7 +16,7 @@ interface UseArtistDetailsReturn {
 export function useArtistDetails(
   artistId: string | undefined,
 ): UseArtistDetailsReturn {
-  const { isAuthenticated } = useSpotifyAuth()
+  const { hasValidToken } = useSpotifyAuth()
 
   const {
     data: artist,
@@ -29,7 +29,7 @@ export function useArtistDetails(
       if (!artistId) throw new Error('Artist ID is required')
       return await spotifyRepository.getArtistDetails(artistId)
     },
-    enabled: !!artistId && isAuthenticated, // Only enable when user is authenticated
+    enabled: !!artistId && hasValidToken(), // Only enable when we have a valid token
     staleTime: cache.stale.OCCASIONAL, // Artist details change occasionally
     gcTime: cache.times.MEDIUM, // Keep in memory for medium time
     retry: cache.retry.IMPORTANT.retry,

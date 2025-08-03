@@ -26,7 +26,7 @@ export function useArtistAlbums({
   page,
   limit = 20,
 }: UseArtistAlbumsParams): UseArtistAlbumsReturn {
-  const { isAuthenticated } = useSpotifyAuth()
+  const { hasValidToken } = useSpotifyAuth()
   const offset = (page - 1) * limit
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -50,7 +50,7 @@ export function useArtistAlbums({
         totalPages: 1, // Start with single page until we implement proper pagination
       }
     },
-    enabled: !!artistId && isAuthenticated, // Only enable when user is authenticated
+    enabled: !!artistId && hasValidToken(), // Only enable when we have a valid token
     staleTime: cache.stale.OCCASIONAL, // Albums change occasionally
     gcTime: cache.times.MEDIUM, // Keep in memory for medium time
     retry: cache.retry.IMPORTANT.retry,

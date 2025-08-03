@@ -16,7 +16,7 @@ interface UseArtistTopTracksReturn {
 export function useArtistTopTracks(
   artistId: string | undefined,
 ): UseArtistTopTracksReturn {
-  const { isAuthenticated } = useSpotifyAuth()
+  const { hasValidToken } = useSpotifyAuth()
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.artists.topTracks(artistId || ''),
@@ -25,7 +25,7 @@ export function useArtistTopTracks(
       const response = await spotifyRepository.getArtistTopTracks(artistId)
       return response
     },
-    enabled: !!artistId && isAuthenticated, // Only enable when user is authenticated
+    enabled: !!artistId && hasValidToken(), // Only enable when we have a valid token
     staleTime: cache.stale.RARE, // Top tracks rarely change
     gcTime: cache.times.LONG, // Keep in memory for longer
     retry: cache.retry.IMPORTANT.retry,
