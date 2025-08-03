@@ -45,7 +45,7 @@ export class SpotifySearchService {
     logger.debug('Client token set for search service', {
       hasToken: !!token,
       tokenLength: token?.length || 0,
-      tokenPreview: token ? token.substring(0, 10) + '...' : 'none'
+      tokenPreview: token ? token.substring(0, 10) + '...' : 'none',
     })
   }
 
@@ -58,9 +58,13 @@ export class SpotifySearchService {
   }
 
   // Search artists with user authentication
-  async searchArtists(query: string) {
+  async searchArtists(query: string, limit: number = 20, offset: number = 0) {
     try {
-      logger.debug('Searching artists with user authentication', { query })
+      logger.debug('Searching artists with user authentication', {
+        query,
+        limit,
+        offset,
+      })
 
       if (!this.accessToken) {
         throw new Error('Access token required for authenticated search')
@@ -70,7 +74,8 @@ export class SpotifySearchService {
         params: {
           q: query,
           type: 'artist',
-          limit: 20,
+          limit,
+          offset,
         },
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
@@ -78,22 +83,36 @@ export class SpotifySearchService {
       })
 
       const validatedData = validateSpotifySearchResponse(response.data)
-      logger.debug('Artist search successful', { 
-        query, 
-        resultsCount: validatedData.artists.items.length 
+      logger.debug('Artist search successful', {
+        query,
+        resultsCount: validatedData.artists.items.length,
+        total: validatedData.artists.total,
+        limit,
+        offset,
       })
 
       return validatedData
     } catch (error) {
-      const appError = errorHandler.handleApiError(error, 'SpotifySearchService.searchArtists')
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchArtists',
+      )
       throw appError
     }
   }
 
   // Search artists with client credentials (public)
-  async searchArtistsPublic(query: string) {
+  async searchArtistsPublic(
+    query: string,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
     try {
-      logger.debug('Searching artists with client credentials', { query })
+      logger.debug('Searching artists with client credentials', {
+        query,
+        limit,
+        offset,
+      })
 
       if (!this.clientToken) {
         throw new Error('Client token required for public search')
@@ -103,7 +122,8 @@ export class SpotifySearchService {
         params: {
           q: query,
           type: 'artist',
-          limit: 20,
+          limit,
+          offset,
         },
         headers: {
           Authorization: `Bearer ${this.clientToken}`,
@@ -111,14 +131,20 @@ export class SpotifySearchService {
       })
 
       const validatedData = validateSpotifySearchResponse(response.data)
-      logger.debug('Public artist search successful', { 
-        query, 
-        resultsCount: validatedData.artists.items.length 
+      logger.debug('Public artist search successful', {
+        query,
+        resultsCount: validatedData.artists.items.length,
+        total: validatedData.artists.total,
+        limit,
+        offset,
       })
 
       return validatedData
     } catch (error) {
-      const appError = errorHandler.handleApiError(error, 'SpotifySearchService.searchArtistsPublic')
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchArtistsPublic',
+      )
       throw appError
     }
   }
@@ -144,22 +170,28 @@ export class SpotifySearchService {
 
       return validatedData
     } catch (error) {
-      const appError = errorHandler.handleApiError(error, 'SpotifySearchService.getArtistDetails')
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getArtistDetails',
+      )
       throw appError
     }
   }
 
   // Get artist top tracks - UPDATED VERSION
-  async getArtistTopTracks(artistId: string, market: string = 'US'): Promise<SpotifyTrack[]> {
+  async getArtistTopTracks(
+    artistId: string,
+    market: string = 'US',
+  ): Promise<SpotifyTrack[]> {
     try {
       logger.debug('=== TOP TRACKS METHOD CALLED - UPDATED VERSION ===')
-      logger.debug('Getting artist top tracks', { 
-        artistId, 
+      logger.debug('Getting artist top tracks', {
+        artistId,
         market,
         hasAccessToken: !!this.accessToken,
         hasClientToken: !!this.clientToken,
         accessTokenLength: this.accessToken?.length || 0,
-        clientTokenLength: this.clientToken?.length || 0
+        clientTokenLength: this.clientToken?.length || 0,
       })
 
       // Use access token if available, otherwise use client token
@@ -172,32 +204,38 @@ export class SpotifySearchService {
           hasAccessToken: !!this.accessToken,
           hasClientToken: !!this.clientToken,
           accessTokenLength: this.accessToken?.length || 0,
-          clientTokenLength: this.clientToken?.length || 0
+          clientTokenLength: this.clientToken?.length || 0,
         })
         throw new Error('Authentication token required for top tracks')
       }
 
       logger.debug(`Using ${tokenType} token for top tracks`, {
         tokenLength: token.length,
-        tokenPreview: token.substring(0, 10) + '...'
+        tokenPreview: token.substring(0, 10) + '...',
       })
 
-      const response = await this.axiosInstance.get(`/artists/${artistId}/top-tracks`, {
-        params: { market },
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await this.axiosInstance.get(
+        `/artists/${artistId}/top-tracks`,
+        {
+          params: { market },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      })
+      )
 
       const validatedData = validateSpotifyTracksResponse(response.data)
-      logger.debug('Artist top tracks retrieved successfully', { 
-        artistId, 
-        tracksCount: validatedData.tracks.length 
+      logger.debug('Artist top tracks retrieved successfully', {
+        artistId,
+        tracksCount: validatedData.tracks.length,
       })
 
       return validatedData.tracks
     } catch (error) {
-      const appError = errorHandler.handleApiError(error, 'SpotifySearchService.getArtistTopTracks')
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getArtistTopTracks',
+      )
       throw appError
     }
   }
@@ -207,37 +245,45 @@ export class SpotifySearchService {
     artistId: string,
     includeGroups: string[] = ['album', 'single'],
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<SpotifyAlbum[]> {
     try {
-      logger.debug('Getting artist albums', { artistId, includeGroups, limit, offset })
+      logger.debug('Getting artist albums', {
+        artistId,
+        includeGroups,
+        limit,
+        offset,
+      })
 
       if (!this.accessToken && !this.clientToken) {
         throw new Error('Authentication token required')
       }
 
       const token = this.accessToken || this.clientToken
-      const response = await this.axiosInstance.get(`/artists/${artistId}/albums`, {
-        params: {
-          include_groups: includeGroups.join(','),
-          limit,
-          offset,
+      const response = await this.axiosInstance.get(
+        `/artists/${artistId}/albums`,
+        {
+          params: {
+            include_groups: includeGroups.join(','),
+            limit,
+            offset,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      )
 
       logger.debug('Validating albums response', {
         artistId,
         responseKeys: Object.keys(response.data || {}),
-        itemsCount: response.data?.items?.length || 0
+        itemsCount: response.data?.items?.length || 0,
       })
 
       const validatedData = validateSpotifyAlbumsResponse(response.data)
-      logger.debug('Artist albums retrieved successfully', { 
-        artistId, 
-        albumsCount: validatedData.items.length 
+      logger.debug('Artist albums retrieved successfully', {
+        artistId,
+        albumsCount: validatedData.items.length,
       })
 
       return validatedData.items
@@ -245,10 +291,16 @@ export class SpotifySearchService {
       logger.error('Album validation failed', {
         artistId,
         error: error instanceof Error ? error.message : 'Unknown error',
-        responseData: error instanceof Error && 'response' in error ? (error as { response?: { data?: unknown } }).response?.data : 'No response data'
+        responseData:
+          error instanceof Error && 'response' in error
+            ? (error as { response?: { data?: unknown } }).response?.data
+            : 'No response data',
       })
-      
-      const appError = errorHandler.handleApiError(error, 'SpotifySearchService.getArtistAlbums')
+
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getArtistAlbums',
+      )
       throw appError
     }
   }
@@ -267,7 +319,7 @@ export class SpotifySearchService {
       (error) => {
         logger.error('Spotify API request error', error)
         return Promise.reject(error)
-      }
+      },
     )
 
     // Response interceptor
@@ -286,7 +338,7 @@ export class SpotifySearchService {
           url: error.config?.url,
         })
         return Promise.reject(error)
-      }
+      },
     )
   }
-} 
+}

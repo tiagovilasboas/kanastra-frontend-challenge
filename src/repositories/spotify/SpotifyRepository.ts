@@ -183,12 +183,16 @@ export class SpotifyRepository {
   }
 
   // Search methods (delegated to search service)
-  async searchArtists(query: string) {
-    return this.searchService.searchArtists(query)
+  async searchArtists(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchService.searchArtists(query, limit, offset)
   }
 
-  async searchArtistsPublic(query: string) {
-    return this.searchService.searchArtistsPublic(query)
+  async searchArtistsPublic(
+    query: string,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
+    return this.searchService.searchArtistsPublic(query, limit, offset)
   }
 
   async getArtistDetails(artistId: string) {
