@@ -1,44 +1,25 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { Header, Sidebar } from '@/components/layout'
+import { useNavigationStore } from '@/stores'
 
 interface AppLayoutProps {
   children: React.ReactNode
-  onSearch?: (query: string) => void
-  activeSection?: 'home' | 'library' | 'create'
-  onSectionChange?: (section: 'home' | 'library' | 'create') => void
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ 
-  children, 
-  onSearch, 
-  activeSection: externalActiveSection,
-  onSectionChange 
-}) => {
-  const [internalActiveSection, setInternalActiveSection] = useState<
-    'home' | 'library' | 'create'
-  >('home')
-
-  const activeSection = externalActiveSection || internalActiveSection
-
-  const handleNavItemClick = (section: 'home' | 'library' | 'create') => {
-    if (onSectionChange) {
-      onSectionChange(section)
-    } else {
-      setInternalActiveSection(section)
-    }
-  }
+export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+  const { activeSection, setActiveSection } = useNavigationStore()
 
   return (
     <div className="app-layout">
       <Sidebar
         activeSection={activeSection}
-        onNavItemClick={handleNavItemClick}
+        onNavItemClick={setActiveSection}
       />
       <div className="main-area">
-        <Header onSearch={onSearch || (() => {})} />
+        <Header onSearch={() => {}} />
         <main className="main-content">{children}</main>
       </div>
     </div>
   )
-} 
+}
