@@ -69,6 +69,12 @@
 }
 
 /* Button Sizes */
+.xs {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  min-height: 28px;
+}
+
 .sm {
   padding: var(--spacing-xs) var(--spacing-sm);
   font-size: var(--font-size-xs);
@@ -160,6 +166,12 @@
   /* Mobile button improvements */
   .button {
     min-height: 44px; /* Garantir altura mínima para toque */
+  }
+
+  .xs {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    min-height: 36px;
   }
 
   .sm {

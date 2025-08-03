@@ -5,7 +5,7 @@ import styles from './Button.module.css'
 export interface ButtonProps {
   children: React.ReactNode
   variant?: 'primary' | 'secondary' | 'ghost' | 'gradient'
-  size?: 'sm' | 'md' | 'lg' | 'xl'
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   onClick?: () => void
   disabled?: boolean
   className?: string
