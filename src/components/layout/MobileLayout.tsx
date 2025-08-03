@@ -45,19 +45,10 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
   }
 
   const handleSearch = (query: string) => {
-    console.log('Mobile search triggered:', query)
     if (onSearch) {
       onSearch(query)
     }
   }
-
-  // Debug logs
-  console.log('MobileLayout state:', {
-    searchQuery,
-    isLoading,
-    searchResults: searchResults?.length,
-    activeSection,
-  })
 
   // Handle errors with toasts
   if (error) {
@@ -97,120 +88,123 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
 
       {/* Main Content */}
       <main className="mobile-main-content">
-        {activeSection === 'home' && (
-          <div className="mobile-home-content">
+        {/* Show search results regardless of active section when searching */}
+        {searchQuery && (
+          <div className="mobile-search-content">
             {/* Show loading skeleton when searching */}
-            {isLoading && searchQuery && (
+            {isLoading && (
               <LoadingSkeleton variant="search-results" count={6} />
             )}
 
             {/* Show search results */}
-            {searchQuery &&
-              !isLoading &&
-              searchResults &&
-              searchResults.length > 0 && (
-                <div className="mobile-search-results">
-                  <h2 className="mobile-results-title">
-                    {t('search:resultsTitle', { count: searchResults.length })}
-                  </h2>
-                  <div className="mobile-results-grid">
-                    {searchResults.map((artist) => (
-                      <div
-                        key={artist.id}
-                        className="mobile-artist-card"
-                        onClick={() => handleArtistClick(artist.id)}
-                      >
-                        <div className="mobile-artist-image">
-                          {artist.images?.[0]?.url ? (
-                            <img
-                              src={artist.images[0].url}
-                              alt={artist.name}
-                              className="mobile-artist-img"
-                            />
-                          ) : (
-                            <div className="mobile-artist-placeholder">
-                              <span>{artist.name.charAt(0)}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="mobile-artist-info">
-                          <h3 className="mobile-artist-name">{artist.name}</h3>
-                          <p className="mobile-artist-followers">
-                            {t('artist:followers', {
-                              count: artist.followers?.total || 0,
-                            })}
-                          </p>
-                        </div>
+            {!isLoading && searchResults && searchResults.length > 0 && (
+              <div className="mobile-search-results">
+                <h2 className="mobile-results-title">
+                  {t('search:resultsTitle', { count: searchResults.length })}
+                </h2>
+                <div className="mobile-results-grid">
+                  {searchResults.map((artist) => (
+                    <div
+                      key={artist.id}
+                      className="mobile-artist-card"
+                      onClick={() => handleArtistClick(artist.id)}
+                    >
+                      <div className="mobile-artist-image">
+                        {artist.images?.[0]?.url ? (
+                          <img
+                            src={artist.images[0].url}
+                            alt={artist.name}
+                            className="mobile-artist-img"
+                          />
+                        ) : (
+                          <div className="mobile-artist-placeholder">
+                            <span>{artist.name.charAt(0)}</span>
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
+                      <div className="mobile-artist-info">
+                        <h3 className="mobile-artist-name">{artist.name}</h3>
+                        <p className="mobile-artist-followers">
+                          {t('artist:followers', {
+                            count: artist.followers?.total || 0,
+                          })}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
             {/* Show no results */}
-            {searchQuery &&
-              !isLoading &&
-              searchResults &&
-              searchResults.length === 0 && (
-                <div className="mobile-no-results">
-                  <h2>{t('search:noResultsTitle')}</h2>
-                  <p>{t('search:noResultsMessage')}</p>
-                </div>
-              )}
-
-            {/* Show popular artists when no search */}
-            {!searchQuery && (
-              <div className="mobile-popular-artists">
-                <h2 className="mobile-section-title">
-                  {t('home:trendingArtists')}
-                </h2>
-                {isLoadingPopular ? (
-                  <LoadingSkeleton variant="search-results" count={6} />
-                ) : (
-                  <div className="mobile-artists-grid">
-                    {popularArtists?.map((artist) => (
-                      <div
-                        key={artist.id}
-                        className="mobile-artist-card"
-                        onClick={() => handleArtistClick(artist.id)}
-                      >
-                        <div className="mobile-artist-image">
-                          {artist.images?.[0]?.url ? (
-                            <img
-                              src={artist.images[0].url}
-                              alt={artist.name}
-                              className="mobile-artist-img"
-                            />
-                          ) : (
-                            <div className="mobile-artist-placeholder">
-                              <span>{artist.name.charAt(0)}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="mobile-artist-info">
-                          <h3 className="mobile-artist-name">{artist.name}</h3>
-                          <p className="mobile-artist-followers">
-                            {t('artist:followers', {
-                              count: artist.followers?.total || 0,
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            {!isLoading && searchResults && searchResults.length === 0 && (
+              <div className="mobile-no-results">
+                <h2>{t('search:noResultsTitle')}</h2>
+                <p>{t('search:noResultsMessage')}</p>
               </div>
             )}
           </div>
         )}
 
-        {activeSection === 'search' && (
-          <div className="mobile-search-content">
-            <div className="mobile-search-placeholder">
-              <h2>{t('search:title')}</h2>
-              <p>{t('search:description')}</p>
-            </div>
-          </div>
+        {/* Show section-specific content when not searching */}
+        {!searchQuery && (
+          <>
+            {activeSection === 'home' && (
+              <div className="mobile-home-content">
+                <div className="mobile-popular-artists">
+                  <h2 className="mobile-section-title">
+                    {t('home:trendingArtists')}
+                  </h2>
+                  {isLoadingPopular ? (
+                    <LoadingSkeleton variant="search-results" count={6} />
+                  ) : (
+                    <div className="mobile-artists-grid">
+                      {popularArtists?.map((artist) => (
+                        <div
+                          key={artist.id}
+                          className="mobile-artist-card"
+                          onClick={() => handleArtistClick(artist.id)}
+                        >
+                          <div className="mobile-artist-image">
+                            {artist.images?.[0]?.url ? (
+                              <img
+                                src={artist.images[0].url}
+                                alt={artist.name}
+                                className="mobile-artist-img"
+                              />
+                            ) : (
+                              <div className="mobile-artist-placeholder">
+                                <span>{artist.name.charAt(0)}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="mobile-artist-info">
+                            <h3 className="mobile-artist-name">
+                              {artist.name}
+                            </h3>
+                            <p className="mobile-artist-followers">
+                              {t('artist:followers', {
+                                count: artist.followers?.total || 0,
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {activeSection === 'search' && (
+              <div className="mobile-search-content">
+                <div className="mobile-search-placeholder">
+                  <h2>{t('search:title')}</h2>
+                  <p>{t('search:description')}</p>
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {activeSection === 'library' && (
