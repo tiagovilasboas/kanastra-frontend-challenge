@@ -415,6 +415,7 @@ select {
 }
 
 @media (max-width: 480px) {
+  /* Header controls */
   .header-controls .language-selector-container {
     height: 28px;
   }
@@ -427,6 +428,107 @@ select {
     min-height: 28px;
     padding: var(--spacing-xs);
     border-radius: 50%;
+  }
+
+  /* Mobile text visibility */
+  .mobile-text {
+    display: block;
+  }
+
+  .desktop-text {
+    display: none;
+  }
+
+  /* Layout adjustments */
+  .sidebar {
+    display: none;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .main-area {
+    margin-left: 0;
+  }
+
+  /* Button adjustments */
+  .btn {
+    min-height: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Card and grid adjustments */
+  .card {
+    padding: var(--spacing-lg);
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .artist-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .popular-artists-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  .album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+  }
+
+  /* Typography adjustments */
+  h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  h2 {
+    font-size: var(--font-size-lg);
+  }
+
+  h3 {
+    font-size: var(--font-size-md);
+  }
+
+  /* Spacing adjustments */
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .header-actions {
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    width: 100%;
+    align-items: center;
+  }
+
+  .load-more-button {
+    width: 100%;
+    min-height: 44px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
   }
 }
 
