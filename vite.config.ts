@@ -13,14 +13,7 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'],
-      },
-    },
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -36,7 +29,11 @@ export default defineConfig({
         // Optimize chunk naming
         chunkFileNames: (chunkInfo) => {
           const facadeModuleId = chunkInfo.facadeModuleId
-            ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.tsx', '').replace('.ts', '')
+            ? chunkInfo.facadeModuleId
+                .split('/')
+                .pop()
+                ?.replace('.tsx', '')
+                .replace('.ts', '')
             : 'chunk'
           return `js/${facadeModuleId}-[hash].js`
         },
