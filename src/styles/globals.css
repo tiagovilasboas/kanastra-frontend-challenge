@@ -571,9 +571,9 @@ select {
   padding: var(--spacing-md);
   transition: all var(--transition-normal);
   cursor: pointer;
-  height: 280px;
   display: flex;
   flex-direction: column;
+  min-height: 200px;
 }
 
 .artist-card:hover {
@@ -1003,6 +1003,18 @@ select {
     width: 300px;
     left: -10px;
   }
+
+  /* Mobile card adjustments */
+  .artist-card,
+  .album-card {
+    min-height: 160px;
+    padding: var(--spacing-sm);
+  }
+
+  .horizontal-card {
+    min-height: 160px;
+    width: 140px;
+  }
 }
 
 /* High Contrast Mode */
@@ -1425,9 +1437,9 @@ select {
   transition: all var(--transition-normal);
   cursor: pointer;
   overflow: hidden;
-  height: 280px;
   display: flex;
   flex-direction: column;
+  min-height: 200px;
 }
 
 .album-card:hover {
@@ -1797,11 +1809,11 @@ select {
 .horizontal-card {
   flex-shrink: 0;
   width: 180px;
-  height: 280px;
   cursor: pointer;
   transition: transform var(--transition-fast);
   display: flex;
   flex-direction: column;
+  min-height: 200px;
 }
 
 .horizontal-card:hover {
