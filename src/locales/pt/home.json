@@ -6,9 +6,9 @@
   "trendingArtists": "Artistas Populares",
   "trendingDescription": "Alguns dos artistas mais conhecidos e populares",
   "trendingError": "Não foi possível carregar os artistas populares",
-  "heroTitle": "Descubra o Mundo da Música",
-  "heroSubtitle": "Explore artistas, álbuns e faixas com a API do Spotify",
-  "feature1": "Busque por qualquer artista",
-  "feature2": "Veja top tracks e álbuns",
-  "feature3": "Descubra novos talentos"
+  "heroTitle": "Explore Artistas Incríveis",
+  "heroSubtitle": "Descubra artistas populares, top tracks e álbuns com a API do Spotify",
+  "feature1": "Artistas populares",
+  "feature2": "Top tracks e álbuns",
+  "feature3": "Biografias completas"
 }

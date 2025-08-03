@@ -6,9 +6,9 @@
   "trendingArtists": "Popular Artists",
   "trendingDescription": "Some of the most well-known and popular artists",
   "trendingError": "Could not load popular artists",
-  "heroTitle": "Discover the World of Music",
-  "heroSubtitle": "Explore artists, albums and tracks with the Spotify API",
-  "feature1": "Search for any artist",
-  "feature2": "View top tracks and albums",
-  "feature3": "Discover new talents"
+  "heroTitle": "Explore Amazing Artists",
+  "heroSubtitle": "Discover popular artists, top tracks and albums with the Spotify API",
+  "feature1": "Popular artists",
+  "feature2": "Top tracks and albums",
+  "feature3": "Complete biographies"
 }
