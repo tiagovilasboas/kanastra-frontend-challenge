@@ -395,7 +395,7 @@ select {
 }
 
 /* Header controls responsive adjustments */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   .header-controls .language-selector-container {
     height: 28px;
   }
@@ -1129,7 +1129,7 @@ select {
 }
 
 /* Responsive Design - Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   .app-layout {
     flex-direction: column;
   }
@@ -1353,7 +1353,7 @@ select {
 }
 
 /* Responsive skeleton - Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   .results-grid-skeleton {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-md);
@@ -1596,7 +1596,7 @@ select {
 }
 
 /* Responsive styles for modern track items - Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   .track-item-modern {
     padding: var(--spacing-xs) var(--spacing-sm);
     gap: var(--spacing-xs);
@@ -1678,7 +1678,7 @@ select {
 }
 
 /* Responsive Design - Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   .artist-hero-skeleton {
     padding: var(--spacing-lg);
   }
@@ -2330,7 +2330,7 @@ select {
 }
 
 /* Mobile Responsive Improvements - Tablet */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1024px) {
   /* Hide sidebar and show mobile menu button */
   .sidebar {
     display: none;
