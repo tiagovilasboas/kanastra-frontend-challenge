@@ -21,8 +21,6 @@
 .languageSelector:hover {
   border-color: var(--spotify-gray);
   background: var(--hover-bg);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .languageSelector:focus-within {
@@ -75,7 +73,6 @@
 .languageButton:hover {
   background: var(--hover-bg);
   color: var(--text-primary);
-  transform: scale(1.05);
   /* Ensure no layout changes */
   min-width: 32px;
   width: 32px;
@@ -133,21 +130,12 @@
     padding: 2px;
   }
 
-  .languageSelector:hover {
-    transform: translateY(-0.5px);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  }
-
   .languageButton {
     padding: 4px 6px;
     font-size: var(--font-size-xs);
     min-width: 28px;
     width: 28px;
     height: 28px;
-  }
-
-  .languageButton:hover {
-    transform: scale(1.02);
   }
 
   .languageButton:active {
