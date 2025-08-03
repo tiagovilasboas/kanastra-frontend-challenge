@@ -352,6 +352,7 @@ select {
 .search-container {
   flex: 1;
   max-width: 400px;
+  width: 100%;
 }
 
 .header-actions {
@@ -987,6 +988,7 @@ select {
   }
 
   .search-container {
+    width: 100%;
     max-width: 100%;
   }
 
