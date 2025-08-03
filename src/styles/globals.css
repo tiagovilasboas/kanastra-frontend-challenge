@@ -2320,6 +2320,12 @@ select {
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
   }
+
+  /* Album grid mobile optimization */
+  .album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+  }
 }
 
 /* Small mobile devices */
@@ -2386,6 +2392,12 @@ select {
 
   h3 {
     font-size: var(--font-size-md);
+  }
+
+  /* Album grid small mobile optimization */
+  .album-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
   }
 }
 
