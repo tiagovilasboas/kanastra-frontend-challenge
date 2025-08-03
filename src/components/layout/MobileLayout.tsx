@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { MobileNavigation } from '@/components/layout'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
+import { SearchInput } from '@/components/ui/SearchInput'
 import { useArtistPrefetch } from '@/hooks/useArtistPrefetch'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
@@ -26,7 +27,8 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
   >('home')
 
   // Real data hooks - same as desktop
-  const { searchResults, isLoading, error, searchQuery } = useSpotifySearch()
+  const { searchResults, isLoading, error, searchQuery, searchArtists } =
+    useSpotifySearch()
 
   const {
     artists: popularArtists,
@@ -41,6 +43,11 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
   const handleArtistClick = (artistId: string) => {
     prefetchArtistData(artistId)
     navigate(`/artist/${artistId}`)
+  }
+
+  const handleSearch = (query: string) => {
+    console.log('Mobile search triggered:', query)
+    searchArtists(query)
   }
 
   // Handle errors with toasts
@@ -69,6 +76,13 @@ export const MobileLayout: React.FC<MobileLayoutProps> = () => {
               <Settings size={24} />
             </button>
           </div>
+        </div>
+        {/* Search Input */}
+        <div className="mobile-search-container">
+          <SearchInput
+            placeholder={t('search:placeholder', 'Buscar artistas...')}
+            onSearch={handleSearch}
+          />
         </div>
       </header>
 
