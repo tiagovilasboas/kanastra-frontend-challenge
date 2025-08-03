@@ -31,7 +31,7 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
           </div>
           <div className="header-controls">
             <div className="language-selector-container">
-              <LanguageSelector size="compact" />
+              <LanguageSelector />
             </div>
             {!isLoading && (
               <>

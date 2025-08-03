@@ -383,7 +383,7 @@ select {
 
 /* Desktop button height */
 .spotify-login-button {
-  min-height: 40px;
+  min-height: 36px;
 }
 
 .language-selector-container {
@@ -391,7 +391,7 @@ select {
   align-items: center;
   /* Ensure container maintains its dimensions */
   min-width: fit-content;
-  height: 40px;
+  height: 36px;
 }
 
 .user-section {
