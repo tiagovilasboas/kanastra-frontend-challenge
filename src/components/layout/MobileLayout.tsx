@@ -87,6 +87,8 @@ export const MobileLayout: React.FC<MobileLayoutProps> = ({ onSearch }) => {
           <SearchInput
             placeholder={t('search:placeholder', 'Buscar artistas...')}
             onSearch={handleSearch}
+            showScanButton={false}
+            navigateOnFocus={false}
           />
         </div>
       </header>
