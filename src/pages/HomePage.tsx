@@ -18,7 +18,7 @@ export const HomePage: React.FC = () => {
   const { isAuthenticated } = useSpotifyAuth()
   const { prefetchArtistData } = useArtistPrefetch()
   const navigate = useNavigate()
-  const { showError, showInfo } = useToast()
+  const { showError } = useToast()
 
   const [activeSection, setActiveSection] = useState<
     'home' | 'library' | 'create'
@@ -80,8 +80,6 @@ export const HomePage: React.FC = () => {
 
     // Show no results only when search is complete and no results found
     if (searchQuery && !isLoading && searchResults?.length === 0) {
-      // Show info toast for no results
-      showInfo('search:noResultsMessage')
       return (
         <div className="no-results-section">
           <div className="no-results-content">
