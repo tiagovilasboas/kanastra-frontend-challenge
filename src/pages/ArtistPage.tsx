@@ -132,10 +132,16 @@ export const ArtistPage: React.FC = () => {
     }
   }
 
-  // Filter albums by name
-  const filteredAlbums = albums.filter((album) =>
-    album.name.toLowerCase().includes(albumFilter.toLowerCase()),
-  )
+  // Filter and sort albums by release date (newest first)
+  const filteredAlbums = albums
+    .filter((album) =>
+      album.name.toLowerCase().includes(albumFilter.toLowerCase()),
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.release_date).getTime()
+      const dateB = new Date(b.release_date).getTime()
+      return dateB - dateA // Descending order (newest first)
+    })
 
   // Error state
   if (artistError) {

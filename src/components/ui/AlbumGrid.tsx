@@ -36,10 +36,18 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
   const defaultTitle = t('ui:albums.title', 'Álbuns')
   const [searchQuery, setSearchQuery] = React.useState('')
 
-  const filteredAlbums = albums.filter(album =>
-    album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (album.artist && album.artist.toLowerCase().includes(searchQuery.toLowerCase()))
-  )
+  const filteredAlbums = albums
+    .filter(
+      (album) =>
+        album.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (album.artist &&
+          album.artist.toLowerCase().includes(searchQuery.toLowerCase())),
+    )
+    .sort((a, b) => {
+      const dateA = new Date(a.releaseDate).getTime()
+      const dateB = new Date(b.releaseDate).getTime()
+      return dateB - dateA // Descending order (newest first)
+    })
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
@@ -53,17 +61,23 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
         <div className="album-grid-title-section">
           <h1 className="album-grid-title">{title || defaultTitle}</h1>
           <span className="album-grid-counter">
-            {t('ui:albums.counter', '{{count}} de {{total}}', { count: filteredAlbums.length, total: albums.length })}
+            {t('ui:albums.counter', '{{count}} de {{total}}', {
+              count: filteredAlbums.length,
+              total: albums.length,
+            })}
           </span>
         </div>
-        
+
         {/* Search Bar */}
         <div className="album-grid-search">
           <div className="album-grid-search-input">
             <Search size={16} className="search-icon" />
             <input
               type="text"
-              placeholder={t('ui:albums.filterPlaceholder', 'Filtrar álbuns...')}
+              placeholder={t(
+                'ui:albums.filterPlaceholder',
+                'Filtrar álbuns...',
+              )}
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               className="album-grid-search-field"
@@ -99,4 +113,4 @@ export const AlbumGrid: React.FC<AlbumGridProps> = ({
       )}
     </div>
   )
-} 
+}
