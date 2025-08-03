@@ -255,6 +255,8 @@ select {
   padding: var(--spacing-md);
   gap: var(--spacing-lg);
   flex-shrink: 0;
+  position: relative;
+  z-index: 1002;
 }
 
 .sidebar-header {
@@ -480,7 +482,7 @@ select {
 .global-debug {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  left: 280px;
   z-index: 9999;
 }
 

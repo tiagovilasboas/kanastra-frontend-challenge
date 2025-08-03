@@ -91,8 +91,8 @@ export const HomePage: React.FC = () => {
       )
     }
 
-    // Show library section when activeSection is library and no search
-    if (activeSection === 'library' && !searchQuery) {
+    // Show library section when activeSection is library
+    if (activeSection === 'library') {
       return (
         <div className="library-section">
           <div className="library-content">
@@ -107,8 +107,8 @@ export const HomePage: React.FC = () => {
       )
     }
 
-    // Show create playlist section when activeSection is create and no search
-    if (activeSection === 'create' && !searchQuery) {
+    // Show create playlist section when activeSection is create
+    if (activeSection === 'create') {
       return (
         <div className="create-section">
           <div className="create-content">
