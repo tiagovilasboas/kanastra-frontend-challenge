@@ -12,19 +12,23 @@ Uma aplicação web moderna que permite aos usuários:
 - 💿 Navegar pelos álbuns com paginação
 - 🌐 Interface em português e inglês
 - 🎨 Tema escuro moderno e responsivo
+- 📱 Layout mobile otimizado com funcionalidades completas
+- 🔔 Sistema de notificações toast para feedback
+- 🎯 Experiência unificada entre desktop e mobile
 
 ## 🚀 Tecnologias
 
 - ⚡️ **Vite:** Build ultrarrápido e Hot Module Replacement (HMR) instantâneo
 - ⚛️ **React 19:** Com todos os hooks e features mais recentes
 - 🔵 **TypeScript:** Tipagem estrita para um código mais seguro e manutenível
-- 🎨 **Mantine:** Biblioteca de componentes React completa e acessível
+- 🎨 **Tailwind CSS:** Framework CSS utilitário para design responsivo
 - 🧪 **Vitest & Testing Library:** Configuração de testes moderna e rápida
 - 📐 **ESLint & Prettier:** Qualidade de código e formatação garantidas
 - 🌐 **i18n:** Suporte para internacionalização (PT/EN)
 - 🎧 **Spotify Web API:** Integração completa para dados de artistas, músicas e álbuns
 - 📦 **Zustand:** Gerenciamento de estado simples e eficiente
 - 🔄 **React Query:** Gerenciamento de cache e estado de servidor otimizado
+- 🔔 **Sonner:** Sistema de toast notifications moderno
 - 🏗️ **Arquitetura Limpa:** Código organizado, escalável e fácil de testar
 
 ## 📦 Instalação
@@ -59,11 +63,12 @@ cp env.example .env.local
 ```
 src/
 ├── app/                  # Configurações globais, providers, rotas
-│   ├── providers/        # Providers (React Query, Mantine, i18n)
+│   ├── providers/        # Providers (React Query, i18n)
 │   └── router.tsx        # Configuração de rotas
 ├── components/           # Componentes de UI compartilhados
-│   ├── layout/           # Componentes de layout (Header, Container)
-│   └── ui/               # Componentes de UI (Button, Card, etc.)
+│   ├── layout/           # Componentes de layout (Header, MobileLayout)
+│   ├── ui/               # Componentes de UI (Button, Card, SearchInput)
+│   └── SEO/              # Componentes de SEO
 ├── config/               # Configurações centralizadas
 │   ├── cache.ts          # Configurações de cache (React Query)
 │   └── react-query.ts    # Configuração do React Query
@@ -73,6 +78,7 @@ src/
 │   ├── useArtistTopTracks.ts  # Hook de top tracks
 │   ├── useArtistAlbums.ts     # Hook de álbuns com paginação
 │   ├── useSpotifyAuth.ts      # Hook de autenticação
+│   ├── useToast.ts            # Hook para toast notifications
 │   └── usePrefetch.ts         # Hook de prefetch inteligente
 ├── pages/                # Páginas da aplicação
 │   ├── HomePage.tsx      # Página inicial com busca
@@ -82,6 +88,7 @@ src/
 │   └── spotify/          # Repository da Spotify API
 ├── stores/               # Stores globais (Zustand)
 ├── types/                # Tipos TypeScript
+├── locales/              # Arquivos de tradução (PT/EN)
 └── utils/                # Utilitários e formatação
 ```
 
@@ -110,10 +117,11 @@ Para usar a aplicação, você precisará:
    - Redirect URI: `http://127.0.0.1:5173/callback`
 
 3. **Configurar Variáveis de Ambiente**
+
    ```bash
    # Copie o arquivo de exemplo
    cp env.example .env
-   
+
    # Edite o arquivo .env com suas credenciais
    VITE_SPOTIFY_CLIENT_ID=seu_client_id_aqui
    VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret_aqui
@@ -182,17 +190,27 @@ O projeto suporta **português** e **inglês**:
 
 ### Design System
 
-- **Mantine**: Componentes acessíveis e modernos
+- **Tailwind CSS**: Framework CSS utilitário para design responsivo
 - **Tema Escuro**: Interface moderna e elegante
 - **Responsivo**: Funciona em desktop e mobile
 - **Animações**: Transições suaves e feedback visual
+- **Toast Notifications**: Sistema de feedback não-intrusivo
+
+### Layout Responsivo
+
+- **Desktop**: Layout com sidebar, header e área principal
+- **Mobile**: Layout otimizado com header compacto e navegação inferior
+- **Funcionalidades Unificadas**: Mesma experiência em todas as telas
+- **Busca Integrada**: SearchInput funcional em desktop e mobile
 
 ### Componentes Principais
 
 - **SearchInput**: Busca com debounce e clear
 - **ArtistCard**: Card de artista com hover effects
 - **LoadingSkeleton**: Skeleton loading para melhor UX
-- **Pagination**: Paginação de álbuns
+- **MobileLayout**: Layout otimizado para mobile
+- **LanguageSelector**: Seletor de idioma compacto
+- **Toast System**: Notificações elegantes com Sonner
 
 ## 🧪 Testes
 
@@ -209,6 +227,8 @@ O projeto inclui testes automatizados:
 - **[🔒 Environment Variables](./docs/ENVIRONMENT_VARIABLES.md)** - Configuração de variáveis
 - **[🐕 Reviewdog](./docs/REVIEWDOG.md)** - Revisões automáticas de código
 - **[🔧 Husky Hooks](./docs/HUSKY_HOOKS.md)** - Git hooks configurados
+- **[🧪 Testing Strategy](./docs/TESTING_STRATEGY.md)** - Estratégia de testes
+- **[📱 Mobile Implementation](./docs/LIBRARY_AND_PLAYLISTS_IMPLEMENTATION.md)** - Implementação mobile
 
 ## 🚀 Deploy
 
