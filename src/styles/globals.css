@@ -381,12 +381,17 @@ select {
   display: block;
 }
 
+/* Desktop button height */
+.spotify-login-button {
+  min-height: 40px;
+}
+
 .language-selector-container {
   display: flex;
   align-items: center;
   /* Ensure container maintains its dimensions */
   min-width: fit-content;
-  height: 32px;
+  height: 40px;
 }
 
 .user-section {

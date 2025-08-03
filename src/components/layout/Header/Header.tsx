@@ -40,7 +40,7 @@ export function Header({ onSearch, searchPlaceholder }: HeaderProps) {
                 ) : (
                   <Button
                     variant="gradient"
-                    size="xs"
+                    size="sm"
                     onClick={login}
                     className="spotify-login-button mobile-compact"
                   >
