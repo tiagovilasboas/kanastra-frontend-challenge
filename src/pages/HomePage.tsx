@@ -251,13 +251,13 @@ export const HomePage: React.FC = () => {
   return (
     <div data-testid="home-page">
       <SEOHead
-        title={isAuthenticated ? t('seo:homeTitle') : undefined}
+        title={t('seo:homeTitle')}
         description={t('seo:homeDescription')}
         keywords={t('seo:defaultKeywords')}
       />
       <StructuredData
         type="website"
-        title={isAuthenticated ? t('seo:homeTitle') : t('seo:defaultTitle')}
+        title={t('seo:homeTitle')}
         description={t('seo:homeDescription')}
         url={window.location.href}
         image="/og-image.jpg"
