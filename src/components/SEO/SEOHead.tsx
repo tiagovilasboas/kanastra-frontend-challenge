@@ -26,8 +26,14 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   useEffect(() => {
     // Update document title
     const baseTitle = 'Spotify Artist Explorer'
+
+    // Check if title already contains the base title to avoid duplication
+    const titleAlreadyContainsBase = title && title.includes(baseTitle)
+
     const fullTitle = title
-      ? `${title} - ${baseTitle}` // Add base title to all titles
+      ? titleAlreadyContainsBase
+        ? title // Use title as is if it already contains base title
+        : `${title} - ${baseTitle}` // Add base title only if not already present
       : artistName
         ? `${artistName} - ${baseTitle}`
         : baseTitle
