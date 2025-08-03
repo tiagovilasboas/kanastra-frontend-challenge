@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { AppLayout, MobileLayout } from '@/components/layout'
+import { AppLayout } from '@/components/layout'
 import { SEOHead, StructuredData } from '@/components/SEO'
 import { ArtistCard, PopularArtistsSection } from '@/components/ui'
 import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
@@ -263,21 +263,13 @@ export const HomePage: React.FC = () => {
         image="/og-image.jpg"
       />
 
-      {/* Desktop Layout */}
-      <div className="desktop-only">
-        <AppLayout
-          onSearch={searchArtists}
-          activeSection={activeSection}
-          onSectionChange={handleSectionChange}
-        >
-          {renderMainContent()}
-        </AppLayout>
-      </div>
-
-      {/* Mobile Layout */}
-      <div className="mobile-only">
-        <MobileLayout onSearch={searchArtists} />
-      </div>
+      <AppLayout
+        onSearch={searchArtists}
+        activeSection={activeSection}
+        onSectionChange={handleSectionChange}
+      >
+        {renderMainContent()}
+      </AppLayout>
     </div>
   )
 }
