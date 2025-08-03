@@ -27,16 +27,11 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     // Update document title
     const baseTitle = 'Spotify Artist Explorer'
 
-    // Check if title already contains the base title to avoid duplication
-    const titleAlreadyContainsBase = title && title.includes(baseTitle)
-
-    const fullTitle = title
-      ? titleAlreadyContainsBase
-        ? title // Use title as is if it already contains base title
-        : `${title} - ${baseTitle}` // Add base title only if not already present
-      : artistName
-        ? `${artistName} - ${baseTitle}`
-        : baseTitle
+    // If title is provided, use it directly (it should already be properly formatted)
+    // If no title but artistName is provided, format it
+    // Otherwise use the base title
+    const fullTitle =
+      title || (artistName ? `${artistName} - ${baseTitle}` : baseTitle)
 
     document.title = fullTitle
 
