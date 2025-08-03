@@ -2209,13 +2209,15 @@ select {
 
   /* Compact login button for mobile */
   .mobile-compact {
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: var(--font-size-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    min-width: 100px;
+    max-width: 48px;
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
+    padding: var(--spacing-xs);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-text {
@@ -2330,13 +2332,12 @@ select {
 
   /* Even more compact login button for small screens */
   .mobile-compact {
-    max-width: 100px;
-    min-width: 80px;
-    font-size: var(--font-size-xs);
+    max-width: 44px;
+    min-width: 44px;
+    width: 44px;
+    height: 44px;
     padding: var(--spacing-xs);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    border-radius: 50%;
   }
 
   .mobile-text {
