@@ -192,6 +192,17 @@ export class SpotifyRepository {
   }
 
   async getArtistDetails(artistId: string) {
+    // Ensure we have either access token or client token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      logger.warn('No tokens available, trying to get client token first')
+      try {
+        await this.getClientToken()
+      } catch (error) {
+        logger.error('Failed to get client token for artist details', error)
+        throw new Error('Authentication required for artist details')
+      }
+    }
+
     return this.searchService.getArtistDetails(artistId)
   }
 
@@ -216,6 +227,17 @@ export class SpotifyRepository {
     limit: number = 20,
     offset: number = 0,
   ) {
+    // Ensure we have either access token or client token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      logger.warn('No tokens available, trying to get client token first')
+      try {
+        await this.getClientToken()
+      } catch (error) {
+        logger.error('Failed to get client token for artist albums', error)
+        throw new Error('Authentication required for artist albums')
+      }
+    }
+
     return this.searchService.getArtistAlbums(
       artistId,
       includeGroups,
