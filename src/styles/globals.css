@@ -2199,6 +2199,16 @@ select {
     font-size: var(--font-size-sm);
   }
 
+  /* Compact login button for mobile */
+  .mobile-compact {
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
   /* Improve card spacing */
   .card {
     padding: var(--spacing-lg);
@@ -2293,6 +2303,13 @@ select {
 
   .card {
     padding: var(--spacing-md);
+  }
+
+  /* Even more compact login button for small screens */
+  .mobile-compact {
+    max-width: 100px;
+    font-size: var(--font-size-xs);
+    padding: var(--spacing-xs);
   }
 
   h1 {
