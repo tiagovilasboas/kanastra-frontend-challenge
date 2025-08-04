@@ -7,7 +7,7 @@ import { errorHandler } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 
 import { SpotifyAuthService } from './SpotifyAuthService'
-import { SpotifySearchService } from './SpotifySearchService'
+import { AudioFeatures,RecommendationParams, SearchFilters, SpotifySearchService } from './SpotifySearchService'
 
 export class SpotifyRepository {
   private authService: SpotifyAuthService
@@ -200,6 +200,71 @@ export class SpotifyRepository {
     offset: number = 0,
   ) {
     return this.searchService.searchArtistsPublic(query, limit, offset)
+  }
+
+  // Advanced search methods
+  async searchAdvanced(
+    query: string,
+    type: 'artist' | 'track' | 'album' | 'playlist',
+    filters?: SearchFilters,
+    limit: number = 20,
+    offset: number = 0
+  ) {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.searchAdvanced(query, type, filters, limit, offset)
+  }
+
+  async getRecommendations(params: RecommendationParams) {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getRecommendations(params)
+  }
+
+  async getAvailableGenres() {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getAvailableGenres()
+  }
+
+  // Audio features methods
+  async getAudioFeatures(trackId: string): Promise<AudioFeatures> {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getAudioFeatures(trackId)
+  }
+
+  async getMultipleAudioFeatures(trackIds: string[]): Promise<AudioFeatures[]> {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getMultipleAudioFeatures(trackIds)
+  }
+
+  // ISRC/UPC search methods
+  async getTrackByISRC(isrc: string) {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getTrackByISRC(isrc)
+  }
+
+  async getAlbumByUPC(upc: string) {
+    // Ensure we have a token
+    if (!this.accessToken && !this.searchService.hasClientToken()) {
+      await this.getClientToken()
+    }
+    return this.searchService.getAlbumByUPC(upc)
   }
 
   async getArtistDetails(artistId: string) {

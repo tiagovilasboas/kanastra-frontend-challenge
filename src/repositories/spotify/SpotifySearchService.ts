@@ -18,6 +18,47 @@ export interface SpotifySearchConfig {
   clientToken?: string
 }
 
+export interface SearchFilters {
+  year?: number
+  genre?: string
+  isrc?: string
+  upc?: string
+  tag?: string
+}
+
+export interface RecommendationParams {
+  seed_artists?: string[]
+  seed_genres?: string[]
+  seed_tracks?: string[]
+  target_energy?: number
+  target_danceability?: number
+  target_valence?: number
+  target_tempo?: number
+  target_popularity?: number
+  limit?: number
+}
+
+export interface AudioFeatures {
+  id: string
+  danceability: number
+  energy: number
+  key: number
+  loudness: number
+  mode: number
+  speechiness: number
+  acousticness: number
+  instrumentalness: number
+  liveness: number
+  valence: number
+  tempo: number
+  type: string
+  uri: string
+  track_href: string
+  analysis_url: string
+  duration_ms: number
+  time_signature: number
+}
+
 export class SpotifySearchService {
   private axiosInstance: AxiosInstance
   private accessToken?: string
@@ -55,6 +96,242 @@ export class SpotifySearchService {
 
   hasClientToken(): boolean {
     return !!this.clientToken
+  }
+
+  private getAuthToken(): string {
+    const token = this.accessToken || this.clientToken
+    if (!token) {
+      throw new Error('Authentication token required')
+    }
+    return token
+  }
+
+  // Advanced search with filters
+  async searchAdvanced(
+    query: string,
+    type: 'artist' | 'track' | 'album' | 'playlist',
+    filters?: SearchFilters,
+    limit: number = 20,
+    offset: number = 0
+  ) {
+    try {
+      logger.debug('Advanced search', { query, type, filters, limit, offset })
+
+      const params: any = {
+        q: query,
+        type,
+        limit,
+        offset,
+      }
+
+      // Add filters to query
+      if (filters) {
+        const filterParts: string[] = []
+        
+        if (filters.year) {
+          filterParts.push(`year:${filters.year}`)
+        }
+        if (filters.genre) {
+          filterParts.push(`genre:${filters.genre}`)
+        }
+        if (filters.isrc) {
+          filterParts.push(`isrc:${filters.isrc}`)
+        }
+        if (filters.upc) {
+          filterParts.push(`upc:${filters.upc}`)
+        }
+        if (filters.tag) {
+          filterParts.push(`tag:${filters.tag}`)
+        }
+
+        if (filterParts.length > 0) {
+          params.q = `${query} ${filterParts.join(' ')}`
+        }
+      }
+
+      const response = await this.axiosInstance.get('/search', {
+        params,
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      logger.debug('Advanced search successful', {
+        query,
+        type,
+        resultsCount: response.data[type + 's']?.items?.length || 0,
+      })
+
+      return response.data
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchAdvanced',
+      )
+      throw appError
+    }
+  }
+
+  // Get recommendations
+  async getRecommendations(params: RecommendationParams): Promise<SpotifyTrack[]> {
+    try {
+      logger.debug('Getting recommendations', params)
+
+      const response = await this.axiosInstance.get('/recommendations', {
+        params,
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifyTracksResponse(response.data)
+      logger.debug('Recommendations retrieved successfully', {
+        tracksCount: validatedData.tracks.length,
+      })
+
+      return validatedData.tracks
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getRecommendations',
+      )
+      throw appError
+    }
+  }
+
+  // Get audio features for a track
+  async getAudioFeatures(trackId: string): Promise<AudioFeatures> {
+    try {
+      logger.debug('Getting audio features', { trackId })
+
+      const response = await this.axiosInstance.get(`/audio-features/${trackId}`, {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      logger.debug('Audio features retrieved successfully', { trackId })
+      return response.data
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getAudioFeatures',
+      )
+      throw appError
+    }
+  }
+
+  // Get audio features for multiple tracks
+  async getMultipleAudioFeatures(trackIds: string[]): Promise<AudioFeatures[]> {
+    try {
+      logger.debug('Getting multiple audio features', { trackIdsCount: trackIds.length })
+
+      const response = await this.axiosInstance.get('/audio-features', {
+        params: { ids: trackIds.join(',') },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      logger.debug('Multiple audio features retrieved successfully', {
+        featuresCount: response.data.audio_features?.length || 0,
+      })
+
+      return response.data.audio_features || []
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getMultipleAudioFeatures',
+      )
+      throw appError
+    }
+  }
+
+  // Get available genres
+  async getAvailableGenres(): Promise<string[]> {
+    try {
+      logger.debug('Getting available genres')
+
+      const response = await this.axiosInstance.get('/recommendations/available-genre-seeds', {
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      logger.debug('Available genres retrieved successfully', {
+        genresCount: response.data.genres?.length || 0,
+      })
+
+      return response.data.genres || []
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getAvailableGenres',
+      )
+      throw appError
+    }
+  }
+
+  // Get track by ISRC
+  async getTrackByISRC(isrc: string): Promise<SpotifyTrack[]> {
+    try {
+      logger.debug('Getting track by ISRC', { isrc })
+
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: `isrc:${isrc}`,
+          type: 'track',
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifyTracksResponse(response.data)
+      logger.debug('Track by ISRC retrieved successfully', {
+        isrc,
+        tracksCount: validatedData.tracks.length,
+      })
+
+      return validatedData.tracks
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getTrackByISRC',
+      )
+      throw appError
+    }
+  }
+
+  // Get album by UPC
+  async getAlbumByUPC(upc: string): Promise<SpotifyAlbum[]> {
+    try {
+      logger.debug('Getting album by UPC', { upc })
+
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: `upc:${upc}`,
+          type: 'album',
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifyAlbumsResponse(response.data)
+      logger.debug('Album by UPC retrieved successfully', {
+        upc,
+        albumsCount: validatedData.items.length,
+      })
+
+      return validatedData.items
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.getAlbumByUPC',
+      )
+      throw appError
+    }
   }
 
   // Search artists with user authentication
