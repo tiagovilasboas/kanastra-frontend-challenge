@@ -73,7 +73,7 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
               {artist.name}
             </h1>
             <p className="text-muted-foreground">
-              {formatFollowers(artist.followers?.total || 0)}{' '}
+              {formatFollowers(artist.followers?.total || 0)}
               {t('artist:followers')}
             </p>
           </div>

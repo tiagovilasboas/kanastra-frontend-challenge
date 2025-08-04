@@ -151,7 +151,7 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                 {t('audio:key', 'Tom')}
               </p>
               <p className="text-sm font-medium">
-                {getKeyName(audioFeatures.key)}{' '}
+                {getKeyName(audioFeatures.key)}
                 {audioFeatures.mode === 1
                   ? t('audio:major', 'Major')
                   : t('audio:minor', 'Minor')}

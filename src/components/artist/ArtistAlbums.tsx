@@ -136,8 +136,8 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
                       {album.name}
                     </h3>
                     <p className="text-xs text-muted-foreground line-clamp-1">
-                      {new Date(album.release_date).getFullYear()}{' '}
-                      {t('artist:separator')} {album.total_tracks}{' '}
+                      {new Date(album.release_date).getFullYear()}
+                      {t('artist:separator')} {album.total_tracks}
                       {t('artist:tracks')}
                     </p>
                   </div>
