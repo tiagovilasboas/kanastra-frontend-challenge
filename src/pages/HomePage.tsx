@@ -10,9 +10,10 @@ export const HomePage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const { artists: popularArtists, isLoading: isPopularLoading } = usePopularArtists({
-    limit: 10,
-  })
+  const { artists: popularArtists, isLoading: isPopularLoading } =
+    usePopularArtists({
+      limit: 10,
+    })
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`)
@@ -21,7 +22,6 @@ export const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12">
-        
         {/* Hero Section */}
         <section className="text-center space-y-4 sm:space-y-6">
           <div className="space-y-3 sm:space-y-4">
@@ -29,10 +29,13 @@ export const HomePage: React.FC = () => {
               {t('home:welcome', 'Welcome to Spotify Explorer')}
             </h1>
             <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-              {t('home:description', 'Discover artists, explore their music, and find your next favorite track.')}
+              {t(
+                'home:description',
+                'Discover artists, explore their music, and find your next favorite track.',
+              )}
             </p>
           </div>
-          
+
           <div className="flex items-center justify-center gap-3 sm:gap-4">
             <Music className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
             <span className="text-sm sm:text-lg text-muted-foreground">
@@ -49,7 +52,7 @@ export const HomePage: React.FC = () => {
               {t('home:popularArtists', 'Popular Artists')}
             </h2>
           </div>
-          
+
           {isPopularLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
               {Array.from({ length: 10 }).map((_, index) => (
@@ -63,7 +66,10 @@ export const HomePage: React.FC = () => {
           ) : popularArtists.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
               {popularArtists.map((artist) => (
-                <div key={artist.id} onClick={() => handleArtistClick(artist.id)}>
+                <div
+                  key={artist.id}
+                  onClick={() => handleArtistClick(artist.id)}
+                >
                   <ArtistCard artist={artist} />
                 </div>
               ))}
@@ -71,14 +77,14 @@ export const HomePage: React.FC = () => {
           ) : (
             <div className="text-center py-6 sm:py-8">
               <p className="text-sm sm:text-base text-muted-foreground">
-                {t('home:noPopularArtists', 'No popular artists available at the moment.')}
+                {t(
+                  'home:noPopularArtists',
+                  'No popular artists available at the moment.',
+                )}
               </p>
             </div>
           )}
         </section>
-
-
-
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { LogIn, LogOut, Menu, Music, Search, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,11 +21,23 @@ export interface HeaderProps {
 
 export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
   const { searchQuery, setSearchQuery } = useSearchStore()
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
+
+    // Navigate to search page if user types something
+    if (value.trim()) {
+      navigate('/search')
+    }
+  }
+
+  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate('/search')
+    }
   }
 
   return (
@@ -65,6 +78,7 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
               }
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
               className="pl-10 bg-muted/50 border-0 focus:bg-background"
             />
           </div>

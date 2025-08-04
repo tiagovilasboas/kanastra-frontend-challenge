@@ -1,25 +1,7 @@
 {
-  "title": "Discover Amazing Artists",
-  "subtitle": "Search for your favorite artists and discover new talents with the Spotify API. Explore biographies, top tracks and complete albums.",
   "welcome": "Welcome to Spotify Explorer",
   "description": "Discover artists, explore their music, and find your next favorite track.",
   "poweredBySpotify": "Powered by Spotify Web API",
-  "startExploring": "Start exploring amazing artists. Enter an artist name to begin your musical journey.",
   "popularArtists": "Popular Artists",
-  "noPopularArtists": "No popular artists available at the moment.",
-  "searchInstructions": "How to Search",
-  "step1Title": "Search for Artists",
-  "step1Description": "Use the search bar in the header to find your favorite artists by name.",
-  "step2Title": "View Artist Details",
-  "step2Description": "Click on any artist card to see their profile, top tracks, and albums.",
-  "step3Title": "Explore Music",
-  "step3Description": "Listen to tracks and explore albums directly through Spotify links.",
-  "trendingArtists": "Popular Artists",
-  "trendingDescription": "Some of the most known and popular artists",
-  "trendingError": "Could not load popular artists",
-  "heroTitle": "Explore Amazing Artists",
-  "heroSubtitle": "Discover popular artists, top tracks and albums with the Spotify API",
-  "feature1": "Popular artists",
-  "feature2": "Top tracks and albums",
-  "feature3": "Complete biographies"
+  "noPopularArtists": "No popular artists available at the moment."
 }
