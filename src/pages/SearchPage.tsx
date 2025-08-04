@@ -3,7 +3,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { ArtistCard } from '@/components/ui/ArtistCard'
+import { AlbumCard, ArtistCard } from '@/components/ui'
+import { GenreCard, TrackCard } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,7 +12,6 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
-import { GenreCard } from '@/components/ui/GenreCard'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { spotifyRepository } from '@/repositories'
 import { useSearchStore } from '@/stores/searchStore'
@@ -24,6 +24,8 @@ export const SearchPage: React.FC = () => {
   const {
     searchResults,
     artists,
+    tracks,
+    albums,
     genres,
     isLoading,
     isLoadingMore,
@@ -80,11 +82,11 @@ export const SearchPage: React.FC = () => {
         {searchQuery ? (
           <div className="space-y-8">
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-muted-foreground" />
+              <Search className="w-5 h-5 text-muted-foreground" />
               <h2 className="text-xl font-semibold text-foreground">
                 {t('search:resultsForTerm', {
                   term: searchQuery,
-                  defaultValue: 'Results for “{term}”',
+                  defaultValue: 'Results for "{term}"',
                 })}
               </h2>
             </div>
@@ -96,6 +98,40 @@ export const SearchPage: React.FC = () => {
                   <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                     <Users className="w-5 h-5" />
                     {t('search:artists')}
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                    {Array.from({ length: 10 }).map((_, index) => (
+                      <div key={index} className="animate-pulse">
+                        <div className="aspect-square bg-muted rounded-lg mb-3"></div>
+                        <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
+                        <div className="h-3 bg-muted rounded w-1/2"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tracks Loading */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Music className="w-5 h-5" />
+                    {t('search:tracks', 'Tracks')}
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                    {Array.from({ length: 10 }).map((_, index) => (
+                      <div key={index} className="animate-pulse">
+                        <div className="aspect-square bg-muted rounded-lg mb-3"></div>
+                        <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
+                        <div className="h-3 bg-muted rounded w-1/2"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Albums Loading */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Disc3 className="w-5 h-5" />
+                    {t('search:albums', 'Albums')}
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                     {Array.from({ length: 10 }).map((_, index) => (
@@ -136,7 +172,10 @@ export const SearchPage: React.FC = () => {
                   </div>
                 </CardContent>
               </Card>
-            ) : artists.length > 0 || genres.length > 0 ? (
+            ) : artists.length > 0 ||
+              tracks.length > 0 ||
+              albums.length > 0 ||
+              genres.length > 0 ? (
               <>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
@@ -167,6 +206,46 @@ export const SearchPage: React.FC = () => {
                           onClick={() => handleArtistClick(artist.id)}
                         >
                           <ArtistCard artist={artist} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Tracks Section */}
+                {tracks.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Music className="w-5 h-5" />
+                      {t('search:tracksWithCount', {
+                        count: tracks.length,
+                        defaultValue: 'Tracks ({count})',
+                      })}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      {tracks.map((track) => (
+                        <div key={track.id}>
+                          <TrackCard track={track} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Albums Section */}
+                {albums.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Disc3 className="w-5 h-5" />
+                      {t('search:albumsWithCount', {
+                        count: albums.length,
+                        defaultValue: 'Albums ({count})',
+                      })}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      {albums.map((album) => (
+                        <div key={album.id}>
+                          <AlbumCard album={album} />
                         </div>
                       ))}
                     </div>

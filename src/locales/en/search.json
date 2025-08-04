@@ -1,12 +1,13 @@
 {
-  "placeholder": "Search for artists, songs, or albums",
+  "placeholder": "Search for artists, tracks, and albums",
   "resultsFor": "Results for",
+  "resultsForTerm": "Results for \"{{term}}\"",
   "totalResults": "{{count}} results found",
   "showingResults": "Showing {{showing}} of {{total}}",
-  "noResultsMessage": "Try searching for a different artist or check your spelling.",
-  "welcomeMessage": "Discover artists, explore their music, and find your next favorite track.",
+  "noResultsMessage": "Try searching for a different artist, track, or album, or check your spelling.",
+  "welcomeMessage": "Discover artists, tracks, and albums. Explore music and find your next favorite.",
   "title": "Search",
-  "description": "Search for artists, songs, and albums",
+  "description": "Search for artists, tracks, and albums",
   "errorMessage": "Error loading search results",
   "noResultsTitle": "No results found",
   "welcomeTitle": "Start searching",
@@ -14,7 +15,14 @@
   "loadingMore": "Loading more...",
   "endOfResults": "You've reached the end of the results",
   "artists": "Artists",
+  "artistsWithCount": "Artists ({{count}})",
+  "tracks": "Tracks",
+  "tracksWithCount": "Tracks ({{count}})",
+  "albums": "Albums",
+  "albumsWithCount": "Albums ({{count}})",
   "genres": "Genres",
+  "genresWithCount": "Genres ({{count}})",
   "genre": "Genre",
-  "results": "Search Results"
+  "results": "Search Results",
+  "testClientToken": "Test Client Token"
 }

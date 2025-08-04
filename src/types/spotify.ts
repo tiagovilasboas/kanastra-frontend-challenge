@@ -3,8 +3,9 @@ import {
   SpotifyTrack,
 } from '@/schemas/spotify'
 
-// Re-export SpotifyTrack for backward compatibility
+// Re-export SpotifyTrack and SpotifyAlbum for backward compatibility
 export type { SpotifyTrack }
+export type { SpotifyAlbumSchema as SpotifyAlbum }
 
 export interface SpotifyImage {
   url: string

@@ -22,5 +22,8 @@
   "yes": "Yes",
   "no": "No",
   "ok": "OK",
-  "percent": "%"
+  "percent": "%",
+  "colon": ": ",
+  "popularity": "Popularity",
+  "tracks": "tracks"
 }

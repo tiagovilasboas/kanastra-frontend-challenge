@@ -1,10 +1,11 @@
 {
-  "placeholder": "Pesquisar artistas, músicas ou álbuns",
+  "placeholder": "Pesquisar artistas, músicas e álbuns",
   "resultsFor": "Resultados para",
+  "resultsForTerm": "Resultados para \"{{term}}\"",
   "totalResults": "{{count}} resultados encontrados",
   "showingResults": "Mostrando {{showing}} de {{total}}",
-  "noResultsMessage": "Tente pesquisar por um artista diferente ou verifique a ortografia.",
-  "welcomeMessage": "Descubra artistas, explore suas músicas e encontre sua próxima faixa favorita.",
+  "noResultsMessage": "Tente pesquisar por um artista, música ou álbum diferente, ou verifique a ortografia.",
+  "welcomeMessage": "Descubra artistas, músicas e álbuns. Explore a música e encontre seu próximo favorito.",
   "title": "Pesquisar",
   "description": "Pesquise por artistas, músicas e álbuns",
   "errorMessage": "Erro ao carregar resultados da pesquisa",
@@ -14,7 +15,14 @@
   "loadingMore": "Carregando mais...",
   "endOfResults": "Você chegou ao final dos resultados",
   "artists": "Artistas",
+  "artistsWithCount": "Artistas ({{count}})",
+  "tracks": "Músicas",
+  "tracksWithCount": "Músicas ({{count}})",
+  "albums": "Álbuns",
+  "albumsWithCount": "Álbuns ({{count}})",
   "genres": "Gêneros",
+  "genresWithCount": "Gêneros ({{count}})",
   "genre": "Gênero",
-  "results": "Resultados da pesquisa"
+  "results": "Resultados da pesquisa",
+  "testClientToken": "Testar Token Cliente"
 }

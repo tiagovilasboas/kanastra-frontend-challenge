@@ -13,7 +13,7 @@
   "delete": "Excluir",
   "edit": "Editar",
   "add": "Adicionar",
-  "search": "Buscar",
+  "search": "Pesquisar",
   "filter": "Filtrar",
   "sort": "Ordenar",
   "view": "Visualizar",
@@ -22,5 +22,8 @@
   "yes": "Sim",
   "no": "Não",
   "ok": "OK",
-  "percent": "%"
+  "percent": "%",
+  "colon": ": ",
+  "popularity": "Popularidade",
+  "tracks": "músicas"
 }
