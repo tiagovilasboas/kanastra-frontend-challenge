@@ -34,10 +34,8 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
     .map(([key]) => key)
 
   if (missingVars.length > 0) {
-    console.error('Missing required environment variables:', missingVars)
-    throw new Error(
-      `Missing required environment variables: ${missingVars.join(', ')}`,
-    )
+    console.warn('Missing required environment variables:', missingVars)
+    console.warn('App will work in demo mode without Spotify API access')
   }
 
   return {
