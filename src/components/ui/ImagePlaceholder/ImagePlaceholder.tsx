@@ -1,7 +1,5 @@
 import React from 'react'
 
-import styles from './ImagePlaceholder.module.css'
-
 interface ImagePlaceholderProps {
   width?: string | number
   height?: string | number
@@ -17,11 +15,11 @@ export const ImagePlaceholder: React.FC<ImagePlaceholderProps> = ({
 }) => {
   return (
     <div
-      className={`${styles.placeholder} ${className}`}
+      className={`flex items-center justify-center bg-gray-800 rounded text-gray-400 min-h-[100px] min-w-[100px] ${className}`}
       style={{ width, height }}
     >
       {children || (
-        <div className={styles.icon}>
+        <div className="flex items-center justify-center opacity-50">
           <svg
             width="24"
             height="24"

@@ -1,7 +1,5 @@
 import React from 'react'
 
-import styles from './LoadingSkeleton.module.css'
-
 interface LoadingSkeletonProps {
   className?: string
   height?: string
@@ -17,7 +15,7 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 }) => {
   return (
     <div
-      className={`${styles.skeleton} ${className}`}
+      className={`bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 bg-[length:200%_100%] animate-pulse rounded ${className}`}
       style={{
         height,
         width,
@@ -30,25 +28,17 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
 // Page loading component
 export const PageLoading: React.FC = () => {
   return (
-    <div className={styles.pageLoading}>
-      <div className={styles.pageLoadingContent}>
-        <LoadingSkeleton
-          height="40px"
-          width="60%"
-          className={styles.titleSkeleton}
-        />
-        <LoadingSkeleton
-          height="20px"
-          width="80%"
-          className={styles.subtitleSkeleton}
-        />
-        <div className={styles.gridSkeleton}>
+    <div className="min-h-screen flex items-center justify-center p-8">
+      <div className="w-full max-w-6xl flex flex-col gap-8">
+        <LoadingSkeleton height="40px" width="60%" className="mb-6" />
+        <LoadingSkeleton height="20px" width="80%" className="mb-8" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 6 }).map((_, index) => (
             <LoadingSkeleton
               key={index}
               height="200px"
               width="100%"
-              className={styles.cardSkeleton}
+              className="rounded-lg"
             />
           ))}
         </div>

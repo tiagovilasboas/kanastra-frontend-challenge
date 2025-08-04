@@ -3,8 +3,6 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import styles from './SearchInput.module.css'
-
 interface SearchInputProps {
   onSearch: (query: string) => void
   placeholder?: string
@@ -43,11 +41,13 @@ export function SearchInput({
   }
 
   return (
-    <div className={styles.searchContainer}>
-      <div className={styles.searchIconWrapper}>
-        <Search className={styles.searchIcon} size={20} />
+    <div className="relative w-full">
+      {/* Search Icon */}
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 transition-colors duration-200 group-focus-within:text-[#1DB954]">
+        <Search className="w-5 h-5" />
       </div>
 
+      {/* Input Field */}
       <input
         data-testid="search-input"
         type="text"
@@ -56,23 +56,20 @@ export function SearchInput({
         onFocus={handleFocus}
         placeholder={placeholder}
         disabled={disabled}
-        className={styles.searchInput}
+        className="w-full bg-gray-800 border border-gray-600 rounded-xl pl-10 pr-10 py-3 text-white font-medium text-base transition-all duration-200 placeholder:text-gray-400 placeholder:font-normal focus:outline-none focus:border-[#1DB954] focus:bg-gray-700 focus:shadow-[0_0_0_2px_rgba(29,185,84,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
       />
 
-      <div className={styles.searchActions}>
-        {value && !disabled && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className={styles.clearButton}
-            aria-label={t('searchInput:clearSearch', 'Clear search')}
-          >
-            <X size={16} />
-          </button>
-        )}
-
-        {/* Removed scan button for cleaner mobile experience */}
-      </div>
+      {/* Clear Button */}
+      {value && !disabled && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-none border-none text-gray-400 cursor-pointer p-1 rounded transition-all duration-200 hover:text-white hover:bg-gray-700 hover:scale-105 focus-visible:outline-2 focus-visible:outline-[#1DB954] focus-visible:outline-offset-2"
+          aria-label={t('searchInput:clearSearch', 'Clear search')}
+        >
+          <X size={16} />
+        </button>
+      )}
     </div>
   )
 }
