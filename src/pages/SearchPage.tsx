@@ -1,5 +1,5 @@
 import { Disc3, Loader2, Music, Search, Users } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,6 +12,7 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
+import { SearchFilters, SearchFilterType } from '@/components/ui/SearchFilters'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
 import { logger } from '@/utils/logger'
@@ -20,6 +21,8 @@ export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { searchQuery } = useSearchStore()
+  const [activeFilter, setActiveFilter] = useState<SearchFilterType>('all')
+
   const {
     searchResults,
     artists,
@@ -43,6 +46,15 @@ export const SearchPage: React.FC = () => {
     // In the future, this could navigate to a genre page
     logger.debug('Genre clicked', { genre })
   }
+
+  const handleFilterChange = (filter: SearchFilterType) => {
+    setActiveFilter(filter)
+  }
+
+  // Determine which sections to show based on active filter
+  const shouldShowArtists = activeFilter === 'all' || activeFilter === 'artists'
+  const shouldShowTracks = activeFilter === 'all' || activeFilter === 'tracks'
+  const shouldShowAlbums = activeFilter === 'all' || activeFilter === 'albums'
 
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">
@@ -71,58 +83,75 @@ export const SearchPage: React.FC = () => {
               </h2>
             </div>
 
+            {/* Filters */}
+            {(artists.length > 0 || tracks.length > 0 || albums.length > 0) && (
+              <SearchFilters
+                activeFilter={activeFilter}
+                onFilterChange={handleFilterChange}
+                hasArtists={artists.length > 0}
+                hasTracks={tracks.length > 0}
+                hasAlbums={albums.length > 0}
+              />
+            )}
+
             {isLoading ? (
               <div className="space-y-8">
                 {/* Artists Loading */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    {t('search:artists')}
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                    {Array.from({ length: 10 }).map((_, index) => (
-                      <div key={index} className="animate-pulse">
-                        <div className="aspect-square bg-muted rounded-lg mb-3"></div>
-                        <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
-                        <div className="h-3 bg-muted rounded w-1/2"></div>
-                      </div>
-                    ))}
+                {shouldShowArtists && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      {t('search:artists')}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      {Array.from({ length: 10 }).map((_, index) => (
+                        <div key={index} className="animate-pulse">
+                          <div className="aspect-square bg-muted rounded-lg mb-3"></div>
+                          <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
+                          <div className="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Tracks Loading */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Music className="w-5 h-5" />
-                    {t('search:tracks', 'Tracks')}
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                    {Array.from({ length: 10 }).map((_, index) => (
-                      <div key={index} className="animate-pulse">
-                        <div className="aspect-square bg-muted rounded-lg mb-3"></div>
-                        <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
-                        <div className="h-3 bg-muted rounded w-1/2"></div>
-                      </div>
-                    ))}
+                {shouldShowTracks && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Music className="w-5 h-5" />
+                      {t('search:tracks', 'Tracks')}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      {Array.from({ length: 10 }).map((_, index) => (
+                        <div key={index} className="animate-pulse">
+                          <div className="aspect-square bg-muted rounded-lg mb-3"></div>
+                          <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
+                          <div className="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Albums Loading */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                    <Disc3 className="w-5 h-5" />
-                    {t('search:albums', 'Albums')}
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-                    {Array.from({ length: 10 }).map((_, index) => (
-                      <div key={index} className="animate-pulse">
-                        <div className="aspect-square bg-muted rounded-lg mb-3"></div>
-                        <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
-                        <div className="h-3 bg-muted rounded w-1/2"></div>
-                      </div>
-                    ))}
+                {shouldShowAlbums && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                      <Disc3 className="w-5 h-5" />
+                      {t('search:albums', 'Albums')}
+                    </h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      {Array.from({ length: 10 }).map((_, index) => (
+                        <div key={index} className="animate-pulse">
+                          <div className="aspect-square bg-muted rounded-lg mb-3"></div>
+                          <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
+                          <div className="h-3 bg-muted rounded w-1/2"></div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Genres Loading */}
                 <div className="space-y-4">
@@ -170,7 +199,7 @@ export const SearchPage: React.FC = () => {
                 </div>
 
                 {/* Artists Section */}
-                {artists.length > 0 && (
+                {shouldShowArtists && artists.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Users className="w-5 h-5" />
@@ -193,7 +222,7 @@ export const SearchPage: React.FC = () => {
                 )}
 
                 {/* Tracks Section */}
-                {tracks.length > 0 && (
+                {shouldShowTracks && tracks.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Music className="w-5 h-5" />
@@ -204,16 +233,14 @@ export const SearchPage: React.FC = () => {
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                       {tracks.map((track) => (
-                        <div key={track.id}>
-                          <TrackCard track={track} />
-                        </div>
+                        <TrackCard key={track.id} track={track} />
                       ))}
                     </div>
                   </div>
                 )}
 
                 {/* Albums Section */}
-                {albums.length > 0 && (
+                {shouldShowAlbums && albums.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Disc3 className="w-5 h-5" />
@@ -224,9 +251,7 @@ export const SearchPage: React.FC = () => {
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                       {albums.map((album) => (
-                        <div key={album.id}>
-                          <AlbumCard album={album} />
-                        </div>
+                        <AlbumCard key={album.id} album={album} />
                       ))}
                     </div>
                   </div>
@@ -261,12 +286,12 @@ export const SearchPage: React.FC = () => {
                     <Button
                       onClick={loadMore}
                       disabled={isLoadingMore}
-                      className="min-w-[200px]"
+                      className="px-8"
                     >
                       {isLoadingMore ? (
                         <>
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          {t('search:loadingMore')}
+                          {t('search:loadingMore', 'Loading...')}
                         </>
                       ) : (
                         t('search:loadMore')
@@ -274,46 +299,35 @@ export const SearchPage: React.FC = () => {
                     </Button>
                   </div>
                 )}
-
-                {/* End of Results */}
-                {!hasMore && searchResults.length > 0 && (
-                  <div className="text-center py-6">
-                    <p className="text-sm text-muted-foreground">
-                      {t('search:endOfResults')}
-                    </p>
-                  </div>
-                )}
               </>
             ) : (
               <Card>
                 <CardContent className="p-6">
                   <div className="text-center">
-                    <Music className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <CardTitle className="mb-2">
-                      {t('search:noResultsTitle')}
-                    </CardTitle>
-                    <CardDescription>
-                      {t('search:noResultsMessage')}
-                    </CardDescription>
+                    <p className="text-muted-foreground mb-2">
+                      {t('search:noResultsTitle', 'No results found')}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {t('search:noResultsMessage', {
+                        term: searchQuery,
+                        defaultValue:
+                          'No results found for "{term}". Try a different search term.',
+                      })}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
             )}
           </div>
         ) : (
-          /* Empty State */
           <Card>
-            <CardContent className="p-12">
-              <div className="text-center space-y-4">
-                <Search className="w-16 h-16 text-muted-foreground mx-auto" />
-                <div>
-                  <CardTitle className="text-xl mb-2">
-                    {t('search:welcomeTitle')}
-                  </CardTitle>
-                  <CardDescription className="text-base">
-                    {t('search:welcomeMessage')}
-                  </CardDescription>
-                </div>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <CardTitle className="mb-2">
+                  {t('search:welcomeTitle', 'Start searching')}
+                </CardTitle>
+                <CardDescription>{t('search:welcomeMessage')}</CardDescription>
               </div>
             </CardContent>
           </Card>
