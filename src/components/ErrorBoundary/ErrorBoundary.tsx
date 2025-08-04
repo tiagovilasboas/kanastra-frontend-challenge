@@ -1,7 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/Button'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   children: ReactNode
@@ -70,7 +70,7 @@ export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
               </details>
             )}
 
-            <Button onClick={this.handleReset} variant="primary">
+            <Button onClick={this.handleReset} variant="default">
               {t('ui:errorBoundary.tryAgain', 'Try Again')}
             </Button>
           </div>

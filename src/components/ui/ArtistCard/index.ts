@@ -1,1 +1,0 @@
-export { ArtistCard } from './ArtistCard' 
