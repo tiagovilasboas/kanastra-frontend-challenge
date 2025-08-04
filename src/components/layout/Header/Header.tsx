@@ -1,8 +1,22 @@
-
-import { LogIn, Menu, Music, Search, User } from 'lucide-react'
+import {
+  LogIn,
+  LogOut,
+  Menu,
+  Music,
+  Search,
+  Settings,
+  User,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
@@ -25,7 +39,6 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
   return (
     <header className="bg-background border-b border-border px-4 py-3 z-50">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
-        
         {/* Left side - Menu button and Logo */}
         <div className="flex items-center gap-4">
           {/* Mobile Menu Button */}
@@ -37,7 +50,7 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
           >
             <Menu className="w-5 h-5" />
           </Button>
-          
+
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Music className="w-6 h-6 text-primary" />
@@ -52,7 +65,10 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder={searchPlaceholder || t('search:placeholder', 'Search for artists, songs, or albums')}
+              placeholder={
+                searchPlaceholder ||
+                t('search:placeholder', 'Search for artists, songs, or albums')
+              }
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="pl-10 bg-muted/50 border-0 focus:bg-background"
@@ -64,16 +80,30 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
         <div className="flex items-center gap-2">
           {/* Language Selector */}
           <LanguageSelector />
-          
+
           {isAuthenticated ? (
-            <>
-              <Button variant="ghost" size="sm">
-                <User className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={logout}>
-                {t('auth:logout', 'Logout')}
-              </Button>
-            </>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative">
+                  <User className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem>
+                  <User className="w-4 h-4 mr-2" />
+                  {t('auth:profile', 'Profile')}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="w-4 h-4 mr-2" />
+                  {t('auth:settings', 'Settings')}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} variant="destructive">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  {t('auth:logout', 'Logout')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button size="sm" onClick={login}>
               <LogIn className="w-4 h-4 mr-2" />
