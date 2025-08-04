@@ -43,7 +43,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         logger.debug('Debounced search triggered', { searchQuery })
         setDebouncedQuery(searchQuery)
         setPage(0)
-      }, 300)
+      }, 500)
     } else {
       setDebouncedQuery('')
       setResults([])

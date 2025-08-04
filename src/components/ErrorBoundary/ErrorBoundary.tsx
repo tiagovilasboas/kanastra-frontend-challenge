@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/Button'
 
-import styles from './ErrorBoundary.module.css'
-
 interface Props {
   children: ReactNode
   fallback?: ReactNode
@@ -48,12 +46,12 @@ export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
         }
 
         return (
-          <div className={styles.errorContainer}>
-            <h1 className={styles.errorTitle}>
+          <div className="flex flex-col items-center justify-center p-8 text-center min-h-[50vh]">
+            <h1 className="text-red-500 text-3xl font-bold mb-6">
               {t('ui:errorBoundary.title', 'Oops! Something went wrong')}
             </h1>
 
-            <p className={styles.errorDescription}>
+            <p className="text-gray-400 text-lg mb-8 max-w-md">
               {t(
                 'ui:errorBoundary.description',
                 'Sorry, an unexpected error occurred. Try reloading the page.',
@@ -61,11 +59,11 @@ export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
             </p>
 
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <details className={styles.errorDetails}>
-                <summary>
+              <details className="my-6 text-left w-full max-w-lg">
+                <summary className="cursor-pointer text-white font-medium mb-2">
                   {t('ui:errorBoundary.details', 'Error details (development)')}
                 </summary>
-                <pre className={styles.errorStack}>
+                <pre className="text-xs bg-gray-800 p-4 rounded border border-gray-600 mt-2 overflow-auto whitespace-pre-wrap text-white">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
                 </pre>
