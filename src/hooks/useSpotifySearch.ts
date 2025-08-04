@@ -116,14 +116,32 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         const token = localStorage.getItem('spotify_token')
         let response
 
+        logger.debug('Search attempt', {
+          hasUserToken: !!token,
+          query: debouncedQuery,
+          page,
+          limit,
+          offset,
+        })
+
         if (token) {
+          logger.debug('Using user token for search')
           response = await spotifyRepository.searchArtists(
             debouncedQuery,
             limit,
             offset,
           )
         } else {
-          await spotifyRepository.getClientToken()
+          logger.debug('No user token, getting client token')
+          try {
+            await spotifyRepository.getClientToken()
+            logger.debug('Client token obtained successfully')
+          } catch (tokenError) {
+            logger.error('Failed to get client token', tokenError)
+            throw tokenError
+          }
+
+          logger.debug('Using client token for search')
           response = await spotifyRepository.searchArtistsPublic(
             debouncedQuery,
             limit,
