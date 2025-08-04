@@ -17,7 +17,7 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
   artist,
   isLoading,
   onBackToHome,
-  onRefresh
+  onRefresh,
 }) => {
   const { t } = useTranslation()
 
@@ -40,7 +40,9 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
           {t('common:back')}
         </Button>
         <Button variant="ghost" onClick={onRefresh} disabled={isLoading}>
-          <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+          <RefreshCw
+            className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`}
+          />
           {t('common:refresh')}
         </Button>
       </div>
@@ -57,7 +59,9 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
             />
           ) : (
             <div className="w-full h-full bg-muted flex items-center justify-center">
-              <span className="text-muted-foreground">{t('artist:noImage')}</span>
+              <span className="text-muted-foreground">
+                {t('artist:noImage')}
+              </span>
             </div>
           )}
         </div>
@@ -69,7 +73,8 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
               {artist.name}
             </h1>
             <p className="text-muted-foreground">
-              {formatFollowers(artist.followers?.total || 0)} {t('artist:followers')}
+              {formatFollowers(artist.followers?.total || 0)}{' '}
+              {t('artist:followers')}
             </p>
           </div>
 
@@ -77,7 +82,7 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
           {artist.genres && artist.genres.length > 0 && (
             <div>
               <h2 className="text-base font-semibold text-foreground mb-1">
-                {t('artist:genres', 'Gêneros')}
+                {t('artist:genres')}
               </h2>
               <div className="flex flex-wrap gap-2">
                 {artist.genres.slice(0, 5).map((genre) => (
@@ -91,37 +96,42 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
 
           {/* Popularity */}
           {artist.popularity && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                {t('artist:popularity')}:
-              </span>
-              <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary rounded-full"
-                  style={{ width: `${artist.popularity}%` }}
-                />
+            <div className="w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                <span className="text-sm text-muted-foreground">
+                  {t('artist:popularity')}
+                </span>
+                <div className="w-full sm:w-32 h-2 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full"
+                    style={{ width: `${artist.popularity}%` }}
+                  />
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {artist.popularity}
+                  {t('common:percent')}
+                </span>
               </div>
-              <span className="text-sm text-muted-foreground">
-                {artist.popularity}%
-              </span>
             </div>
           )}
 
           {/* External Link */}
           {artist.external_urls?.spotify && (
-            <Button asChild>
-              <a
-                href={artist.external_urls.spotify}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                {t('artist:openInSpotify')}
-              </a>
-            </Button>
+            <div className="w-full sm:w-auto">
+              <Button asChild className="w-full sm:w-auto">
+                <a
+                  href={artist.external_urls.spotify}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  {t('artist:openInSpotify')}
+                </a>
+              </Button>
+            </div>
           )}
         </div>
       </div>
     </>
   )
-} 
+}

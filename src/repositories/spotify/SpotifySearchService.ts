@@ -112,12 +112,12 @@ export class SpotifySearchService {
     type: 'artist' | 'track' | 'album' | 'playlist',
     filters?: SearchFilters,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ) {
     try {
       logger.debug('Advanced search', { query, type, filters, limit, offset })
 
-      const params: any = {
+      const params: Record<string, string | number> = {
         q: query,
         type,
         limit,
@@ -127,7 +127,7 @@ export class SpotifySearchService {
       // Add filters to query
       if (filters) {
         const filterParts: string[] = []
-        
+
         if (filters.year) {
           filterParts.push(`year:${filters.year}`)
         }
@@ -173,7 +173,9 @@ export class SpotifySearchService {
   }
 
   // Get recommendations
-  async getRecommendations(params: RecommendationParams): Promise<SpotifyTrack[]> {
+  async getRecommendations(
+    params: RecommendationParams,
+  ): Promise<SpotifyTrack[]> {
     try {
       logger.debug('Getting recommendations', params)
 
@@ -204,11 +206,14 @@ export class SpotifySearchService {
     try {
       logger.debug('Getting audio features', { trackId })
 
-      const response = await this.axiosInstance.get(`/audio-features/${trackId}`, {
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
+      const response = await this.axiosInstance.get(
+        `/audio-features/${trackId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.getAuthToken()}`,
+          },
         },
-      })
+      )
 
       logger.debug('Audio features retrieved successfully', { trackId })
       return response.data
@@ -224,7 +229,9 @@ export class SpotifySearchService {
   // Get audio features for multiple tracks
   async getMultipleAudioFeatures(trackIds: string[]): Promise<AudioFeatures[]> {
     try {
-      logger.debug('Getting multiple audio features', { trackIdsCount: trackIds.length })
+      logger.debug('Getting multiple audio features', {
+        trackIdsCount: trackIds.length,
+      })
 
       const response = await this.axiosInstance.get('/audio-features', {
         params: { ids: trackIds.join(',') },
@@ -252,11 +259,14 @@ export class SpotifySearchService {
     try {
       logger.debug('Getting available genres')
 
-      const response = await this.axiosInstance.get('/recommendations/available-genre-seeds', {
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
+      const response = await this.axiosInstance.get(
+        '/recommendations/available-genre-seeds',
+        {
+          headers: {
+            Authorization: `Bearer ${this.getAuthToken()}`,
+          },
         },
-      })
+      )
 
       logger.debug('Available genres retrieved successfully', {
         genresCount: response.data.genres?.length || 0,

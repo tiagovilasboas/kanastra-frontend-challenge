@@ -49,7 +49,10 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            {t('audio:errorLoading', 'Erro ao carregar características de áudio')}
+            {t(
+              'audio:errorLoading',
+              'Erro ao carregar características de áudio',
+            )}
           </p>
         </CardContent>
       </Card>
@@ -79,13 +82,19 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
       key: 'acousticness',
       label: t('audio:acousticness', 'Acústica'),
       value: audioFeatures.acousticness,
-      description: t('audio:acousticnessDesc', 'Confiança de que a música é acústica'),
+      description: t(
+        'audio:acousticnessDesc',
+        'Confiança de que a música é acústica',
+      ),
     },
     {
       key: 'instrumentalness',
       label: t('audio:instrumentalness', 'Instrumental'),
       value: audioFeatures.instrumentalness,
-      description: t('audio:instrumentalnessDesc', 'Predominância de instrumentos'),
+      description: t(
+        'audio:instrumentalnessDesc',
+        'Predominância de instrumentos',
+      ),
     },
     {
       key: 'liveness',
@@ -99,7 +108,7 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">
-          {t('audio:features', 'Características de Áudio')}
+          {t('audio:features')}
           {trackName && (
             <span className="text-sm font-normal text-muted-foreground block">
               {trackName}
@@ -119,13 +128,14 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                   </p>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {Math.round(feature.value * 100)}%
+                  {Math.round(feature.value * 100)}
+                  {t('common:percent', '%')}
                 </span>
               </div>
               <Progress value={feature.value * 100} className="h-2" />
             </div>
           ))}
-          
+
           {/* Additional info */}
           <div className="grid grid-cols-2 gap-4 pt-4 border-t">
             <div>
@@ -133,7 +143,7 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                 {t('audio:tempo', 'Tempo')}
               </p>
               <p className="text-sm font-medium">
-                {Math.round(audioFeatures.tempo)} BPM
+                {Math.round(audioFeatures.tempo)} {t('audio:bpm', 'BPM')}
               </p>
             </div>
             <div>
@@ -141,7 +151,10 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                 {t('audio:key', 'Tom')}
               </p>
               <p className="text-sm font-medium">
-                {getKeyName(audioFeatures.key)} {audioFeatures.mode === 1 ? 'Maior' : 'Menor'}
+                {getKeyName(audioFeatures.key)}{' '}
+                {audioFeatures.mode === 1
+                  ? t('audio:major', 'Major')
+                  : t('audio:minor', 'Minor')}
               </p>
             </div>
             <div>
@@ -149,7 +162,7 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                 {t('audio:loudness', 'Volume')}
               </p>
               <p className="text-sm font-medium">
-                {Math.round(audioFeatures.loudness)} dB
+                {Math.round(audioFeatures.loudness)} {t('audio:db', 'dB')}
               </p>
             </div>
             <div>
@@ -157,7 +170,8 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
                 {t('audio:timeSignature', 'Compasso')}
               </p>
               <p className="text-sm font-medium">
-                {audioFeatures.time_signature}/4
+                {audioFeatures.time_signature}
+                {t('audio:perFour', '/4')}
               </p>
             </div>
           </div>
@@ -171,4 +185,4 @@ export const AudioFeaturesCard: React.FC<AudioFeaturesCardProps> = ({
 function getKeyName(key: number): string {
   const keys = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B']
   return keys[key] || 'N/A'
-} 
+}

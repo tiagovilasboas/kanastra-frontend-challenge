@@ -20,7 +20,7 @@ interface UseSpotifySearchReturn {
 
 // Helper function to extract unique genres from artists
 const extractGenresFromArtists = (artists: SpotifyArtist[]): string[] => {
-  const allGenres = artists.flatMap(artist => artist.genres || [])
+  const allGenres = artists.flatMap((artist) => artist.genres || [])
   const uniqueGenres = [...new Set(allGenres)]
   return uniqueGenres.sort()
 }
@@ -28,21 +28,21 @@ const extractGenresFromArtists = (artists: SpotifyArtist[]): string[] => {
 // Helper function to separate artists and genres
 const separateResults = (artists: SpotifyArtist[], query: string) => {
   const queryLower = query.toLowerCase()
-  
+
   // Extract all genres from artists
   const allGenres = extractGenresFromArtists(artists)
-  
+
   // Filter genres that match the query
-  const matchingGenres = allGenres.filter(genre => 
-    genre.toLowerCase().includes(queryLower)
+  const matchingGenres = allGenres.filter((genre) =>
+    genre.toLowerCase().includes(queryLower),
   )
-  
+
   // For now, return all artists as regular artists and matching genres
   // This ensures we always show results
   return {
     artists: artists, // Show all artists
     genres: matchingGenres,
-    genreArtists: []
+    genreArtists: [],
   }
 }
 
@@ -111,11 +111,11 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         offset,
         currentResults: results.length,
       })
-      
+
       try {
         const token = localStorage.getItem('spotify_token')
         let response
-        
+
         if (token) {
           response = await spotifyRepository.searchArtists(
             debouncedQuery,
@@ -130,12 +130,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
             offset,
           )
         }
-        
+
         if (cancelled) return
-        
+
         const newArtists = response.artists.items
         const total = response.artists.total
-        
+
         logger.debug('Artists fetched successfully', {
           query: debouncedQuery,
           page,
@@ -146,27 +146,29 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           firstArtist: newArtists[0]?.name,
           lastArtist: newArtists[newArtists.length - 1]?.name,
         })
-        
+
         setTotalResults(total)
         const newHasMore = offset + newArtists.length < total
         setHasMore(newHasMore)
-        
+
         logger.debug('Pagination info', {
           offset,
           newArtistsLength: newArtists.length,
           total,
           newHasMore,
-          currentPage: page
+          currentPage: page,
         })
         setError(null)
-        
+
         if (page === 0) {
           setResults(newArtists)
         } else {
           setResults((prev) => {
             // Remove duplicates based on artist ID
-            const existingIds = new Set(prev.map(artist => artist.id))
-            const uniqueNewArtists = newArtists.filter(artist => !existingIds.has(artist.id))
+            const existingIds = new Set(prev.map((artist) => artist.id))
+            const uniqueNewArtists = newArtists.filter(
+              (artist) => !existingIds.has(artist.id),
+            )
             return [...prev, ...uniqueNewArtists]
           })
         }
@@ -177,12 +179,13 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         }
       } catch (error) {
         logger.error('Search failed', error)
-        
+
         if (cancelled) return
-        
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error occurred'
         setError(errorMessage)
-        
+
         // Clear results on error
         if (page === 0) {
           setResults([])
@@ -198,7 +201,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     return () => {
       cancelled = true
     }
-  }, [debouncedQuery, page, limit])
+  }, [debouncedQuery, page, limit, results.length])
 
   const clearSearch = useCallback(() => {
     logger.debug('clearSearch called')
@@ -224,14 +227,14 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
 
   // Separate results into artists and genres
   const { artists, genres } = separateResults(results, debouncedQuery)
-  
+
   // Debug logs
   logger.debug('Search results separated', {
     totalResults: results.length,
     artistsCount: artists.length,
     genresCount: genres.length,
     hasMore,
-    query: debouncedQuery
+    query: debouncedQuery,
   })
 
   return {

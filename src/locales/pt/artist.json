@@ -20,5 +20,7 @@
   "authRequiredMessage": "Faça login para ver detalhes completos do artista",
   "type": "Artista",
   "genres": "Gêneros",
-  "albumsSortedByDate": "Ordenados por data de lançamento"
+  "albumsSortedByDate": "Ordenados por data de lançamento",
+  "tracks": "faixas",
+  "separator": "•"
 }

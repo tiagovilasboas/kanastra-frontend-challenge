@@ -3,7 +3,13 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 
 export function MobileNavigation() {
   const { t } = useTranslation()
@@ -17,55 +23,61 @@ export function MobileNavigation() {
     'Classical Music',
     'Hayleys Bday',
     'Discover Weekly',
-    'Liked From Radio'
+    'Liked From Radio',
   ]
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           className="lg:hidden"
-          aria-label={t('navigation:openMenu', 'Abrir menu')}
+          aria-label={t('navigation:openMenu')}
         >
           <Menu size={20} />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="w-80 bg-sidebar border-r border-sidebar-border">
+      <SheetContent
+        side="left"
+        className="w-80 bg-sidebar border-r border-sidebar-border"
+      >
         <SheetHeader>
           <SheetTitle className="text-sidebar-foreground">
             <div className="flex items-center gap-2">
               <Music className="w-6 h-6 text-primary" />
-              <span>{t('navigation:spotifyExplorer', 'Spotify Explorer')}</span>
+              <span>{t('navigation:spotifyExplorer')}</span>
             </div>
           </SheetTitle>
         </SheetHeader>
-        
+
         <Separator className="my-4" />
-        
+
         {/* Navigation */}
         <div className="space-y-2">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 hover:bg-sidebar-accent"
           >
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <span className="text-lg">🏠</span>
             <span>{t('navigation:home', 'Home')}</span>
           </Button>
-          
-          <Button 
-            variant="ghost" 
+
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 hover:bg-sidebar-accent"
           >
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <span className="text-lg">🔍</span>
             <span>{t('navigation:search', 'Search')}</span>
           </Button>
-          
-          <Button 
-            variant="ghost" 
+
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 hover:bg-sidebar-accent"
           >
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <span className="text-lg">📚</span>
             <span>{t('navigation:library', 'Your Library')}</span>
           </Button>
@@ -75,18 +87,20 @@ export function MobileNavigation() {
 
         {/* Actions */}
         <div className="space-y-2">
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 hover:bg-sidebar-accent"
           >
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <span className="text-lg">➕</span>
             <span>{t('navigation:createPlaylist', 'Create Playlist')}</span>
           </Button>
-          
-          <Button 
-            variant="ghost" 
+
+          <Button
+            variant="ghost"
             className="w-full justify-start gap-3 hover:bg-sidebar-accent"
           >
+            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
             <span className="text-lg">❤️</span>
             <span>{t('navigation:likedSongs', 'Liked Songs')}</span>
           </Button>
@@ -103,7 +117,7 @@ export function MobileNavigation() {
                 variant="ghost"
                 className="w-full justify-start text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent"
               >
-                {playlist}
+                {t('navigation:playlistName', playlist)}
               </Button>
             ))}
           </div>

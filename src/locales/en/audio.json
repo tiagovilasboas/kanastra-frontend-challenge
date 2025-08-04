@@ -16,5 +16,7 @@
   "tempo": "Tempo",
   "key": "Key",
   "loudness": "Loudness",
-  "timeSignature": "Time Signature"
-} 
+  "timeSignature": "Time Signature",
+  "major": "Major",
+  "minor": "Minor"
+}

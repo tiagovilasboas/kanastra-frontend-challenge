@@ -16,5 +16,7 @@
   "tempo": "Tempo",
   "key": "Tom",
   "loudness": "Volume",
-  "timeSignature": "Compasso"
-} 
+  "timeSignature": "Compasso",
+  "major": "Maior",
+  "minor": "Menor"
+}

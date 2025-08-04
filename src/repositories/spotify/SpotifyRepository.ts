@@ -7,7 +7,12 @@ import { errorHandler } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 
 import { SpotifyAuthService } from './SpotifyAuthService'
-import { AudioFeatures,RecommendationParams, SearchFilters, SpotifySearchService } from './SpotifySearchService'
+import {
+  AudioFeatures,
+  RecommendationParams,
+  SearchFilters,
+  SpotifySearchService,
+} from './SpotifySearchService'
 
 export class SpotifyRepository {
   private authService: SpotifyAuthService
@@ -208,13 +213,19 @@ export class SpotifyRepository {
     type: 'artist' | 'track' | 'album' | 'playlist',
     filters?: SearchFilters,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ) {
     // Ensure we have a token
     if (!this.accessToken && !this.searchService.hasClientToken()) {
       await this.getClientToken()
     }
-    return this.searchService.searchAdvanced(query, type, filters, limit, offset)
+    return this.searchService.searchAdvanced(
+      query,
+      type,
+      filters,
+      limit,
+      offset,
+    )
   }
 
   async getRecommendations(params: RecommendationParams) {
@@ -342,12 +353,6 @@ export class SpotifyRepository {
 
     // Clear cookies
     CookieManager.clearCodeVerifier()
-
-    // Clear any cached data
-    if (typeof window !== 'undefined' && window.location) {
-      // Force page reload to clear any cached state
-      window.location.href = '/'
-    }
 
     logger.debug('Logout completed')
   }

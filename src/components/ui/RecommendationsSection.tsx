@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next'
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { useRecommendations } from '@/hooks/useRecommendations'
 import { SpotifyTrack } from '@/types/spotify'
@@ -21,7 +27,7 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
   seedTracks = [],
 }) => {
   const { t } = useTranslation()
-  
+
   const [targetEnergy, setTargetEnergy] = useState([0.5])
   const [targetDanceability, setTargetDanceability] = useState([0.5])
   const [targetValence, setTargetValence] = useState([0.5])
@@ -29,7 +35,11 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
   const [targetPopularity, setTargetPopularity] = useState([50])
   const [limit, setLimit] = useState(20)
 
-  const { recommendations, isLoading: isLoadingRecommendations, error } = useRecommendations({
+  const {
+    recommendations,
+    isLoading: isLoadingRecommendations,
+    error,
+  } = useRecommendations({
     params: {
       seed_artists: seedArtists,
       seed_genres: seedGenres,
@@ -41,7 +51,8 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
       target_popularity: targetPopularity[0],
       limit,
     },
-    enabled: seedArtists.length > 0 || seedGenres.length > 0 || seedTracks.length > 0,
+    enabled:
+      seedArtists.length > 0 || seedGenres.length > 0 || seedTracks.length > 0,
   })
 
   const handleTrackClick = (track: SpotifyTrack) => {
@@ -50,7 +61,11 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
     }
   }
 
-  if (seedArtists.length === 0 && seedGenres.length === 0 && seedTracks.length === 0) {
+  if (
+    seedArtists.length === 0 &&
+    seedGenres.length === 0 &&
+    seedTracks.length === 0
+  ) {
     return (
       <section className="space-y-4">
         <div className="flex items-center gap-2">
@@ -109,7 +124,8 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {Math.round(targetEnergy[0] * 100)}%
+                  {Math.round(targetEnergy[0] * 100)}
+                  {t('common:percent', '%')}
                 </p>
               </div>
 
@@ -125,7 +141,8 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {Math.round(targetDanceability[0] * 100)}%
+                  {Math.round(targetDanceability[0] * 100)}
+                  {t('common:percent', '%')}
                 </p>
               </div>
 
@@ -141,7 +158,8 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {Math.round(targetValence[0] * 100)}%
+                  {Math.round(targetValence[0] * 100)}
+                  {t('common:percent', '%')}
                 </p>
               </div>
 
@@ -157,7 +175,7 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {targetTempo[0]} BPM
+                  {targetTempo[0]} {t('audio:bpm', 'BPM')}
                 </p>
               </div>
 
@@ -173,22 +191,34 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                   className="w-full"
                 />
                 <p className="text-xs text-muted-foreground">
-                  {targetPopularity[0]}%
+                  {targetPopularity[0]}
+                  {t('common:percent', '%')}
                 </p>
               </div>
 
               {/* Limit */}
               <div className="space-y-2">
                 <Label>{t('recommendations:limit')}</Label>
-                <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
+                <Select
+                  value={limit.toString()}
+                  onValueChange={(value) => setLimit(Number(value))}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="5">5</SelectItem>
-                    <SelectItem value="10">10</SelectItem>
-                    <SelectItem value="20">20</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="5">
+                      {t('recommendations:limit5', '5')}
+                    </SelectItem>
+                    <SelectItem value="10">
+                      {t('recommendations:limit10', '10')}
+                    </SelectItem>
+                    <SelectItem value="20">
+                      {t('recommendations:limit20', '20')}
+                    </SelectItem>
+                    <SelectItem value="50">
+                      {t('recommendations:limit50', '50')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -213,23 +243,24 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
       ) : error ? (
         <Card>
           <CardContent className="p-6">
-            <p className="text-destructive">
-              {t('recommendations:error')}
-            </p>
+            <p className="text-destructive">{t('recommendations:error')}</p>
           </CardContent>
         </Card>
       ) : recommendations.length > 0 ? (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold">
-              {t('recommendations:results')} ({recommendations.length})
+              {t('recommendations:resultsWithCount', {
+                count: recommendations.length,
+                defaultValue: 'Results ({count})',
+              })}
             </h3>
           </div>
-          
+
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {recommendations.map((track) => (
-              <Card 
-                key={track.id} 
+              <Card
+                key={track.id}
                 className="hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => handleTrackClick(track)}
               >
@@ -252,7 +283,7 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
                       {track.name}
                     </h4>
                     <p className="text-xs text-muted-foreground line-clamp-1">
-                      {track.artists.map(artist => artist.name).join(', ')}
+                      {track.artists.map((artist) => artist.name).join(', ')}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {track.album.name}
@@ -280,4 +311,4 @@ export const RecommendationsSection: React.FC<RecommendationsSectionProps> = ({
       )}
     </section>
   )
-} 
+}

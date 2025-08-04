@@ -52,5 +52,10 @@
   "runDebug": "Executar Debug",
   "reloadToken": "Recarregar Token",
   "clearAll": "Limpar Tudo",
-  "settings": "Configurações"
+  "settings": "Configurações",
+  "notFound": {
+    "title": "404 - Página Não Encontrada",
+    "description": "Desculpe, a página que você está procurando não existe.",
+    "backToHome": "Voltar ao Início"
+  }
 }

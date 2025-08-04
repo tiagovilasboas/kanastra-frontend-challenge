@@ -1,11 +1,16 @@
-import { Disc3,Loader2, Music, Search, Users } from 'lucide-react'
+import { Disc3, Loader2, Music, Search, Users } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from '@/components/ui/card'
 import { GenreCard } from '@/components/ui/GenreCard'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
@@ -14,16 +19,16 @@ export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { searchQuery } = useSearchStore()
-  const { 
-    searchResults, 
+  const {
+    searchResults,
     artists,
     genres,
-    isLoading, 
+    isLoading,
     isLoadingMore,
-    error, 
-    hasMore, 
-    loadMore, 
-    totalResults 
+    error,
+    hasMore,
+    loadMore,
+    totalResults,
   } = useSpotifySearch()
 
   const handleArtistClick = (artistId: string) => {
@@ -39,7 +44,6 @@ export const SearchPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
-        
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-3">
@@ -48,9 +52,7 @@ export const SearchPage: React.FC = () => {
               {t('search:title')}
             </h1>
           </div>
-          <p className="text-muted-foreground">
-            {t('search:description')}
-          </p>
+          <p className="text-muted-foreground">{t('search:description')}</p>
         </div>
 
         {/* Search Results */}
@@ -59,7 +61,10 @@ export const SearchPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <Users className="w-5 h-5 text-muted-foreground" />
               <h2 className="text-xl font-semibold text-foreground">
-                {t('search:resultsFor')} &ldquo;{searchQuery}&rdquo;
+                {t('search:resultsForTerm', {
+                  term: searchQuery,
+                  defaultValue: 'Results for “{term}”',
+                })}
               </h2>
             </div>
 
@@ -71,7 +76,7 @@ export const SearchPage: React.FC = () => {
                     <Users className="w-5 h-5" />
                     {t('search:artists')}
                   </h3>
-                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                     {Array.from({ length: 10 }).map((_, index) => (
                       <div key={index} className="animate-pulse">
                         <div className="aspect-square bg-muted rounded-lg mb-3"></div>
@@ -106,22 +111,20 @@ export const SearchPage: React.FC = () => {
                     <p className="text-destructive mb-2">
                       {t('search:errorMessage')}
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      {error}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{error}</p>
                   </div>
                 </CardContent>
               </Card>
-            ) : (artists.length > 0 || genres.length > 0) ? (
+            ) : artists.length > 0 || genres.length > 0 ? (
               <>
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
                     {t('search:totalResults', { count: totalResults })}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {t('search:showingResults', { 
-                      showing: searchResults.length, 
-                      total: totalResults 
+                    {t('search:showingResults', {
+                      showing: searchResults.length,
+                      total: totalResults,
                     })}
                   </p>
                 </div>
@@ -131,11 +134,17 @@ export const SearchPage: React.FC = () => {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Users className="w-5 h-5" />
-                      {t('search:artists')} ({artists.length})
+                      {t('search:artistsWithCount', {
+                        count: artists.length,
+                        defaultValue: 'Artists ({count})',
+                      })}
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                       {artists.map((artist) => (
-                        <div key={artist.id} onClick={() => handleArtistClick(artist.id)}>
+                        <div
+                          key={artist.id}
+                          onClick={() => handleArtistClick(artist.id)}
+                        >
                           <ArtistCard artist={artist} />
                         </div>
                       ))}
@@ -148,11 +157,17 @@ export const SearchPage: React.FC = () => {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                       <Disc3 className="w-5 h-5" />
-                      {t('search:genres')} ({genres.length})
+                      {t('search:genresWithCount', {
+                        count: genres.length,
+                        defaultValue: 'Genres ({count})',
+                      })}
                     </h3>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                       {genres.map((genre) => (
-                        <div key={genre} onClick={() => handleGenreClick(genre)}>
+                        <div
+                          key={genre}
+                          onClick={() => handleGenreClick(genre)}
+                        >
                           <GenreCard genre={genre} />
                         </div>
                       ))}
@@ -163,8 +178,8 @@ export const SearchPage: React.FC = () => {
                 {/* Load More Button */}
                 {hasMore && (
                   <div className="flex justify-center pt-6">
-                    <Button 
-                      onClick={loadMore} 
+                    <Button
+                      onClick={loadMore}
                       disabled={isLoadingMore}
                       className="min-w-[200px]"
                     >
@@ -179,8 +194,6 @@ export const SearchPage: React.FC = () => {
                     </Button>
                   </div>
                 )}
-                
-
 
                 {/* End of Results */}
                 {!hasMore && searchResults.length > 0 && (
@@ -228,4 +241,4 @@ export const SearchPage: React.FC = () => {
       </div>
     </div>
   )
-} 
+}

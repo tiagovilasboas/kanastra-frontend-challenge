@@ -22,7 +22,7 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
   error,
   currentPage,
   totalPages,
-  onPageChange
+  onPageChange,
 }) => {
   const { t } = useTranslation()
   const [albumFilter, setAlbumFilter] = useState('')
@@ -31,8 +31,8 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
     setAlbumFilter(query)
   }
 
-  const filteredAlbums = albums.filter(album =>
-    album.name.toLowerCase().includes(albumFilter.toLowerCase())
+  const filteredAlbums = albums.filter((album) =>
+    album.name.toLowerCase().includes(albumFilter.toLowerCase()),
   )
 
   if (isLoading) {
@@ -70,9 +70,7 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
         <h2 className="text-2xl font-bold text-foreground">
           {t('artist:albums')}
         </h2>
-        <p className="text-destructive">
-          {t('artist:errorLoadingAlbums')}
-        </p>
+        <p className="text-destructive">{t('artist:errorLoadingAlbums')}</p>
       </section>
     )
   }
@@ -104,12 +102,16 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
             {filteredAlbums.map((album) => (
-              <Card 
-                key={album.id} 
+              <Card
+                key={album.id}
                 className="hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => {
                   if (album.external_urls?.spotify) {
-                    window.open(album.external_urls.spotify, '_blank', 'noopener,noreferrer')
+                    window.open(
+                      album.external_urls.spotify,
+                      '_blank',
+                      'noopener,noreferrer',
+                    )
                   }
                 }}
               >
@@ -124,7 +126,9 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
                         />
                       ) : (
                         <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <span className="text-muted-foreground text-sm">{t('artist:noImage')}</span>
+                          <span className="text-muted-foreground text-sm">
+                            {t('artist:noImage')}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -132,7 +136,9 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
                       {album.name}
                     </h3>
                     <p className="text-xs text-muted-foreground line-clamp-1">
-                      {new Date(album.release_date).getFullYear()} • {album.total_tracks} tracks
+                      {new Date(album.release_date).getFullYear()}{' '}
+                      {t('artist:separator')} {album.total_tracks}{' '}
+                      {t('artist:tracks')}
                     </p>
                   </div>
                 </CardContent>
@@ -169,10 +175,9 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
         <p className="text-muted-foreground">
           {albumFilter
             ? t('artist:noAlbumsFound', { filter: albumFilter })
-            : t('artist:noAlbums')
-          }
+            : t('artist:noAlbums')}
         </p>
       )}
     </section>
   )
-} 
+}

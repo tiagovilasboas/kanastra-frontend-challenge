@@ -15,7 +15,7 @@ interface ArtistTopTracksProps {
 export const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
   tracks,
   isLoading,
-  error
+  error,
 }) => {
   const { t } = useTranslation()
 
@@ -48,9 +48,7 @@ export const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
         <h2 className="text-2xl font-bold text-foreground">
           {t('artist:topTracks')}
         </h2>
-        <p className="text-destructive">
-          {t('artist:errorLoadingTracks')}
-        </p>
+        <p className="text-destructive">{t('artist:errorLoadingTracks')}</p>
       </section>
     )
   }
@@ -61,9 +59,7 @@ export const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
         <h2 className="text-2xl font-bold text-foreground">
           {t('artist:topTracks')}
         </h2>
-        <p className="text-muted-foreground">
-          {t('artist:noTracks')}
-        </p>
+        <p className="text-muted-foreground">{t('artist:noTracks')}</p>
       </section>
     )
   }
@@ -75,40 +71,54 @@ export const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
       </h2>
       <div className="space-y-1">
         {tracks.slice(0, 5).map((track, index) => (
-          <Card key={track.id} className="group hover:bg-muted/50 transition-colors cursor-pointer">
+          <Card
+            key={track.id}
+            className="group hover:bg-muted/50 transition-colors cursor-pointer"
+            onClick={() => {
+              if (track.external_urls?.spotify) {
+                window.open(
+                  track.external_urls.spotify,
+                  '_blank',
+                  'noopener,noreferrer',
+                )
+              }
+            }}
+          >
             <CardContent className="px-4">
-                              <div className="flex items-center gap-0.5">
-                  <span className="text-xs text-muted-foreground w-3">
-                    {index + 1}
-                  </span>
-                  {track.external_urls?.spotify && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      asChild 
-                      className="h-4 w-4 p-0 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => e.stopPropagation()}
+              <div className="flex items-center gap-2">
+                {track.external_urls?.spotify && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="h-6 w-6 p-0 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <a
+                      href={track.external_urls.spotify}
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      <a
-                        href={track.external_urls.spotify}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Play className="w-2 h-2" />
-                      </a>
-                    </Button>
-                  )}
-                  <div className="flex-1">
-                    <p className="font-medium text-xs leading-tight">{track.name}</p>
-                    <p className="text-xs text-muted-foreground leading-tight">
-                      {formatDuration(track.duration_ms)}
-                    </p>
-                  </div>
+                      <Play className="w-3 h-3" />
+                    </a>
+                  </Button>
+                )}
+                <span className="text-xs text-muted-foreground w-3">
+                  {index + 1}
+                </span>
+                <div className="flex-1">
+                  <p className="font-medium text-xs leading-tight">
+                    {track.name}
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-tight">
+                    {formatDuration(track.duration_ms)}
+                  </p>
                 </div>
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
     </section>
   )
-} 
+}

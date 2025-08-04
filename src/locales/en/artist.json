@@ -20,5 +20,7 @@
   "authRequiredMessage": "Please login to see complete artist details",
   "type": "Artist",
   "genres": "Genres",
-  "albumsSortedByDate": "Sorted by release date"
+  "albumsSortedByDate": "Sorted by release date",
+  "tracks": "tracks",
+  "separator": "•"
 }
