@@ -13,9 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
-import { spotifyRepository } from '@/repositories'
 import { useSearchStore } from '@/stores/searchStore'
-import { logger } from '@/utils/logger'
 
 export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
@@ -45,20 +43,6 @@ export const SearchPage: React.FC = () => {
     console.log('Genre clicked:', genre)
   }
 
-  const testClientToken = async () => {
-    try {
-      logger.debug('Testing client token...')
-      await spotifyRepository.getClientToken()
-      logger.debug('Client token test successful')
-      alert('Client token obtained successfully!')
-    } catch (error) {
-      logger.error('Client token test failed', error)
-      alert(
-        `Client token test failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      )
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
@@ -71,11 +55,6 @@ export const SearchPage: React.FC = () => {
             </h1>
           </div>
           <p className="text-muted-foreground">{t('search:description')}</p>
-
-          {/* Test button */}
-          <Button onClick={testClientToken} variant="outline" size="sm">
-            {t('search:testClientToken', 'Test Client Token')}
-          </Button>
         </div>
 
         {/* Search Results */}

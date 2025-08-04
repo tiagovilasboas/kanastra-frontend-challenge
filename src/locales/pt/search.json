@@ -23,6 +23,5 @@
   "genres": "Gêneros",
   "genresWithCount": "Gêneros ({{count}})",
   "genre": "Gênero",
-  "results": "Resultados da pesquisa",
-  "testClientToken": "Testar Token Cliente"
+  "results": "Resultados da pesquisa"
 }

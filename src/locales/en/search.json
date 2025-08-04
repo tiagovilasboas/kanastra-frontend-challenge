@@ -23,6 +23,5 @@
   "genres": "Genres",
   "genresWithCount": "Genres ({{count}})",
   "genre": "Genre",
-  "results": "Search Results",
-  "testClientToken": "Test Client Token"
+  "results": "Search Results"
 }

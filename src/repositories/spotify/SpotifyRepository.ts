@@ -91,12 +91,23 @@ export class SpotifyRepository {
   setAccessToken(token: string): void {
     this.accessToken = token
     this.searchService.setAccessToken(token)
-    localStorage.setItem('spotify_token', token)
-    logger.debug('Access token set', {
-      hasToken: !!token,
-      tokenLength: token?.length || 0,
-      searchServiceHasToken: this.searchService.hasAccessToken(),
-    })
+
+    // Store in both cookie and localStorage for redundancy
+    try {
+      CookieManager.setAccessToken(token)
+      localStorage.setItem('spotify_token', token)
+      logger.debug('Access token set in both cookie and localStorage', {
+        hasToken: !!token,
+        tokenLength: token?.length || 0,
+        searchServiceHasToken: this.searchService.hasAccessToken(),
+      })
+    } catch (error) {
+      logger.warn(
+        'Failed to store token in cookie, using localStorage only',
+        error,
+      )
+      localStorage.setItem('spotify_token', token)
+    }
   }
 
   getAccessToken(): string | undefined {
@@ -111,25 +122,45 @@ export class SpotifyRepository {
     hasAccessToken: boolean
     hasClientToken: boolean
     localStorageToken: boolean
+    cookieToken: boolean
   } {
     return {
       hasAccessToken: !!this.accessToken,
       hasClientToken: this.searchService.hasClientToken(),
       localStorageToken: !!localStorage.getItem('spotify_token'),
+      cookieToken: !!CookieManager.getAccessToken(),
     }
   }
 
   private loadTokenFromStorage(): void {
     try {
-      const token = localStorage.getItem('spotify_token')
+      // Try to load from cookie first (more secure)
+      let token = CookieManager.getAccessToken()
+
+      if (!token) {
+        // Fallback to localStorage
+        token = localStorage.getItem('spotify_token')
+        if (token) {
+          logger.debug('Token loaded from localStorage, migrating to cookie')
+          // Migrate to cookie for future use
+          try {
+            CookieManager.setAccessToken(token)
+          } catch (error) {
+            logger.warn('Failed to migrate token to cookie', error)
+          }
+        }
+      } else {
+        logger.debug('Token loaded from cookie')
+      }
+
       if (token) {
         this.setAccessToken(token)
-        logger.debug('Token loaded from localStorage on initialization')
+        logger.debug('Token loaded from storage on initialization')
       } else {
-        logger.debug('No token found in localStorage on initialization')
+        logger.debug('No token found in storage on initialization')
       }
     } catch (error) {
-      logger.error('Error loading token from localStorage', error)
+      logger.error('Error loading token from storage', error)
     }
   }
 
@@ -351,10 +382,10 @@ export class SpotifyRepository {
     // Clear localStorage
     localStorage.removeItem('spotify_token')
 
-    // Clear cookies
-    CookieManager.clearCodeVerifier()
+    // Clear all cookies
+    CookieManager.clearAllSpotifyCookies()
 
-    logger.debug('Logout completed')
+    logger.debug('Logout completed - all tokens and cookies cleared')
   }
 
   async handleTokenExpired(): Promise<string> {

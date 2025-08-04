@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { spotifyRepository } from '@/repositories'
 import { useSearchStore } from '@/stores/searchStore'
 import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
+import { CookieManager } from '@/utils/cookies'
 import { logger } from '@/utils/logger'
 
 interface UseSpotifySearchReturn {
@@ -127,11 +128,16 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       })
 
       try {
-        const token = localStorage.getItem('spotify_token')
+        // Check for token in both cookie and localStorage
+        const token =
+          CookieManager.getAccessToken() ||
+          localStorage.getItem('spotify_token')
         let artistsResponse, tracksResponse, albumsResponse
 
         logger.debug('Search attempt', {
           hasUserToken: !!token,
+          hasCookieToken: !!CookieManager.getAccessToken(),
+          hasLocalStorageToken: !!localStorage.getItem('spotify_token'),
           query: debouncedQuery,
           page,
           limit,
