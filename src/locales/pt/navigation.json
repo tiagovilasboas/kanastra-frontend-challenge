@@ -1,19 +1,14 @@
 {
-  "nav": {
-    "home": "Início",
-    "about": "Sobre"
-  },
   "home": "Início",
+  "search": "Buscar",
   "library": "Sua Biblioteca",
-  "create": "Criar Playlist",
+  "artists": "Artistas",
+  "albums": "Álbuns",
+  "favorites": "Favoritos",
+  "createPlaylist": "Criar Playlist",
   "likedSongs": "Músicas Curtidas",
-  "downloads": "Downloads",
-  "settings": "Configurações",
-  "profile": "Perfil",
-  "libraryMessage": "Sua biblioteca de músicas aparecerá aqui.",
-  "libraryMessageUnauth": "Faça login para ver sua biblioteca.",
-  "createMessage": "Crie suas playlists personalizadas aqui.",
-  "createMessageUnauth": "Faça login para criar playlists.",
+  "openMenu": "Abrir menu",
+  "closeMenu": "Fechar menu",
   "menu": "Menu",
-  "close": "Fechar"
+  "spotifyExplorer": "Spotify Explorer"
 }

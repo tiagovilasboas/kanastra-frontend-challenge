@@ -1,0 +1,20 @@
+{
+  "features": "Características de Áudio",
+  "errorLoading": "Erro ao carregar características de áudio",
+  "danceability": "Dançabilidade",
+  "danceabilityDesc": "Quão dançável é a música",
+  "energy": "Energia",
+  "energyDesc": "Intensidade e atividade da música",
+  "valence": "Positividade",
+  "valenceDesc": "Positividade musical da faixa",
+  "acousticness": "Acústica",
+  "acousticnessDesc": "Confiança de que a música é acústica",
+  "instrumentalness": "Instrumental",
+  "instrumentalnessDesc": "Predominância de instrumentos",
+  "liveness": "Ao Vivo",
+  "livenessDesc": "Presença de público na gravação",
+  "tempo": "Tempo",
+  "key": "Tom",
+  "loudness": "Volume",
+  "timeSignature": "Compasso"
+} 

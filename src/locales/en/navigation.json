@@ -1,19 +1,14 @@
 {
-  "nav": {
-    "home": "Home",
-    "about": "About"
-  },
   "home": "Home",
+  "search": "Search",
   "library": "Your Library",
-  "create": "Create Playlist",
+  "artists": "Artists",
+  "albums": "Albums",
+  "favorites": "Favorites",
+  "createPlaylist": "Create Playlist",
   "likedSongs": "Liked Songs",
-  "downloads": "Downloads",
-  "settings": "Settings",
-  "profile": "Profile",
-  "libraryMessage": "Your music library will appear here.",
-  "libraryMessageUnauth": "Sign in to view your library.",
-  "createMessage": "Create your personalized playlists here.",
-  "createMessageUnauth": "Sign in to create playlists.",
+  "openMenu": "Open menu",
+  "closeMenu": "Close menu",
   "menu": "Menu",
-  "close": "Close"
+  "spotifyExplorer": "Spotify Explorer"
 }

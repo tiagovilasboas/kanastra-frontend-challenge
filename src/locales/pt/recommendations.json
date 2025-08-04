@@ -1,0 +1,16 @@
+{
+  "title": "Recomendações",
+  "noSeeds": "Nenhuma semente selecionada",
+  "noSeedsDesc": "Selecione artistas, gêneros ou músicas para obter recomendações personalizadas",
+  "filters": "Filtros",
+  "energy": "Energia",
+  "danceability": "Dançabilidade",
+  "valence": "Positividade",
+  "tempo": "Tempo (BPM)",
+  "popularity": "Popularidade",
+  "limit": "Quantidade",
+  "error": "Erro ao carregar recomendações",
+  "results": "Resultados",
+  "noResults": "Nenhuma recomendação encontrada",
+  "noResultsDesc": "Tente ajustar os filtros ou selecionar diferentes sementes"
+} 

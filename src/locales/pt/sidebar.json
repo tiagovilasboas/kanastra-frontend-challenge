@@ -1,0 +1,8 @@
+{
+  "description": "Explore artistas e descubra novas músicas com a API do Spotify.",
+  "features": "Funcionalidades:",
+  "searchArtists": "Buscar artistas",
+  "viewAlbums": "Ver álbuns",
+  "topTracks": "Músicas mais populares",
+  "artistDetails": "Detalhes do artista"
+} 

@@ -1,0 +1,20 @@
+{
+  "features": "Audio Features",
+  "errorLoading": "Error loading audio features",
+  "danceability": "Danceability",
+  "danceabilityDesc": "How danceable the track is",
+  "energy": "Energy",
+  "energyDesc": "Intensity and activity of the track",
+  "valence": "Valence",
+  "valenceDesc": "Musical positiveness of the track",
+  "acousticness": "Acousticness",
+  "acousticnessDesc": "Confidence that the track is acoustic",
+  "instrumentalness": "Instrumentalness",
+  "instrumentalnessDesc": "Predominance of instruments",
+  "liveness": "Liveness",
+  "livenessDesc": "Presence of audience in the recording",
+  "tempo": "Tempo",
+  "key": "Key",
+  "loudness": "Loudness",
+  "timeSignature": "Time Signature"
+} 
