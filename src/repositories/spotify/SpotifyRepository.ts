@@ -276,13 +276,53 @@ export class SpotifyRepository {
     if (!this.accessToken && !this.searchService.hasClientToken()) {
       await this.getClientToken()
     }
-    return this.searchService.searchAdvanced(
-      query,
-      type,
-      filters,
-      limit,
-      offset,
-    )
+    try {
+      return await this.searchService.searchAdvanced(
+        query,
+        type,
+        filters,
+        limit,
+        offset,
+      )
+    } catch (error: unknown) {
+      // Se for 401, tenta com client token
+      let is401 = false
+      if (typeof error === 'object' && error !== null) {
+        if (
+          'response' in error &&
+          typeof (error as { response?: { status?: number } }).response
+            ?.status === 'number'
+        ) {
+          is401 =
+            (error as { response?: { status?: number } }).response?.status ===
+            401
+        }
+        if (
+          'message' in error &&
+          typeof (error as { message?: string }).message === 'string'
+        ) {
+          is401 =
+            is401 ||
+            (error as { message?: string }).message ===
+              'Authentication required'
+        }
+      }
+      if (is401) {
+        try {
+          await this.getClientToken()
+          return await this.searchService.searchAdvanced(
+            query,
+            type,
+            filters,
+            limit,
+            offset,
+          )
+        } catch (clientError) {
+          throw clientError
+        }
+      }
+      throw error
+    }
   }
 
   async getRecommendations(params: RecommendationParams) {
@@ -421,7 +461,7 @@ export class SpotifyRepository {
     return authUrl
   }
 
-  private setupAxiosInterceptors(): void {
+  private setupAxiosInterceptors = (): void => {
     // Global request interceptor
     axios.interceptors.request.use(
       (config) => {
@@ -442,14 +482,10 @@ export class SpotifyRepository {
       (response) => response,
       async (error) => {
         if (error.response?.status === 401) {
-          logger.warn('Token expired, handling gracefully')
-
-          // Don't redirect immediately, let the component handle it
-          // This prevents breaking the entire app
-          const customError = new Error('Authentication required')
-          customError.name = 'AUTH_REQUIRED'
-
-          return Promise.reject(customError)
+          logger.warn('Token expired, logging out and redirecting to login')
+          this.logout()
+          window.location.href = '/login'
+          return Promise.reject(new Error('Authentication required'))
         }
         return Promise.reject(error)
       },

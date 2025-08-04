@@ -138,7 +138,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         offset,
         currentArtists: artists.length,
         currentTracks: tracks.length,
-        currentAlbums: albums.length,
+        currentAlbums: Array.isArray(albums) ? albums.length : 0,
       })
 
       try {
@@ -277,14 +277,17 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     return () => {
       cancelled = true
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     debouncedQuery,
     page,
-    albumsTotalResults,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    albumsTotalResults || 0,
     limit,
     artists.length,
     tracks.length,
-    albums.length,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    Array.isArray(albums) ? albums.length : 0,
   ])
 
   // Fetch albums with pagination
@@ -390,7 +393,11 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   }, [hasMore, isLoadingMore])
 
   // Combine all results for the searchResults array
-  const searchResults = [...artists, ...tracks, ...albums]
+  const searchResults = [
+    ...artists,
+    ...tracks,
+    ...(Array.isArray(albums) ? albums : []),
+  ]
 
   return {
     isLoading,
@@ -399,8 +406,13 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     searchResults,
     artists,
     tracks,
-    albums,
-    genres: separateResults(artists, tracks, albums, debouncedQuery).genres,
+    albums: Array.isArray(albums) ? albums : [],
+    genres: separateResults(
+      artists,
+      tracks,
+      Array.isArray(albums) ? albums : [],
+      debouncedQuery,
+    ).genres,
     clearSearch,
     hasMore,
     loadMore,
