@@ -4,8 +4,6 @@ import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/types/spotify'
 
-import { useSpotifyAuth } from './useSpotifyAuth'
-
 interface UseArtistDetailsReturn {
   artist: SpotifyArtist | null
   isLoading: boolean
@@ -16,8 +14,6 @@ interface UseArtistDetailsReturn {
 export function useArtistDetails(
   artistId: string | undefined,
 ): UseArtistDetailsReturn {
-  const { hasValidToken } = useSpotifyAuth()
-
   const {
     data: artist,
     isLoading,
@@ -29,7 +25,7 @@ export function useArtistDetails(
       if (!artistId) throw new Error('Artist ID is required')
       return await spotifyRepository.getArtistDetails(artistId)
     },
-    enabled: !!artistId && hasValidToken(), // Only enable when we have a valid token
+    enabled: !!artistId, // Enable when we have an artist ID
     staleTime: cache.stale.OCCASIONAL, // Artist details change occasionally
     gcTime: cache.times.MEDIUM, // Keep in memory for medium time
     retry: cache.retry.IMPORTANT.retry,

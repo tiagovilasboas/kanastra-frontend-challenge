@@ -4,8 +4,6 @@ import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyAlbum } from '@/schemas/spotify'
 
-import { useSpotifyAuth } from './useSpotifyAuth'
-
 interface UseArtistAlbumsParams {
   artistId: string | undefined
   page: number
@@ -26,7 +24,6 @@ export function useArtistAlbums({
   page,
   limit = 20,
 }: UseArtistAlbumsParams): UseArtistAlbumsReturn {
-  const { hasValidToken } = useSpotifyAuth()
   const offset = (page - 1) * limit
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -42,15 +39,20 @@ export function useArtistAlbums({
         offset,
       )
 
-      // For now, just show the albums we have
-      // Pagination will be handled by showing/hiding based on current page
+      // Sort albums by release date (newest first)
+      const sortedAlbums = albums.sort((a, b) => {
+        const dateA = new Date(a.release_date)
+        const dateB = new Date(b.release_date)
+        return dateB.getTime() - dateA.getTime() // Descending order (newest first)
+      })
+
       return {
-        albums,
+        albums: sortedAlbums,
         total: albums.length,
         totalPages: 1, // Start with single page until we implement proper pagination
       }
     },
-    enabled: !!artistId && hasValidToken(), // Only enable when we have a valid token
+    enabled: !!artistId, // Enable when we have an artist ID
     staleTime: cache.stale.OCCASIONAL, // Albums change occasionally
     gcTime: cache.times.MEDIUM, // Keep in memory for medium time
     retry: cache.retry.IMPORTANT.retry,

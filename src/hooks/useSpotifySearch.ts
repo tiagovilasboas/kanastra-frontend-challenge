@@ -1,27 +1,53 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { spotifyRepository } from '@/repositories'
+import { useSearchStore } from '@/stores/searchStore'
 import { SpotifyArtist } from '@/types/spotify'
 import { logger } from '@/utils/logger'
-
-import { useSpotifyAuth } from './useSpotifyAuth'
 
 interface UseSpotifySearchReturn {
   isLoading: boolean
   isLoadingMore: boolean
   error: string | null
   searchResults: SpotifyArtist[]
-  searchArtists: (query: string) => void
+  artists: SpotifyArtist[]
+  genres: string[]
   clearSearch: () => void
-  searchQuery: string
-  debouncedQuery: string
   hasMore: boolean
   loadMore: () => void
   totalResults: number
 }
 
+// Helper function to extract unique genres from artists
+const extractGenresFromArtists = (artists: SpotifyArtist[]): string[] => {
+  const allGenres = artists.flatMap(artist => artist.genres || [])
+  const uniqueGenres = [...new Set(allGenres)]
+  return uniqueGenres.sort()
+}
+
+// Helper function to separate artists and genres
+const separateResults = (artists: SpotifyArtist[], query: string) => {
+  const queryLower = query.toLowerCase()
+  
+  // Extract all genres from artists
+  const allGenres = extractGenresFromArtists(artists)
+  
+  // Filter genres that match the query
+  const matchingGenres = allGenres.filter(genre => 
+    genre.toLowerCase().includes(queryLower)
+  )
+  
+  // For now, return all artists as regular artists and matching genres
+  // This ensures we always show results
+  return {
+    artists: artists, // Show all artists
+    genres: matchingGenres,
+    genreArtists: []
+  }
+}
+
 export function useSpotifySearch(): UseSpotifySearchReturn {
-  const [searchQuery, setSearchQuery] = useState('')
+  const { searchQuery } = useSearchStore()
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [results, setResults] = useState<SpotifyArtist[]>([])
   const [page, setPage] = useState(0)
@@ -30,8 +56,8 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [totalResults, setTotalResults] = useState(0)
+  const [error, setError] = useState<string | null>(null)
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const { checkAuthError } = useSpotifyAuth()
 
   // Debounce effect
   useEffect(() => {
@@ -43,12 +69,14 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         logger.debug('Debounced search triggered', { searchQuery })
         setDebouncedQuery(searchQuery)
         setPage(0)
+        setError(null)
       }, 500)
     } else {
       setDebouncedQuery('')
       setResults([])
       setPage(0)
       setHasMore(false)
+      setError(null)
     }
     return () => {
       if (debounceRef.current) {
@@ -66,11 +94,13 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         setHasMore(false)
         setIsLoading(false)
         setTotalResults(0)
+        setError(null)
         return
       }
 
       if (page === 0) {
         setIsLoading(true)
+        setError(null)
       }
 
       const offset = page * limit
@@ -81,9 +111,11 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         offset,
         currentResults: results.length,
       })
+      
       try {
-        let response
         const token = localStorage.getItem('spotify_token')
+        let response
+        
         if (token) {
           response = await spotifyRepository.searchArtists(
             debouncedQuery,
@@ -98,9 +130,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
             offset,
           )
         }
+        
         if (cancelled) return
+        
         const newArtists = response.artists.items
         const total = response.artists.total
+        
         logger.debug('Artists fetched successfully', {
           query: debouncedQuery,
           page,
@@ -111,12 +146,29 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           firstArtist: newArtists[0]?.name,
           lastArtist: newArtists[newArtists.length - 1]?.name,
         })
+        
         setTotalResults(total)
-        setHasMore(offset + newArtists.length < total)
+        const newHasMore = offset + newArtists.length < total
+        setHasMore(newHasMore)
+        
+        logger.debug('Pagination info', {
+          offset,
+          newArtistsLength: newArtists.length,
+          total,
+          newHasMore,
+          currentPage: page
+        })
+        setError(null)
+        
         if (page === 0) {
           setResults(newArtists)
         } else {
-          setResults((prev) => [...prev, ...newArtists])
+          setResults((prev) => {
+            // Remove duplicates based on artist ID
+            const existingIds = new Set(prev.map(artist => artist.id))
+            const uniqueNewArtists = newArtists.filter(artist => !existingIds.has(artist.id))
+            return [...prev, ...uniqueNewArtists]
+          })
         }
 
         // Reset loading state if no more results
@@ -125,13 +177,18 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         }
       } catch (error) {
         logger.error('Search failed', error)
-        if (checkAuthError(error)) {
+        
+        if (cancelled) return
+        
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+        setError(errorMessage)
+        
+        // Clear results on error
+        if (page === 0) {
           setResults([])
-          setHasMore(false)
           setTotalResults(0)
-          return
+          setHasMore(false)
         }
-        throw error
       } finally {
         setIsLoading(false)
         setIsLoadingMore(false)
@@ -141,22 +198,16 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     return () => {
       cancelled = true
     }
-  }, [debouncedQuery, page, limit, checkAuthError, results.length])
-
-  const searchArtists = useCallback((query: string) => {
-    logger.debug('searchArtists called', { query })
-    setSearchQuery(query)
-  }, [])
+  }, [debouncedQuery, page, limit])
 
   const clearSearch = useCallback(() => {
     logger.debug('clearSearch called')
-    setSearchQuery('')
-    setDebouncedQuery('')
     setResults([])
     setPage(0)
     setHasMore(false)
     setTotalResults(0)
     setIsLoadingMore(false)
+    setError(null)
   }, [])
 
   const loadMore = useCallback(() => {
@@ -171,15 +222,26 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     setPage((prev) => prev + 1)
   }, [hasMore, isLoadingMore, page, results.length, totalResults])
 
+  // Separate results into artists and genres
+  const { artists, genres } = separateResults(results, debouncedQuery)
+  
+  // Debug logs
+  logger.debug('Search results separated', {
+    totalResults: results.length,
+    artistsCount: artists.length,
+    genresCount: genres.length,
+    hasMore,
+    query: debouncedQuery
+  })
+
   return {
     isLoading,
     isLoadingMore,
-    error: null,
+    error,
     searchResults: results,
-    searchArtists,
+    artists,
+    genres,
     clearSearch,
-    searchQuery,
-    debouncedQuery,
     hasMore,
     loadMore,
     totalResults,
