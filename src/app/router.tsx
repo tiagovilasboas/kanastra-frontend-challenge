@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
+import { NotFoundPage } from '@/components/ErrorBoundary/NotFoundPage'
 import { AppLayout } from '@/components/layout'
 
 // Lazy load pages
@@ -10,6 +11,7 @@ const ArtistsPage = lazy(() => import('@/pages/ArtistsPage').then(module => ({ d
 const SearchPage = lazy(() => import('@/pages/SearchPage').then(module => ({ default: module.SearchPage })))
 const AlbumsPage = lazy(() => import('@/pages/AlbumsPage').then(module => ({ default: module.AlbumsPage })))
 const FavoritesPage = lazy(() => import('@/pages/FavoritesPage').then(module => ({ default: module.FavoritesPage })))
+const CallbackPage = lazy(() => import('@/pages/CallbackPage').then(module => ({ default: module.CallbackPage })))
 
 // Loading component for Suspense
 const PageSuspense = ({ children }: { children: React.ReactNode }) => (
@@ -22,6 +24,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       {
         index: true,
@@ -48,5 +51,9 @@ export const router = createBrowserRouter([
         element: <PageSuspense><FavoritesPage /></PageSuspense>,
       },
     ],
+  },
+  {
+    path: '/callback',
+    element: <PageSuspense><CallbackPage /></PageSuspense>,
   },
 ])
