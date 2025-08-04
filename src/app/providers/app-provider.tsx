@@ -1,4 +1,3 @@
-import { createTheme, MantineProvider } from '@mantine/core'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useEffect } from 'react'
@@ -13,15 +12,9 @@ type AppProviderProps = {
   children: React.ReactNode
 }
 
-const theme = createTheme({
-  primaryColor: 'blue',
-  fontFamily: 'Inter, sans-serif',
-})
-
 const queryClient = createQueryClient()
 
 export function AppProvider({ children }: AppProviderProps) {
-  const { theme: appTheme } = useAppStore()
   const { i18n } = useTranslation()
   const { language } = useAppStore()
   const { isInitialized, error } = useSpotifyInit()
@@ -42,9 +35,7 @@ export function AppProvider({ children }: AppProviderProps) {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <MantineProvider theme={theme} forceColorScheme={appTheme}>
-          {children}
-        </MantineProvider>
+        {children}
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ErrorBoundary>

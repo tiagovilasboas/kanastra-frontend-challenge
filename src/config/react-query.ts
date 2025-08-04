@@ -1,5 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
 
+import { RecommendationParams } from '@/repositories/spotify/SpotifySearchService'
+
 import { cache } from './cache'
 
 // Query key factories for type safety
@@ -28,6 +30,28 @@ export const queryKeys = {
     likedTracks: () => [...queryKeys.user.all, 'likedTracks'] as const,
     savedAlbums: () => [...queryKeys.user.all, 'savedAlbums'] as const,
     playlists: () => [...queryKeys.user.all, 'playlists'] as const,
+  },
+
+  // Recommendations
+  recommendations: {
+    all: ['recommendations'] as const,
+    byParams: (params: RecommendationParams) => 
+      [...queryKeys.recommendations.all, params] as const,
+  },
+
+  // Audio Features
+  audioFeatures: {
+    all: ['audioFeatures'] as const,
+    byTrackId: (trackId: string) => 
+      [...queryKeys.audioFeatures.all, trackId] as const,
+    multiple: (trackIds: string[]) => 
+      [...queryKeys.audioFeatures.all, 'multiple', trackIds] as const,
+  },
+
+  // Available Genres
+  availableGenres: {
+    all: ['availableGenres'] as const,
+    list: () => [...queryKeys.availableGenres.all, 'list'] as const,
   },
 } as const
 

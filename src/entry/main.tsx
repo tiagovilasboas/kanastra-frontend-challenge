@@ -1,5 +1,5 @@
 import '../config/i18n'
-import '@mantine/core/styles.css'
+// import '@mantine/core/styles.css'
 import '../styles/globals.css'
 
 import React from 'react'
