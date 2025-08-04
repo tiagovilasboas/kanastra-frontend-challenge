@@ -8,31 +8,30 @@ export function useSpotifyInit() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const initializeSpotify = async () => {
+    async function initializeSpotify() {
       try {
-        logger.debug('=== SPOTIFY INITIALIZATION STARTED ===')
-        logger.debug('Initializing Spotify with client token')
-        
-        // Get client token for public API access
-        await spotifyRepository.getClientToken()
-        
-        // Check if user token exists and load it
-        const userToken = localStorage.getItem('spotify_token')
-        if (userToken) {
-          logger.debug('Loading user token from localStorage')
-          spotifyRepository.setAccessToken(userToken)
+        logger.debug('Initializing Spotify...')
+
+        // Try to get client token, but don't fail the entire app if it fails
+        try {
+          await spotifyRepository.getClientToken()
+          logger.debug('Spotify initialized with client token')
+        } catch (tokenError) {
+          logger.warn(
+            'Failed to get client token, app will work with user authentication only',
+            tokenError,
+          )
+          // Don't set error here, just log the warning
         }
-        
-        logger.debug('Spotify initialized successfully', {
-          hasClientToken: true,
-          hasUserToken: !!userToken
-        })
+
         setIsInitialized(true)
         setError(null)
       } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to initialize Spotify'
         logger.error('Failed to initialize Spotify', err)
-        setError(err instanceof Error ? err.message : 'Failed to initialize Spotify')
-        setIsInitialized(false)
+        setError(errorMessage)
+        setIsInitialized(true) // Still mark as initialized to not block the app
       }
     }
 
@@ -40,4 +39,4 @@ export function useSpotifyInit() {
   }, [])
 
   return { isInitialized, error }
-} 
+}

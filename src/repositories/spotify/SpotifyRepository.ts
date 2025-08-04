@@ -170,23 +170,26 @@ export class SpotifyRepository {
       logger.debug('Getting client token')
       const config = getSpotifyConfig()
 
+      // Validate config before making request
+      if (!config.clientId || !config.clientSecret) {
+        throw new Error('Missing Spotify client credentials')
+      }
+
       logger.debug('Making token request with config', {
         clientId: config.clientId ? 'Present' : 'Missing',
         clientSecret: config.clientSecret ? 'Present' : 'Missing',
         redirectUri: config.redirectUri,
       })
 
+      // Use the exact same format that worked with curl
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
-        new URLSearchParams({
-          grant_type: 'client_credentials',
-          client_id: config.clientId,
-          client_secret: config.clientSecret,
-        }),
+        `grant_type=client_credentials&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
+          timeout: 10000,
         },
       )
 
@@ -213,9 +216,32 @@ export class SpotifyRepository {
         error: error instanceof Error ? error.message : 'Unknown error',
         response:
           error instanceof Error && 'response' in error
-            ? (error as { response?: { data?: unknown } }).response?.data
+            ? (error as { response?: { data?: unknown; status?: number } })
+                .response?.data
             : 'No response data',
+        status:
+          error instanceof Error && 'response' in error
+            ? (error as { response?: { status?: number } }).response?.status
+            : 'No status',
       })
+
+      // Log more details for debugging
+      if (error instanceof Error && 'response' in error) {
+        const axiosError = error as {
+          response?: {
+            status?: number
+            statusText?: string
+            data?: unknown
+            headers?: unknown
+          }
+        }
+        logger.error('Axios error details', {
+          status: axiosError.response?.status,
+          statusText: axiosError.response?.statusText,
+          data: axiosError.response?.data,
+          headers: axiosError.response?.headers,
+        })
+      }
 
       const appError = errorHandler.handleAuthError(
         error,
