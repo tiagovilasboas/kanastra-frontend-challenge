@@ -1,7 +1,8 @@
-import { Container as MantineContainer, ContainerProps as MantineContainerProps } from '@mantine/core'
+import {
+  Container as MantineContainer,
+  ContainerProps as MantineContainerProps,
+} from '@mantine/core'
 import { forwardRef } from 'react'
-
-import styles from './Container.module.css'
 
 export interface ContainerProps extends MantineContainerProps {
   variant?: 'default' | 'mobile-first' | 'fluid' | 'narrow' | 'wide'
@@ -13,24 +14,21 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
     const getVariantClass = () => {
       switch (variant) {
         case 'default':
-          return styles.container
+          return 'max-w-6xl mx-auto px-6 md:px-6'
         case 'mobile-first':
-          return styles.containerMobileFirst
+          return 'max-w-6xl mx-auto p-4 sm:p-6 md:p-8 lg:p-12'
         case 'fluid':
-          return styles.containerFluid
+          return 'w-full px-4'
         case 'narrow':
-          return styles.containerNarrow
+          return 'max-w-4xl mx-auto px-6 md:px-6'
         case 'wide':
-          return styles.containerWide
+          return 'max-w-7xl mx-auto px-6 md:px-6'
         default:
-          return styles.container
+          return 'max-w-6xl mx-auto px-6 md:px-6'
       }
     }
 
-    const containerClasses = [
-      getVariantClass(),
-      className,
-    ]
+    const containerClasses = [getVariantClass(), className]
       .filter(Boolean)
       .join(' ')
 
@@ -47,4 +45,4 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
   },
 )
 
-Container.displayName = 'Container' 
+Container.displayName = 'Container'
