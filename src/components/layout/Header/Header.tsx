@@ -71,10 +71,7 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
             <Input
               placeholder={
                 searchPlaceholder ||
-                t(
-                  'search:placeholder',
-                  'Search for artists, tracks, and albums',
-                )
+                t('search:placeholder', 'Search for artists')
               }
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}

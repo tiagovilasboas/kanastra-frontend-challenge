@@ -7,12 +7,7 @@ import { errorHandler } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 
 import { SpotifyAuthService } from './SpotifyAuthService'
-import {
-  AudioFeatures,
-  RecommendationParams,
-  SearchFilters,
-  SpotifySearchService,
-} from './SpotifySearchService'
+import { SearchFilters, SpotifySearchService } from './SpotifySearchService'
 
 export class SpotifyRepository {
   private authService: SpotifyAuthService
@@ -35,18 +30,14 @@ export class SpotifyRepository {
       })
 
       this.setupAxiosInterceptors()
-
-      // Try to load token from localStorage on initialization
       this.loadTokenFromStorage()
     } catch {
-      console.warn('Spotify configuration not available, running in demo mode')
-      // Initialize with dummy services for demo mode
+      console.warn('Spotify configuration not available')
       this.authService = {} as SpotifyAuthService
       this.searchService = {} as SpotifySearchService
     }
   }
 
-  // Authentication methods
   async getAuthUrl(): Promise<string> {
     try {
       logger.debug('Generating auth URL')
@@ -92,7 +83,6 @@ export class SpotifyRepository {
     this.accessToken = token
     this.searchService.setAccessToken(token)
 
-    // Store in both cookie and localStorage for redundancy
     try {
       CookieManager.setAccessToken(token)
       localStorage.setItem('spotify_token', token)
@@ -164,24 +154,19 @@ export class SpotifyRepository {
     }
   }
 
-  // Client credentials flow
   async getClientToken(): Promise<string> {
     try {
       logger.debug('Getting client token')
       const config = getSpotifyConfig()
 
-      // Validate config before making request
       if (!config.clientId || !config.clientSecret) {
-        throw new Error('Missing Spotify client credentials')
+        const error = new Error(
+          'Spotify credentials not configured. Please set VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET in your .env file. See env.example for reference.',
+        )
+        logger.error('Configuration error', error.message)
+        throw error
       }
 
-      logger.debug('Making token request with config', {
-        clientId: config.clientId ? 'Present' : 'Missing',
-        clientSecret: config.clientSecret ? 'Present' : 'Missing',
-        redirectUri: config.redirectUri,
-      })
-
-      // Use the exact same format that worked with curl
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
         `grant_type=client_credentials&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
@@ -193,65 +178,37 @@ export class SpotifyRepository {
         },
       )
 
-      logger.debug('Token response received', {
-        status: response.status,
-        hasData: !!response.data,
-        dataKeys: Object.keys(response.data || {}),
-      })
-
       const tokenResponse = validateSpotifyTokenResponse(response.data)
-
-      logger.debug('Client token response validated', {
-        hasAccessToken: !!tokenResponse.access_token,
-        tokenLength: tokenResponse.access_token?.length || 0,
-        tokenType: tokenResponse.token_type,
-      })
-
       this.searchService.setClientToken(tokenResponse.access_token)
 
       logger.debug('Client token obtained and set successfully')
       return tokenResponse.access_token
     } catch (error) {
-      logger.error('Client token request failed', {
-        error: error instanceof Error ? error.message : 'Unknown error',
-        response:
-          error instanceof Error && 'response' in error
-            ? (error as { response?: { data?: unknown; status?: number } })
-                .response?.data
-            : 'No response data',
-        status:
-          error instanceof Error && 'response' in error
-            ? (error as { response?: { status?: number } }).response?.status
-            : 'No status',
-      })
+      logger.error('Client token request failed', error)
 
-      // Log more details for debugging
-      if (error instanceof Error && 'response' in error) {
-        const axiosError = error as {
-          response?: {
-            status?: number
-            statusText?: string
-            data?: unknown
-            headers?: unknown
-          }
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        if (error.message.includes('Spotify credentials not configured')) {
+          throw error // Re-throw our custom error
         }
-        logger.error('Axios error details', {
-          status: axiosError.response?.status,
-          statusText: axiosError.response?.statusText,
-          data: axiosError.response?.data,
-          headers: axiosError.response?.headers,
-        })
+
+        // Handle 400 Bad Request (usually invalid credentials)
+        if (
+          error.message.includes('400') ||
+          error.message.includes('Bad Request')
+        ) {
+          const configError = new Error(
+            'Invalid Spotify credentials. Please check your VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET in the .env file.',
+          )
+          logger.error('Invalid credentials error', configError.message)
+          throw configError
+        }
       }
 
-      const appError = errorHandler.handleAuthError(
-        error,
-        'SpotifyRepository.getClientToken',
-      )
-      throw appError
+      throw error
     }
   }
 
-  // Search methods (delegated to search service)
   async searchArtists(query: string, limit: number = 20, offset: number = 0) {
     return this.searchService.searchArtists(query, limit, offset)
   }
@@ -264,7 +221,24 @@ export class SpotifyRepository {
     return this.searchService.searchArtistsPublic(query, limit, offset)
   }
 
-  // Advanced search methods
+  private async ensureAuthentication(): Promise<void> {
+    // If user is authenticated, use their access token
+    if (this.isAuthenticated()) {
+      logger.debug('Using user access token for authentication')
+      // Ensure the search service has the user's access token
+      if (this.accessToken) {
+        this.searchService.setAccessToken(this.accessToken)
+      }
+      return
+    }
+
+    // If not authenticated, ensure we have a client token
+    if (!this.searchService.hasClientToken()) {
+      logger.debug('User not authenticated, getting client token')
+      await this.getClientToken()
+    }
+  }
+
   async searchAdvanced(
     query: string,
     type: 'artist' | 'track' | 'album' | 'playlist',
@@ -272,10 +246,8 @@ export class SpotifyRepository {
     limit: number = 20,
     offset: number = 0,
   ) {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
+    await this.ensureAuthentication()
+
     try {
       return await this.searchService.searchAdvanced(
         query,
@@ -285,7 +257,7 @@ export class SpotifyRepository {
         offset,
       )
     } catch (error: unknown) {
-      // Se for 401, tenta com client token
+      // If 401 and we have user token, try with client token
       let is401 = false
       if (typeof error === 'object' && error !== null) {
         if (
@@ -307,7 +279,9 @@ export class SpotifyRepository {
               'Authentication required'
         }
       }
-      if (is401) {
+
+      if (is401 && this.isAuthenticated()) {
+        logger.debug('User token failed, trying with client token')
         try {
           await this.getClientToken()
           return await this.searchService.searchAdvanced(
@@ -325,86 +299,42 @@ export class SpotifyRepository {
     }
   }
 
-  async getRecommendations(params: RecommendationParams) {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
-    return this.searchService.getRecommendations(params)
-  }
-
   async getAvailableGenres() {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
+    await this.ensureAuthentication()
     return this.searchService.getAvailableGenres()
   }
 
   // Audio features methods
-  async getAudioFeatures(trackId: string): Promise<AudioFeatures> {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
-    return this.searchService.getAudioFeatures(trackId)
-  }
-
-  async getMultipleAudioFeatures(trackIds: string[]): Promise<AudioFeatures[]> {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
-    return this.searchService.getMultipleAudioFeatures(trackIds)
-  }
 
   // ISRC/UPC search methods
   async getTrackByISRC(isrc: string) {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
+    await this.ensureAuthentication()
     return this.searchService.getTrackByISRC(isrc)
   }
 
   async getAlbumByUPC(upc: string) {
-    // Ensure we have a token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      await this.getClientToken()
-    }
+    await this.ensureAuthentication()
     return this.searchService.getAlbumByUPC(upc)
   }
 
   async getArtistDetails(artistId: string) {
-    // Only get client token if we don't have access token and don't already have client token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.debug(
-        'No tokens available for artist details, getting client token',
-      )
-      try {
-        await this.getClientToken()
-      } catch (error) {
-        logger.error('Failed to get client token for artist details', error)
-        throw new Error('Authentication required for artist details')
-      }
+    await this.ensureAuthentication()
+    try {
+      return await this.searchService.getArtistDetails(artistId)
+    } catch (error) {
+      logger.error('Failed to get artist details', error)
+      throw new Error('Authentication required for artist details')
     }
-
-    return this.searchService.getArtistDetails(artistId)
   }
 
   async getArtistTopTracks(artistId: string, market: string = 'US') {
-    // Only get client token if we don't have access token and don't already have client token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.debug('No tokens available for top tracks, getting client token')
-      try {
-        await this.getClientToken()
-      } catch (error) {
-        logger.error('Failed to get client token for top tracks', error)
-        throw new Error('Authentication required for top tracks')
-      }
+    await this.ensureAuthentication()
+    try {
+      return await this.searchService.getArtistTopTracks(artistId, market)
+    } catch (error) {
+      logger.error('Failed to get artist top tracks', error)
+      throw new Error('Authentication required for artist top tracks')
     }
-
-    return this.searchService.getArtistTopTracks(artistId, market)
   }
 
   async getArtistAlbums(
@@ -413,28 +343,20 @@ export class SpotifyRepository {
     limit: number = 20,
     offset: number = 0,
   ) {
-    // Only get client token if we don't have access token and don't already have client token
-    if (!this.accessToken && !this.searchService.hasClientToken()) {
-      logger.debug(
-        'No tokens available for artist albums, getting client token',
+    await this.ensureAuthentication()
+    try {
+      return await this.searchService.getArtistAlbums(
+        artistId,
+        includeGroups,
+        limit,
+        offset,
       )
-      try {
-        await this.getClientToken()
-      } catch (error) {
-        logger.error('Failed to get client token for artist albums', error)
-        throw new Error('Authentication required for artist albums')
-      }
+    } catch (error) {
+      logger.error('Failed to get artist albums', error)
+      throw new Error('Authentication required for artist albums')
     }
-
-    return this.searchService.getArtistAlbums(
-      artistId,
-      includeGroups,
-      limit,
-      offset,
-    )
   }
 
-  // Utility methods
   logout(): void {
     logger.debug('Logging out')
 

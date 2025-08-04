@@ -1,6 +1,6 @@
 {
   "title": "Favorites",
-  "description": "Your favorite artists, songs, and albums",
-  "comingSoonTitle": "Coming Soon",
-  "comingSoonMessage": "The favorites feature is under development. You can still explore and discover new artists through search and browsing."
-} 
+  "description": "Your favorite artists",
+  "noFavorites": "You don't have any favorites yet",
+  "noFavoritesMessage": "Start adding artists to your favorites to see them here."
+}

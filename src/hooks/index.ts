@@ -10,6 +10,4 @@ export { useSpotifySearch } from './useSpotifySearch'
 export { useValidation } from './useValidation'
 
 // New advanced features hooks
-export { useAudioFeatures, useMultipleAudioFeatures } from './useAudioFeatures'
 export { useAvailableGenres } from './useAvailableGenres'
-export { useRecommendations } from './useRecommendations'
