@@ -17,7 +17,9 @@
   "totalResults": "{count} resultados totais",
   "showingResults": "Mostrando {showing} de {total} resultados",
   "loadMore": "Carregar Mais",
+  "loadingMore": "Carregando...",
   "errorMessage": "Ocorreu um erro durante a pesquisa",
+  "pageInfo": "Página {page} de {totalPages} ({perPage} por página)",
   "filters": {
     "all": "Todos",
     "artists": "Artistas",

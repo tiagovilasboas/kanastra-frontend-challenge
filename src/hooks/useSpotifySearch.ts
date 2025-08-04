@@ -19,6 +19,12 @@ interface UseSpotifySearchReturn {
   hasMore: boolean
   loadMore: () => void
   totalResults: number
+  // Album pagination
+  albumsPage: number
+  albumsTotalPages: number
+  albumsPerPage: number
+  setAlbumsPage: (page: number) => void
+  loadAlbumsPage: (page: number) => void
 }
 
 // Helper function to extract unique genres from artists
@@ -68,6 +74,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   const [error, setError] = useState<string | null>(null)
   const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
+  // Album pagination state
+  const [albumsPage, setAlbumsPage] = useState(1)
+  const [albumsTotalPages, setAlbumsTotalPages] = useState(0)
+  const [albumsPerPage] = useState(20)
+  const [albumsTotalResults, setAlbumsTotalResults] = useState(0)
+
   // Debounce effect
   useEffect(() => {
     if (debounceRef.current) {
@@ -78,6 +90,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         logger.debug('Debounced search triggered', { searchQuery })
         setDebouncedQuery(searchQuery)
         setPage(0)
+        setAlbumsPage(1) // Reset album pagination
         setError(null)
       }, 500)
     } else {
@@ -86,6 +99,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       setTracks([])
       setAlbums([])
       setPage(0)
+      setAlbumsPage(1)
       setHasMore(false)
       setError(null)
     }
@@ -96,7 +110,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     }
   }, [searchQuery])
 
-  // Fetch results when debouncedQuery or page changes
+  // Fetch results when debouncedQuery or page changes (for artists and tracks)
   useEffect(() => {
     let cancelled = false
     async function fetchResults() {
@@ -132,7 +146,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         const token =
           CookieManager.getAccessToken() ||
           localStorage.getItem('spotify_token')
-        let artistsResponse, tracksResponse, albumsResponse
+        let artistsResponse, tracksResponse
 
         logger.debug('Search attempt', {
           hasUserToken: !!token,
@@ -146,8 +160,8 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
 
         if (token) {
           logger.debug('Using user token for search')
-          // Search for all types in parallel
-          const [artistsRes, tracksRes, albumsRes] = await Promise.all([
+          // Search for artists and tracks in parallel (albums will be handled separately)
+          const [artistsRes, tracksRes] = await Promise.all([
             spotifyRepository.searchAdvanced(
               debouncedQuery,
               'artist',
@@ -162,17 +176,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               limit,
               offset,
             ),
-            spotifyRepository.searchAdvanced(
-              debouncedQuery,
-              'album',
-              undefined,
-              limit,
-              offset,
-            ),
           ])
           artistsResponse = artistsRes
           tracksResponse = tracksRes
-          albumsResponse = albumsRes
         } else {
           logger.debug('No user token, getting client token')
           try {
@@ -184,8 +190,8 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           }
 
           logger.debug('Using client token for search')
-          // Search for all types in parallel
-          const [artistsRes, tracksRes, albumsRes] = await Promise.all([
+          // Search for artists and tracks in parallel
+          const [artistsRes, tracksRes] = await Promise.all([
             spotifyRepository.searchAdvanced(
               debouncedQuery,
               'artist',
@@ -200,57 +206,20 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               limit,
               offset,
             ),
-            spotifyRepository.searchAdvanced(
-              debouncedQuery,
-              'album',
-              undefined,
-              limit,
-              offset,
-            ),
           ])
           artistsResponse = artistsRes
           tracksResponse = tracksRes
-          albumsResponse = albumsRes
         }
 
         if (cancelled) return
 
-        const newArtists = artistsResponse.artists?.items || []
-        const newTracks = tracksResponse.tracks?.items || []
-        const newAlbums = albumsResponse.albums?.items || []
+        const newArtists = artistsResponse?.artists || []
+        const newTracks = tracksResponse?.tracks || []
 
-        const totalArtists = artistsResponse.artists?.total || 0
-        const totalTracks = tracksResponse.tracks?.total || 0
-        const totalAlbums = albumsResponse.albums?.total || 0
-        const total = totalArtists + totalTracks + totalAlbums
-
-        logger.debug('Search results fetched successfully', {
-          query: debouncedQuery,
-          page,
-          offset,
-          newArtistsCount: newArtists.length,
-          newTracksCount: newTracks.length,
-          newAlbumsCount: newAlbums.length,
-          totalResults: total,
-          hasMore:
-            offset +
-              Math.max(newArtists.length, newTracks.length, newAlbums.length) <
-            Math.max(totalArtists, totalTracks, totalAlbums),
-        })
-
-        setTotalResults(total)
-        const newHasMore =
-          offset +
-            Math.max(newArtists.length, newTracks.length, newAlbums.length) <
-          Math.max(totalArtists, totalTracks, totalAlbums)
-        setHasMore(newHasMore)
-
-        setError(null)
-
+        // Update state based on page
         if (page === 0) {
           setArtists(newArtists)
           setTracks(newTracks)
-          setAlbums(newAlbums)
         } else {
           setArtists((prev) => {
             const existingIds = new Set(prev.map((artist) => artist.id))
@@ -266,104 +235,162 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
             )
             return [...prev, ...uniqueNewTracks]
           })
-          setAlbums((prev) => {
-            const existingIds = new Set(prev.map((album) => album.id))
-            const uniqueNewAlbums = newAlbums.filter(
-              (album: SpotifyAlbum) => !existingIds.has(album.id),
-            )
-            return [...prev, ...uniqueNewAlbums]
-          })
         }
 
-        // Reset loading state if no more results
-        if (!newHasMore) {
-          setIsLoadingMore(false)
-        }
-      } catch (error) {
-        logger.error('Search failed', error)
+        // Calculate total results and hasMore
+        const totalArtists = artistsResponse?.total || 0
+        const totalTracks = tracksResponse?.total || 0
+        const total = totalArtists + totalTracks + albumsTotalResults
+        setTotalResults(total)
 
+        const hasMoreArtists =
+          artistsResponse?.offset + artistsResponse?.limit < totalArtists
+        const hasMoreTracks =
+          tracksResponse?.offset + tracksResponse?.limit < totalTracks
+        setHasMore(hasMoreArtists || hasMoreTracks)
+
+        setIsLoading(false)
+        setIsLoadingMore(false)
+        setError(null)
+
+        logger.debug('Search results updated', {
+          newArtists: newArtists.length,
+          newTracks: newTracks.length,
+          totalArtists,
+          totalTracks,
+          total,
+          hasMore: hasMoreArtists || hasMoreTracks,
+        })
+      } catch (err) {
         if (cancelled) return
-
         const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error occurred'
+          err instanceof Error ? err.message : 'Search failed'
+        logger.error('Search error', err)
         setError(errorMessage)
-
-        // Clear results on error
-        if (page === 0) {
-          setArtists([])
-          setTracks([])
-          setAlbums([])
-          setTotalResults(0)
-          setHasMore(false)
-        }
-      } finally {
         setIsLoading(false)
         setIsLoadingMore(false)
       }
     }
+
     fetchResults()
+
     return () => {
       cancelled = true
     }
   }, [
     debouncedQuery,
     page,
+    albumsTotalResults,
     limit,
     artists.length,
     tracks.length,
     albums.length,
   ])
 
+  // Fetch albums with pagination
+  const loadAlbumsPage = useCallback(
+    async (pageNumber: number) => {
+      if (!debouncedQuery.trim()) return
+
+      setIsLoadingMore(true)
+      setError(null)
+
+      try {
+        const token =
+          CookieManager.getAccessToken() ||
+          localStorage.getItem('spotify_token')
+        const offset = (pageNumber - 1) * albumsPerPage
+
+        logger.debug('Loading albums page', {
+          page: pageNumber,
+          offset,
+          limit: albumsPerPage,
+          query: debouncedQuery,
+        })
+
+        let albumsResponse
+        if (token) {
+          albumsResponse = await spotifyRepository.searchAdvanced(
+            debouncedQuery,
+            'album',
+            undefined,
+            albumsPerPage,
+            offset,
+          )
+        } else {
+          await spotifyRepository.getClientToken()
+          albumsResponse = await spotifyRepository.searchAdvanced(
+            debouncedQuery,
+            'album',
+            undefined,
+            albumsPerPage,
+            offset,
+          )
+        }
+
+        const newAlbums = albumsResponse?.albums || []
+        setAlbums(newAlbums)
+        setAlbumsTotalResults(albumsResponse?.total || 0)
+        setAlbumsTotalPages(
+          Math.ceil((albumsResponse?.total || 0) / albumsPerPage),
+        )
+        setAlbumsPage(pageNumber)
+
+        // Update total results
+        const totalArtists = artists.length
+        const totalTracks = tracks.length
+        const total = totalArtists + totalTracks + (albumsResponse?.total || 0)
+        setTotalResults(total)
+
+        setIsLoadingMore(false)
+        setError(null)
+
+        logger.debug('Albums page loaded', {
+          page: pageNumber,
+          albums: newAlbums.length,
+          total: albumsResponse?.total || 0,
+          totalPages: Math.ceil((albumsResponse?.total || 0) / albumsPerPage),
+        })
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to load albums'
+        logger.error('Albums loading error', err)
+        setError(errorMessage)
+        setIsLoadingMore(false)
+      }
+    },
+    [debouncedQuery, albumsPerPage, artists.length, tracks.length],
+  )
+
+  // Load initial albums page when query changes
+  useEffect(() => {
+    if (debouncedQuery.trim()) {
+      loadAlbumsPage(1)
+    }
+  }, [debouncedQuery, loadAlbumsPage])
+
   const clearSearch = useCallback(() => {
-    logger.debug('clearSearch called')
+    setDebouncedQuery('')
     setArtists([])
     setTracks([])
     setAlbums([])
     setPage(0)
+    setAlbumsPage(1)
     setHasMore(false)
-    setTotalResults(0)
-    setIsLoadingMore(false)
     setError(null)
+    setTotalResults(0)
+    setAlbumsTotalPages(0)
+    setAlbumsTotalResults(0)
   }, [])
 
   const loadMore = useCallback(() => {
     if (!hasMore || isLoadingMore) return
-    logger.debug('Loading more results', {
-      currentPage: page,
-      currentArtists: artists.length,
-      currentTracks: tracks.length,
-      currentAlbums: albums.length,
-      totalResults,
-      hasMore,
-    })
-    setIsLoadingMore(true)
     setPage((prev) => prev + 1)
-  }, [
-    hasMore,
-    isLoadingMore,
-    page,
-    artists.length,
-    tracks.length,
-    albums.length,
-    totalResults,
-  ])
+    setIsLoadingMore(true)
+  }, [hasMore, isLoadingMore])
 
-  // Separate results into artists, tracks, albums, and genres
-  const { genres } = separateResults(artists, tracks, albums, debouncedQuery)
-
-  // Combine all results for display
+  // Combine all results for the searchResults array
   const searchResults = [...artists, ...tracks, ...albums]
-
-  // Debug logs
-  logger.debug('Search results separated', {
-    totalResults: searchResults.length,
-    artistsCount: artists.length,
-    tracksCount: tracks.length,
-    albumsCount: albums.length,
-    genresCount: genres.length,
-    hasMore,
-    query: debouncedQuery,
-  })
 
   return {
     isLoading,
@@ -373,10 +400,16 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     artists,
     tracks,
     albums,
-    genres,
+    genres: separateResults(artists, tracks, albums, debouncedQuery).genres,
     clearSearch,
     hasMore,
     loadMore,
     totalResults,
+    // Album pagination
+    albumsPage,
+    albumsTotalPages,
+    albumsPerPage,
+    setAlbumsPage,
+    loadAlbumsPage,
   }
 }

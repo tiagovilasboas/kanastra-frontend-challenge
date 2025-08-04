@@ -32,6 +32,7 @@ export {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from './navigation-menu'
+export { Pagination } from './Pagination'
 export { PlaylistCard } from './PlaylistCard'
 export { Progress } from './progress'
 export { RecommendationsSection } from './RecommendationsSection'

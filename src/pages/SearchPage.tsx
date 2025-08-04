@@ -12,6 +12,7 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
+import { Pagination } from '@/components/ui/Pagination'
 import { SearchFilters, SearchFilterType } from '@/components/ui/SearchFilters'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
@@ -35,6 +36,11 @@ export const SearchPage: React.FC = () => {
     hasMore,
     loadMore,
     totalResults,
+    // Album pagination
+    albumsPage,
+    albumsTotalPages,
+    albumsPerPage,
+    loadAlbumsPage,
   } = useSpotifySearch()
 
   const handleArtistClick = (artistId: string) => {
@@ -49,6 +55,10 @@ export const SearchPage: React.FC = () => {
 
   const handleFilterChange = (filter: SearchFilterType) => {
     setActiveFilter(filter)
+  }
+
+  const handleAlbumsPageChange = (page: number) => {
+    loadAlbumsPage(page)
   }
 
   // Determine which sections to show based on active filter
@@ -241,19 +251,40 @@ export const SearchPage: React.FC = () => {
 
                 {/* Albums Section */}
                 {shouldShowAlbums && albums.length > 0 && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                      <Disc3 className="w-5 h-5" />
-                      {t('search:albumsWithCount', {
-                        count: albums.length,
-                        defaultValue: 'Albums ({count})',
-                      })}
-                    </h3>
+                  <div className="space-y-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <Disc3 className="w-5 h-5" />
+                        {t('search:albumsWithCount', {
+                          count: albums.length,
+                          defaultValue: 'Albums ({count})',
+                        })}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {t('search:pageInfo', {
+                          page: albumsPage,
+                          totalPages: albumsTotalPages,
+                          perPage: albumsPerPage,
+                          defaultValue:
+                            'Page {page} of {totalPages} ({perPage} per page)',
+                        })}
+                      </p>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                       {albums.map((album) => (
                         <AlbumCard key={album.id} album={album} />
                       ))}
                     </div>
+                    {/* Albums Pagination */}
+                    {albumsTotalPages > 1 && (
+                      <div className="flex justify-center pt-4">
+                        <Pagination
+                          currentPage={albumsPage}
+                          totalPages={albumsTotalPages}
+                          onPageChange={handleAlbumsPageChange}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -280,8 +311,8 @@ export const SearchPage: React.FC = () => {
                   </div>
                 )}
 
-                {/* Load More Button */}
-                {hasMore && (
+                {/* Load More Button for Artists and Tracks */}
+                {hasMore && (shouldShowArtists || shouldShowTracks) && (
                   <div className="flex justify-center pt-6">
                     <Button
                       onClick={loadMore}
