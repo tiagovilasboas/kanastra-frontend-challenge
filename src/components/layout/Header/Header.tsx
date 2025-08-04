@@ -1,12 +1,4 @@
-import {
-  LogIn,
-  LogOut,
-  Menu,
-  Music,
-  Search,
-  Settings,
-  User,
-} from 'lucide-react'
+import { LogIn, LogOut, Menu, Music, Search, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -14,7 +6,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -89,15 +80,6 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem>
-                  <User className="w-4 h-4 mr-2" />
-                  {t('auth:profile', 'Profile')}
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Settings className="w-4 h-4 mr-2" />
-                  {t('auth:settings', 'Settings')}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} variant="destructive">
                   <LogOut className="w-4 h-4 mr-2" />
                   {t('auth:logout', 'Logout')}
