@@ -1,12 +1,11 @@
-import {
-  Container as MantineContainer,
-  ContainerProps as MantineContainerProps,
-} from '@mantine/core'
 import { forwardRef } from 'react'
 
-export interface ContainerProps extends MantineContainerProps {
+import { cn } from '@/lib/utils'
+
+export interface ContainerProps {
   variant?: 'default' | 'mobile-first' | 'fluid' | 'narrow' | 'wide'
   children: React.ReactNode
+  className?: string
 }
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(
@@ -28,19 +27,14 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
       }
     }
 
-    const containerClasses = [getVariantClass(), className]
-      .filter(Boolean)
-      .join(' ')
-
     return (
-      <MantineContainer
+      <div
         ref={ref}
-        className={containerClasses}
-        size="xl"
+        className={cn(getVariantClass(), className)}
         {...props}
       >
         {children}
-      </MantineContainer>
+      </div>
     )
   },
 )
