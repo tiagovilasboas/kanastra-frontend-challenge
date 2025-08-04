@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
 
+import { AppLayout } from '@/components/layout'
 import { PageLoading } from '@/components/ui/LoadingSkeleton'
 
 import { App } from './App'
@@ -33,17 +34,21 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: (
-          <PageSuspense>
-            <HomePage />
-          </PageSuspense>
+          <AppLayout>
+            <PageSuspense>
+              <HomePage />
+            </PageSuspense>
+          </AppLayout>
         ),
       },
       {
         path: '/artist/:id',
         element: (
-          <PageSuspense>
-            <ArtistPage />
-          </PageSuspense>
+          <AppLayout>
+            <PageSuspense>
+              <ArtistPage />
+            </PageSuspense>
+          </AppLayout>
         ),
       },
     ],

@@ -15,23 +15,30 @@ export class SpotifyRepository {
   private accessToken?: string
 
   constructor() {
-    const config = getSpotifyConfig()
+    try {
+      const config = getSpotifyConfig()
 
-    this.authService = new SpotifyAuthService({
-      clientId: config.clientId,
-      clientSecret: config.clientSecret,
-      redirectUri: config.redirectUri,
-      scopes: config.scopes,
-    })
+      this.authService = new SpotifyAuthService({
+        clientId: config.clientId,
+        clientSecret: config.clientSecret,
+        redirectUri: config.redirectUri,
+        scopes: config.scopes,
+      })
 
-    this.searchService = new SpotifySearchService({
-      baseURL: config.baseUrl,
-    })
+      this.searchService = new SpotifySearchService({
+        baseURL: config.baseUrl,
+      })
 
-    this.setupAxiosInterceptors()
+      this.setupAxiosInterceptors()
 
-    // Try to load token from localStorage on initialization
-    this.loadTokenFromStorage()
+      // Try to load token from localStorage on initialization
+      this.loadTokenFromStorage()
+    } catch {
+      console.warn('Spotify configuration not available, running in demo mode')
+      // Initialize with dummy services for demo mode
+      this.authService = {} as SpotifyAuthService
+      this.searchService = {} as SpotifySearchService
+    }
   }
 
   // Authentication methods
