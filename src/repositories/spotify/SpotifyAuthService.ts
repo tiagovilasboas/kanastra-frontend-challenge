@@ -1,4 +1,7 @@
+import { validateSpotifyTokenResponse } from '@/schemas/spotify'
 import { CookieManager } from '@/utils/cookies'
+import { errorHandler } from '@/utils/errorHandler'
+import { logger } from '@/utils/logger'
 
 export interface SpotifyAuthConfig {
   clientId: string
@@ -34,181 +37,200 @@ export class SpotifyAuthService {
       .replace(/=/g, '')
   }
 
+  private generateState(): string {
+    const array = new Uint8Array(16)
+    crypto.getRandomValues(array)
+    return btoa(String.fromCharCode(...array))
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '')
+  }
+
   async generateAuthUrl(): Promise<string> {
-    const { clientId, redirectUri, scopes } = this.config
-    const scopeString = scopes.join(' ')
-
-    console.log('🔐 Generating auth URL...')
-
-    // Generate PKCE parameters
-    const codeVerifier = this.generateCodeVerifier()
-    const codeChallenge = await this.generateCodeChallenge(codeVerifier)
-
-    console.log(
-      '📝 Code verifier generated:',
-      codeVerifier.substring(0, 10) + '...',
-    )
-    console.log(
-      '🔑 Code challenge generated:',
-      codeChallenge.substring(0, 10) + '...',
-    )
-
-    // Store code verifier securely (try cookies first, fallback to localStorage)
     try {
+      logger.debug('Generating auth URL...')
+
+      const { clientId, redirectUri, scopes } = this.config
+      const codeVerifier = this.generateCodeVerifier()
+      const codeChallenge = await this.generateCodeChallenge(codeVerifier)
+      const state = this.generateState()
+
+      logger.debug('Auth configuration', {
+        clientId: clientId ? 'Present' : 'Missing',
+        redirectUri,
+        scopes,
+      })
+
+      // Store code verifier securely
       CookieManager.setCodeVerifier(codeVerifier)
-    } catch {
-      console.warn('⚠️ Failed to store code verifier in cookies, using localStorage as fallback')
-      localStorage.setItem('spotify_code_verifier', codeVerifier)
+
+      const params = new URLSearchParams({
+        client_id: clientId,
+        response_type: 'code',
+        redirect_uri: redirectUri,
+        scope: scopes.join(' '),
+        state,
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256',
+      })
+
+      const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`
+      logger.debug('Auth URL generated successfully')
+      return authUrl
+    } catch (error) {
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyAuthService.generateAuthUrl',
+      )
+      throw appError
     }
-
-    // Build authorization URL
-    const params = new URLSearchParams({
-      client_id: clientId,
-      response_type: 'code',
-      redirect_uri: redirectUri,
-      scope: scopeString,
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
-    })
-
-    const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`
-    console.log('🌐 Auth URL generated successfully')
-
-    return authUrl
   }
 
   extractCodeFromUrl(url: string): {
     code: string | null
     state: string | null
   } {
-    console.log('🔍 Extracting code from URL:', url)
-
     try {
+      logger.debug('Extracting code from URL', { url })
+
       const urlObj = new URL(url)
       const code = urlObj.searchParams.get('code')
       const state = urlObj.searchParams.get('state')
 
-      console.log('✅ Code extracted:', code ? 'Present' : 'Missing')
-      console.log('✅ State extracted:', state ? 'Present' : 'Missing')
+      logger.debug('Code extraction result', {
+        code: code ? 'Present' : 'Missing',
+        state: state ? 'Present' : 'Missing',
+      })
 
       return { code, state }
     } catch (error) {
-      console.error('❌ Error extracting code from URL:', error)
+      logger.error('Failed to extract code from URL', error)
       return { code: null, state: null }
     }
   }
 
-  getCodeVerifier(): string | null {
-    // Try cookies first
-    const cookieVerifier = CookieManager.getCodeVerifier()
-    if (cookieVerifier) {
-      return cookieVerifier
-    }
+  private getCodeVerifier(): string | null {
+    // Try cookie first (more secure)
+    let codeVerifier = CookieManager.getCodeVerifier()
 
-    // Fallback to localStorage
-    console.log('🔍 Trying localStorage fallback for code verifier')
-    const localStorageVerifier = localStorage.getItem('spotify_code_verifier')
-    if (localStorageVerifier) {
-      console.log('✅ Code verifier found in localStorage')
-      return localStorageVerifier
-    }
-
-    console.log('❌ Code verifier not found in cookies or localStorage')
-    return null
-  }
-
-  clearCodeVerifier(): void {
-    // Clear from cookies
-    CookieManager.clearCodeVerifier()
-    
-    // Clear from localStorage
-    localStorage.removeItem('spotify_code_verifier')
-    console.log('🧹 Code verifier cleared from both cookies and localStorage')
-  }
-
-  async handleTokenExchange(code: string, state?: string): Promise<{ access_token: string }> {
-    console.log('🔄 Handling token exchange...')
-    console.log('📝 Code received:', code.substring(0, 10) + '...')
-
-    let codeVerifier = this.getCodeVerifier()
-
-    // If code verifier not found, try to extract from state parameter
-    if (!codeVerifier && state) {
-      try {
-        console.log('🔍 Trying to extract code verifier from state parameter...')
-        const decodedState = atob(state.replace(/-/g, '+').replace(/_/g, '/'))
-        codeVerifier = decodedState
-        console.log('✅ Code verifier extracted from state:', codeVerifier.substring(0, 10) + '...')
-      } catch (error) {
-        console.error('❌ Failed to extract code verifier from state:', error)
+    if (!codeVerifier) {
+      // Fallback to localStorage (for backward compatibility)
+      logger.debug('Trying localStorage fallback for code verifier')
+      codeVerifier = localStorage.getItem('spotify_code_verifier')
+      if (codeVerifier) {
+        logger.debug('Code verifier found in localStorage')
+        // Migrate to cookie for future use
+        try {
+          CookieManager.setCodeVerifier(codeVerifier)
+          localStorage.removeItem('spotify_code_verifier')
+        } catch (error) {
+          logger.warn('Failed to migrate code verifier to cookie', error)
+        }
       }
     }
 
     if (!codeVerifier) {
-      throw new Error('Authentication session expired. Please try logging in again.')
+      logger.debug('Code verifier not found in cookies or localStorage')
     }
 
-    const { clientId, redirectUri } = this.config
-    const tokenUrl = 'https://accounts.spotify.com/api/token'
+    return codeVerifier
+  }
 
-    const params = new URLSearchParams({
-      client_id: clientId,
-      grant_type: 'authorization_code',
-      code: code,
-      redirect_uri: redirectUri,
-      code_verifier: codeVerifier,
-    })
+  private clearCodeVerifier(): void {
+    CookieManager.clearCodeVerifier()
+    localStorage.removeItem('spotify_code_verifier')
+    logger.debug('Code verifier cleared from both cookies and localStorage')
+  }
 
-    console.log('📤 Sending token exchange request...')
-
+  async handleTokenExchange(
+    code: string,
+    state?: string,
+  ): Promise<{
+    access_token: string
+    token_type: string
+    expires_in: number
+    refresh_token?: string
+    scope?: string
+  }> {
     try {
-      const response = await fetch(tokenUrl, {
+      logger.debug('Handling token exchange...')
+      logger.debug('Code received', { code: code.substring(0, 10) + '...' })
+
+      const { clientId, clientSecret, redirectUri } = this.config
+      let codeVerifier = this.getCodeVerifier()
+
+      // If no code verifier found, try to extract from state parameter
+      if (!codeVerifier && state) {
+        logger.debug('Trying to extract code verifier from state parameter...')
+        try {
+          const stateData = JSON.parse(atob(state))
+          codeVerifier = stateData.code_verifier
+          if (codeVerifier) {
+            logger.debug('Code verifier extracted from state', {
+              codeVerifier: codeVerifier.substring(0, 10) + '...',
+            })
+          }
+        } catch (error) {
+          logger.warn('Failed to extract code verifier from state', error)
+        }
+      }
+
+      if (!codeVerifier) {
+        throw new Error('Code verifier not found')
+      }
+
+      const params = new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: redirectUri,
+        client_id: clientId,
+        client_secret: clientSecret,
+        code_verifier: codeVerifier,
+      })
+
+      logger.debug('Sending token exchange request...')
+
+      const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: params,
+        body: params.toString(),
       })
 
-      console.log('📥 Response status:', response.status)
+      logger.debug('Response status', { status: response.status })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        console.error('❌ Token exchange failed:', errorData)
+        const errorData = await response.json()
+        logger.error('Token exchange failed', errorData)
+
+        // If it's an authorization code error, keep the code verifier for potential retry
+        if (errorData.error === 'invalid_grant') {
+          logger.warn(
+            'Authorization code error - keeping code verifier for potential retry',
+          )
+          return Promise.reject(new Error('Invalid authorization code'))
+        }
+
         throw new Error(
-          errorData.error_description ||
-            errorData.error ||
-            `Token exchange failed: ${response.status}`,
+          `Token exchange failed: ${errorData.error_description || errorData.error}`,
         )
       }
 
       const data = await response.json()
-      console.log('✅ Token exchange successful')
+      const validatedData = validateSpotifyTokenResponse(data)
 
-      // Clean up code verifier after successful exchange
+      // Clear code verifier after successful exchange
       this.clearCodeVerifier()
 
-      return data
+      logger.debug('Token exchange successful')
+      return validatedData
     } catch (error) {
-      console.error('❌ Token exchange error:', error)
-      
-      // Don't clear code verifier for specific errors that might be retryable
-      if (error instanceof Error) {
-        const errorMessage = error.message.toLowerCase()
-        if (errorMessage.includes('invalid authorization code') || 
-            errorMessage.includes('authorization code expired')) {
-          console.log('⚠️ Authorization code error - keeping code verifier for potential retry')
-          // Don't clear code verifier for these specific errors
-        } else {
-          // Clear code verifier for other errors
-          this.clearCodeVerifier()
-        }
-      } else {
-        // Clear code verifier for unknown errors
-        this.clearCodeVerifier()
-      }
-      
-      throw error
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyAuthService.handleTokenExchange',
+      )
+      throw appError
     }
   }
 }

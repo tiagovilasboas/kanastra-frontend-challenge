@@ -1,3 +1,5 @@
+import { logger } from './logger'
+
 interface CookieOptions {
   expires?: Date
   maxAge?: number
@@ -37,18 +39,18 @@ export class CookieManager {
         this.COOKIE_OPTIONS,
       )
 
-      console.log('🔧 Setting code verifier cookie:', cookieName)
+      logger.debug('Setting code verifier cookie', { cookieName })
       document.cookie = cookieString
 
       // Verify that the cookie was set
       const allCookies = document.cookie
       if (allCookies.includes(cookieName)) {
-        console.log('✅ Code verifier stored in secure cookie')
+        logger.debug('Code verifier stored in secure cookie')
       } else {
-        console.warn('⚠️ Code verifier cookie may not have been set properly')
+        logger.warn('Code verifier cookie may not have been set properly')
       }
     } catch (error) {
-      console.error('❌ Failed to store code verifier in cookie:', error)
+      logger.error('Failed to store code verifier in cookie', error)
       throw new Error('Unable to store authentication data securely')
     }
   }
@@ -56,7 +58,7 @@ export class CookieManager {
   static getCodeVerifier(): string | null {
     try {
       const cookieName = this.COOKIE_PREFIX + this.CODE_VERIFIER_KEY
-      console.log('🔍 Looking for code verifier cookie:', cookieName)
+      logger.debug('Looking for code verifier cookie', { cookieName })
 
       const cookies = document.cookie.split(';')
 
@@ -64,15 +66,15 @@ export class CookieManager {
         const [name, value] = cookie.trim().split('=')
         if (name === cookieName && value) {
           const decodedValue = this.decodeValue(value)
-          console.log('✅ Code verifier found in secure cookie')
+          logger.debug('Code verifier found in secure cookie')
           return decodedValue
         }
       }
 
-      console.log('❌ Code verifier not found in cookies')
+      logger.debug('Code verifier not found in cookies')
       return null
     } catch (error) {
-      console.error('❌ Failed to read code verifier from cookie:', error)
+      logger.error('Failed to read code verifier from cookie', error)
       return null
     }
   }
@@ -89,9 +91,9 @@ export class CookieManager {
       )
 
       document.cookie = cookieString
-      console.log('🧹 Code verifier cleared from secure cookie')
+      logger.debug('Code verifier cleared from secure cookie')
     } catch (error) {
-      console.error('❌ Failed to clear code verifier cookie:', error)
+      logger.error('Failed to clear code verifier cookie', error)
     }
   }
 
@@ -106,18 +108,18 @@ export class CookieManager {
         this.TOKEN_COOKIE_OPTIONS,
       )
 
-      console.log('🔧 Setting access token cookie:', cookieName)
+      logger.debug('Setting access token cookie', { cookieName })
       document.cookie = cookieString
 
       // Verify that the cookie was set
       const allCookies = document.cookie
       if (allCookies.includes(cookieName)) {
-        console.log('✅ Access token stored in secure cookie')
+        logger.debug('Access token stored in secure cookie')
       } else {
-        console.warn('⚠️ Access token cookie may not have been set properly')
+        logger.warn('Access token cookie may not have been set properly')
       }
     } catch (error) {
-      console.error('❌ Failed to store access token in cookie:', error)
+      logger.error('Failed to store access token in cookie', error)
       throw new Error('Unable to store access token securely')
     }
   }
@@ -125,7 +127,7 @@ export class CookieManager {
   static getAccessToken(): string | null {
     try {
       const cookieName = this.COOKIE_PREFIX + this.ACCESS_TOKEN_KEY
-      console.log('🔍 Looking for access token cookie:', cookieName)
+      logger.debug('Looking for access token cookie', { cookieName })
 
       const cookies = document.cookie.split(';')
 
@@ -133,15 +135,15 @@ export class CookieManager {
         const [name, value] = cookie.trim().split('=')
         if (name === cookieName && value) {
           const decodedValue = this.decodeValue(value)
-          console.log('✅ Access token found in secure cookie')
+          logger.debug('Access token found in secure cookie')
           return decodedValue
         }
       }
 
-      console.log('❌ Access token not found in cookies')
+      logger.debug('Access token not found in cookies')
       return null
     } catch (error) {
-      console.error('❌ Failed to read access token from cookie:', error)
+      logger.error('Failed to read access token from cookie', error)
       return null
     }
   }
@@ -158,9 +160,9 @@ export class CookieManager {
       )
 
       document.cookie = cookieString
-      console.log('🧹 Access token cleared from secure cookie')
+      logger.debug('Access token cleared from secure cookie')
     } catch (error) {
-      console.error('❌ Failed to clear access token cookie:', error)
+      logger.error('Failed to clear access token cookie', error)
     }
   }
 
@@ -168,7 +170,7 @@ export class CookieManager {
   static clearAllSpotifyCookies(): void {
     this.clearCodeVerifier()
     this.clearAccessToken()
-    console.log('🧹 All Spotify cookies cleared')
+    logger.debug('All Spotify cookies cleared')
   }
 
   private static encodeValue(value: string): string {

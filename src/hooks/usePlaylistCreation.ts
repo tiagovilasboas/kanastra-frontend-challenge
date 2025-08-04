@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { queryKeys } from '@/config/react-query'
+import { logger } from '@/utils/logger'
 
 interface CreatePlaylistParams {
   name: string
@@ -42,7 +43,7 @@ export function usePlaylistCreation(): UsePlaylistCreationReturn {
     mutationFn: async (params: CreatePlaylistParams) => {
       // TODO: Implement when we have playlist-modify-public/private scope
       // return await spotifyRepository.createPlaylist(params)
-      console.log('Creating playlist:', params)
+      logger.debug('Creating playlist', params)
       return {
         id: 'mock-playlist-id',
         name: params.name,
@@ -67,7 +68,7 @@ export function usePlaylistCreation(): UsePlaylistCreationReturn {
     mutationFn: async (params: AddTracksToPlaylistParams) => {
       // TODO: Implement when we have playlist-modify-public/private scope
       // return await spotifyRepository.addTracksToPlaylist(params)
-      console.log('Adding tracks to playlist:', params)
+      logger.debug('Adding tracks to playlist:', params)
       return { success: true }
     },
     onSuccess: () => {

@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/card'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
+import { logger } from '@/utils/logger'
 
 export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
@@ -40,7 +41,7 @@ export const SearchPage: React.FC = () => {
   const handleGenreClick = (genre: string) => {
     // For now, just search for the genre
     // In the future, this could navigate to a genre page
-    console.log('Genre clicked:', genre)
+    logger.debug('Genre clicked', { genre })
   }
 
   return (

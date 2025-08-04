@@ -1,8 +1,9 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
+import { logger } from '@/utils/logger'
 
 import { useArtistAlbums } from './useArtistAlbums'
 import { useArtistDetails } from './useArtistDetails'
@@ -20,18 +21,18 @@ interface UseArtistDetailsOptimizedReturn {
   albums: ReturnType<typeof useArtistAlbums>['albums']
   totalPages: ReturnType<typeof useArtistAlbums>['totalPages']
   totalItems: ReturnType<typeof useArtistAlbums>['totalItems']
-  
+
   // Loading states
   isLoadingArtist: boolean
   isLoadingTracks: boolean
   isLoadingAlbums: boolean
   isLoading: boolean // Combined loading state
-  
+
   // Error states
   artistError: Error | null
   tracksError: Error | null
   albumsError: Error | null
-  
+
   // Actions
   refetchAll: () => void
   prefetchNextPage: () => void
@@ -44,6 +45,7 @@ export function useArtistDetailsOptimized({
   page,
 }: UseArtistDetailsOptimizedParams): UseArtistDetailsOptimizedReturn {
   const queryClient = useQueryClient()
+  const [currentPage, setCurrentPage] = useState(page)
 
   // Individual hooks
   const {
@@ -69,7 +71,7 @@ export function useArtistDetailsOptimized({
     refetch: refetchAlbums,
   } = useArtistAlbums({
     artistId,
-    page,
+    page: currentPage,
   })
 
   // Combined loading state
@@ -77,14 +79,19 @@ export function useArtistDetailsOptimized({
 
   // Prefetch next page when component mounts or page changes
   useEffect(() => {
-    if (artistId && page < totalPages) {
-      const nextPage = page + 1
+    if (artistId && currentPage < totalPages) {
+      const nextPage = currentPage + 1
       const offset = nextPage * 20
-      
+
       queryClient.prefetchQuery({
         queryKey: queryKeys.artists.albums(artistId, nextPage, 20),
         queryFn: async () => {
-          const response = await spotifyRepository.getArtistAlbums(artistId, ['album', 'single'], 20, offset)
+          const response = await spotifyRepository.getArtistAlbums(
+            artistId,
+            ['album', 'single'],
+            20,
+            offset,
+          )
           return {
             albums: response,
             total: response.length,
@@ -95,7 +102,7 @@ export function useArtistDetailsOptimized({
         gcTime: cache.times.MEDIUM,
       })
     }
-  }, [queryClient, artistId, page, totalPages])
+  }, [queryClient, artistId, currentPage, totalPages])
 
   // Prefetch artist details and top tracks when artistId changes
   useEffect(() => {
@@ -129,14 +136,19 @@ export function useArtistDetailsOptimized({
   }, [refetchArtist, refetchTracks, refetchAlbums])
 
   const prefetchNextPage = useCallback(() => {
-    if (artistId && page < totalPages) {
-      const nextPage = page + 1
+    if (artistId && currentPage < totalPages) {
+      const nextPage = currentPage + 1
       const offset = nextPage * 20
-      
+
       queryClient.prefetchQuery({
         queryKey: queryKeys.artists.albums(artistId, nextPage, 20),
         queryFn: async () => {
-          const response = await spotifyRepository.getArtistAlbums(artistId, ['album', 'single'], 20, offset)
+          const response = await spotifyRepository.getArtistAlbums(
+            artistId,
+            ['album', 'single'],
+            20,
+            offset,
+          )
           return {
             albums: response,
             total: response.length,
@@ -147,7 +159,7 @@ export function useArtistDetailsOptimized({
         gcTime: cache.times.MEDIUM,
       })
     }
-  }, [queryClient, artistId, page, totalPages])
+  }, [queryClient, artistId, currentPage, totalPages])
 
   const invalidateCache = useCallback(() => {
     if (artistId) {
@@ -159,15 +171,14 @@ export function useArtistDetailsOptimized({
         queryKey: queryKeys.artists.topTracks(artistId),
       })
       queryClient.invalidateQueries({
-        queryKey: queryKeys.artists.albums(artistId, page, 20),
+        queryKey: queryKeys.artists.albums(artistId, currentPage, 20),
       })
     }
-  }, [queryClient, artistId, page])
+  }, [queryClient, artistId, currentPage])
 
-  const setPage = useCallback((newPage: number) => {
-    // This is a placeholder - the actual page state should be managed by the parent component
-    // The parent component should call this hook with the new page value
-    console.log('Page changed to:', newPage)
+  const handlePageChange = useCallback((newPage: number) => {
+    logger.debug('Page changed', { newPage })
+    setCurrentPage(newPage)
   }, [])
 
   return {
@@ -177,22 +188,22 @@ export function useArtistDetailsOptimized({
     albums,
     totalPages,
     totalItems,
-    
+
     // Loading states
     isLoadingArtist,
     isLoadingTracks,
     isLoadingAlbums,
     isLoading,
-    
+
     // Error states
     artistError,
     tracksError,
     albumsError,
-    
+
     // Actions
     refetchAll,
     prefetchNextPage,
     invalidateCache,
-    setPage,
+    setPage: handlePageChange,
   }
-} 
+}
