@@ -1,6 +1,5 @@
 export { AlbumCard } from './AlbumCard'
 export { ArtistCard } from './ArtistCard'
-export { AudioFeaturesCard } from './AudioFeaturesCard'
 export { Badge } from './badge'
 export { Button } from './button'
 export {
@@ -35,8 +34,7 @@ export {
 export { Pagination } from './Pagination'
 export { PlaylistCard } from './PlaylistCard'
 export { Progress } from './progress'
-export { RecommendationsSection } from './RecommendationsSection'
-export { SearchFilters } from './SearchFilters'
+export { SearchTypeSelector } from './SearchTypeSelector'
 export {
   Select,
   SelectContent,
