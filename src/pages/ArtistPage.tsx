@@ -1,37 +1,20 @@
-import {
-  ActionIcon,
-  Alert,
-  Badge,
-  Card,
-  Divider,
-  Flex,
-  Grid,
-  Group,
-  Image,
-  Pagination,
-  Skeleton,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-} from '@mantine/core'
-import { ExternalLink, Play, RefreshCw, Share } from 'lucide-react'
-import { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
-import { AppLayout } from '@/components/layout'
-import { Button as SpotifyButton, SearchInput } from '@/components/ui'
+import { ArtistAlbums, ArtistHeader, ArtistPageSkeleton, ArtistTopTracks } from '@/components/artist'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
 import { useArtistPage } from '@/hooks/useArtistPage'
-import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
-import { SpotifyAlbum } from '@/schemas/spotify'
-import { SpotifyTrack } from '@/schemas/spotify'
-import { SpotifyArtist } from '@/types/spotify'
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
-  const { isAuthenticated } = useSpotifyAuth()
+
+  // Debug: Log the artist ID
+  useEffect(() => {
+    console.log('ArtistPage: Artist ID from params:', id)
+  }, [id])
 
   const {
     artist,
@@ -39,7 +22,6 @@ export const ArtistPage: React.FC = () => {
     albums,
     currentPage,
     totalPages,
-    totalItems,
     isLoadingArtist,
     isLoadingTracks,
     isLoadingAlbums,
@@ -49,541 +31,89 @@ export const ArtistPage: React.FC = () => {
     handlePageChange,
     handleBackToHome,
     handleRefresh,
-    handlePrefetchNextPage,
   } = useArtistPage(id)
 
-  const [albumFilter, setAlbumFilter] = useState('')
+  // Debug: Log the artist data
+  useEffect(() => {
+    console.log('ArtistPage: Artist data:', artist)
+    console.log('ArtistPage: Loading states:', { isLoadingArtist, isLoadingTracks, isLoadingAlbums })
+    console.log('ArtistPage: Errors:', { artistError, tracksError, albumsError })
+  }, [artist, isLoadingArtist, isLoadingTracks, isLoadingAlbums, artistError, tracksError, albumsError])
 
-  const handleAlbumFilter = (query: string) => {
-    setAlbumFilter(query)
+  // Loading state
+  if (isLoadingArtist) {
+    return <ArtistPageSkeleton />
   }
-
-  const handlePageChangeWrapper = (page: number) => {
-    handlePageChange(page)
-    // Prefetch next page for better UX
-    if (page < totalPages) {
-      handlePrefetchNextPage()
-    }
-  }
-
-  const formatDuration = (ms: number) => {
-    const minutes = Math.floor(ms / 60000)
-    const seconds = Math.floor((ms % 60000) / 1000)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
-
-  const formatReleaseDate = (date: string) => {
-    return new Date(date).toLocaleDateString('pt-BR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
-  }
-
-  const formatFollowers = (followers: number) => {
-    if (followers >= 1000000) {
-      return `${(followers / 1000000).toFixed(1)}M`
-    }
-    if (followers >= 1000) {
-      return `${(followers / 1000).toFixed(1)}K`
-    }
-    return followers.toString()
-  }
-
-  const getArtistImage = (artist: SpotifyArtist) => {
-    if (artist.images && artist.images.length > 0) {
-      return artist.images[0].url
-    }
-    return '/placeholder-artist.jpg'
-  }
-
-  const getAlbumImage = (album: SpotifyAlbum) => {
-    if (album.images && album.images.length > 0) {
-      return album.images[0].url
-    }
-    return '/placeholder-album.jpg'
-  }
-
-  const handlePlayTrack = (track: SpotifyTrack) => {
-    // Open track in Spotify
-    if (track.external_urls?.spotify) {
-      window.open(track.external_urls.spotify, '_blank', 'noopener,noreferrer')
-    } else {
-      console.warn('No Spotify URL available for track:', track.name)
-    }
-  }
-
-  const handleAlbumClick = (album: SpotifyAlbum) => {
-    if (album.external_urls?.spotify) {
-      window.open(album.external_urls.spotify, '_blank', 'noopener,noreferrer')
-    } else {
-      console.warn('No Spotify URL available for album:', album.name)
-    }
-  }
-
-  const handleShareArtist = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: artist?.name,
-        url: window.location.href,
-      })
-    } else {
-      navigator.clipboard.writeText(window.location.href)
-    }
-  }
-
-  // Filter and sort albums by release date (newest first)
-  const filteredAlbums = albums
-    .filter((album) =>
-      album.name.toLowerCase().includes(albumFilter.toLowerCase()),
-    )
-    .sort((a, b) => {
-      const dateA = new Date(a.release_date).getTime()
-      const dateB = new Date(b.release_date).getTime()
-      return dateB - dateA // Descending order (newest first)
-    })
 
   // Error state
   if (artistError) {
     return (
-      <AppLayout>
-        <Stack gap="xl" className="p-xl">
-          <Alert color="red" title={t('artist:errorTitle')}>
-            {artistError.message}
-          </Alert>
-          <Group>
-            <SpotifyButton onClick={handleBackToHome}>
-              {t('artist:backToHome')}
-            </SpotifyButton>
-            <SpotifyButton variant="secondary" onClick={handleRefresh}>
-              {t('artist:retry', 'Retry')}
-            </SpotifyButton>
-          </Group>
-        </Stack>
-      </AppLayout>
-    )
-  }
-
-  // Loading state
-  if (isLoadingArtist) {
-    return (
-      <AppLayout>
-        <div className="artist-page-container">
-          <Stack gap="xl">
-            {/* Header skeleton */}
-            <Group justify="space-between" align="center">
-              <Skeleton height={40} width="150px" />
-              <Group gap="sm">
-                <Skeleton height={40} width={40} radius="md" />
-                <Skeleton height={40} width={40} radius="md" />
-                <Skeleton height={40} width={40} radius="md" />
-              </Group>
-            </Group>
-
-            {/* Hero skeleton */}
-            <div className="artist-hero-skeleton">
-              <div className="artist-hero-skeleton-content">
-                <div className="artist-hero-skeleton-image" />
-                <div className="artist-hero-skeleton-info">
-                  <div className="artist-hero-skeleton-name" />
-                  <div className="artist-hero-skeleton-stats">
-                    <div className="artist-hero-skeleton-stat" />
-                    <div className="artist-hero-skeleton-stat" />
-                  </div>
-                  <div className="artist-hero-skeleton-genres">
-                    <div className="artist-hero-skeleton-genre" />
-                    <div className="artist-hero-skeleton-genre" />
-                    <div className="artist-hero-skeleton-genre" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Divider />
-
-            {/* Tracks skeleton */}
-            <div>
-              <Skeleton height={30} width="200px" className="mb-lg" />
-              <Stack gap="md">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton key={index} height={60} radius="md" />
-                ))}
-              </Stack>
-            </div>
-          </Stack>
+      <div className="min-h-screen bg-background p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+          <div className="text-center py-8 sm:py-12">
+            <p className="text-destructive text-lg mb-4">
+              {t('artist:errorLoading')}
+            </p>
+            <Button onClick={handleBackToHome}>
+              {t('common:backToHome')}
+            </Button>
+          </div>
         </div>
-      </AppLayout>
+      </div>
     )
   }
 
-  // Error state - if artist is null, show error
+  // No artist found
   if (!artist) {
     return (
-      <AppLayout>
-        <Stack gap="xl" className="p-xl">
-          <Alert
-            title={t('artist:error')}
-            color="red"
-            className="alert-spotify alert-error"
-          >
-            {t('artist:artistNotFound')}
-          </Alert>
-          <SpotifyButton variant="primary" onClick={handleBackToHome}>
-            {t('artist:backToHome')}
-          </SpotifyButton>
-        </Stack>
-      </AppLayout>
+      <div className="min-h-screen bg-background p-4 sm:p-6">
+        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+          <div className="text-center py-8 sm:py-12">
+            <p className="text-muted-foreground text-lg mb-4">
+              {t('artist:notFound')}
+            </p>
+            <Button onClick={handleBackToHome}>
+              {t('common:backToHome')}
+            </Button>
+          </div>
+        </div>
+      </div>
     )
   }
 
   return (
-    <AppLayout>
-      <div className="artist-page-container" data-testid="artist-page">
-        <Stack gap="xl">
-          {/* Header with back button and actions */}
-          <Group justify="space-between" align="center">
-            <SpotifyButton variant="ghost" onClick={handleBackToHome}>
-              {t('artist:backToHomeWithArrow', {
-                defaultValue: '← Back to Home',
-              })}
-            </SpotifyButton>
+    <div className="min-h-screen bg-background p-4 sm:p-6">
+      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+        
+        {/* Artist Header */}
+        <ArtistHeader
+          artist={artist}
+          isLoading={isLoadingArtist}
+          onBackToHome={handleBackToHome}
+          onRefresh={handleRefresh}
+        />
 
-            <Group gap="sm">
-              <Tooltip label={t('artist:refresh')}>
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  size="lg"
-                  onClick={handleRefresh}
-                  aria-label={t('artist:refresh')}
-                  loading={
-                    isLoadingArtist || isLoadingTracks || isLoadingAlbums
-                  }
-                >
-                  <RefreshCw size={20} />
-                </ActionIcon>
-              </Tooltip>
+        <Separator />
 
-              <Tooltip label={t('artist:share')}>
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  size="lg"
-                  onClick={handleShareArtist}
-                  aria-label={t('artist:share')}
-                >
-                  <Share size={20} />
-                </ActionIcon>
-              </Tooltip>
+        {/* Top Tracks */}
+        <ArtistTopTracks
+          tracks={topTracks}
+          isLoading={isLoadingTracks}
+          error={tracksError?.message || null}
+        />
 
-              <Tooltip label={t('artist:openInSpotify')}>
-                <ActionIcon
-                  variant="subtle"
-                  color="gray"
-                  size="lg"
-                  component="a"
-                  href={artist.external_urls?.spotify || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={t('artist:openInSpotify')}
-                >
-                  <ExternalLink size={20} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-          </Group>
+        <Separator />
 
-          {/* Artist Hero Section */}
-          <div className="artist-hero">
-            <div className="artist-hero-content">
-              <div className="artist-image-container">
-                <Image
-                  src={getArtistImage(artist)}
-                  alt={artist.name}
-                  className="artist-hero-image"
-                  fallbackSrc="/placeholder-artist.jpg"
-                  radius="xl"
-                />
-              </div>
-
-              <div className="artist-hero-info">
-                <Title
-                  order={1}
-                  className="artist-hero-name"
-                  data-testid="artist-name"
-                >
-                  {artist.name}
-                </Title>
-
-                <Group gap="md" className="artist-hero-stats">
-                  {artist.popularity && (
-                    <Badge
-                      className="artist-popularity-badge"
-                      data-testid="artist-popularity"
-                      variant="light"
-                      color="green"
-                    >
-                      {t('artist:popularityWithValue', {
-                        value: artist.popularity,
-                        defaultValue: '{{value}}% Popularity',
-                      })}
-                    </Badge>
-                  )}
-
-                  {artist.followers && (
-                    <Text className="artist-followers" size="lg">
-                      {t('artist:followersWithValue', {
-                        value: formatFollowers(artist.followers.total),
-                        defaultValue: '{{value}} followers',
-                      })}
-                    </Text>
-                  )}
-                </Group>
-
-                {artist.genres && artist.genres.length > 0 && (
-                  <Group gap="sm" className="artist-genres">
-                    {artist.genres
-                      .slice(0, 5)
-                      .map((genre: string, index: number) => (
-                        <Badge
-                          key={index}
-                          size="sm"
-                          variant="outline"
-                          color="gray"
-                        >
-                          {genre}
-                        </Badge>
-                      ))}
-                  </Group>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <Divider className="border-tertiary" />
-
-          {/* Top Tracks */}
-          <div>
-            <Group
-              justify="space-between"
-              align="center"
-              className="tracks-section-title"
-            >
-              <Title order={2} className="text-primary font-bold text-2xl">
-                {t('artist:topTracks')}
-              </Title>
-            </Group>
-
-            {isLoadingTracks ? (
-              <Stack gap="md">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton key={index} height={60} />
-                ))}
-              </Stack>
-            ) : tracksError ? (
-              <Alert
-                color="red"
-                title={t('artist:tracksError', 'Error loading tracks')}
-              >
-                {tracksError.message}
-              </Alert>
-            ) : !isAuthenticated ? (
-              <Alert color="blue" title={t('artist:authRequired')}>
-                {t('artist:authRequiredMessage')}
-              </Alert>
-            ) : !topTracks || topTracks.length === 0 ? (
-              <Alert color="yellow" title={t('artist:noTopTracks')}>
-                {t('artist:noTopTracksMessage')}
-              </Alert>
-            ) : (
-              <div className="tracks-container">
-                {Array.isArray(topTracks) &&
-                  topTracks.map((track, index) => (
-                    <div
-                      key={track.id}
-                      className="track-item-modern"
-                      data-testid="track-item"
-                    >
-                      <div className="track-play-section">
-                        <ActionIcon
-                          variant="subtle"
-                          color="gray"
-                          onClick={() => handlePlayTrack(track)}
-                          className="track-play-button"
-                        >
-                          <Play size={14} />
-                        </ActionIcon>
-                      </div>
-
-                      <div
-                        className="track-number-modern"
-                        data-testid="track-number"
-                      >
-                        {index + 1}
-                      </div>
-
-                      <div className="track-info-modern">
-                        <Text
-                          className="track-name-modern"
-                          data-testid="track-name"
-                          fw={500}
-                        >
-                          {track.name}
-                        </Text>
-                        <Text
-                          className="track-artists-modern"
-                          size="sm"
-                          c="dimmed"
-                        >
-                          {track.artists
-                            .map((artist) => artist.name)
-                            .join(', ')}
-                        </Text>
-                      </div>
-
-                      <div
-                        className="track-duration-modern"
-                        data-testid="track-duration"
-                      >
-                        {formatDuration(track.duration_ms)}
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          <Divider className="border-tertiary" />
-
-          {/* Albums */}
-          <div>
-            <Stack gap="lg">
-              <Group
-                justify="space-between"
-                align="center"
-                className="albums-section-title"
-              >
-                <Title order={2} className="text-primary font-bold text-2xl">
-                  {t('artist:albums')}
-                </Title>
-
-                <Text size="sm" c="dimmed">
-                  {t('ui:albums.counter', '{{count}} de {{total}}', {
-                    count: filteredAlbums.length,
-                    total: totalItems,
-                  })}
-                </Text>
-              </Group>
-
-              {/* Album filter integrated with section */}
-              <SearchInput
-                data-testid="album-filter"
-                onSearch={handleAlbumFilter}
-                placeholder={t('artist:filterAlbums')}
-                navigateOnFocus={false}
-              />
-            </Stack>
-
-            {/* Spacing between filter and content */}
-            <div style={{ marginTop: 'var(--spacing-xl)' }} />
-
-            {isLoadingAlbums ? (
-              <Grid gutter="lg">
-                {Array.from({ length: 8 }).map((_, index) => (
-                  <Grid.Col
-                    key={index}
-                    span={{ base: 12, sm: 6, md: 4, lg: 3 }}
-                  >
-                    <Skeleton height={250} radius="md" />
-                  </Grid.Col>
-                ))}
-              </Grid>
-            ) : albumsError ? (
-              <Alert
-                color="red"
-                title={t('artist:albumsError', 'Error loading albums')}
-              >
-                {albumsError.message}
-              </Alert>
-            ) : (
-              <>
-                {/* Albums grid */}
-                <Grid gutter="lg">
-                  {filteredAlbums.map((album) => (
-                    <Grid.Col
-                      key={album.id}
-                      span={{ base: 12, sm: 6, md: 4, lg: 3 }}
-                    >
-                      <Card
-                        className="album-card"
-                        data-testid="album-card"
-                        withBorder
-                        onClick={() => handleAlbumClick(album)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        <Card.Section>
-                          <Image
-                            src={getAlbumImage(album)}
-                            alt={album.name}
-                            className="album-image"
-                            fallbackSrc="/placeholder-album.jpg"
-                            radius="md"
-                          />
-                        </Card.Section>
-
-                        <Stack gap="xs" className="mt-md">
-                          <Text
-                            className="album-name"
-                            data-testid="album-name"
-                            fw={500}
-                            lineClamp={2}
-                          >
-                            {album.name}
-                          </Text>
-
-                          <Text
-                            className="album-info"
-                            data-testid="album-info"
-                            size="sm"
-                            c="dimmed"
-                          >
-                            {t('artist:albumInfo', {
-                              date: formatReleaseDate(album.release_date),
-                              tracks: album.total_tracks,
-                              defaultValue: '{{date}} • {{tracks}} tracks',
-                            })}
-                          </Text>
-
-                          <Group gap="xs">
-                            <Badge size="xs" variant="light" color="gray">
-                              {album.album_type}
-                            </Badge>
-                          </Group>
-                        </Stack>
-                      </Card>
-                    </Grid.Col>
-                  ))}
-                </Grid>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <Flex justify="center" className="mt-xl">
-                    <Pagination
-                      data-testid="pagination"
-                      total={totalPages}
-                      value={currentPage}
-                      onChange={handlePageChangeWrapper}
-                      size="md"
-                      radius="md"
-                      className="spotify-pagination"
-                    />
-                  </Flex>
-                )}
-              </>
-            )}
-          </div>
-        </Stack>
+        {/* Albums */}
+        <ArtistAlbums
+          albums={albums}
+          isLoading={isLoadingAlbums}
+          error={albumsError?.message || null}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
-    </AppLayout>
+    </div>
   )
 }

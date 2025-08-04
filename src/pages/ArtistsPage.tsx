@@ -1,4 +1,4 @@
-import { Music, TrendingUp } from 'lucide-react'
+import { TrendingUp } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
@@ -6,12 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 
-export const HomePage: React.FC = () => {
+export const ArtistsPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
   const { artists: popularArtists, isLoading: isPopularLoading } = usePopularArtists({
-    limit: 10,
+    limit: 20,
   })
 
   const handleArtistClick = (artistId: string) => {
@@ -22,37 +22,28 @@ export const HomePage: React.FC = () => {
     <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-12">
         
-        {/* Hero Section */}
-        <section className="text-center space-y-4 sm:space-y-6">
-          <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground">
-              {t('home:welcome', 'Welcome to Spotify Explorer')}
-            </h1>
-            <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
-              {t('home:description', 'Discover artists, explore their music, and find your next favorite track.')}
-            </p>
-          </div>
-          
-          <div className="flex items-center justify-center gap-3 sm:gap-4">
-            <Music className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
-            <span className="text-sm sm:text-lg text-muted-foreground">
-              {t('home:poweredBySpotify', 'Powered by Spotify Web API')}
-            </span>
-          </div>
-        </section>
+        {/* Header */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-foreground">
+            {t('artists:popularArtists', 'Artistas Populares')}
+          </h1>
+          <p className="text-muted-foreground">
+            {t('artists:description', 'Descubra os artistas mais populares do momento')}
+          </p>
+        </div>
 
         {/* Popular Artists Section */}
         <section className="space-y-4 sm:space-y-6">
           <div className="flex items-center gap-2 sm:gap-3">
             <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
             <h2 className="text-xl sm:text-2xl font-bold text-foreground">
-              {t('home:popularArtists', 'Popular Artists')}
+              {t('artists:trendingArtists', 'Artistas em Alta')}
             </h2>
           </div>
           
           {isPopularLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-              {Array.from({ length: 10 }).map((_, index) => (
+              {Array.from({ length: 12 }).map((_, index) => (
                 <div key={index} className="animate-pulse">
                   <div className="aspect-square bg-muted rounded-lg mb-3"></div>
                   <div className="h-4 bg-muted rounded w-3/4 mb-1"></div>
@@ -71,15 +62,12 @@ export const HomePage: React.FC = () => {
           ) : (
             <div className="text-center py-6 sm:py-8">
               <p className="text-sm sm:text-base text-muted-foreground">
-                {t('home:noPopularArtists', 'No popular artists available at the moment.')}
+                {t('artists:noArtistsAvailable', 'Nenhum artista disponível no momento.')}
               </p>
             </div>
           )}
         </section>
-
-
-
       </div>
     </div>
   )
-}
+} 
