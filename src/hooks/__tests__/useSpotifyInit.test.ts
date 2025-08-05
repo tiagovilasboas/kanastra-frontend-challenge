@@ -1,5 +1,5 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { spotifyRepository } from '@/repositories'
 
@@ -20,7 +20,9 @@ vi.mock('@/utils/logger', () => ({
   },
 }))
 
-const mockSpotifyRepository = spotifyRepository as any
+const mockSpotifyRepository = spotifyRepository as jest.Mocked<
+  typeof spotifyRepository
+>
 
 describe('useSpotifyInit', () => {
   beforeEach(() => {
@@ -62,7 +64,5 @@ describe('useSpotifyInit', () => {
       expect(result.current.error).toBe(null) // No error should be set for token failures
       expect(mockSpotifyRepository.getClientToken).toHaveBeenCalled()
     })
-
-
   })
-}) 
+})
