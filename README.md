@@ -43,6 +43,10 @@ npm run dev
 
 A aplicação estará disponível em `http://127.0.0.1:5173`
 
+## 🌐 Demo Online
+
+A aplicação também está disponível online em: **[https://kanastra-frontend-challenge.vercel.app/](https://kanastra-frontend-challenge.vercel.app/)**
+
 ## 📦 Scripts Disponíveis
 
 ```bash

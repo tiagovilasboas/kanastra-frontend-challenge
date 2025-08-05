@@ -22,6 +22,8 @@
 
   "colon": ": ",
   "percent": "%",
+  "page": "Página",
+  "of": "de",
   "previousPage": "Página anterior",
   "nextPage": "Próxima página",
   "goToPage": "Ir para página {page}"

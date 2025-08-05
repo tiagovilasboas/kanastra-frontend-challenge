@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 import { spotifyRepository } from '@/repositories'
 import { SpotifyAlbum } from '@/types/spotify'
@@ -11,20 +11,17 @@ interface UsePopularAlbumsParams {
 interface UsePopularAlbumsReturn {
   albums: SpotifyAlbum[]
   isLoading: boolean
-  error: string | null
+  error: Error | null
+  refetch: () => void
 }
 
 export function usePopularAlbums({
   limit = 20,
 }: UsePopularAlbumsParams = {}): UsePopularAlbumsReturn {
-  const [albums, setAlbums] = useState<SpotifyAlbum[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const fetchPopularAlbums = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['popular-albums', limit],
+    queryFn: async () => {
+      logger.debug('Fetching popular albums', { limit })
 
       // For now, we'll search for popular albums using a generic search
       // In a real implementation, you might want to use a different endpoint
@@ -36,28 +33,22 @@ export function usePopularAlbums({
         0,
       )
 
-      if (response.albums?.items) {
-        setAlbums(response.albums.items)
-      }
+      const albums = response.albums?.items || []
 
       logger.debug('Popular albums fetched successfully', {
-        count: response.albums?.items?.length || 0,
+        count: albums.length,
       })
-    } catch (err) {
-      logger.error('Failed to fetch popular albums', err)
-      setError(err instanceof Error ? err.message : 'Failed to fetch albums')
-    } finally {
-      setIsLoading(false)
-    }
-  }, [limit])
 
-  useEffect(() => {
-    fetchPopularAlbums()
-  }, [fetchPopularAlbums])
+      return albums
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+  })
 
   return {
-    albums,
+    albums: data || [],
     isLoading,
-    error,
+    error: error as Error | null,
+    refetch,
   }
 }

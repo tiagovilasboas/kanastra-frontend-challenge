@@ -126,7 +126,7 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
 
           {/* Pagination */}
           {(hasNextPage || hasPreviousPage) && (
-            <div className="flex justify-center items-center gap-4 pt-4">
+            <div className="pagination flex justify-center items-center gap-4 pt-4">
               <Button
                 variant="outline"
                 size="sm"
