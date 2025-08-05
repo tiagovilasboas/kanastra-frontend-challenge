@@ -1,8 +1,10 @@
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Removed unused errorHandler import
-
-import { SpotifySearchConfig, SpotifySearchService } from '../spotify/SpotifySearchService'
+import {
+  SpotifySearchConfig,
+  SpotifySearchService,
+} from '../spotify/SpotifySearchService'
 
 // Mock dependencies
 vi.mock('@/utils/errorHandler', () => ({
@@ -52,7 +54,7 @@ describe('SpotifySearchService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     mockConfig = {
       baseURL: 'https://api.spotify.com/v1',
       accessToken: 'test-access-token',
@@ -86,14 +88,14 @@ describe('SpotifySearchService', () => {
 
     it('should check if has access token', () => {
       expect(searchService.hasAccessToken()).toBe(true)
-      
+
       searchService.setAccessToken('')
       expect(searchService.hasAccessToken()).toBe(false)
     })
 
     it('should check if has client token', () => {
       expect(searchService.hasClientToken()).toBe(true)
-      
+
       searchService.setClientToken('')
       expect(searchService.hasClientToken()).toBe(false)
     })
@@ -178,4 +180,4 @@ describe('SpotifySearchService', () => {
       expect(searchService.getArtistAlbums).toBeDefined()
     })
   })
-}) 
+})
