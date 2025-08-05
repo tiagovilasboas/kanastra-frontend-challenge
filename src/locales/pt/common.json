@@ -7,9 +7,7 @@
   "delete": "Excluir",
   "edit": "Editar",
   "add": "Adicionar",
-  "search": "Pesquisar",
-  "filter": "Filtrar",
-  "sort": "Ordenar",
+
   "backToHome": "Voltar ao Início",
   "back": "Voltar",
   "next": "Próximo",
@@ -21,8 +19,7 @@
   "yes": "Sim",
   "no": "Não",
   "ok": "OK",
-  "popularity": "Popularidade",
-  "tracks": "Músicas",
+
   "colon": ": ",
   "percent": "%",
   "previousPage": "Página anterior",
