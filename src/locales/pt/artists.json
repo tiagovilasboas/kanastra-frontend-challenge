@@ -2,5 +2,7 @@
   "popularArtists": "Artistas Populares",
   "description": "Descubra os artistas mais populares do momento",
   "trendingArtists": "Artistas em Alta",
-  "noArtistsAvailable": "Nenhum artista disponível no momento."
-} 
+  "noArtistsAvailable": "Nenhum artista disponível no momento.",
+  "filterByName": "Filtrar por nome do artista...",
+  "noArtistsFound": "Nenhum artista encontrado para \"{filter}\"."
+}
