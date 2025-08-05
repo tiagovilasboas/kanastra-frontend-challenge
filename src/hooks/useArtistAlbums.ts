@@ -14,6 +14,8 @@ interface UseArtistAlbumsReturn {
   albums: SpotifyAlbum[]
   totalPages: number
   totalItems: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
   isLoading: boolean
   error: Error | null
   refetch: () => void
@@ -31,16 +33,21 @@ export function useArtistAlbums({
     queryFn: async () => {
       if (!artistId) throw new Error('Artist ID is required')
 
-      // Get albums for current page
-      const albums = await spotifyRepository.getArtistAlbums(
+      // Get albums for current page with pagination info
+      const response = await spotifyRepository.getArtistAlbums(
         artistId,
         ['album', 'single'],
         limit,
         offset,
       )
 
+      // The response should include pagination info, but we need to get it from the service
+      // For now, we'll calculate pagination based on the response
+      const totalItems = response.length >= limit ? limit * 2 : response.length // Estimate total
+      const totalPages = Math.ceil(totalItems / limit)
+
       // Sort albums by release date (newest first)
-      const sortedAlbums = albums.sort((a, b) => {
+      const sortedAlbums = response.sort((a, b) => {
         const dateA = new Date(a.release_date)
         const dateB = new Date(b.release_date)
         return dateB.getTime() - dateA.getTime() // Descending order (newest first)
@@ -48,8 +55,10 @@ export function useArtistAlbums({
 
       return {
         albums: sortedAlbums,
-        total: albums.length,
-        totalPages: 1, // Start with single page until we implement proper pagination
+        total: totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
       }
     },
     enabled: !!artistId, // Enable when we have an artist ID
@@ -63,6 +72,8 @@ export function useArtistAlbums({
     albums: (data?.albums as unknown as SpotifyAlbum[]) || [],
     totalPages: data?.totalPages || 0,
     totalItems: data?.total || 0,
+    hasNextPage: data?.hasNextPage || false,
+    hasPreviousPage: data?.hasPreviousPage || false,
     isLoading,
     error: error as Error | null,
     refetch,

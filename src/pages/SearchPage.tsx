@@ -7,7 +7,7 @@ import {
   AlbumCard,
   ArtistCard,
   SearchTypeSelector,
-  TrackCard,
+  TrackList,
 } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import {
@@ -182,126 +182,137 @@ export const SearchPage: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Artists Section - Segmented Results */}
+                {/* Artists Section - Spotify-like Layout */}
                 {hasItems(safeArtists) && (
-                  <div className="space-y-6">
+                  <section className="space-y-8">
                     {/* Exact Matches */}
                     {hasItems(segmentedResults.exactMatches) && (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      <section className="space-y-4">
+                        <h3 className="text-xl font-bold text-foreground">
+                          {t('search:exactMatches', {
+                            count: segmentedResults.exactMatches.length,
+                          })}
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
                           {segmentedResults.exactMatches.map((artist) => (
                             <div
                               key={artist.id}
                               onClick={() => handleArtistClick(artist.id)}
+                              className="group cursor-pointer"
                             >
                               <ArtistCard artist={artist} />
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </section>
                     )}
 
                     {/* Similar Artists */}
                     {hasItems(segmentedResults.similarArtists) && (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      <section className="space-y-4">
+                        <h3 className="text-xl font-bold text-foreground">
+                          {t('search:similarArtists', {
+                            count: segmentedResults.similarArtists.length,
+                          })}
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
                           {segmentedResults.similarArtists.map((artist) => (
                             <div
                               key={artist.id}
                               onClick={() => handleArtistClick(artist.id)}
+                              className="group cursor-pointer"
                             >
                               <ArtistCard artist={artist} />
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </section>
                     )}
 
                     {/* Related Artists */}
                     {hasItems(segmentedResults.relatedArtists) && (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      <section className="space-y-4">
+                        <h3 className="text-xl font-bold text-foreground">
+                          {t('search:relatedArtists', {
+                            count: segmentedResults.relatedArtists.length,
+                          })}
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
                           {segmentedResults.relatedArtists.map((artist) => (
                             <div
                               key={artist.id}
                               onClick={() => handleArtistClick(artist.id)}
+                              className="group cursor-pointer"
                             >
                               <ArtistCard artist={artist} />
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </section>
                     )}
 
                     {/* Other Results */}
                     {hasItems(segmentedResults.otherResults) && (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                      <section className="space-y-4">
+                        <h3 className="text-xl font-bold text-foreground">
+                          {t('search:otherResults', {
+                            count: segmentedResults.otherResults.length,
+                          })}
+                        </h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
                           {segmentedResults.otherResults.map((artist) => (
                             <div
                               key={artist.id}
                               onClick={() => handleArtistClick(artist.id)}
+                              className="group cursor-pointer"
                             >
                               <ArtistCard artist={artist} />
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </section>
                     )}
-                  </div>
+                  </section>
                 )}
 
-                {/* Albums Section */}
+                {/* Albums Section - Spotify-like Layout */}
                 {hasItems(safeAlbums) && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                      <Disc className="w-5 h-5" />
-                      {t('search:albumsWithCount', {
-                        count: safeAlbums.length,
-                        defaultValue: 'Albums ({count})',
-                      })}
+                  <section className="space-y-4">
+                    <h3 className="text-xl font-bold text-foreground">
+                      {t('search:albums', 'Albums')}
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
                       {safeAlbums.map((album) => (
                         <div
                           key={album.id}
                           onClick={() => handleAlbumClick(album)}
+                          className="group cursor-pointer"
                         >
                           <AlbumCard album={album} />
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </section>
                 )}
 
-                {/* Tracks Section */}
+                {/* Tracks Section - Spotify-like Layout */}
                 {hasItems(safeTracks) && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                      <Music className="w-5 h-5" />
-                      {t('search:tracksWithCount', {
-                        count: safeTracks.length,
-                        defaultValue: 'Tracks ({count})',
-                      })}
+                  <section className="space-y-4">
+                    <h3 className="text-xl font-bold text-foreground">
+                      {t('search:tracks', 'Tracks')}
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {safeTracks.map((track) => (
-                        <div
-                          key={track.id}
-                          onClick={() => handleTrackClick(track)}
-                        >
-                          <TrackCard track={track} />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                    <TrackList
+                      tracks={safeTracks}
+                      onTrackClick={handleTrackClick}
+                    />
+                  </section>
                 )}
 
                 {/* Load More Button - Only show when searching albums or tracks */}
                 {searchState.hasMore &&
                   (filters.types.includes('album') ||
                     filters.types.includes('track')) && (
-                    <div className="flex justify-center pt-6">
+                    <div className="flex justify-center pt-2">
                       <Button
                         onClick={loadMore}
                         disabled={searchState.isLoadingMore}
@@ -317,6 +328,29 @@ export const SearchPage: React.FC = () => {
                         )}
                       </Button>
                     </div>
+                  )}
+
+                {/* Mostrar card de nenhum resultado encontrado SOMENTE quando a busca terminou */}
+                {!searchState.isLoading &&
+                  !searchState.error &&
+                  searchQuery &&
+                  totalResults === 0 && (
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="text-center">
+                          <p className="text-muted-foreground mb-2">
+                            {t('search:noResultsTitle', 'No results found')}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {t('search:noResultsMessage', {
+                              term: searchQuery,
+                              defaultValue:
+                                'No results found for "{term}". Try a different search term.',
+                            })}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
                   )}
               </>
             ) : (

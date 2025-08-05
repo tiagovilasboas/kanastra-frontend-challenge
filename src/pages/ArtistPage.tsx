@@ -23,6 +23,8 @@ export const ArtistPage: React.FC = () => {
     albums,
     currentPage,
     totalPages,
+    hasNextPage,
+    hasPreviousPage,
     isLoadingArtist,
     isLoadingTracks,
     isLoadingAlbums,
@@ -113,6 +115,8 @@ export const ArtistPage: React.FC = () => {
           error={albumsError?.message || null}
           currentPage={currentPage}
           totalPages={totalPages}
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
           onPageChange={handlePageChange}
         />
       </div>

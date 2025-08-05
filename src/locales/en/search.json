@@ -38,5 +38,7 @@
   "popularityMin": "0",
   "popularityMax": "100",
   "rangeSeparator": "-",
-  "search": "Search"
+  "search": "Search",
+  "title": "Title",
+  "album": "Album"
 }

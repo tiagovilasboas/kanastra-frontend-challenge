@@ -2,8 +2,8 @@ import { Filter } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AlbumCard } from '@/components/ui'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { SpotifyAlbum } from '@/schemas/spotify'
 
@@ -13,6 +13,8 @@ interface ArtistAlbumsProps {
   error: string | null
   currentPage: number
   totalPages: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
   onPageChange: (page: number) => void
 }
 
@@ -22,6 +24,8 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
   error,
   currentPage,
   totalPages,
+  hasNextPage,
+  hasPreviousPage,
   onPageChange,
 }) => {
   const { t } = useTranslation()
@@ -100,11 +104,10 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
 
       {filteredAlbums.length > 0 ? (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 sm:gap-6">
             {filteredAlbums.map((album) => (
-              <Card
+              <div
                 key={album.id}
-                className="hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => {
                   if (album.external_urls?.spotify) {
                     window.open(
@@ -114,46 +117,21 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
                     )
                   }
                 }}
+                className="group cursor-pointer"
               >
-                <CardContent className="p-3 sm:p-4">
-                  <div className="space-y-2">
-                    <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-                      {album.images && album.images.length > 0 ? (
-                        <img
-                          src={album.images[0].url}
-                          alt={album.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-muted flex items-center justify-center">
-                          <span className="text-muted-foreground text-sm">
-                            {t('artist:noImage')}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-foreground text-sm sm:text-base line-clamp-1">
-                      {album.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground line-clamp-1">
-                      {new Date(album.release_date).getFullYear()}
-                      {t('artist:separator')} {album.total_tracks}
-                      {t('artist:tracks')}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+                <AlbumCard album={album} />
+              </div>
             ))}
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {(hasNextPage || hasPreviousPage) && (
             <div className="flex justify-center items-center gap-4 pt-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}
+                disabled={!hasPreviousPage}
               >
                 {t('common:previous')}
               </Button>
@@ -164,7 +142,7 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
+                disabled={!hasNextPage}
               >
                 {t('common:next')}
               </Button>
