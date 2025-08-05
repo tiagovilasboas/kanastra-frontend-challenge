@@ -3,38 +3,46 @@ import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from './button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './dropdown-menu'
 
 const languages = [
   {
     code: 'pt',
     name: 'Português',
-    flag: '🇧🇷'
+    flag: '🇧🇷',
   },
   {
     code: 'en',
     name: 'English',
-    flag: '🇺🇸'
-  }
+    flag: '🇺🇸',
+  },
 ] as const
 
 export const LanguageSelector: React.FC = () => {
   const { i18n } = useTranslation()
 
-  const currentLanguage = useMemo(() => 
-    languages.find(lang => lang.code === i18n.language) || languages[0], 
-    [i18n.language]
+  const currentLanguage = useMemo(
+    () => languages.find((lang) => lang.code === i18n.language) || languages[0],
+    [i18n.language],
   )
 
-  const handleLanguageChange = useCallback((languageCode: string) => {
-    i18n.changeLanguage(languageCode)
-  }, [i18n])
+  const handleLanguageChange = useCallback(
+    (languageCode: string) => {
+      i18n.changeLanguage(languageCode)
+    },
+    [i18n],
+  )
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Globe className="w-4 h-4" />
+        <Button variant="ghost" size="sm" className="gap-1 sm:gap-2">
+          <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -54,4 +62,4 @@ export const LanguageSelector: React.FC = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   )
-} 
+}
