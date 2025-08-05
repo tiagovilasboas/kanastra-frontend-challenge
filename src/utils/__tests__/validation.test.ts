@@ -47,11 +47,11 @@ describe('validation', () => {
 
     it('should reject artist without required fields', () => {
       const invalidArtist = { ...validArtist }
-      delete (invalidArtist as any).id
+      delete (invalidArtist as Record<string, unknown>).id
       expect(validateArtist(invalidArtist)).toBe(false)
 
       const invalidArtist2 = { ...validArtist }
-      delete (invalidArtist2 as any).name
+      delete (invalidArtist2 as Record<string, unknown>).name
       expect(validateArtist(invalidArtist2)).toBe(false)
     })
 
@@ -277,21 +277,33 @@ describe('validation', () => {
 
   describe('validateSpotifyUrl', () => {
     it('should validate correct Spotify URLs', () => {
-      expect(validateSpotifyUrl('https://open.spotify.com/artist/123')).toBe(true)
-      expect(validateSpotifyUrl('https://open.spotify.com/track/456')).toBe(true)
-      expect(validateSpotifyUrl('https://open.spotify.com/album/789')).toBe(true)
-      expect(validateSpotifyUrl('https://open.spotify.com/playlist/abc')).toBe(true)
+      expect(validateSpotifyUrl('https://open.spotify.com/artist/123')).toBe(
+        true,
+      )
+      expect(validateSpotifyUrl('https://open.spotify.com/track/456')).toBe(
+        true,
+      )
+      expect(validateSpotifyUrl('https://open.spotify.com/album/789')).toBe(
+        true,
+      )
+      expect(validateSpotifyUrl('https://open.spotify.com/playlist/abc')).toBe(
+        true,
+      )
     })
 
     it('should reject non-Spotify URLs', () => {
       expect(validateSpotifyUrl('https://example.com/artist/123')).toBe(false)
-      expect(validateSpotifyUrl('http://open.spotify.com/artist/123')).toBe(false)
+      expect(validateSpotifyUrl('http://open.spotify.com/artist/123')).toBe(
+        false,
+      )
     })
 
     it('should reject invalid Spotify URLs', () => {
       expect(validateSpotifyUrl('https://open.spotify.com/')).toBe(false)
       expect(validateSpotifyUrl('https://open.spotify.com/artist/')).toBe(false)
-      expect(validateSpotifyUrl('https://open.spotify.com/invalid/123')).toBe(false)
+      expect(validateSpotifyUrl('https://open.spotify.com/invalid/123')).toBe(
+        false,
+      )
     })
 
     it('should reject non-string values', () => {
@@ -300,4 +312,4 @@ describe('validation', () => {
       expect(validateSpotifyUrl({})).toBe(false)
     })
   })
-}) 
+})
