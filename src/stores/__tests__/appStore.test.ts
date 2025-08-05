@@ -3,25 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useAppStore } from '../appStore'
 
-// Mock localStorage for tests
-const localStorageMock = {
-  getItem: vi.fn().mockReturnValue(null),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-  key: vi.fn(),
-  length: 0,
-}
-
-// Ensure localStorage is properly mocked before tests
-beforeEach(() => {
-  Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock,
-    writable: true,
-    configurable: true,
-  })
-})
-
 describe('appStore', () => {
   beforeEach(() => {
     // Clear all mocks
