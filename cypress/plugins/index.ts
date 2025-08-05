@@ -38,7 +38,7 @@ export default (
   config.responseTimeout = 10000
 
   // Configure base URL
-  config.baseUrl = 'http://127.0.0.1:5175'
+  config.baseUrl = 'http://127.0.0.1:5173'
 
   // Task for handling file operations
   on('task', {
