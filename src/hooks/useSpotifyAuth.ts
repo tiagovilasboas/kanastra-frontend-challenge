@@ -1,9 +1,11 @@
+import { useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { queryKeys } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
+import { useAppStore } from '@/stores/appStore'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { logger } from '@/utils/logger'
 
 interface UseSpotifyAuthReturn {
@@ -20,44 +22,22 @@ interface UseSpotifyAuthReturn {
 export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-
-  // Check authentication on mount and when localStorage changes
-  useEffect(() => {
-    const checkAuth = () => {
-      const token = localStorage.getItem('spotify_token')
-      if (token) {
-        spotifyRepository.setAccessToken(token)
-        setIsAuthenticated(true)
-        // Removed debug logs for cleaner production code
-      } else {
-        setIsAuthenticated(false)
-        // Removed debug logs for cleaner production code
-      }
-      setIsLoading(false)
-    }
-
-    // Check immediately
-    checkAuth()
-
-    // Listen for storage changes (in case token is set from another tab/window)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'spotify_token') {
-        checkAuth()
-      }
-    }
-
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
+  const { 
+    isAuthenticated, 
+    isLoading, 
+    setAuthenticated, 
+    setLoading, 
+    setError 
+  } = useAppStore()
+  const { getItem, setItem, removeItem } = useLocalStorage()
 
   const login = useCallback(async () => {
     try {
-      // Removed debug logs for cleaner production code
       const authUrl = await spotifyRepository.getAuthUrl()
-      // Removed debug logs for cleaner production code
-      window.location.href = authUrl
+      // Use a more controlled approach instead of window.location.href
+      const link = document.createElement('a')
+      link.href = authUrl
+      link.click()
     } catch (error) {
       logger.error('Error generating auth URL', error)
     }
@@ -66,14 +46,15 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const logout = useCallback(() => {
     logger.debug('Logging out user')
     spotifyRepository.logout()
-    setIsAuthenticated(false)
-
+    setAuthenticated(false)
+    removeItem('spotify_token')
+    
     // Invalidate all Spotify-related queries
     queryClient.invalidateQueries({ queryKey: queryKeys.search.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.artists.all })
-
+    
     navigate('/', { replace: true })
-  }, [navigate, queryClient])
+  }, [navigate, queryClient, setAuthenticated, removeItem])
 
   const handleCallback = useCallback(async (url: string) => {
     try {
@@ -85,29 +66,37 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
           state || undefined,
         )
         spotifyRepository.setAccessToken(token)
-        localStorage.setItem('spotify_token', token)
-        setIsAuthenticated(true)
+        setItem('spotify_token', token)
+        setAuthenticated(true)
+        
         logger.debug('Authentication successful via callback')
       }
     } catch (error) {
       logger.error('Error exchanging code for token', error)
-      setIsAuthenticated(false)
+      setAuthenticated(false)
+      setError(error instanceof Error ? error.message : 'Authentication failed')
     }
-  }, [])
+  }, [setAuthenticated, setError, setItem])
 
   const handleAuthError = useCallback(async () => {
     logger.debug('Handling authentication error')
-    setIsLoading(true)
+    setLoading(true)
 
     try {
       const authUrl = await spotifyRepository.getAuthUrl()
       spotifyRepository.logout()
-      window.location.href = authUrl
+      setAuthenticated(false)
+      removeItem('spotify_token')
+      
+      // Use a more controlled approach instead of window.location.href
+      const link = document.createElement('a')
+      link.href = authUrl
+      link.click()
     } catch (error) {
       logger.error('Failed to handle auth error', error)
-      setIsLoading(false)
+      setLoading(false)
     }
-  }, [])
+  }, [setLoading, setAuthenticated, removeItem])
 
   const checkAuthError = useCallback(
     (error: unknown) => {
@@ -122,22 +111,9 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   )
 
   const hasValidToken = useCallback(() => {
-    // Check if we have a token in memory (repository)
-    const repositoryToken = spotifyRepository.getAccessToken()
-    if (repositoryToken) {
-      return true
-    }
-
-    // Check if we have a token in localStorage
-    const localStorageToken = localStorage.getItem('spotify_token')
-    if (localStorageToken) {
-      // If token exists in localStorage but not in repository, sync it
-      spotifyRepository.setAccessToken(localStorageToken)
-      return true
-    }
-
-    return false
-  }, [])
+    const token = getItem('spotify_token')
+    return !!token
+  }, [getItem])
 
   return {
     isAuthenticated,

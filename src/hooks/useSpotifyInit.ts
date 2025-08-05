@@ -1,42 +1,39 @@
-import { useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 import { spotifyRepository } from '@/repositories'
 import { logger } from '@/utils/logger'
 
 export function useSpotifyInit() {
-  const [isInitialized, setIsInitialized] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function initializeSpotify() {
+  const { error, isLoading } = useQuery({
+    queryKey: ['spotify-init'],
+    queryFn: async () => {
       try {
-        // Removed debug logs for cleaner production code
-
         // Try to get client token, but don't fail the entire app if it fails
         try {
           await spotifyRepository.getClientToken()
-          // Removed debug logs for cleaner production code
         } catch (tokenError) {
           logger.warn(
             'Failed to get client token, app will work with user authentication only',
             tokenError,
           )
-          // Don't set error here, just log the warning
+          // Don't throw error here, just log the warning
         }
 
-        setIsInitialized(true)
-        setError(null)
+        return { success: true }
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to initialize Spotify'
         logger.error('Failed to initialize Spotify', err)
-        setError(errorMessage)
-        setIsInitialized(true) // Still mark as initialized to not block the app
+        throw new Error(errorMessage)
       }
-    }
+    },
+    staleTime: Infinity, // Only initialize once
+    gcTime: Infinity, // Keep in cache forever
+    retry: 1, // Retry once on failure
+  })
 
-    initializeSpotify()
-  }, [])
-
-  return { isInitialized, error }
+  return { 
+    isInitialized: !isLoading, 
+    error: error?.message || null 
+  }
 }
