@@ -17,6 +17,7 @@
   "noAlbums": "Nenhum álbum disponível",
   "noAlbumsFound": "Nenhum álbum encontrado para \"{{filter}}\"",
   "noImage": "Sem imagem",
+  "popularity": "Popularidade",
   "authRequiredMessage": "Faça login para ver detalhes completos do artista",
   "type": "Artista",
   "genres": "Gêneros",
