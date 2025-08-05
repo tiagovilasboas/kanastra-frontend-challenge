@@ -176,7 +176,7 @@ describe('Spotify Schemas', () => {
       expect(result.token_type).toBe('Bearer')
       expect(result.expires_in).toBe(3600)
       // Extra property should be stripped
-      expect((result as any).extra_property).toBeUndefined()
+      expect((result as Record<string, unknown>).extra_property).toBeUndefined()
     })
 
     it('should handle edge case with zero expires_in', () => {
@@ -203,4 +203,4 @@ describe('Spotify Schemas', () => {
       expect(result.expires_in).toBe(999999999)
     })
   })
-}) 
+})
