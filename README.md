@@ -56,6 +56,9 @@ npm run lint         # Verificar código
 npm run lint:fix     # Corrigir problemas de lint automaticamente
 npm run test         # Executar testes
 npm run type-check   # Verificar tipos TypeScript
+npm run test:e2e     # Executar testes E2E
+npm run analyze      # Análise de bundle
+npm run lighthouse   # Auditoria de performance
 ```
 
 ## 📚 Documentação Detalhada
@@ -65,6 +68,64 @@ npm run type-check   # Verificar tipos TypeScript
 - **[🛠️ Tecnologias](docs/TECHNOLOGIES.md)** - Stack tecnológico utilizado
 - **[🔐 Autenticação](docs/AUTHENTICATION.md)** - Como funciona a autenticação
 - **[🆘 Suporte](docs/SUPPORT.md)** - Troubleshooting e ajuda
+
+## 🚀 Performance e Otimizações
+
+### Análise de Performance
+
+```bash
+# Auditoria Lighthouse em desenvolvimento
+npm run lighthouse:dev
+
+# Auditoria Lighthouse em produção
+npm run lighthouse
+
+# Análise visual do bundle
+npm run analyze
+```
+
+### Resultados do Bundle Analysis
+
+Com base na análise de bundle, temos:
+
+- **Bundle Principal**: 356.5KB (108.9KB gzip)
+- **Chunks Otimizados**: 18 chunks separados por funcionalidade
+- **Code Splitting**: Implementado para páginas e componentes
+- **Vendor Chunks**: React, UI libraries e utilitários separados
+- **Feature Chunks**: Autenticação, busca, artistas e álbuns isolados
+
+O bundle está bem otimizado com code splitting estratégico, resultando em carregamento mais rápido das páginas individuais.
+
+### Otimizações Implementadas
+
+- **Lazy Loading**: Páginas carregadas sob demanda
+- **Code Splitting**: Separação inteligente de chunks
+- **Debounce**: Busca otimizada com delay de 300ms
+- **Pré-carregamento**: Recursos críticos pré-carregados
+- **Bundle Analysis**: Análise visual de tamanho de código
+
+### Métricas Reais Coletadas
+
+| Métrica                            | Valor Atual | Meta   |
+| ---------------------------------- | ----------- | ------ |
+| **Lighthouse Performance**         | 61%         | >90%   |
+| **Lighthouse Acessibilidade**      | 93%         | >90%   |
+| **Lighthouse Best Practices**      | 96%         | >90%   |
+| **Lighthouse SEO**                 | 100%        | >90%   |
+| **First Contentful Paint (FCP)**   | 2.9s        | <2.5s  |
+| **Largest Contentful Paint (LCP)** | 4.6s        | <3.0s  |
+| **First Input Delay (FID)**        | 90ms        | <100ms |
+| **Cumulative Layout Shift (CLS)**  | 0.265       | <0.1   |
+| **Bundle Size (Principal)**        | 356.5KB     | <500KB |
+| **Bundle Size (Gzip)**             | 108.9KB     | <150KB |
+
+### Oportunidades de Otimização
+
+Com base nas métricas coletadas, identificamos as seguintes oportunidades:
+
+- **Performance (61%)**: Otimizar LCP e CLS para melhorar a experiência do usuário
+- **Layout Shift (0.265)**: Implementar dimensões explícitas para imagens e elementos
+- **LCP (4.6s)**: Otimizar carregamento de recursos críticos
 
 ## 🤝 Contribuindo
 
@@ -78,13 +139,6 @@ npm run type-check   # Verificar tipos TypeScript
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 🙏 Agradecimentos
-
-- [Spotify Web API](https://developer.spotify.com/documentation/web-api/) pela API robusta
-- [shadcn/ui](https://ui.shadcn.com/) pelos componentes UI
-- [Vercel](https://vercel.com/) pela plataforma de deploy
-- [Tailwind CSS](https://tailwindcss.com/) pelo framework CSS
-
 ---
 
-**Desenvolvido com ❤️ usando React, TypeScript e Spotify Web API**
+**Desenvolvido com React, TypeScript e Spotify Web API**
