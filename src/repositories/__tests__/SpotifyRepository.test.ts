@@ -1,4 +1,4 @@
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { CookieManager } from '@/utils/cookies'
 import { errorHandler } from '@/utils/errorHandler'
@@ -45,11 +45,16 @@ vi.mock('../spotify/SpotifyAuthService')
 vi.mock('../spotify/SpotifySearchService')
 vi.mock('axios')
 
-const mockAuthService = SpotifyAuthService as any
-const mockSearchService = SpotifySearchService as any
-const mockCookieManager = CookieManager as any
-const mockErrorHandler = errorHandler as any
-const mockLogger = logger as any
+// @ts-expect-error - Mock for testing
+const mockAuthService = SpotifyAuthService
+// @ts-expect-error - Mock for testing
+const mockSearchService = SpotifySearchService
+// @ts-expect-error - Mock for testing
+const mockCookieManager = CookieManager
+// @ts-expect-error - Mock for testing
+const mockErrorHandler = errorHandler
+// @ts-expect-error - Mock for testing
+const mockLogger = logger
 
 describe('SpotifyRepository', () => {
   let repository: SpotifyRepository
@@ -133,7 +138,7 @@ describe('SpotifyRepository', () => {
       await expect(repository.getAuthUrl()).rejects.toThrow('Auth error')
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalledWith(
         mockError,
-        'SpotifyRepository.getAuthUrl'
+        'SpotifyRepository.getAuthUrl',
       )
     })
   })
@@ -149,7 +154,10 @@ describe('SpotifyRepository', () => {
       const result = await repository.exchangeCodeForToken(mockCode, mockState)
 
       expect(result).toBe('access-token')
-      expect(mockAuthInstance.handleTokenExchange).toHaveBeenCalledWith(mockCode, mockState)
+      expect(mockAuthInstance.handleTokenExchange).toHaveBeenCalledWith(
+        mockCode,
+        mockState,
+      )
       // Removed debug log expectation since we removed the log for cleaner production code
     })
 
@@ -159,10 +167,12 @@ describe('SpotifyRepository', () => {
       mockAuthInstance.handleTokenExchange.mockRejectedValue(mockError)
       mockErrorHandler.handleAuthError.mockReturnValue(mockError)
 
-      await expect(repository.exchangeCodeForToken('code')).rejects.toThrow('Token exchange failed')
+      await expect(repository.exchangeCodeForToken('code')).rejects.toThrow(
+        'Token exchange failed',
+      )
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalledWith(
         mockError,
-        'SpotifyRepository.exchangeCodeForToken'
+        'SpotifyRepository.exchangeCodeForToken',
       )
     })
   })
@@ -191,7 +201,10 @@ describe('SpotifyRepository', () => {
 
       expect(mockSearchInstance.setAccessToken).toHaveBeenCalledWith(mockToken)
       expect(mockCookieManager.setAccessToken).toHaveBeenCalledWith(mockToken)
-      expect(localStorage.setItem).toHaveBeenCalledWith('spotify_token', mockToken)
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'spotify_token',
+        mockToken,
+      )
     })
 
     it('should handle cookie storage errors gracefully', () => {
@@ -204,9 +217,12 @@ describe('SpotifyRepository', () => {
 
       expect(mockLogger.warn).toHaveBeenCalledWith(
         'Failed to store token in cookie, using localStorage only',
-        expect.any(Error)
+        expect.any(Error),
       )
-      expect(localStorage.setItem).toHaveBeenCalledWith('spotify_token', mockToken)
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'spotify_token',
+        mockToken,
+      )
     })
   })
 
@@ -266,7 +282,13 @@ describe('SpotifyRepository', () => {
 
       await repository.searchAdvanced('query', 'artist')
 
-      expect(mockSearchInstance.searchAdvanced).toHaveBeenCalledWith('query', 'artist', undefined, 20, 0)
+      expect(mockSearchInstance.searchAdvanced).toHaveBeenCalledWith(
+        'query',
+        'artist',
+        undefined,
+        20,
+        0,
+      )
     })
 
     it('should fallback to client token on 401 error', async () => {
@@ -301,4 +323,4 @@ describe('SpotifyRepository', () => {
       expect(mockAuthInstance.generateAuthUrl).toHaveBeenCalled()
     })
   })
-}) 
+})
