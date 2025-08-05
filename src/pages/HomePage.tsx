@@ -1,19 +1,26 @@
 import { Music, TrendingUp } from 'lucide-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
+import { useSearchStore } from '@/stores/searchStore'
 
 export const HomePage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const { clearSearch } = useSearchStore()
 
   const { artists: popularArtists, isLoading: isPopularLoading } =
     usePopularArtists({
       limit: 10,
     })
+
+  // Clear search query when entering home page
+  useEffect(() => {
+    clearSearch()
+  }, [clearSearch])
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`)
