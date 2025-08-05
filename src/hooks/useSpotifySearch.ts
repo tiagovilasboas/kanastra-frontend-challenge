@@ -273,14 +273,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         }))
       }
     },
-    [
-      buildSearchQuery,
-      limit,
-      segmentedResults.exactMatches.length,
-      segmentedResults.similarArtists.length,
-      segmentedResults.relatedArtists.length,
-      segmentedResults.otherResults.length,
-    ],
+    [buildSearchQuery, limit],
   )
 
   // Load more function
