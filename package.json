@@ -32,8 +32,6 @@
     "test:e2e:settings": "node scripts/run-e2e-tests.cjs settings",
     "test:e2e:favorites": "node scripts/run-e2e-tests.cjs favorites",
     "kill-port": "kill-port",
-    "kill-port:all": "kill-port 5173 5174 5175 3000 3001 8080",
-    "kill-port:dev": "kill-port 5173",
     "kill-port:preview": "kill-port 4173",
     "analyze": "npm run build -- --mode analyze",
     "lighthouse": "node scripts/lighthouse.cjs --prod",
