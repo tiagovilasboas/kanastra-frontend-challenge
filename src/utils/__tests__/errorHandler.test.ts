@@ -1,4 +1,4 @@
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ErrorHandler } from '../errorHandler'
 
@@ -16,7 +16,7 @@ describe('ErrorHandler', () => {
 
   beforeEach(() => {
     // Clear singleton instance before each test
-    (ErrorHandler as any).instance = undefined
+    ;(ErrorHandler as unknown as { instance: undefined }).instance = undefined
     errorHandler = ErrorHandler.getInstance()
     errorHandler.clearErrors()
   })
@@ -111,7 +111,10 @@ describe('ErrorHandler', () => {
     it('should handle validation error', () => {
       const validationError = new Error('Invalid input')
 
-      const result = errorHandler.handleValidationError(validationError, 'validation-context')
+      const result = errorHandler.handleValidationError(
+        validationError,
+        'validation-context',
+      )
 
       expect(result.code).toBe('VALIDATION_ERROR')
       expect(result.message).toBe('Validation failed. Please check your input.')
@@ -125,7 +128,10 @@ describe('ErrorHandler', () => {
         errors: [{ message: 'Invalid email' }],
       }
 
-      const result = errorHandler.handleValidationError(zodError, 'validation-context')
+      const result = errorHandler.handleValidationError(
+        zodError,
+        'validation-context',
+      )
 
       expect(result.code).toBe('VALIDATION_ERROR')
       expect(result.message).toBe('Validation failed. Please check your input.')
@@ -136,7 +142,10 @@ describe('ErrorHandler', () => {
     it('should handle network error', () => {
       const networkError = new Error('Connection timeout')
 
-      const result = errorHandler.handleNetworkError(networkError, 'network-context')
+      const result = errorHandler.handleNetworkError(
+        networkError,
+        'network-context',
+      )
 
       expect(result.code).toBe('NETWORK_ERROR')
       expect(result.message).toBe('timeout of 5000ms exceeded')
@@ -149,17 +158,22 @@ describe('ErrorHandler', () => {
         message: 'Failed to fetch',
       }
 
-      const result = errorHandler.handleNetworkError(fetchError, 'network-context')
+      const result = errorHandler.handleNetworkError(
+        fetchError,
+        'network-context',
+      )
 
       expect(result.code).toBe('NETWORK_ERROR')
-      expect(result.message).toBe('Network connection failed. Please check your internet connection.')
+      expect(result.message).toBe(
+        'Network connection failed. Please check your internet connection.',
+      )
     })
   })
 
   describe('Error Storage and Retrieval', () => {
     it('should store and retrieve errors', () => {
-      const error1 = errorHandler.handleApiError(new Error('Error 1'), 'context1')
-      const error2 = errorHandler.handleApiError(new Error('Error 2'), 'context2')
+      errorHandler.handleApiError(new Error('Error 1'), 'context1')
+      errorHandler.handleApiError(new Error('Error 2'), 'context2')
 
       const allErrors = errorHandler.getErrors()
       expect(allErrors).toHaveLength(2)
@@ -202,10 +216,18 @@ describe('ErrorHandler', () => {
 
   describe('Error Code Generation', () => {
     it('should generate correct error codes for different status codes', () => {
-      const error400 = { response: { status: 400, data: { message: 'Bad Request' } } }
-      const error401 = { response: { status: 401, data: { message: 'Unauthorized' } } }
-      const error404 = { response: { status: 404, data: { message: 'Not Found' } } }
-      const error500 = { response: { status: 500, data: { message: 'Server Error' } } }
+      const error400 = {
+        response: { status: 400, data: { message: 'Bad Request' } },
+      }
+      const error401 = {
+        response: { status: 401, data: { message: 'Unauthorized' } },
+      }
+      const error404 = {
+        response: { status: 404, data: { message: 'Not Found' } },
+      }
+      const error500 = {
+        response: { status: 500, data: { message: 'Server Error' } },
+      }
 
       expect(errorHandler.handleApiError(error400).code).toBe('CLIENT_ERROR')
       expect(errorHandler.handleApiError(error401).code).toBe('CLIENT_ERROR')
@@ -252,4 +274,4 @@ describe('ErrorHandler', () => {
       expect(result.message).toBe('An unknown error occurred')
     })
   })
-}) 
+})
