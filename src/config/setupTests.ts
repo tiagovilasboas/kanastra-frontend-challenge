@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import * as matchers from '@testing-library/jest-dom/matchers'
 import { cleanup } from '@testing-library/react'
-import { afterEach, beforeAll,expect } from 'vitest'
+import { afterEach, beforeAll, expect, vi } from 'vitest'
 
 // Extend Vitest's expect method with methods from react-testing-library
 expect.extend(matchers)
@@ -14,7 +14,7 @@ const localStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
   key: vi.fn(),
-  length: 0
+  length: 0,
 }
 
 // Mock sessionStorage
@@ -24,7 +24,7 @@ const sessionStorageMock = {
   removeItem: vi.fn(),
   clear: vi.fn(),
   key: vi.fn(),
-  length: 0
+  length: 0,
 }
 
 // Mock window.location
@@ -40,7 +40,7 @@ const locationMock = {
   hash: '',
   assign: vi.fn(),
   replace: vi.fn(),
-  reload: vi.fn()
+  reload: vi.fn(),
 }
 
 // Mock window.history
@@ -50,7 +50,7 @@ const historyMock = {
   go: vi.fn(),
   pushState: vi.fn(),
   replaceState: vi.fn(),
-  length: 1
+  length: 1,
 }
 
 // Export for use in tests
@@ -60,24 +60,24 @@ beforeAll(() => {
   // Setup global mocks
   Object.defineProperty(window, 'localStorage', {
     value: localStorageMock,
-    writable: true
+    writable: true,
   })
-  
+
   Object.defineProperty(window, 'sessionStorage', {
     value: sessionStorageMock,
-    writable: true
+    writable: true,
   })
-  
+
   Object.defineProperty(window, 'location', {
     value: locationMock,
-    writable: true
+    writable: true,
   })
-  
+
   Object.defineProperty(window, 'history', {
     value: historyMock,
-    writable: true
+    writable: true,
   })
-  
+
   // Mock crypto for PKCE
   Object.defineProperty(window, 'crypto', {
     value: {
@@ -90,10 +90,10 @@ beforeAll(() => {
       subtle: {
         digest: vi.fn().mockResolvedValue(new ArrayBuffer(32)),
         importKey: vi.fn().mockResolvedValue({}),
-        sign: vi.fn().mockResolvedValue(new ArrayBuffer(64))
-      }
+        sign: vi.fn().mockResolvedValue(new ArrayBuffer(64)),
+      },
     },
-    writable: true
+    writable: true,
   })
 })
 
