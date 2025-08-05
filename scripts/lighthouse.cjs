@@ -7,7 +7,7 @@
  *   node scripts/lighthouse.js [opções]
  * 
  * Opções:
- *   --dev     Testa ambiente de desenvolvimento (porta 5175)
+ *   --dev     Testa ambiente de desenvolvimento (porta 5173)
  *   --prod    Testa ambiente de produção (porta 4173)
  *   --ci      Modo CI com saída JSON
  *   --url     URL customizada para testar
@@ -25,7 +25,7 @@ const customUrl = args.find(arg => arg.startsWith('--url='))?.split('=')[1];
 
 async function runLighthouse() {
   try {
-    let url = 'http://localhost:5175';
+    let url = 'http://localhost:5173';
     let outputPath = './lighthouse-dev-report.html';
     let outputFormat = 'html';
     
