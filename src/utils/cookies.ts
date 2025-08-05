@@ -39,13 +39,13 @@ export class CookieManager {
         this.COOKIE_OPTIONS,
       )
 
-      logger.debug('Setting code verifier cookie', { cookieName })
+      // Removed debug logs for cleaner production code
       document.cookie = cookieString
 
       // Verify that the cookie was set
       const allCookies = document.cookie
       if (allCookies.includes(cookieName)) {
-        logger.debug('Code verifier stored in secure cookie')
+        // Removed debug logs for cleaner production code
       } else {
         logger.warn('Code verifier cookie may not have been set properly')
       }
@@ -58,7 +58,7 @@ export class CookieManager {
   static getCodeVerifier(): string | null {
     try {
       const cookieName = this.COOKIE_PREFIX + this.CODE_VERIFIER_KEY
-      logger.debug('Looking for code verifier cookie', { cookieName })
+      // Removed debug logs for cleaner production code
 
       const cookies = document.cookie.split(';')
 
@@ -66,7 +66,7 @@ export class CookieManager {
         const [name, value] = cookie.trim().split('=')
         if (name === cookieName && value) {
           const decodedValue = this.decodeValue(value)
-          logger.debug('Code verifier found in secure cookie')
+          // Removed debug logs for cleaner production code
           return decodedValue
         }
       }

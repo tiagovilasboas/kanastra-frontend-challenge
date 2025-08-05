@@ -32,19 +32,19 @@ class ErrorMonitoring {
   // Set user ID for error tracking
   setUserId(userId: string): void {
     this.userId = userId
-    logger.debug('Error monitoring user ID set', { userId })
+    // Removed debug logs for cleaner production code
   }
 
   // Report error to monitoring service
   async reportError(error: AppError): Promise<void> {
     if (!this.config.enabled) {
-      logger.debug('Error monitoring disabled, skipping report')
+      // Removed debug logs for cleaner production code
       return
     }
 
     // Apply sampling
     if (Math.random() > this.config.sampleRate) {
-      logger.debug('Error skipped due to sampling', { sampleRate: this.config.sampleRate })
+      // Removed debug logs for cleaner production code
       return
     }
 
@@ -59,7 +59,7 @@ class ErrorMonitoring {
 
     try {
       await this.sendErrorReport(errorReport)
-      logger.debug('Error report sent successfully')
+      // Removed debug logs for cleaner production code
     } catch (reportError) {
       logger.error('Failed to send error report', reportError)
     }
@@ -112,7 +112,7 @@ class ErrorMonitoring {
   // Generate new session ID
   generateNewSession(): void {
     this.sessionId = this.generateSessionId()
-    logger.debug('New error monitoring session generated', { sessionId: this.sessionId })
+    // Removed debug logs for cleaner production code
   }
 
   private generateSessionId(): string {
@@ -159,12 +159,12 @@ class ErrorMonitoring {
       }
     }
 
-    logger.debug('Global error handlers setup complete')
+    // Removed debug logs for cleaner production code
   }
 
   private async sendErrorReport(errorReport: ErrorReport): Promise<void> {
     if (!this.config.endpoint) {
-      logger.debug('No error monitoring endpoint configured, logging locally')
+      // Removed debug logs for cleaner production code
       logger.error('Error Report', errorReport)
       return
     }
@@ -201,5 +201,5 @@ export const errorMonitoring = new ErrorMonitoring(defaultConfig)
 // Export for configuration
 export const configureErrorMonitoring = (config: Partial<ErrorMonitoringConfig>): void => {
   Object.assign(defaultConfig, config)
-  logger.debug('Error monitoring configured', config)
+      // Removed debug logs for cleaner production code
 } 
