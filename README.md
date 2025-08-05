@@ -8,37 +8,11 @@ Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spot
 
 ## ✨ Funcionalidades Principais
 
-### 🎯 **Busca Inteligente**
-
-- **Busca Segmentada**: Resultados organizados por artistas, álbuns e músicas
-- **Busca Inteligente de Artistas**: Segmentação automática (exatos, similares, relacionados, outros)
-- **Filtros Avançados**: Gênero, ano, popularidade, mercado e conteúdo explícito
-- **Busca em Tempo Real**: Com debounce para otimização de performance
-
-### 🎨 **Interface Spotify-like**
-
-- **Layout Responsivo**: Grid adaptativo para diferentes tamanhos de tela
-- **Cards Interativos**: Hover effects e animações suaves
-- **Lista de Músicas**: Layout horizontal similar ao Spotify
-- **Skeletons Inteligentes**: Loading states consistentes com os componentes
-
-### 🔐 **Autenticação Inteligente**
-
-- **Modo Público**: Busca básica sem login (client credentials)
-- **Modo Autenticado**: Funcionalidades completas com OAuth 2.0
-- **Persistência de Token**: Gerenciamento automático de sessão
-
-### 🌍 **Internacionalização Completa**
-
-- **Português e Inglês**: Interface totalmente traduzida
-- **Interpolação Dinâmica**: Variáveis dinâmicas em traduções
-- **Organização por Domínio**: Traduções organizadas por contexto
-
-### 📱 **Experiência Mobile**
-
-- **Header Responsivo**: Adaptação para iPhone e dispositivos móveis
-- **Navegação Otimizada**: Sidebar e navegação mobile-friendly
-- **Touch-friendly**: Elementos otimizados para toque
+- 🔍 **Busca Inteligente**: Resultados segmentados por artistas, álbuns e músicas
+- 🎨 **Interface Spotify-like**: Layout responsivo com cards interativos
+- 🔐 **Autenticação Inteligente**: Modo público e autenticado
+- 🌍 **Internacionalização**: Português e inglês com interpolação dinâmica
+- 📱 **Mobile-first**: Otimizada para dispositivos móveis
 
 ## 🚀 Configuração Rápida
 
@@ -72,40 +46,6 @@ npm run dev
 
 A aplicação estará disponível em `http://127.0.0.1:5173`
 
-## 🛠️ Stack Tecnológico
-
-### **Frontend**
-
-- **React 18** - Biblioteca principal
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool e dev server
-- **React Router DOM** - Roteamento client-side
-- **Tailwind CSS** - Framework CSS utilitário
-- **shadcn/ui** - Componentes UI modernos
-
-### **Estado e Dados**
-
-- **Zustand** - Gerenciamento de estado global
-- **React Query (TanStack Query)** - Cache e sincronização de dados
-- **Axios** - Cliente HTTP
-
-### **Internacionalização**
-
-- **react-i18next** - Sistema de traduções
-- **i18next** - Framework de internacionalização
-
-### **Qualidade de Código**
-
-- **ESLint** - Linting de código
-- **Prettier** - Formatação automática
-- **Husky** - Git hooks
-- **Vitest** - Framework de testes
-
-### **Deploy**
-
-- **Vercel** - Plataforma de deploy
-- **GitHub Actions** - CI/CD (se configurado)
-
 ## 📦 Scripts Disponíveis
 
 ```bash
@@ -118,90 +58,7 @@ npm run test         # Executar testes
 npm run type-check   # Verificar tipos TypeScript
 ```
 
-## 🏗️ Arquitetura do Projeto
-
-### **Estrutura de Pastas**
-
-```
-src/
-├── app/                 # Configuração da aplicação
-├── components/          # Componentes reutilizáveis
-│   ├── artist/         # Componentes específicos de artistas
-│   ├── layout/         # Componentes de layout
-│   ├── ui/             # Componentes base (shadcn/ui)
-│   └── ErrorBoundary/  # Tratamento de erros
-├── hooks/              # Custom hooks
-├── pages/              # Páginas da aplicação
-├── repositories/       # Camada de acesso a dados
-├── stores/             # Estado global (Zustand)
-├── types/              # Definições TypeScript
-├── utils/              # Utilitários
-├── locales/            # Arquivos de tradução
-└── styles/             # Estilos globais
-```
-
-### **Padrões de Desenvolvimento**
-
-- **Separation of Concerns**: Lógica separada por domínio
-- **Repository Pattern**: Camada de abstração para APIs
-- **Custom Hooks**: Lógica reutilizável encapsulada
-- **Type Safety**: TypeScript em toda a aplicação
-- **Component Composition**: Componentes pequenos e focados
-
-## 🎯 Funcionalidades Detalhadas
-
-### **Página Inicial**
-
-- **Artistas Populares**: Grid responsivo com cards interativos
-- **Navegação Intuitiva**: Links para busca e outras páginas
-- **Estado Limpo**: Reset automático de buscas anteriores
-
-### **Busca**
-
-- **Tipos de Conteúdo**: Seletor radio para artistas, álbuns, músicas
-- **Resultados Segmentados**: Organização inteligente por relevância
-- **Pagination**: "Carregar Mais" para álbuns e músicas
-- **Filtros Avançados**: Parâmetros de busca refinados
-
-### **Página do Artista**
-
-- **Informações Detalhadas**: Bio, imagens, estatísticas
-- **Top Tracks**: Lista horizontal estilo Spotify
-- **Álbuns**: Grid com paginação
-- **Refresh Inteligente**: Skeleton loading durante atualização
-
-### **Navegação**
-
-- **Header Responsivo**: Busca, idioma, login
-- **Sidebar**: Navegação principal
-- **Breadcrumbs**: Navegação contextual
-- **Mobile Navigation**: Menu hambúrguer
-
-## 🔧 Configurações Avançadas
-
-### **Variáveis de Ambiente**
-
-```env
-# Spotify API
-VITE_SPOTIFY_CLIENT_ID=your_client_id
-VITE_SPOTIFY_CLIENT_SECRET=your_client_secret
-VITE_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
-
-# Build
-VITE_APP_TITLE=Spotify Explorer
-VITE_APP_VERSION=1.0.0
-```
-
-### **Configuração do Vercel**
-
-O projeto inclui `vercel.json` configurado para:
-
-- Build automático
-- Roteamento SPA
-- Variáveis de ambiente
-- Deploy otimizado
-
-## 📚 Documentação
+## 📚 Documentação Detalhada
 
 - **[🔧 Configuração Detalhada](docs/SETUP.md)** - Guia completo de configuração
 - **[🎯 Funcionalidades](docs/FEATURES.md)** - Detalhes das funcionalidades de busca
