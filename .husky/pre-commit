@@ -1,8 +1,38 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# Run lint, type-check and tests
-npm run pre-commit-check
+echo "🔍 Husky: Verificando qualidade do código..."
 
-# Run lint-staged for staged files
+# 1. Verificar se há erros de linting
+echo "📝 Verificando ESLint..."
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint encontrou erros. Corrija-os antes do commit."
+  exit 1
+fi
+
+# 2. Verificar TypeScript
+echo "🔧 Verificando TypeScript..."
+npm run type-check
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript encontrou erros. Corrija-os antes do commit."
+  exit 1
+fi
+
+# 3. Executar testes unitários
+echo "🧪 Executando testes unitários..."
+npm run test -- --run --reporter=verbose
+if [ $? -ne 0 ]; then
+  echo "❌ Testes unitários falharam. Corrija-os antes do commit."
+  exit 1
+fi
+
+# 4. Executar lint-staged para arquivos staged
+echo "🎯 Executando lint-staged..."
 npx lint-staged
+if [ $? -ne 0 ]; then
+  echo "❌ lint-staged falhou. Corrija os problemas antes do commit."
+  exit 1
+fi
+
+echo "✅ Pre-commit: Todos os checks passaram!"

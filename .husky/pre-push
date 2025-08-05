@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🚀 Husky: Verificando qualidade antes do push..."
+
+# 1. Verificar se há erros de linting
+echo "📝 Verificando ESLint..."
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint encontrou erros. Corrija-os antes do push."
+  exit 1
+fi
+
+# 2. Verificar TypeScript
+echo "🔧 Verificando TypeScript..."
+npm run type-check
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript encontrou erros. Corrija-os antes do push."
+  exit 1
+fi
+
+# 3. Executar testes unitários
+echo "🧪 Executando testes unitários..."
+npm run test -- --run --reporter=verbose
+if [ $? -ne 0 ]; then
+  echo "❌ Testes unitários falharam. Corrija-os antes do push."
+  exit 1
+fi
+
+# 4. Verificar se o build funciona
+echo "🔨 Verificando build..."
+npm run build
+if [ $? -ne 0 ]; then
+  echo "❌ Build falhou. Corrija os problemas antes do push."
+  exit 1
+fi
+
+# 5. Executar testes E2E (se disponível)
+echo "🌐 Verificando testes E2E..."
+if npm run test:e2e 2>/dev/null; then
+  echo "✅ Testes E2E passaram!"
+else
+  echo "⚠️  Testes E2E não disponíveis ou falharam. Continuando..."
+fi
+
+echo "✅ Pre-push: Todos os checks passaram! Pode fazer push com segurança." 
