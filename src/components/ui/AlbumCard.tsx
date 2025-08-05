@@ -37,6 +37,15 @@ export const AlbumCard: React.FC<AlbumCardProps> = ({ album, onClick }) => {
 
   const { t } = useTranslation()
 
+  const formatAlbumInfo = () => {
+    const releaseDate = formatReleaseDate(
+      album.release_date,
+      album.release_date_precision,
+    )
+    const artists = album.artists.map((artist) => artist.name).join(', ')
+    return `${releaseDate} ${t('ui:dot', '•')} ${artists}`
+  }
+
   return (
     <div
       className="group cursor-pointer transition-all duration-300 hover:scale-105"
@@ -77,12 +86,7 @@ export const AlbumCard: React.FC<AlbumCardProps> = ({ album, onClick }) => {
             {album.name}
           </h3>
           <p className="text-xs text-muted-foreground line-clamp-1">
-            {formatReleaseDate(
-              album.release_date,
-              album.release_date_precision,
-            )}{' '}
-            {t('ui:dot', '•')}{' '}
-            {album.artists.map((artist) => artist.name).join(', ')}
+            {formatAlbumInfo()}
           </p>
         </div>
       </div>
