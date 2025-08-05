@@ -40,9 +40,9 @@ export class SpotifyRepository {
 
   async getAuthUrl(): Promise<string> {
     try {
-      logger.debug('Generating auth URL')
+      // Removed debug logs for cleaner production code
       const authUrl = await this.authService.generateAuthUrl()
-      logger.debug('Auth URL generated successfully')
+              // Removed debug logs for cleaner production code
       return authUrl
     } catch (error) {
       const appError = errorHandler.handleAuthError(
@@ -55,13 +55,13 @@ export class SpotifyRepository {
 
   async exchangeCodeForToken(code: string, state?: string): Promise<string> {
     try {
-      logger.debug('Exchanging code for token')
+      // Removed debug logs for cleaner production code
       const tokenResponse = await this.authService.handleTokenExchange(
         code,
         state,
       )
       this.setAccessToken(tokenResponse.access_token)
-      logger.debug('Token exchange successful')
+      // Removed debug logs for cleaner production code
       return tokenResponse.access_token
     } catch (error) {
       const appError = errorHandler.handleAuthError(

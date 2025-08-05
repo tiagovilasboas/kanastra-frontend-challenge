@@ -48,18 +48,20 @@ export class SpotifyAuthService {
 
   async generateAuthUrl(): Promise<string> {
     try {
-      logger.debug('Generating auth URL...')
+      // Removed debug logs for cleaner production code
 
       const { clientId, redirectUri, scopes } = this.config
+      
+      // Validate required configuration
+      if (!clientId || clientId.trim() === '') {
+        throw new Error('Client ID is required for authentication')
+      }
+      
       const codeVerifier = this.generateCodeVerifier()
       const codeChallenge = await this.generateCodeChallenge(codeVerifier)
       const state = this.generateState()
 
-      logger.debug('Auth configuration', {
-        clientId: clientId ? 'Present' : 'Missing',
-        redirectUri,
-        scopes,
-      })
+      // Removed debug logs for cleaner production code
 
       // Store code verifier securely
       CookieManager.setCodeVerifier(codeVerifier)
@@ -74,8 +76,9 @@ export class SpotifyAuthService {
         code_challenge_method: 'S256',
       })
 
-      const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`
-      logger.debug('Auth URL generated successfully')
+      // Fix encoding issue: replace + with %20 in scope parameter
+      const authUrl = `https://accounts.spotify.com/authorize?${params.toString().replace(/\+/g, '%20')}`
+      // Removed debug logs for cleaner production code
       return authUrl
     } catch (error) {
       const appError = errorHandler.handleAuthError(
