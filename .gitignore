@@ -27,11 +27,29 @@ ssl/
 *.sw?
 
 # Relatórios / artefatos locais
-
 stats.html
 out.css
 coverage/
 tsconfig.tsbuildinfo
+
+# Lighthouse reports
+lighthouse-report.json
+lighthouse-dev-report.html
+lighthouse-ci-report.html
+lighthouse-*.html
+lighthouse-*.json
+
+# Bundle analysis
+dist/stats.html
+dist/analysis.html
+
+# Performance reports
+performance-report.json
+performance-report.html
+
+# Build artifacts
+tsconfig.build.tsbuildinfo
+*.tsbuildinfo
 
 # Environment variables
 .env
