@@ -61,13 +61,11 @@ npm run analyze      # Análise de bundle
 npm run lighthouse   # Auditoria de performance
 ```
 
-## 📚 Documentação Detalhada
+## 📚 Documentação
 
 - **[🔧 Configuração Detalhada](docs/SETUP.md)** - Guia completo de configuração
-- **[🎯 Funcionalidades](docs/FEATURES.md)** - Detalhes das funcionalidades de busca
-- **[🛠️ Tecnologias](docs/TECHNOLOGIES.md)** - Stack tecnológico utilizado
 - **[🔐 Autenticação](docs/AUTHENTICATION.md)** - Como funciona a autenticação
-- **[🆘 Suporte](docs/SUPPORT.md)** - Troubleshooting e ajuda
+- **[🧪 Testes E2E](docs/E2E_TESTING.md)** - Documentação dos testes end-to-end
 
 ## 🚀 Performance e Otimizações
 

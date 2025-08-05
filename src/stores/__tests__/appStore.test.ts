@@ -3,10 +3,26 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useAppStore } from '../appStore'
 
+// Mock localStorage for Zustand persist
+const localStorageMock = {
+  getItem: vi.fn().mockReturnValue(null),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  key: vi.fn(),
+  length: 0,
+}
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
+  writable: true,
+})
+
 describe('appStore', () => {
   beforeEach(() => {
     // Clear all mocks
     vi.clearAllMocks()
+    localStorageMock.clear()
     // Reset store to initial state
     act(() => {
       useAppStore.setState({
