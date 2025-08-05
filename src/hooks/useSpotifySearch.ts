@@ -1,480 +1,94 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { spotifyRepository } from '@/repositories'
+import { SpotifyRepository } from '@/repositories/spotify/SpotifyRepository'
+import { useAppStore } from '@/stores/appStore'
 import { useSearchStore } from '@/stores/searchStore'
-import { SearchFilters } from '@/types/search'
-import { SpotifyAlbum, SpotifyArtist, SpotifyTrack } from '@/types/spotify'
-import { logger } from '@/utils/logger'
+import { errorHandler } from '@/utils/errorHandler'
+import { validateSearchQuery } from '@/utils/validation'
 
-// Types
-interface SearchResults {
-  artists: SpotifyArtist[]
-  albums: SpotifyAlbum[]
-  tracks: SpotifyTrack[]
-}
+const spotifyRepo = new SpotifyRepository()
 
-interface SegmentedResults {
-  exactMatches: SpotifyArtist[]
-  similarArtists: SpotifyArtist[]
-  relatedArtists: SpotifyArtist[]
-  otherResults: SpotifyArtist[]
-}
+// Debounce delay em ms (como no repositório da Betalent)
+const DEBOUNCE_DELAY = 300
 
-interface SearchState {
-  isLoading: boolean
-  isLoadingMore: boolean
-  error: string | null
-  hasMore: boolean
-  totalResults: number
-}
-
-interface UseSpotifySearchReturn {
-  // Search state
-  searchState: SearchState
-  results: SearchResults
-  segmentedResults: SegmentedResults
-
-  // Search actions
-  search: (
-    query: string,
-    types: ('artist' | 'album' | 'track')[],
-  ) => Promise<void>
-  loadMore: () => Promise<void>
-  clearSearch: () => void
-
-  // Filters
-  filters: SearchFilters
-  setFilters: (filters: SearchFilters) => void
-  buildSearchQuery: (baseQuery: string) => string
-}
-
-// Helper function to segment artists based on relevance
-const segmentArtists = (
-  artists: SpotifyArtist[],
-  searchQuery: string,
-): SegmentedResults => {
-  const query = searchQuery.toLowerCase().trim()
-
-  const exactMatches: SpotifyArtist[] = []
-  const similarArtists: SpotifyArtist[] = []
-  const relatedArtists: SpotifyArtist[] = []
-  const otherResults: SpotifyArtist[] = []
-
-  artists.forEach((artist) => {
-    const artistName = artist.name.toLowerCase()
-
-    // Exact match (case insensitive)
-    if (artistName === query) {
-      exactMatches.push(artist)
-    }
-    // Contains the search term
-    else if (artistName.includes(query)) {
-      similarArtists.push(artist)
-    }
-    // High popularity and similar genres (top tier artists)
-    else if ((artist.popularity || 0) >= 70 && artist.genres.length > 0) {
-      relatedArtists.push(artist)
-    }
-    // Everything else
-    else {
-      otherResults.push(artist)
-    }
-  })
-
-  return {
-    exactMatches,
-    similarArtists,
-    relatedArtists,
-    otherResults,
-  }
-}
-
-export function useSpotifySearch(): UseSpotifySearchReturn {
+export const useSpotifySearch = () => {
+  const { t } = useTranslation()
   const { searchQuery } = useSearchStore()
-  const [debouncedQuery, setDebouncedQuery] = useState('')
-  const [results, setResults] = useState<SearchResults>({
-    artists: [],
-    albums: [],
-    tracks: [],
-  })
-  const [segmentedResults, setSegmentedResults] = useState<SegmentedResults>({
-    exactMatches: [],
-    similarArtists: [],
-    relatedArtists: [],
-    otherResults: [],
-  })
-  const [searchState, setSearchState] = useState<SearchState>({
-    isLoading: false,
-    isLoadingMore: false,
-    error: null,
-    hasMore: false,
-    totalResults: 0,
-  })
-  const [page, setPage] = useState(0)
-  const [limit] = useState(20)
-  const [currentSearchTypes, setCurrentSearchTypes] = useState<
-    ('artist' | 'album' | 'track')[]
-  >(['artist'])
-  const [filters, setFilters] = useState<SearchFilters>({
-    types: ['artist'],
-    genres: [],
-    yearFrom: undefined,
-    yearTo: undefined,
-    popularityFrom: undefined,
-    popularityTo: undefined,
-    market: undefined,
-    includeExplicit: false,
-    includeExternal: false,
-  })
-  const debounceRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const { setLoading, setError } = useAppStore()
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery)
 
-  // Build advanced search query with filters
-  const buildSearchQuery = useCallback(
-    (baseQuery: string): string => {
-      let query = baseQuery
+  // Debounce effect para otimizar performance
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery)
+    }, DEBOUNCE_DELAY)
 
-      // Add genre filters
-      if (filters.genres && filters.genres.length > 0) {
-        const genreFilters = filters.genres
-          .map((genre) => `genre:${genre}`)
-          .join(' ')
-        query += ` ${genreFilters}`
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const {
+    data: searchResults,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['spotify-search', debouncedQuery],
+    queryFn: async () => {
+      if (!validateSearchQuery(debouncedQuery)) {
+        throw new Error(t('search:errors.invalidQuery', 'Invalid search query'))
       }
 
-      // Add year range
-      if (filters.yearFrom || filters.yearTo) {
-        const yearFilter = `year:${filters.yearFrom || '*'}-${filters.yearTo || '*'}`
-        query += ` ${yearFilter}`
-      }
+      setLoading(true)
+      setError(null)
 
-      // Add popularity range
-      if (filters.popularityFrom || filters.popularityTo) {
-        const popularityFilter = `popularity:${filters.popularityFrom || 0}-${filters.popularityTo || 100}`
-        query += ` ${popularityFilter}`
-      }
+      try {
+        const results = await spotifyRepo.searchAdvanced(
+          debouncedQuery,
+          'artist',
+          undefined,
+          20,
+          0,
+        )
 
-      return query.trim()
+        return results
+      } catch (err) {
+        const errorMessage = errorHandler.handleApiError(err)
+        setError(errorMessage.message || 'Search failed')
+        throw err
+      } finally {
+        setLoading(false)
+      }
     },
-    [filters],
-  )
+    enabled: !!debouncedQuery && validateSearchQuery(debouncedQuery),
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    gcTime: 10 * 60 * 1000, // 10 minutos
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+  })
 
-  // Search function
   const search = useCallback(
-    async (query: string, types: ('artist' | 'album' | 'track')[]) => {
-      if (!query.trim()) {
-        setResults({ artists: [], albums: [], tracks: [] })
-        setSegmentedResults({
-          exactMatches: [],
-          similarArtists: [],
-          relatedArtists: [],
-          otherResults: [],
-        })
-        setSearchState((prev) => ({ ...prev, isLoading: false, error: null }))
+    async (query: string) => {
+      if (!validateSearchQuery(query)) {
+        setError(t('search:errors.invalidQuery', 'Invalid search query'))
         return
       }
 
-      setSearchState((prev) => ({ ...prev, isLoading: true, error: null }))
-      setCurrentSearchTypes(types)
-
       try {
-        // Ensure we have a token
-        if (
-          !spotifyRepository.isAuthenticated() &&
-          !spotifyRepository.getAuthStatus().hasClientToken
-        ) {
-          await spotifyRepository.getClientToken()
-        }
-
-        const advancedQuery = buildSearchQuery(query)
-        const offset = 0
-
-        // Removed debug logs for cleaner production code
-
-        // Search for each type
-        const searchPromises = types.map(async (type) => {
-          try {
-            const response = await spotifyRepository.searchAdvanced(
-              advancedQuery,
-              type,
-              undefined,
-              limit,
-              offset,
-            )
-            return { type, response }
-          } catch (error) {
-            logger.error(`Search failed for type ${type}`, error)
-            return { type, response: null }
-          }
-        })
-
-        const searchResults = await Promise.all(searchPromises)
-
-        // Process results
-        const newResults: SearchResults = {
-          artists: [],
-          albums: [],
-          tracks: [],
-        }
-
-        let totalResults = 0
-
-        searchResults.forEach(({ type, response }) => {
-          if (response) {
-            const items = response[type + 's']?.items || []
-            const total = response[type + 's']?.total || 0
-
-            switch (type) {
-              case 'artist':
-                newResults.artists = items
-                break
-              case 'album':
-                newResults.albums = items
-                break
-              case 'track':
-                newResults.tracks = items
-                break
-            }
-
-            totalResults += total
-          }
-        })
-
-        setResults(newResults)
-
-        // Segment artists if we have artist results
-        if (newResults.artists.length > 0) {
-          const segmented = segmentArtists(newResults.artists, query)
-          setSegmentedResults(segmented)
-        }
-
-        // Calculate hasMore based on the types being searched
-        const hasMoreResults = searchResults.some(({ type, response }) => {
-          if (!response) return false
-          const items = response[type + 's']?.items || []
-          const total = response[type + 's']?.total || 0
-          return items.length < total
-        })
-
-        setSearchState((prev) => ({
-          ...prev,
-          isLoading: false,
-          totalResults,
-          hasMore: hasMoreResults,
-          error: null,
-        }))
-
-        // Removed debug logs for cleaner production code
-      } catch (error) {
-        logger.error('Search error', error)
-        setSearchState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: error instanceof Error ? error.message : 'Search failed',
-        }))
+        await refetch()
+      } catch (err) {
+        console.error('Search error:', err)
       }
     },
-    [buildSearchQuery, limit],
+    [refetch, setError, t],
   )
 
-  // Load more function
-  const loadMore = useCallback(async () => {
-    if (
-      !searchState.hasMore ||
-      searchState.isLoadingMore ||
-      !debouncedQuery.trim()
-    ) {
-      return
-    }
-
-    setSearchState((prev) => ({ ...prev, isLoadingMore: true }))
-    const nextPage = page + 1
-    setPage(nextPage)
-
-    try {
-      const advancedQuery = buildSearchQuery(debouncedQuery)
-      const offset = nextPage * limit
-
-      logger.debug('Loading more results', {
-        query: advancedQuery,
-        types: currentSearchTypes,
-        offset,
-      })
-
-      // Load more for each type
-      const loadMorePromises = currentSearchTypes.map(async (type) => {
-        try {
-          const response = await spotifyRepository.searchAdvanced(
-            advancedQuery,
-            type,
-            undefined,
-            limit,
-            offset,
-          )
-          return { type, response }
-        } catch (error) {
-          logger.error(`Load more failed for type ${type}`, error)
-          return { type, response: null }
-        }
-      })
-
-      const loadMoreResults = await Promise.all(loadMorePromises)
-
-      // Merge results
-      setResults((prev) => {
-        const newResults = { ...prev }
-
-        loadMoreResults.forEach(({ type, response }) => {
-          if (response) {
-            const newItems = response[type + 's']?.items || []
-            const existingIds = new Set(
-              newResults[(type + 's') as keyof SearchResults].map(
-                (item: SpotifyArtist | SpotifyAlbum | SpotifyTrack) => item.id,
-              ),
-            )
-            const uniqueNewItems = newItems.filter(
-              (item: SpotifyArtist | SpotifyAlbum | SpotifyTrack) =>
-                !existingIds.has(item.id),
-            )
-
-            switch (type) {
-              case 'artist':
-                newResults.artists = [...newResults.artists, ...uniqueNewItems]
-                break
-              case 'album':
-                newResults.albums = [...newResults.albums, ...uniqueNewItems]
-                break
-              case 'track':
-                newResults.tracks = [...newResults.tracks, ...uniqueNewItems]
-                break
-            }
-          }
-        })
-
-        return newResults
-      })
-
-      // Re-segment artists if we have new artist results
-      if (results.artists.length > 0) {
-        const allArtists = [...results.artists]
-        loadMoreResults.forEach(({ type, response }) => {
-          if (type === 'artist' && response) {
-            const newItems = response.artists?.items || []
-            const existingIds = new Set(allArtists.map((artist) => artist.id))
-            const uniqueNewItems = newItems.filter(
-              (item: SpotifyArtist) => !existingIds.has(item.id),
-            )
-            allArtists.push(...uniqueNewItems)
-          }
-        })
-
-        const segmented = segmentArtists(allArtists, debouncedQuery)
-        setSegmentedResults(segmented)
-      }
-
-      // Update hasMore based on updated results
-      setResults((prevResults) => {
-        const hasMoreResults = loadMoreResults.some(({ type, response }) => {
-          if (!response) return false
-          const total = response[type + 's']?.total || 0
-          const currentCount =
-            prevResults[(type + 's') as keyof SearchResults].length
-          return currentCount < total
-        })
-
-        setSearchState((prev) => ({
-          ...prev,
-          isLoadingMore: false,
-          hasMore: hasMoreResults,
-        }))
-
-        return prevResults
-      })
-    } catch (error) {
-      logger.error('Load more error', error)
-      setSearchState((prev) => ({
-        ...prev,
-        isLoadingMore: false,
-        error: error instanceof Error ? error.message : 'Load more failed',
-      }))
-    }
-  }, [
-    searchState.hasMore,
-    searchState.isLoadingMore,
-    debouncedQuery,
-    buildSearchQuery,
-    limit,
-    page,
-    currentSearchTypes,
-    results.artists,
-  ])
-
-  // Clear search function
-  const clearSearch = useCallback(() => {
-    setDebouncedQuery('')
-    setResults({ artists: [], albums: [], tracks: [] })
-    setSegmentedResults({
-      exactMatches: [],
-      similarArtists: [],
-      relatedArtists: [],
-      otherResults: [],
-    })
-    setPage(0)
-    setSearchState({
-      isLoading: false,
-      isLoadingMore: false,
-      error: null,
-      hasMore: false,
-      totalResults: 0,
-    })
-  }, [])
-
-  // Debounce effect
-  useEffect(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-    }
-    if (searchQuery.trim()) {
-      debounceRef.current = setTimeout(() => {
-        // Removed debug logs for cleaner production code
-        setDebouncedQuery(searchQuery)
-        setPage(0)
-        setSearchState((prev) => ({ ...prev, error: null }))
-        search(searchQuery, filters.types)
-      }, 500)
-    } else {
-      setDebouncedQuery('')
-      setResults({ artists: [], albums: [], tracks: [] })
-      setSegmentedResults({
-        exactMatches: [],
-        similarArtists: [],
-        relatedArtists: [],
-        otherResults: [],
-      })
-      setPage(0)
-      setSearchState({
-        isLoading: false,
-        isLoadingMore: false,
-        error: null,
-        hasMore: false,
-        totalResults: 0,
-      })
-    }
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-    }
-  }, [searchQuery, filters.types, search])
-
   return {
-    searchState,
-    results,
-    segmentedResults,
+    searchResults,
+    isLoading,
+    error,
     search,
-    loadMore,
-    clearSearch,
-    filters,
-    setFilters,
-    buildSearchQuery,
+    debouncedQuery,
   }
 }
