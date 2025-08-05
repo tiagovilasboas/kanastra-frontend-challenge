@@ -1,6 +1,8 @@
 {
   "title": "Favoritos",
-  "description": "Seus artistas favoritos",
+  "description": "Seus artistas, músicas e álbuns favoritos",
   "noFavorites": "Você ainda não tem favoritos",
-  "noFavoritesMessage": "Comece a adicionar artistas aos seus favoritos para vê-los aqui."
+  "noFavoritesMessage": "Comece a adicionar artistas aos seus favoritos para vê-los aqui.",
+  "comingSoonTitle": "Em breve",
+  "comingSoonMessage": "A funcionalidade de favoritos está em desenvolvimento. Você ainda pode explorar e descobrir novos artistas através da busca e navegação."
 }
