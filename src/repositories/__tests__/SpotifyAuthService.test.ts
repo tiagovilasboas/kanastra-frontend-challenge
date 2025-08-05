@@ -1,9 +1,12 @@
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { CookieManager } from '@/utils/cookies'
 import { errorHandler } from '@/utils/errorHandler'
 
-import { SpotifyAuthConfig,SpotifyAuthService } from '../spotify/SpotifyAuthService'
+import {
+  SpotifyAuthConfig,
+  SpotifyAuthService,
+} from '../spotify/SpotifyAuthService'
 
 // Mock dependencies
 vi.mock('@/utils/cookies', () => ({
@@ -32,8 +35,8 @@ vi.mock('@/schemas/spotify', () => ({
   validateSpotifyTokenResponse: vi.fn(),
 }))
 
-const mockCookieManager = CookieManager as any
-const mockErrorHandler = errorHandler as any
+const mockCookieManager = CookieManager as unknown as typeof CookieManager
+const mockErrorHandler = errorHandler as unknown as typeof errorHandler
 
 // Mock crypto API
 const mockCrypto = {
@@ -57,7 +60,7 @@ describe('SpotifyAuthService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
-    
+
     mockConfig = {
       clientId: 'test-client-id',
       clientSecret: 'test-client-secret',
@@ -95,7 +98,9 @@ describe('SpotifyAuthService', () => {
 
       expect(authUrl).toContain('https://accounts.spotify.com/authorize')
       expect(authUrl).toContain('client_id=test-client-id')
-      expect(authUrl).toContain('redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback')
+      expect(authUrl).toContain(
+        'redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fcallback',
+      )
       expect(authUrl).toContain('scope=user-read-private%20user-read-email')
       expect(authUrl).toContain('response_type=code')
       expect(authUrl).toContain('code_challenge_method=S256')
@@ -127,37 +132,38 @@ describe('SpotifyAuthService', () => {
 
   describe('extractCodeFromUrl', () => {
     it('should extract code and state from valid URL', () => {
-      const url = 'http://localhost:3000/callback?code=test-code&state=test-state'
-      
+      const url =
+        'http://localhost:3000/callback?code=test-code&state=test-state'
+
       const result = authService.extractCodeFromUrl(url)
-      
+
       expect(result.code).toBe('test-code')
       expect(result.state).toBe('test-state')
     })
 
     it('should handle URL without code', () => {
       const url = 'http://localhost:3000/callback?error=access_denied'
-      
+
       const result = authService.extractCodeFromUrl(url)
-      
+
       expect(result.code).toBeNull()
       expect(result.state).toBeNull()
     })
 
     it('should handle malformed URL', () => {
       const url = 'invalid-url'
-      
+
       const result = authService.extractCodeFromUrl(url)
-      
+
       expect(result.code).toBeNull()
       expect(result.state).toBeNull()
     })
 
     it('should handle URL with only code', () => {
       const url = 'http://localhost:3000/callback?code=test-code'
-      
+
       const result = authService.extractCodeFromUrl(url)
-      
+
       expect(result.code).toBe('test-code')
       expect(result.state).toBeNull()
     })
@@ -177,14 +183,16 @@ describe('SpotifyAuthService', () => {
         scope: 'user-read-private user-read-email',
       }
 
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTokenResponse),
       })
 
       const { validateSpotifyTokenResponse } = await import('@/schemas/spotify')
-      ;(validateSpotifyTokenResponse as any).mockReturnValue(mockTokenResponse)
+      ;(
+        validateSpotifyTokenResponse as unknown as ReturnType<typeof vi.fn>
+      ).mockReturnValue(mockTokenResponse)
 
       const result = await authService.handleTokenExchange('test-code')
 
@@ -196,7 +204,7 @@ describe('SpotifyAuthService', () => {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        })
+        }),
       )
       expect(mockCookieManager.clearCodeVerifier).toHaveBeenCalled()
     })
@@ -204,29 +212,35 @@ describe('SpotifyAuthService', () => {
     it('should handle missing code verifier', async () => {
       mockCookieManager.getCodeVerifier.mockReturnValue(null)
 
-      await expect(authService.handleTokenExchange('test-code')).rejects.toThrow('Code verifier not found')
+      await expect(
+        authService.handleTokenExchange('test-code'),
+      ).rejects.toThrow('Code verifier not found')
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalled()
     })
 
     it('should extract code verifier from state parameter', async () => {
       mockCookieManager.getCodeVerifier.mockReturnValue(null)
-      
-      const stateWithVerifier = btoa(JSON.stringify({ code_verifier: 'state-code-verifier' }))
-      
+
+      const stateWithVerifier = btoa(
+        JSON.stringify({ code_verifier: 'state-code-verifier' }),
+      )
+
       const mockTokenResponse = {
         access_token: 'test-access-token',
         token_type: 'Bearer',
         expires_in: 3600,
       }
 
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTokenResponse),
       })
 
       const { validateSpotifyTokenResponse } = await import('@/schemas/spotify')
-      ;(validateSpotifyTokenResponse as any).mockReturnValue(mockTokenResponse)
+      ;(
+        validateSpotifyTokenResponse as unknown as ReturnType<typeof vi.fn>
+      ).mockReturnValue(mockTokenResponse)
 
       await authService.handleTokenExchange('test-code', stateWithVerifier)
 
@@ -235,35 +249,42 @@ describe('SpotifyAuthService', () => {
     })
 
     it('should handle invalid authorization code', async () => {
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: false,
         json: () => Promise.resolve({ error: 'invalid_grant' }),
       })
 
-      await expect(authService.handleTokenExchange('invalid-code')).rejects.toThrow('Invalid authorization code')
+      await expect(
+        authService.handleTokenExchange('invalid-code'),
+      ).rejects.toThrow('Invalid authorization code')
       expect(mockCookieManager.clearCodeVerifier).not.toHaveBeenCalled()
     })
 
     it('should handle token exchange error', async () => {
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: false,
-        json: () => Promise.resolve({ 
-          error: 'invalid_client',
-          error_description: 'Invalid client' 
-        }),
+        json: () =>
+          Promise.resolve({
+            error: 'invalid_client',
+            error_description: 'Invalid client',
+          }),
       })
 
-      await expect(authService.handleTokenExchange('test-code')).rejects.toThrow('Token exchange failed: Invalid client')
+      await expect(
+        authService.handleTokenExchange('test-code'),
+      ).rejects.toThrow('Token exchange failed: Invalid client')
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalled()
     })
 
     it('should handle network errors', async () => {
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockRejectedValue(new Error('Network error'))
 
-      await expect(authService.handleTokenExchange('test-code')).rejects.toThrow()
+      await expect(
+        authService.handleTokenExchange('test-code'),
+      ).rejects.toThrow()
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalled()
     })
 
@@ -274,18 +295,22 @@ describe('SpotifyAuthService', () => {
         expires_in: 3600,
       }
 
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTokenResponse),
       })
 
       const { validateSpotifyTokenResponse } = await import('@/schemas/spotify')
-      ;(validateSpotifyTokenResponse as any).mockImplementation(() => {
+      ;(
+        validateSpotifyTokenResponse as unknown as ReturnType<typeof vi.fn>
+      ).mockImplementation(() => {
         throw new Error('Validation failed')
       })
 
-      await expect(authService.handleTokenExchange('test-code')).rejects.toThrow()
+      await expect(
+        authService.handleTokenExchange('test-code'),
+      ).rejects.toThrow()
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalled()
     })
   })
@@ -306,7 +331,7 @@ describe('SpotifyAuthService', () => {
 
       // Create a new instance to trigger the migration logic
       const serviceWithMigration = new SpotifyAuthService(mockConfig)
-      
+
       // Access private method through reflection or public interface
       // For now, we'll test through the public interface
       const mockTokenResponse = {
@@ -315,20 +340,28 @@ describe('SpotifyAuthService', () => {
         expires_in: 3600,
       }
 
-      const mockFetch = fetch as any
+      const mockFetch = fetch as unknown as ReturnType<typeof vi.fn>
       mockFetch.mockResolvedValue({
         ok: true,
         json: () => Promise.resolve(mockTokenResponse),
       })
 
       const { validateSpotifyTokenResponse } = await import('@/schemas/spotify')
-      ;(validateSpotifyTokenResponse as any).mockReturnValue(mockTokenResponse)
+      ;(
+        validateSpotifyTokenResponse as unknown as ReturnType<typeof vi.fn>
+      ).mockReturnValue(mockTokenResponse)
 
       await serviceWithMigration.handleTokenExchange('test-code')
 
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('spotify_code_verifier')
-      expect(mockCookieManager.setCodeVerifier).toHaveBeenCalledWith('localstorage-verifier')
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('spotify_code_verifier')
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith(
+        'spotify_code_verifier',
+      )
+      expect(mockCookieManager.setCodeVerifier).toHaveBeenCalledWith(
+        'localstorage-verifier',
+      )
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'spotify_code_verifier',
+      )
     })
   })
-}) 
+})
