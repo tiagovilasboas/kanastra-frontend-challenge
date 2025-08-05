@@ -46,11 +46,9 @@ export function useArtistPage(artistId: string | undefined) {
     setCurrentPage(page)
   }, [])
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = useCallback(async () => {
     // Refetch all data for this artist
-    refetchArtist()
-    refetchTracks()
-    refetchAlbums()
+    await Promise.all([refetchArtist(), refetchTracks(), refetchAlbums()])
   }, [refetchArtist, refetchTracks, refetchAlbums])
 
   return {
