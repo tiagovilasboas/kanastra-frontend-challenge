@@ -11,3 +11,5 @@ export { useValidation } from './useValidation'
 
 // New advanced features hooks
 export { useAvailableGenres } from './useAvailableGenres'
+export { usePopularAlbums } from './usePopularAlbums'
+export { usePopularArtists } from './usePopularArtists'

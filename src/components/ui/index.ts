@@ -22,6 +22,7 @@ export { GenreCard } from './GenreCard'
 export { Input } from './input'
 export { Label } from './label'
 export { LanguageSelector } from './LanguageSelector'
+export { ListFilter } from './ListFilter'
 export {
   NavigationMenu,
   NavigationMenuContent,
