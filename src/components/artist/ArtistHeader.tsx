@@ -43,7 +43,7 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
           <RefreshCw
             className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`}
           />
-          {t('common:refresh')}
+          {t('auth:refresh')}
         </Button>
       </div>
 
