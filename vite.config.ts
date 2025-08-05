@@ -101,7 +101,7 @@ export default defineConfig(({ mode }) => ({
 
   // Otimizações de desenvolvimento
   server: {
-    port: 5175,
+    port: 5173,
     host: true,
     // Enable HMR
     hmr: {
