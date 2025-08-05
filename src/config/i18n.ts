@@ -66,35 +66,36 @@ const resources = {
   },
 }
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: 'pt', // default language
-    fallbackLng: 'en',
-    ns: [
-      'app',
-      'artist',
-      'auth',
-      'common',
-      'genres',
-      'home',
-      'icons',
-      'navigation',
-      'search',
-      'seo',
-      'sidebar',
-      'ui',
-      'albums',
-      'favorites',
-    ],
-    defaultNS: 'app',
-    interpolation: {
-      escapeValue: false,
-    },
-    react: {
-      useSuspense: false,
-    },
-  })
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'pt', // default language
+  fallbackLng: 'en',
+  ns: [
+    'app',
+    'artist',
+    'auth',
+    'common',
+    'genres',
+    'home',
+    'icons',
+    'navigation',
+    'search',
+    'seo',
+    'sidebar',
+    'ui',
+    'albums',
+    'favorites',
+  ],
+  defaultNS: 'app',
+  interpolation: {
+    escapeValue: false,
+    skipOnVariables: false,
+    prefix: '{',
+    suffix: '}',
+  },
+  react: {
+    useSuspense: false,
+  },
+})
 
 export default i18n
