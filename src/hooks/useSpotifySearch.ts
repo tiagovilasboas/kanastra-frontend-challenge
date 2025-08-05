@@ -13,6 +13,13 @@ interface SearchResults {
   tracks: SpotifyTrack[]
 }
 
+interface SegmentedResults {
+  exactMatches: SpotifyArtist[]
+  similarArtists: SpotifyArtist[]
+  relatedArtists: SpotifyArtist[]
+  otherResults: SpotifyArtist[]
+}
+
 interface SearchState {
   isLoading: boolean
   isLoadingMore: boolean
@@ -25,6 +32,7 @@ interface UseSpotifySearchReturn {
   // Search state
   searchState: SearchState
   results: SearchResults
+  segmentedResults: SegmentedResults
 
   // Search actions
   search: (
@@ -40,6 +48,47 @@ interface UseSpotifySearchReturn {
   buildSearchQuery: (baseQuery: string) => string
 }
 
+// Helper function to segment artists based on relevance
+const segmentArtists = (
+  artists: SpotifyArtist[],
+  searchQuery: string,
+): SegmentedResults => {
+  const query = searchQuery.toLowerCase().trim()
+
+  const exactMatches: SpotifyArtist[] = []
+  const similarArtists: SpotifyArtist[] = []
+  const relatedArtists: SpotifyArtist[] = []
+  const otherResults: SpotifyArtist[] = []
+
+  artists.forEach((artist) => {
+    const artistName = artist.name.toLowerCase()
+
+    // Exact match (case insensitive)
+    if (artistName === query) {
+      exactMatches.push(artist)
+    }
+    // Contains the search term
+    else if (artistName.includes(query)) {
+      similarArtists.push(artist)
+    }
+    // High popularity and similar genres (top tier artists)
+    else if ((artist.popularity || 0) >= 70 && artist.genres.length > 0) {
+      relatedArtists.push(artist)
+    }
+    // Everything else
+    else {
+      otherResults.push(artist)
+    }
+  })
+
+  return {
+    exactMatches,
+    similarArtists,
+    relatedArtists,
+    otherResults,
+  }
+}
+
 export function useSpotifySearch(): UseSpotifySearchReturn {
   const { searchQuery } = useSearchStore()
   const [debouncedQuery, setDebouncedQuery] = useState('')
@@ -47,6 +96,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     artists: [],
     albums: [],
     tracks: [],
+  })
+  const [segmentedResults, setSegmentedResults] = useState<SegmentedResults>({
+    exactMatches: [],
+    similarArtists: [],
+    relatedArtists: [],
+    otherResults: [],
   })
   const [searchState, setSearchState] = useState<SearchState>({
     isLoading: false,
@@ -108,6 +163,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     async (query: string, types: ('artist' | 'album' | 'track')[]) => {
       if (!query.trim()) {
         setResults({ artists: [], albums: [], tracks: [] })
+        setSegmentedResults({
+          exactMatches: [],
+          similarArtists: [],
+          relatedArtists: [],
+          otherResults: [],
+        })
         setSearchState((prev) => ({ ...prev, isLoading: false, error: null }))
         return
       }
@@ -183,11 +244,26 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         })
 
         setResults(newResults)
+
+        // Segment artists if we have artist results
+        if (newResults.artists.length > 0) {
+          const segmented = segmentArtists(newResults.artists, query)
+          setSegmentedResults(segmented)
+        }
+
+        // Calculate hasMore based on the types being searched
+        const hasMoreResults = searchResults.some(({ type, response }) => {
+          if (!response) return false
+          const items = response[type + 's']?.items || []
+          const total = response[type + 's']?.total || 0
+          return items.length < total
+        })
+
         setSearchState((prev) => ({
           ...prev,
           isLoading: false,
           totalResults,
-          hasMore: totalResults > limit,
+          hasMore: hasMoreResults,
           error: null,
         }))
 
@@ -196,6 +272,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
             artists: newResults.artists.length,
             albums: newResults.albums.length,
             tracks: newResults.tracks.length,
+          },
+          segmented: {
+            exactMatches: segmentedResults.exactMatches.length,
+            similarArtists: segmentedResults.similarArtists.length,
+            relatedArtists: segmentedResults.relatedArtists.length,
+            otherResults: segmentedResults.otherResults.length,
           },
           totalResults,
         })
@@ -208,7 +290,14 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         }))
       }
     },
-    [buildSearchQuery, limit],
+    [
+      buildSearchQuery,
+      limit,
+      segmentedResults.exactMatches.length,
+      segmentedResults.similarArtists.length,
+      segmentedResults.relatedArtists.length,
+      segmentedResults.otherResults.length,
+    ],
   )
 
   // Load more function
@@ -288,7 +377,42 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         return newResults
       })
 
-      setSearchState((prev) => ({ ...prev, isLoadingMore: false }))
+      // Re-segment artists if we have new artist results
+      if (results.artists.length > 0) {
+        const allArtists = [...results.artists]
+        loadMoreResults.forEach(({ type, response }) => {
+          if (type === 'artist' && response) {
+            const newItems = response.artists?.items || []
+            const existingIds = new Set(allArtists.map((artist) => artist.id))
+            const uniqueNewItems = newItems.filter(
+              (item: SpotifyArtist) => !existingIds.has(item.id),
+            )
+            allArtists.push(...uniqueNewItems)
+          }
+        })
+
+        const segmented = segmentArtists(allArtists, debouncedQuery)
+        setSegmentedResults(segmented)
+      }
+
+      // Update hasMore based on updated results
+      setResults((prevResults) => {
+        const hasMoreResults = loadMoreResults.some(({ type, response }) => {
+          if (!response) return false
+          const total = response[type + 's']?.total || 0
+          const currentCount =
+            prevResults[(type + 's') as keyof SearchResults].length
+          return currentCount < total
+        })
+
+        setSearchState((prev) => ({
+          ...prev,
+          isLoadingMore: false,
+          hasMore: hasMoreResults,
+        }))
+
+        return prevResults
+      })
     } catch (error) {
       logger.error('Load more error', error)
       setSearchState((prev) => ({
@@ -305,12 +429,19 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     limit,
     page,
     currentSearchTypes,
+    results.artists,
   ])
 
   // Clear search function
   const clearSearch = useCallback(() => {
     setDebouncedQuery('')
     setResults({ artists: [], albums: [], tracks: [] })
+    setSegmentedResults({
+      exactMatches: [],
+      similarArtists: [],
+      relatedArtists: [],
+      otherResults: [],
+    })
     setPage(0)
     setSearchState({
       isLoading: false,
@@ -337,6 +468,12 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     } else {
       setDebouncedQuery('')
       setResults({ artists: [], albums: [], tracks: [] })
+      setSegmentedResults({
+        exactMatches: [],
+        similarArtists: [],
+        relatedArtists: [],
+        otherResults: [],
+      })
       setPage(0)
       setSearchState({
         isLoading: false,
@@ -356,6 +493,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   return {
     searchState,
     results,
+    segmentedResults,
     search,
     loadMore,
     clearSearch,
