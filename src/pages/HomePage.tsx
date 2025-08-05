@@ -18,12 +18,9 @@ export const HomePage: React.FC = () => {
     })
 
   // Clear search query when component mounts
-  // Using a ref to ensure it only runs once
-  const hasClearedSearch = React.useRef(false)
-  if (!hasClearedSearch.current) {
+  React.useEffect(() => {
     clearSearch()
-    hasClearedSearch.current = true
-  }
+  }, [clearSearch])
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`)
