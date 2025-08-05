@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
@@ -16,6 +16,8 @@ import { logger } from '@/utils/logger'
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
+
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   const {
     artist,
@@ -36,6 +38,15 @@ export const ArtistPage: React.FC = () => {
     handleRefresh,
   } = useArtistPage(id || '')
 
+  const handleRefreshWithSkeleton = async () => {
+    setIsRefreshing(true)
+    try {
+      await handleRefresh()
+    } finally {
+      setIsRefreshing(false)
+    }
+  }
+
   if (!id) {
     return <div>{t('artist:artistNotFound', 'Artist ID not found')}</div>
   }
@@ -50,7 +61,7 @@ export const ArtistPage: React.FC = () => {
   logger.debug('ArtistPage: Errors', { artistError, tracksError, albumsError })
 
   // Loading state
-  if (isLoadingArtist) {
+  if (isLoadingArtist || isRefreshing) {
     return <ArtistPageSkeleton />
   }
 
@@ -94,7 +105,7 @@ export const ArtistPage: React.FC = () => {
           artist={artist}
           isLoading={isLoadingArtist}
           onBackToHome={handleBackToHome}
-          onRefresh={handleRefresh}
+          onRefresh={handleRefreshWithSkeleton}
         />
 
         <Separator />
