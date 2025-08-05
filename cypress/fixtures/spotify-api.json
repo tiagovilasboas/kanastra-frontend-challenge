@@ -1,0 +1,391 @@
+{
+  "artists": {
+    "popular": [
+      {
+        "id": "artist1",
+        "name": "Test Artist 1",
+        "images": [
+          {
+            "url": "https://example.com/artist1.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "followers": {
+          "total": 1000
+        },
+        "genres": ["rock", "alternative"],
+        "popularity": 85
+      },
+      {
+        "id": "artist2",
+        "name": "Test Artist 2",
+        "images": [
+          {
+            "url": "https://example.com/artist2.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "followers": {
+          "total": 2000
+        },
+        "genres": ["pop", "electronic"],
+        "popularity": 90
+      }
+    ],
+    "detail": {
+      "id": "artist1",
+      "name": "Test Artist",
+      "images": [
+        {
+          "url": "https://example.com/artist.jpg",
+          "width": 640,
+          "height": 640
+        }
+      ],
+      "followers": {
+        "total": 10000
+      },
+      "genres": ["rock", "alternative"],
+      "popularity": 85
+    },
+    "related": [
+      {
+        "id": "related1",
+        "name": "Related Artist 1",
+        "images": [
+          {
+            "url": "https://example.com/related1.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "followers": {
+          "total": 5000
+        },
+        "genres": ["rock"]
+      },
+      {
+        "id": "related2",
+        "name": "Related Artist 2",
+        "images": [
+          {
+            "url": "https://example.com/related2.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "followers": {
+          "total": 3000
+        },
+        "genres": ["alternative"]
+      }
+    ]
+  },
+  "albums": {
+    "list": [
+      {
+        "id": "album1",
+        "name": "Test Album 1",
+        "images": [
+          {
+            "url": "https://example.com/album1.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "artists": [
+          {
+            "id": "artist1",
+            "name": "Test Artist"
+          }
+        ],
+        "release_date": "2023-01-01",
+        "total_tracks": 12
+      },
+      {
+        "id": "album2",
+        "name": "Test Album 2",
+        "images": [
+          {
+            "url": "https://example.com/album2.jpg",
+            "width": 640,
+            "height": 640
+          }
+        ],
+        "artists": [
+          {
+            "id": "artist1",
+            "name": "Test Artist"
+          }
+        ],
+        "release_date": "2022-12-01",
+        "total_tracks": 10
+      }
+    ],
+    "detail": {
+      "id": "album1",
+      "name": "Test Album",
+      "images": [
+        {
+          "url": "https://example.com/album.jpg",
+          "width": 640,
+          "height": 640
+        }
+      ],
+      "artists": [
+        {
+          "id": "artist1",
+          "name": "Test Artist"
+        }
+      ],
+      "release_date": "2023-01-01",
+      "total_tracks": 12,
+      "popularity": 85,
+      "genres": ["rock"]
+    },
+    "tracks": [
+      {
+        "id": "track1",
+        "name": "Track 1",
+        "duration_ms": 180000,
+        "track_number": 1,
+        "artists": [
+          {
+            "name": "Test Artist"
+          }
+        ]
+      },
+      {
+        "id": "track2",
+        "name": "Track 2",
+        "duration_ms": 200000,
+        "track_number": 2,
+        "artists": [
+          {
+            "name": "Test Artist"
+          }
+        ]
+      }
+    ]
+  },
+  "tracks": {
+    "list": [
+      {
+        "id": "track1",
+        "name": "Test Track 1",
+        "artists": [
+          {
+            "name": "Test Artist"
+          }
+        ],
+        "album": {
+          "name": "Test Album",
+          "images": [
+            {
+              "url": "https://example.com/album.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ]
+        },
+        "duration_ms": 180000
+      },
+      {
+        "id": "track2",
+        "name": "Test Track 2",
+        "artists": [
+          {
+            "name": "Test Artist"
+          }
+        ],
+        "album": {
+          "name": "Test Album",
+          "images": [
+            {
+              "url": "https://example.com/album.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ]
+        },
+        "duration_ms": 200000
+      }
+    ],
+    "top": [
+      {
+        "id": "track1",
+        "name": "Top Track 1",
+        "duration_ms": 180000,
+        "album": {
+          "name": "Test Album",
+          "images": [
+            {
+              "url": "https://example.com/album.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ]
+        }
+      },
+      {
+        "id": "track2",
+        "name": "Top Track 2",
+        "duration_ms": 200000,
+        "album": {
+          "name": "Test Album",
+          "images": [
+            {
+              "url": "https://example.com/album.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "search": {
+    "artists": {
+      "items": [
+        {
+          "id": "artist1",
+          "name": "Test Artist 1",
+          "images": [
+            {
+              "url": "https://example.com/artist1.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ],
+          "followers": {
+            "total": 1000
+          },
+          "genres": ["rock"]
+        },
+        {
+          "id": "artist2",
+          "name": "Test Artist 2",
+          "images": [
+            {
+              "url": "https://example.com/artist2.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ],
+          "followers": {
+            "total": 2000
+          },
+          "genres": ["pop"]
+        }
+      ],
+      "total": 2,
+      "limit": 20,
+      "offset": 0
+    },
+    "albums": {
+      "items": [
+        {
+          "id": "album1",
+          "name": "Test Album 1",
+          "images": [
+            {
+              "url": "https://example.com/album1.jpg",
+              "width": 640,
+              "height": 640
+            }
+          ],
+          "artists": [
+            {
+              "name": "Test Artist"
+            }
+          ],
+          "release_date": "2023-01-01"
+        }
+      ],
+      "total": 1,
+      "limit": 20,
+      "offset": 0
+    },
+    "tracks": {
+      "items": [
+        {
+          "id": "track1",
+          "name": "Test Track 1",
+          "artists": [
+            {
+              "name": "Test Artist"
+            }
+          ],
+          "album": {
+            "name": "Test Album",
+            "images": [
+              {
+                "url": "https://example.com/album.jpg",
+                "width": 640,
+                "height": 640
+              }
+            ]
+          },
+          "duration_ms": 180000
+        }
+      ],
+      "total": 1,
+      "limit": 20,
+      "offset": 0
+    },
+    "empty": {
+      "artists": {
+        "items": [],
+        "total": 0,
+        "limit": 20,
+        "offset": 0
+      },
+      "albums": {
+        "items": [],
+        "total": 0,
+        "limit": 20,
+        "offset": 0
+      },
+      "tracks": {
+        "items": [],
+        "total": 0,
+        "limit": 20,
+        "offset": 0
+      }
+    }
+  },
+  "auth": {
+    "success": {
+      "access_token": "mock-access-token",
+      "refresh_token": "mock-refresh-token",
+      "expires_in": 3600,
+      "token_type": "Bearer"
+    },
+    "error": {
+      "error": "invalid_grant",
+      "error_description": "Invalid authorization code"
+    }
+  },
+  "errors": {
+    "not_found": {
+      "error": {
+        "status": 404,
+        "message": "Not found"
+      }
+    },
+    "server_error": {
+      "error": {
+        "status": 500,
+        "message": "Internal Server Error"
+      }
+    },
+    "rate_limit": {
+      "error": {
+        "status": 429,
+        "message": "Too many requests"
+      }
+    }
+  }
+}

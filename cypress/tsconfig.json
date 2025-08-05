@@ -1,0 +1,17 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es5", "dom"],
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "types/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}

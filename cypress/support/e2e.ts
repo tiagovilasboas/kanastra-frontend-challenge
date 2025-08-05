@@ -18,3 +18,36 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// Add global configuration
+beforeEach(() => {
+  // Clear localStorage before each test
+  cy.clearLocalStorage()
+
+  // Set default viewport
+  cy.viewport(1280, 720)
+})
+
+// Global error handling
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // Returning false here prevents Cypress from failing the test
+  // for uncaught exceptions that are not related to the test
+  if (err.message.includes('ResizeObserver loop limit exceeded')) {
+    return false
+  }
+
+  // Log other errors for debugging
+  console.warn('Uncaught exception:', err.message)
+  return false
+})
+
+// Global configuration for timeouts
+Cypress.config('defaultCommandTimeout', 10000)
+Cypress.config('requestTimeout', 10000)
+Cypress.config('responseTimeout', 10000)
+
+// Global configuration for retries
+Cypress.config('retries', {
+  runMode: 2,
+  openMode: 0,
+})

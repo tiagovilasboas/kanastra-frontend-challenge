@@ -1,0 +1,18 @@
+# Cypress generated files
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+
+# Cypress environment files (if they contain sensitive data)
+cypress.env.local.json
+cypress.env.production.json
+
+# Cypress cache
+.cypress-cache/
+
+# Cypress logs
+cypress.log
+
+# Test results
+test-results/
+coverage/ 
