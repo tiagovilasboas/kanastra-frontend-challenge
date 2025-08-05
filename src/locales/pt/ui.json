@@ -57,5 +57,7 @@
     "title": "404 - Página Não Encontrada",
     "description": "Desculpe, a página que você está procurando não existe.",
     "backToHome": "Voltar ao Início"
-  }
+  },
+  "filter": "Filtrar",
+  "sort": "Ordenar"
 }
