@@ -17,7 +17,6 @@ const queryClient = createQueryClient()
 export function AppProvider({ children }: AppProviderProps) {
   const { i18n } = useTranslation()
   const { language } = useAppStore()
-  const { isInitialized, error } = useSpotifyInit()
 
   // Use useMemo to handle language changes
   React.useMemo(() => {
@@ -26,6 +25,21 @@ export function AppProvider({ children }: AppProviderProps) {
     }
   }, [language, i18n])
 
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <SpotifyInitializer />
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ErrorBoundary>
+  )
+}
+
+// Separate component to handle Spotify initialization after QueryClient is available
+function SpotifyInitializer() {
+  const { isInitialized, error } = useSpotifyInit()
+
   // Handle Spotify initialization errors
   React.useMemo(() => {
     if (!isInitialized && error) {
@@ -33,12 +47,5 @@ export function AppProvider({ children }: AppProviderProps) {
     }
   }, [isInitialized, error])
 
-  return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        {children}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </ErrorBoundary>
-  )
+  return null
 }
