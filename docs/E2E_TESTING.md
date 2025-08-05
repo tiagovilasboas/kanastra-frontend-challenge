@@ -20,7 +20,7 @@ Os testes E2E foram organizados em **7 domínios principais**, cada um cobrindo 
 
 - Node.js 20.18.0+
 - npm ou yarn
-- Aplicação rodando em `http://127.0.0.1:5175`
+- Aplicação rodando em `http://127.0.0.1:5173`
 
 ### Instalação do Cypress
 
@@ -32,7 +32,7 @@ npm install
 
 O Cypress já está configurado com:
 
-- Base URL: `http://127.0.0.1:5175`
+- Base URL: `http://127.0.0.1:5173`
 - Viewport padrão: 1280x720
 - Timeouts: 10 segundos
 - Retries: 2 tentativas em modo run
@@ -95,7 +95,7 @@ npm run cypress:open
 #### Matar processos em portas
 
 ```bash
-# Matar processo na porta 5175 (desenvolvimento)
+# Matar processo na porta 5173 (desenvolvimento)
 npm run kill-port:dev
 
 # Matar processo em porta específica
@@ -105,7 +105,7 @@ npm run kill-port 3000
 npm run kill-port:all
 
 # Usar diretamente
-node scripts/kill-port.js 5175
+node scripts/kill-port.js 5173
 node scripts/kill-port.js all
 ```
 
