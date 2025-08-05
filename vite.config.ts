@@ -1,84 +1,63 @@
 /// <reference types="vitest" />
-import tailwindcss from "@tailwindcss/vite";
 import react from '@vitejs/plugin-react'
-import path from "path"
+import path from 'path'
 import { defineConfig } from 'vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
+export default defineConfig(({ mode }) => ({
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    // Análise de bundle apenas em produção
+    mode === 'analyze' &&
+      visualizer({
+        filename: 'dist/stats.html',
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+      }),
+  ].filter(Boolean),
+
   build: {
-    target: 'esnext',
-    minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
+        // Code splitting estratégico por domínio
+        manualChunks: {
           // Vendor chunks
-          if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor'
-            }
-            if (id.includes('react-router')) {
-              return 'router-vendor'
-            }
-            if (id.includes('@tanstack/react-query')) {
-              return 'query-vendor'
-            }
-            if (id.includes('react-i18next') || id.includes('i18next')) {
-              return 'i18n-vendor'
-            }
-            if (id.includes('lucide-react')) {
-              return 'ui-vendor'
-            }
-            if (id.includes('axios') || id.includes('zustand')) {
-              return 'utils-vendor'
-            }
-            if (id.includes('zod')) {
-              return 'validation-vendor'
-            }
-            // Other node_modules
-            return 'vendor'
-          }
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-label',
+            '@radix-ui/react-navigation-menu',
+            '@radix-ui/react-progress',
+            '@radix-ui/react-select',
+            '@radix-ui/react-separator',
+            '@radix-ui/react-slider',
+            '@radix-ui/react-slot',
+          ],
+          'utils-vendor': [
+            'clsx',
+            'class-variance-authority',
+            'tailwind-merge',
+          ],
+          'i18n-vendor': ['i18next', 'react-i18next'],
+          'query-vendor': ['@tanstack/react-query'],
+          'state-vendor': ['zustand'],
 
-          // Page chunks
-          if (id.includes('/pages/')) {
-            if (id.includes('HomePage')) {
-              return 'page-home'
-            }
-            if (id.includes('ArtistPage')) {
-              return 'page-artist'
-            }
-            if (id.includes('CallbackPage')) {
-              return 'page-callback'
-            }
-            return 'pages'
-          }
-
-          // Component chunks
-          if (id.includes('/components/')) {
-            if (id.includes('/ui/')) {
-              return 'components-ui'
-            }
-            if (id.includes('/layout/')) {
-              return 'components-layout'
-            }
-            return 'components'
-          }
-
-          // Hook chunks
-          if (id.includes('/hooks/')) {
-            return 'hooks'
-          }
-
-          // Repository chunks
-          if (id.includes('/repositories/')) {
-            return 'repositories'
-          }
+          // Feature chunks
+          'feature-auth': ['src/repositories/spotify/SpotifyAuthService.ts'],
+          'feature-search': [
+            'src/repositories/spotify/SpotifySearchService.ts',
+          ],
+          'feature-artists': [
+            'src/pages/ArtistsPage.tsx',
+            'src/pages/ArtistPage.tsx',
+          ],
+          'feature-albums': ['src/pages/AlbumsPage.tsx'],
+          'feature-favorites': ['src/pages/FavoritesPage.tsx'],
         },
         // Optimize chunk naming
         chunkFileNames: (chunkInfo) => {
@@ -105,50 +84,60 @@ export default defineConfig({
         },
       },
     },
+    // Otimizações de performance
+    target: 'esnext',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: mode === 'production',
+        drop_debugger: mode === 'production',
+      },
+    },
     // Optimize chunk size warnings
     chunkSizeWarningLimit: 500, // Reduced from 1000
     // Enable source maps for debugging
     sourcemap: false,
   },
-  // Optimize dependencies
+
+  // Otimizações de desenvolvimento
+  server: {
+    port: 5175,
+    host: true,
+    // Enable HMR
+    hmr: {
+      overlay: false, // Disable error overlay for better UX
+    },
+  },
+
+  // Pré-carregamento de recursos críticos
   optimizeDeps: {
     include: [
       'react',
       'react-dom',
       'react-router-dom',
       '@tanstack/react-query',
-      'react-i18next',
-      'i18next',
-      'lucide-react',
-      'axios',
       'zustand',
-      'zod',
     ],
     exclude: ['@mantine/core', '@mantine/hooks'], // Exclude Mantine since we removed it
   },
-  // Development server configuration
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    // Enable HMR
-    hmr: {
-      overlay: false, // Disable error overlay for better UX
-    },
-  },
+
   // Preview server configuration
   preview: {
     port: 4173,
     host: true,
   },
+
   // CSS optimization
   css: {
     devSourcemap: false,
   },
+
   // Define global constants
   define: {
     __DEV__: JSON.stringify(process.env.NODE_ENV === 'development'),
     __PROD__: JSON.stringify(process.env.NODE_ENV === 'production'),
   },
+
   // Test configuration
   test: {
     globals: true,
@@ -164,5 +153,9 @@ export default defineConfig({
         singleFork: true,
       },
     },
+    // Add alias resolution for tests
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
-})
+}))
