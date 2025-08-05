@@ -2,5 +2,9 @@
   "title": "Álbuns",
   "description": "Descubra e explore álbuns dos seus artistas favoritos",
   "comingSoonTitle": "Em Breve",
-  "comingSoonMessage": "A página de álbuns está em desenvolvimento. Você ainda pode explorar álbuns visitando as páginas individuais dos artistas."
-} 
+  "comingSoonMessage": "A página de álbuns está em desenvolvimento. Você ainda pode explorar álbuns visitando as páginas individuais dos artistas.",
+  "popularAlbums": "Álbuns Populares",
+  "filterByName": "Filtrar por nome do álbum...",
+  "noAlbumsFound": "Nenhum álbum encontrado para \"{filter}\".",
+  "noAlbumsAvailable": "Nenhum álbum disponível no momento."
+}
