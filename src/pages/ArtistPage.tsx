@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useArtistPage } from '@/hooks/useArtistPage'
-import { logger } from '@/utils/logger'
+// Removed unused logger import
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
@@ -51,14 +51,7 @@ export const ArtistPage: React.FC = () => {
     return <div>{t('artist:artistNotFound', 'Artist ID not found')}</div>
   }
 
-  logger.debug('ArtistPage: Artist ID from params', { id })
-  logger.debug('ArtistPage: Artist data', { artist })
-  logger.debug('ArtistPage: Loading states', {
-    isLoadingArtist,
-    isLoadingTracks,
-    isLoadingAlbums,
-  })
-  logger.debug('ArtistPage: Errors', { artistError, tracksError, albumsError })
+  // Removed debug logs for cleaner production code
 
   // Loading state
   if (isLoadingArtist || isRefreshing) {

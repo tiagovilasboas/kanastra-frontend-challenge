@@ -13,7 +13,7 @@ export function CallbackPage(): React.JSX.Element {
   useEffect(() => {
     const processCallback = async () => {
       try {
-        logger.debug('Processing callback URL')
+        // Removed debug logs for cleaner production code
         
         // Get the current URL with all parameters
         const currentUrl = window.location.href
@@ -22,7 +22,7 @@ export function CallbackPage(): React.JSX.Element {
         await handleCallback(currentUrl)
         
         // Redirect to home page after successful authentication
-        logger.debug('Authentication successful, redirecting to home')
+                  // Removed debug logs for cleaner production code
         navigate('/', { replace: true })
       } catch (error) {
         logger.error('Error processing callback', error)
