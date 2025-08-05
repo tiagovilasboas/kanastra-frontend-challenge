@@ -1,6 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -19,14 +19,15 @@ export function AppProvider({ children }: AppProviderProps) {
   const { language } = useAppStore()
   const { isInitialized, error } = useSpotifyInit()
 
-  useEffect(() => {
+  // Use useMemo to handle language changes
+  React.useMemo(() => {
     if (i18n.language !== language) {
       i18n.changeLanguage(language)
     }
   }, [language, i18n])
 
-  // Initialize Spotify in background
-  useEffect(() => {
+  // Handle Spotify initialization errors
+  React.useMemo(() => {
     if (!isInitialized && error) {
       console.error('Spotify initialization error:', error)
     }
