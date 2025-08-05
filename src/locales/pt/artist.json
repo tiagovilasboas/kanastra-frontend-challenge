@@ -23,5 +23,7 @@
   "genres": "Gêneros",
   "albumsSortedByDate": "Ordenados por data de lançamento",
   "tracks": "faixas",
-  "separator": "•"
+  "separator": "•",
+  "followers": "{{count}} seguidores",
+  "popularity": "Popularidade: {{score}}%"
 }

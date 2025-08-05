@@ -7,6 +7,7 @@
   "delete": "Excluir",
   "edit": "Editar",
   "add": "Adicionar",
+  "spotify": "Spotify",
 
   "backToHome": "Voltar ao Início",
   "back": "Voltar",
@@ -26,5 +27,7 @@
   "of": "de",
   "previousPage": "Página anterior",
   "nextPage": "Próxima página",
-  "goToPage": "Ir para página {page}"
+  "goToPage": "Ir para página {page}",
+  "refresh": "Atualizar",
+  "pageInfo": "Página {{current}} de {{total}}"
 }

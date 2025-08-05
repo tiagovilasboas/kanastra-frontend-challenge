@@ -1,23 +1,19 @@
-import { Music, Users } from 'lucide-react'
+import { Mic, Play } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { SpotifyPlaylist } from '@/types/spotify'
-// import { formatDuration } from '@/utils/formatters'
+import { SpotifyShow } from '@/types/spotify'
 
-interface PlaylistCardProps {
-  playlist: SpotifyPlaylist
+interface ShowCardProps {
+  show: SpotifyShow
   onClick?: () => void
 }
 
-export const PlaylistCard: React.FC<PlaylistCardProps> = ({
-  playlist,
-  onClick,
-}) => {
+export const ShowCard: React.FC<ShowCardProps> = ({ show, onClick }) => {
   const { t } = useTranslation()
 
-  const playlistImage = playlist.images?.[0]?.url
+  const showImage = show.images?.[0]?.url
 
   return (
     <Card
@@ -26,10 +22,10 @@ export const PlaylistCard: React.FC<PlaylistCardProps> = ({
     >
       <CardHeader className="p-0">
         <div className="relative aspect-square overflow-hidden rounded-t-lg">
-          {playlistImage ? (
+          {showImage ? (
             <img
-              src={playlistImage}
-              alt={playlist.name}
+              src={showImage}
+              alt={show.name}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
               onError={(e) => {
                 const target = e.target as HTMLImageElement
@@ -38,38 +34,42 @@ export const PlaylistCard: React.FC<PlaylistCardProps> = ({
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-600 to-gray-800">
-              <Music className="h-16 w-16 text-gray-400" />
+              <Mic className="h-16 w-16 text-gray-400" />
             </div>
           )}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <div className="rounded-full bg-black/50 p-3">
+              <Play className="h-6 w-6 text-white" />
+            </div>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-4">
         <h3 className="line-clamp-2 font-semibold text-foreground group-hover:text-primary">
-          {playlist.name}
+          {show.name}
         </h3>
-        {playlist.description && (
+        {show.description && (
           <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {playlist.description}
+            {show.description}
           </p>
         )}
         <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-          <Users className="h-3 w-3" />
           <span>
-            {playlist.owner?.display_name ||
-              t('search:unknownOwner', 'Proprietário desconhecido')}
+            {show.publisher ||
+              t('search:unknownPublisher', 'Editora desconhecida')}
           </span>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
           <span>
-            {t('playlists:tracks', '{{count}} músicas', {
-              count: playlist.tracks.total,
+            {t('shows:episodes', '{{count}} episódios', {
+              count: show.total_episodes,
             })}
           </span>
-          {playlist.collaborative && (
-            <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
-              {t('playlists:collaborative', 'Colaborativa')}
+          {show.explicit && (
+            <span className="rounded-full bg-orange-100 px-2 py-1 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
+              {t('shows:explicit', 'Explícito')}
             </span>
           )}
         </div>

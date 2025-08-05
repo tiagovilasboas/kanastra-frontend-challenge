@@ -56,10 +56,18 @@ export const TrackCard: React.FC<TrackCardProps> = ({ track, onClick }) => {
               {track.name}
             </h3>
             <p className="text-xs text-muted-foreground line-clamp-1">
-              {track.artists.map((artist) => artist.name).join(', ')}
+              {track.artists
+                ?.map(
+                  (artist) =>
+                    artist?.name ||
+                    t('search:unknownArtist', 'Artista desconhecido'),
+                )
+                .join(', ') ||
+                t('search:unknownArtist', 'Artista desconhecido')}
             </p>
             <p className="text-xs text-muted-foreground line-clamp-1">
-              {track.album.name}
+              {track.album?.name ||
+                t('search:unknownAlbum', 'Álbum desconhecido')}
             </p>
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{formatDuration(track.duration_ms)}</span>

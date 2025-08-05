@@ -1,6 +1,7 @@
 import { Home, Library, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 import { useNavigationStore } from '@/stores/navigationStore'
 
 export const Sidebar = () => {
@@ -30,11 +31,7 @@ export const Sidebar = () => {
       {/* Logo Section */}
       <div className="p-6 border-b border-gray-800">
         <div className="flex items-center gap-3 text-[#1DB954] text-xl font-bold">
-          <div className="w-6 h-6 bg-[#1DB954] rounded-sm flex items-center justify-center">
-            <span className="text-black text-xs font-bold">
-              {t('app:logo', 'S')}
-            </span>
-          </div>
+          <SpotifyIcon color="green" size={24} />
           <span>{t('app:appName', 'Spotify')}</span>
         </div>
       </div>

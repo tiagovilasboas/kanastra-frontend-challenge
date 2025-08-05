@@ -98,6 +98,99 @@ O bundle está bem otimizado com code splitting estratégico, resultando em carr
 
 - **Lazy Loading**: Páginas carregadas sob demanda
 - **Code Splitting**: Separação inteligente de chunks
+- **Limites Configuráveis**: Sistema parametrizável de limites de busca por página
+
+## ⚙️ Configuração de Limites de Busca
+
+A aplicação possui um sistema flexível de configuração de limites de busca que permite personalizar quantos resultados são exibidos por tipo de conteúdo.
+
+### Configuração Padrão
+
+```typescript
+// src/config/searchLimits.ts
+export const SEARCH_LIMITS: SearchLimitsConfig = {
+  default: 20, // Limite padrão para buscas individuais
+  all: 5, // Limite quando "tudo" está selecionado
+  artist: 20, // Limite específico para artistas
+  album: 20, // Limite específico para álbuns
+  track: 20, // Limite específico para músicas
+  playlist: 20, // Limite específico para playlists
+  show: 20, // Limite específico para shows
+  episode: 20, // Limite específico para episódios
+  audiobook: 20, // Limite específico para audiobooks
+}
+```
+
+### Configuração Personalizada
+
+Você pode criar configurações personalizadas para diferentes contextos:
+
+```typescript
+// Exemplo: Configuração para mobile
+export const MOBILE_SEARCH_LIMITS: SearchLimitsConfig = {
+  default: 15,
+  all: 4, // 4 de cada tipo quando "tudo" está selecionado
+  artist: 15,
+  album: 15,
+  // ... outros tipos
+}
+```
+
+### Arquitetura de Busca Desacoplada
+
+O sistema de busca foi desacoplado para otimizar performance e precisão:
+
+#### **Busca por Tipo Específico:**
+
+- Cada tipo (álbuns, artistas, etc.) tem seu próprio método dedicado
+- Chamadas independentes à API Spotify
+- Limites específicos por tipo e dispositivo
+- Melhor performance para buscas focadas
+
+#### **Busca "Tudo":**
+
+- Uma única chamada para todos os tipos
+- Limite reduzido por tipo (4-5 resultados)
+- Otimizado para visão geral
+
+### Detecção Automática de Dispositivo
+
+A aplicação detecta automaticamente se o usuário está em um dispositivo móvel ou desktop e aplica a configuração apropriada:
+
+- **Mobile** (< 768px):
+  - 4 resultados de cada tipo quando "tudo" está selecionado
+  - 10 álbuns, 15 artistas/músicas, 12 playlists, etc.
+- **Desktop** (≥ 768px):
+  - 5 resultados de cada tipo quando "tudo" está selecionado
+  - 10 álbuns, 25 artistas/músicas, 20 playlists, etc.
+
+**Importante**: O limite de 5 é aplicado **somente** quando "tudo" está selecionado. Para tipos específicos (álbuns, artistas, etc.), cada um usa seu próprio limite e faz uma chamada independente à API.
+
+```typescript
+// Detecção automática
+const config = getDeviceBasedConfig() // Retorna MOBILE_SEARCH_LIMITS ou DESKTOP_SEARCH_LIMITS
+const limit = getSearchLimitWithDevice(types) // Usa a configuração apropriada automaticamente
+```
+
+### Como Usar
+
+```typescript
+import { getSearchLimit } from '@/config/searchLimits'
+import { CUSTOM_SEARCH_LIMITS } from './searchLimits.custom'
+
+// Usar configuração padrão
+const limit = getSearchLimit(types)
+
+// Usar configuração personalizada
+const limit = getSearchLimit(types, CUSTOM_SEARCH_LIMITS)
+```
+
+### Benefícios
+
+- **Flexibilidade**: Diferentes limites para diferentes contextos
+- **Performance**: Controle sobre o volume de dados transferidos
+- **UX**: Experiência otimizada para cada dispositivo/contexto
+- **Manutenibilidade**: Configuração centralizada e fácil de ajustar
 - **Debounce**: Busca otimizada com delay de 300ms
 - **Pré-carregamento**: Recursos críticos pré-carregados
 - **Bundle Analysis**: Análise visual de tamanho de código

@@ -1,14 +1,17 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
+import { SpotifyTrack } from '@/types/spotify'
 
 // Track Item Component
 interface TrackItemProps {
-  track: any
+  track: SpotifyTrack
   onClick?: () => void
 }
 
 export const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
+  const { t } = useTranslation()
   const formatDuration = (ms: number) => {
     const minutes = Math.floor(ms / 60000)
     const seconds = Math.floor((ms % 60000) / 1000)
@@ -16,7 +19,10 @@ export const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
   }
 
   return (
-    <div className="flex items-center gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer" onClick={onClick}>
+    <div
+      className="flex items-center gap-3 p-2 rounded-md hover:bg-accent/50 transition-colors cursor-pointer"
+      onClick={onClick}
+    >
       <div className="w-12 h-12 flex-shrink-0">
         {track.album?.images?.[0] ? (
           <img
@@ -33,7 +39,12 @@ export const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
       <div className="flex-1 min-w-0">
         <h4 className="font-medium text-foreground truncate">{track.name}</h4>
         <p className="text-sm text-muted-foreground truncate">
-          {track.artists?.map((artist: any) => artist?.name || 'Artista desconhecido').join(', ') || 'Artista desconhecido'}
+          {track.artists
+            ?.map(
+              (artist) =>
+                artist?.name || t('search:unknownArtist', 'Unknown Artist'),
+            )
+            .join(', ') || t('search:unknownArtist', 'Unknown Artist')}
         </p>
       </div>
       <div className="text-sm text-muted-foreground">
@@ -41,4 +52,4 @@ export const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
       </div>
     </div>
   )
-} 
+}

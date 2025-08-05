@@ -6,7 +6,7 @@ interface SearchHeaderProps {
   searchQuery: string
 }
 
-export const SearchHeader: React.FC<SearchHeaderProps> = ({ searchQuery: _searchQuery }) => {
+export const SearchHeader: React.FC<SearchHeaderProps> = () => {
   const { t } = useTranslation()
 
   return (
@@ -22,4 +22,4 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({ searchQuery: _search
       </p>
     </div>
   )
-} 
+}

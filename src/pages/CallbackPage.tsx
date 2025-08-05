@@ -1,6 +1,6 @@
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
 
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { logger } from '@/utils/logger'
@@ -39,7 +39,10 @@ export function CallbackPage(): React.JSX.Element {
             {t('auth:authenticationError', 'Authentication Error')}
           </h2>
           <p className="text-muted-foreground">
-            {t('auth:authenticationFailed', 'Authentication failed. Please try again.')}
+            {t(
+              'auth:authenticationFailed',
+              'Authentication failed. Please try again.',
+            )}
           </p>
         </div>
       </div>
@@ -54,9 +57,12 @@ export function CallbackPage(): React.JSX.Element {
           {t('auth:processingLogin', 'Processing login...')}
         </h2>
         <p className="text-muted-foreground">
-          {t('auth:pleaseWait', 'Please wait while we complete your authentication.')}
+          {t(
+            'auth:pleaseWait',
+            'Please wait while we complete your authentication.',
+          )}
         </p>
       </div>
     </div>
   )
-} 
+}

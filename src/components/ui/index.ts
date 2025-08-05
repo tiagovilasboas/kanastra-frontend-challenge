@@ -1,5 +1,6 @@
 export { AlbumCard } from './AlbumCard'
 export { ArtistCard } from './ArtistCard'
+export { AudiobookCard } from './AudiobookCard'
 export { Badge } from './badge'
 export { Button } from './button'
 export {
@@ -18,6 +19,7 @@ export {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './dropdown-menu'
+export { EpisodeCard } from './EpisodeCard'
 export { GenreCard } from './GenreCard'
 export { Input } from './input'
 export { Label } from './label'
@@ -53,9 +55,11 @@ export {
   SheetTitle,
   SheetTrigger,
 } from './sheet'
+export { ShowCard } from './ShowCard'
 export { Sidebar } from './Sidebar'
 export { Skeleton } from './skeleton'
 export { Slider } from './slider'
+export { SpotifyIcon } from './SpotifyIcon'
 export { TrackCard } from './TrackCard'
 export { TrackList } from './TrackList'
 export { TrackListItem } from './TrackListItem'

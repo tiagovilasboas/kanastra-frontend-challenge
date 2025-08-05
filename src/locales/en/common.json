@@ -7,6 +7,7 @@
   "delete": "Delete",
   "edit": "Edit",
   "add": "Add",
+  "spotify": "Spotify",
 
   "backToHome": "Back to Home",
   "back": "Back",
@@ -26,5 +27,7 @@
   "of": "of",
   "previousPage": "Previous page",
   "nextPage": "Next page",
-  "goToPage": "Go to page {page}"
+  "goToPage": "Go to page {page}",
+  "refresh": "Refresh",
+  "pageInfo": "Page {{current}} of {{total}}"
 }

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { spotifyRepository } from '@/repositories'
-import { SpotifyAlbum } from '@/types/spotify'
+import { SpotifyAlbum, SpotifySearchType } from '@/types/spotify'
 // Removed unused logger import
 
 interface UsePopularAlbumsParams {
@@ -27,7 +27,7 @@ export function usePopularAlbums({
       // In a real implementation, you might want to use a different endpoint
       const response = await spotifyRepository.searchAdvanced(
         'year:2020-2024',
-        'album',
+        SpotifySearchType.ALBUM,
         undefined,
         limit,
         0,
@@ -35,7 +35,7 @@ export function usePopularAlbums({
 
       const albums = response.albums?.items || []
 
-              // Removed debug logs for cleaner production code
+      // Removed debug logs for cleaner production code
 
       return albums
     },

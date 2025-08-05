@@ -1,4 +1,4 @@
-import { Menu, Music } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 
 export function MobileNavigation() {
   const { t } = useTranslation()
@@ -45,7 +46,7 @@ export function MobileNavigation() {
         <SheetHeader>
           <SheetTitle className="text-sidebar-foreground">
             <div className="flex items-center gap-2">
-              <Music className="w-6 h-6 text-primary" />
+              <SpotifyIcon color="green" size={24} />
               <span>{t('navigation:spotifyExplorer')}</span>
             </div>
           </SheetTitle>

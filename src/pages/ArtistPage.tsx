@@ -2,16 +2,15 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
+import { ArtistPageSkeleton } from '@/components/artist'
 import {
-  ArtistAlbums,
-  ArtistHeader,
-  ArtistPageSkeleton,
-  ArtistTopTracks,
-} from '@/components/artist'
+  ArtistAlbumsSection,
+  ArtistHeaderSection,
+  ArtistTopTracksSection,
+} from '@/components/search/sections'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useArtistPage } from '@/hooks/useArtistPage'
-// Removed unused logger import
 
 export const ArtistPage: React.FC = () => {
   const { t } = useTranslation()
@@ -50,8 +49,6 @@ export const ArtistPage: React.FC = () => {
   if (!id) {
     return <div>{t('artist:artistNotFound', 'Artist ID not found')}</div>
   }
-
-  // Removed debug logs for cleaner production code
 
   // Loading state
   if (isLoadingArtist || isRefreshing) {
@@ -93,8 +90,8 @@ export const ArtistPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
-        {/* Artist Header */}
-        <ArtistHeader
+        {/* Artist Header - Using reusable component */}
+        <ArtistHeaderSection
           artist={artist}
           isLoading={isLoadingArtist}
           onBackToHome={handleBackToHome}
@@ -103,8 +100,8 @@ export const ArtistPage: React.FC = () => {
 
         <Separator />
 
-        {/* Top Tracks */}
-        <ArtistTopTracks
+        {/* Top Tracks - Using reusable component */}
+        <ArtistTopTracksSection
           tracks={topTracks}
           isLoading={isLoadingTracks}
           error={tracksError?.message || null}
@@ -112,8 +109,8 @@ export const ArtistPage: React.FC = () => {
 
         <Separator />
 
-        {/* Albums */}
-        <ArtistAlbums
+        {/* Albums - Using reusable component */}
+        <ArtistAlbumsSection
           albums={albums}
           isLoading={isLoadingAlbums}
           error={albumsError?.message || null}

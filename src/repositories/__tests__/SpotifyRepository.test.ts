@@ -146,17 +146,15 @@ describe('SpotifyRepository', () => {
   describe('exchangeCodeForToken', () => {
     it('should exchange code for token successfully', async () => {
       const mockCode = 'auth-code'
-      const mockState = 'state'
       const mockTokenResponse = { access_token: 'access-token' }
       const mockAuthInstance = mockAuthService.mock.results[0].value
       mockAuthInstance.handleTokenExchange.mockResolvedValue(mockTokenResponse)
 
-      const result = await repository.exchangeCodeForToken(mockCode, mockState)
+      const result = await repository.exchangeCodeForToken(mockCode)
 
       expect(result).toBe('access-token')
       expect(mockAuthInstance.handleTokenExchange).toHaveBeenCalledWith(
         mockCode,
-        mockState,
       )
       // Removed debug log expectation since we removed the log for cleaner production code
     })

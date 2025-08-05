@@ -1,15 +1,23 @@
 import { User } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { SpotifyArtist } from '@/types/spotify'
 
 // Artist Item Component
 interface ArtistItemProps {
-  artist: any
+  artist: SpotifyArtist
   onClick?: () => void
 }
 
 export const ArtistItem: React.FC<ArtistItemProps> = ({ artist, onClick }) => {
+  const { t } = useTranslation()
+
   return (
-    <div className="text-center space-y-2 cursor-pointer hover:opacity-80 transition-opacity" onClick={onClick}>
+    <div
+      className="text-center space-y-2 cursor-pointer hover:opacity-80 transition-opacity"
+      onClick={onClick}
+    >
       <div className="w-16 h-16 mx-auto rounded-full overflow-hidden">
         {artist.images?.[0] ? (
           <img
@@ -24,9 +32,13 @@ export const ArtistItem: React.FC<ArtistItemProps> = ({ artist, onClick }) => {
         )}
       </div>
       <div>
-        <h4 className="font-medium text-sm text-foreground truncate">{artist.name}</h4>
-        <p className="text-xs text-muted-foreground">Artista</p>
+        <h4 className="font-medium text-sm text-foreground truncate">
+          {artist.name}
+        </h4>
+        <p className="text-xs text-muted-foreground">
+          {t('search:artist', 'Artist')}
+        </p>
       </div>
     </div>
   )
-} 
+}

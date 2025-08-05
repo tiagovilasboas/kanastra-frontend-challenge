@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { getSpotifyConfig } from '@/config/environment'
-import { validateSpotifyTokenResponse } from '@/schemas/spotify'
+import { SpotifySearchType } from '@/types/spotify'
 import { CookieManager } from '@/utils/cookies'
 import { errorHandler } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
@@ -40,9 +40,7 @@ export class SpotifyRepository {
 
   async getAuthUrl(): Promise<string> {
     try {
-      // Removed debug logs for cleaner production code
       const authUrl = await this.authService.generateAuthUrl()
-              // Removed debug logs for cleaner production code
       return authUrl
     } catch (error) {
       const appError = errorHandler.handleAuthError(
@@ -53,15 +51,10 @@ export class SpotifyRepository {
     }
   }
 
-  async exchangeCodeForToken(code: string, state?: string): Promise<string> {
+  async exchangeCodeForToken(code: string): Promise<string> {
     try {
-      // Removed debug logs for cleaner production code
-      const tokenResponse = await this.authService.handleTokenExchange(
-        code,
-        state,
-      )
+      const tokenResponse = await this.authService.handleTokenExchange(code)
       this.setAccessToken(tokenResponse.access_token)
-      // Removed debug logs for cleaner production code
       return tokenResponse.access_token
     } catch (error) {
       const appError = errorHandler.handleAuthError(
@@ -114,103 +107,123 @@ export class SpotifyRepository {
     localStorageToken: boolean
     cookieToken: boolean
   } {
+    const localStorageToken = !!localStorage.getItem('spotify_token')
+    const cookieToken = !!CookieManager.getAccessToken()
+
     return {
       hasAccessToken: !!this.accessToken,
       hasClientToken: this.searchService.hasClientToken(),
-      localStorageToken: !!localStorage.getItem('spotify_token'),
-      cookieToken: !!CookieManager.getAccessToken(),
+      localStorageToken,
+      cookieToken,
     }
   }
 
   private loadTokenFromStorage(): void {
     try {
-      // Try to load from cookie first (more secure)
-      let token = CookieManager.getAccessToken()
-
-      if (!token) {
-        // Fallback to localStorage
-        token = localStorage.getItem('spotify_token')
-        if (token) {
-          logger.debug('Token loaded from localStorage, migrating to cookie')
-          // Migrate to cookie for future use
-          try {
-            CookieManager.setAccessToken(token)
-          } catch (error) {
-            logger.warn('Failed to migrate token to cookie', error)
-          }
-        }
-      } else {
-        logger.debug('Token loaded from cookie')
+      // Try to load from cookie first
+      const cookieToken = CookieManager.getAccessToken()
+      if (cookieToken) {
+        this.setAccessToken(cookieToken)
+        return
       }
 
-      if (token) {
-        this.setAccessToken(token)
-        logger.debug('Token loaded from storage on initialization')
-      } else {
-        logger.debug('No token found in storage on initialization')
+      // Fallback to localStorage
+      const localStorageToken = localStorage.getItem('spotify_token')
+      if (localStorageToken) {
+        this.setAccessToken(localStorageToken)
+        return
       }
     } catch (error) {
-      logger.error('Error loading token from storage', error)
+      logger.warn('Failed to load token from storage', error)
     }
   }
 
   async getClientToken(): Promise<string> {
     try {
-      logger.debug('Getting client token')
-      const config = getSpotifyConfig()
-
-      if (!config.clientId || !config.clientSecret) {
-        const error = new Error(
-          'Spotify credentials not configured. Please set VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET in your .env file. See env.example for reference.',
-        )
-        logger.error('Configuration error', error.message)
-        throw error
-      }
-
-      const response = await axios.post(
-        'https://accounts.spotify.com/api/token',
-        `grant_type=client_credentials&client_id=${config.clientId}&client_secret=${config.clientSecret}`,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          timeout: 10000,
-        },
-      )
-
-      const tokenResponse = validateSpotifyTokenResponse(response.data)
+      const tokenResponse = await this.authService.getClientToken()
       this.searchService.setClientToken(tokenResponse.access_token)
-
-      logger.debug('Client token obtained and set successfully')
       return tokenResponse.access_token
     } catch (error) {
-      logger.error('Client token request failed', error)
-
-      // Provide more specific error messages
-      if (error instanceof Error) {
-        if (error.message.includes('Spotify credentials not configured')) {
-          throw error // Re-throw our custom error
-        }
-
-        // Handle 400 Bad Request (usually invalid credentials)
-        if (
-          error.message.includes('400') ||
-          error.message.includes('Bad Request')
-        ) {
-          const configError = new Error(
-            'Invalid Spotify credentials. Please check your VITE_SPOTIFY_CLIENT_ID and VITE_SPOTIFY_CLIENT_SECRET in the .env file.',
-          )
-          logger.error('Invalid credentials error', configError.message)
-          throw configError
-        }
-      }
-
-      throw error
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyRepository.getClientToken',
+      )
+      throw appError
     }
   }
 
   async searchArtists(query: string, limit: number = 20, offset: number = 0) {
-    return this.searchService.searchArtists(query, limit, offset)
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.ARTIST,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchAlbums(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.ALBUM,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchTracks(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.TRACK,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchPlaylists(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.PLAYLIST,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchShows(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.SHOW,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchEpisodes(query: string, limit: number = 20, offset: number = 0) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.EPISODE,
+      undefined,
+      limit,
+      offset,
+    )
+  }
+
+  async searchAudiobooks(
+    query: string,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
+    return this.searchAdvanced(
+      query,
+      SpotifySearchType.AUDIOBOOK,
+      undefined,
+      limit,
+      offset,
+    )
   }
 
   async searchArtistsPublic(
@@ -222,26 +235,14 @@ export class SpotifyRepository {
   }
 
   private async ensureAuthentication(): Promise<void> {
-    // If user is authenticated, use their access token
-    if (this.isAuthenticated()) {
-      logger.debug('Using user access token for authentication')
-      // Ensure the search service has the user's access token
-      if (this.accessToken) {
-        this.searchService.setAccessToken(this.accessToken)
-      }
-      return
-    }
-
-    // If not authenticated, ensure we have a client token
-    if (!this.searchService.hasClientToken()) {
-      logger.debug('User not authenticated, getting client token')
+    if (!this.isAuthenticated() && !this.searchService.hasClientToken()) {
       await this.getClientToken()
     }
   }
 
   async searchAdvanced(
     query: string,
-    type: 'artist' | 'track' | 'album' | 'playlist',
+    type: SpotifySearchType,
     filters?: SearchFilters,
     limit: number = 20,
     offset: number = 0,
@@ -287,6 +288,70 @@ export class SpotifyRepository {
           return await this.searchService.searchAdvanced(
             query,
             type,
+            filters,
+            limit,
+            offset,
+          )
+        } catch (clientError) {
+          throw clientError
+        }
+      }
+      throw error
+    }
+  }
+
+  /**
+   * Busca otimizada com múltiplos tipos em uma única requisição
+   * Reduz significativamente o número de requisições à API
+   */
+  async searchMultipleTypes(
+    query: string,
+    types: SpotifySearchType[],
+    filters?: SearchFilters,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
+    await this.ensureAuthentication()
+
+    try {
+      return await this.searchService.searchMultipleTypes(
+        query,
+        types,
+        filters,
+        limit,
+        offset,
+      )
+    } catch (error: unknown) {
+      // If 401 and we have user token, try with client token
+      let is401 = false
+      if (typeof error === 'object' && error !== null) {
+        if (
+          'response' in error &&
+          typeof (error as { response?: { status?: number } }).response
+            ?.status === 'number'
+        ) {
+          is401 =
+            (error as { response?: { status?: number } }).response?.status ===
+            401
+        }
+        if (
+          'message' in error &&
+          typeof (error as { message?: string }).message === 'string'
+        ) {
+          is401 =
+            is401 ||
+            (error as { message?: string }).message ===
+              'Authentication required'
+        }
+      }
+
+      if (is401 && this.isAuthenticated()) {
+        logger.debug('User token failed, trying with client token')
+        try {
+          await this.getClientToken()
+          return await this.searchService.searchMultipleTypes(
+            query,
+            types,
             filters,
             limit,
             offset,
@@ -358,56 +423,56 @@ export class SpotifyRepository {
   }
 
   logout(): void {
-    logger.debug('Logging out')
-
-    // Clear access token
     this.accessToken = undefined
-
-    // Clear search service tokens
     this.searchService.setAccessToken('')
     this.searchService.setClientToken('')
 
-    // Clear localStorage
-    localStorage.removeItem('spotify_token')
-
-    // Clear all cookies
-    CookieManager.clearAllSpotifyCookies()
-
-    logger.debug('Logout completed - all tokens and cookies cleared')
+    try {
+      CookieManager.clearAllSpotifyCookies()
+      localStorage.removeItem('spotify_token')
+      logger.debug('Logged out successfully')
+    } catch (error) {
+      logger.warn('Failed to clear tokens during logout', error)
+    }
   }
 
   async handleTokenExpired(): Promise<string> {
     logger.debug('Handling token expiration')
-    const authUrl = await this.getAuthUrl()
     this.logout()
-    return authUrl
+    return await this.authService.generateAuthUrl()
   }
 
   private setupAxiosInterceptors = (): void => {
-    // Global request interceptor
+    // Request interceptor
     axios.interceptors.request.use(
       (config) => {
-        // Only add Authorization header if not already present
-        if (!config.headers.Authorization && this.accessToken) {
+        if (this.accessToken) {
           config.headers.Authorization = `Bearer ${this.accessToken}`
         }
         return config
       },
       (error) => {
-        logger.error('Global request interceptor error', error)
         return Promise.reject(error)
       },
     )
 
-    // Global response interceptor
+    // Response interceptor
     axios.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        return response
+      },
       async (error) => {
-        if (error.response?.status === 401) {
-          logger.warn('Token expired, logging out and redirecting to login')
-          this.logout()
-          window.location.href = '/login'
-          return Promise.reject(new Error('Authentication required'))
+        if (error.response?.status === 401 && this.isAuthenticated()) {
+          try {
+            await this.handleTokenExpired()
+            // Retry the original request
+            const originalRequest = error.config
+            originalRequest.headers.Authorization = `Bearer ${this.getAccessToken()}`
+            return axios(originalRequest)
+          } catch (refreshError) {
+            logger.error('Token refresh failed', refreshError)
+            this.logout()
+          }
         }
         return Promise.reject(error)
       },

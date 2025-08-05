@@ -15,8 +15,16 @@ export const SearchTypeSelector: React.FC<SearchTypeSelectorProps> = ({
   const { t } = useTranslation()
 
   const handleTypeSelect = (type: 'artist' | 'album' | 'track') => {
-    // Radio behavior: select only one type
-    onTypesChange([type])
+    // Checkbox behavior: toggle the selected type
+    if (selectedTypes.includes(type)) {
+      // Remove type if already selected (but ensure at least one remains)
+      if (selectedTypes.length > 1) {
+        onTypesChange(selectedTypes.filter((t) => t !== type))
+      }
+    } else {
+      // Add type if not selected
+      onTypesChange([...selectedTypes, type])
+    }
   }
 
   const typeOptions = [

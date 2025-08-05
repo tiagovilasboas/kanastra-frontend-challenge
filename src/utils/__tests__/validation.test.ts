@@ -78,13 +78,14 @@ describe('validation', () => {
   })
 
   describe('validateSearchQuery', () => {
-    it('should validate non-empty strings', () => {
+    it('should validate strings with at least 2 characters', () => {
       expect(validateSearchQuery('valid query')).toBe(true)
-      expect(validateSearchQuery('a')).toBe(true)
+      expect(validateSearchQuery('ab')).toBe(true)
       expect(validateSearchQuery('query with spaces')).toBe(true)
     })
 
-    it('should reject empty or whitespace-only strings', () => {
+    it('should reject strings with less than 2 characters', () => {
+      expect(validateSearchQuery('a')).toBe(false)
       expect(validateSearchQuery('')).toBe(false)
       expect(validateSearchQuery('   ')).toBe(false)
       expect(validateSearchQuery('\t\n')).toBe(false)

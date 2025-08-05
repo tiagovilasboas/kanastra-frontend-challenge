@@ -13,7 +13,7 @@
     "node": "20.18.0"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "kill-port 5173 && vite",
     "build": "tsc -b tsconfig.build.json && vite build",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings=0",
@@ -31,6 +31,9 @@
     "test:e2e:albums": "node scripts/run-e2e-tests.cjs albums",
     "test:e2e:settings": "node scripts/run-e2e-tests.cjs settings",
     "test:e2e:favorites": "node scripts/run-e2e-tests.cjs favorites",
+    "test:e2e:preview": "npm run build && npm run preview & sleep 3 && npm run cypress:run && npm run kill-port:preview",
+    "test:e2e:preview:auth": "npm run build && npm run preview & sleep 3 && npm run test:e2e:auth && npm run kill-port:preview",
+    "test:e2e:preview:search": "npm run build && npm run preview & sleep 3 && npm run test:e2e:search && npm run kill-port:preview",
     "kill-port": "kill-port",
     "kill-port:preview": "kill-port 4173",
     "analyze": "npm run build -- --mode analyze",

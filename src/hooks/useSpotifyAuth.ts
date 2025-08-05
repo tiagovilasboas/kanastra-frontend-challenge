@@ -1,11 +1,11 @@
-import { useCallback } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { queryKeys } from '@/config/react-query'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { spotifyRepository } from '@/repositories'
 import { useAppStore } from '@/stores/appStore'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { logger } from '@/utils/logger'
 
 interface UseSpotifyAuthReturn {
@@ -22,13 +22,8 @@ interface UseSpotifyAuthReturn {
 export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { 
-    isAuthenticated, 
-    isLoading, 
-    setAuthenticated, 
-    setLoading, 
-    setError 
-  } = useAppStore()
+  const { isAuthenticated, isLoading, setAuthenticated, setLoading, setError } =
+    useAppStore()
   const { getItem, setItem, removeItem } = useLocalStorage()
 
   const login = useCallback(async () => {
@@ -48,35 +43,37 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
     spotifyRepository.logout()
     setAuthenticated(false)
     removeItem('spotify_token')
-    
+
     // Invalidate all Spotify-related queries
     queryClient.invalidateQueries({ queryKey: queryKeys.search.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.artists.all })
-    
+
     navigate('/', { replace: true })
   }, [navigate, queryClient, setAuthenticated, removeItem])
 
-  const handleCallback = useCallback(async (url: string) => {
-    try {
-      logger.debug('Handling callback URL')
-      const { code, state } = spotifyRepository.extractCodeFromUrl(url)
-      if (code) {
-        const token = await spotifyRepository.exchangeCodeForToken(
-          code,
-          state || undefined,
+  const handleCallback = useCallback(
+    async (url: string) => {
+      try {
+        logger.debug('Handling callback URL')
+        const { code } = spotifyRepository.extractCodeFromUrl(url)
+        if (code) {
+          const token = await spotifyRepository.exchangeCodeForToken(code)
+          spotifyRepository.setAccessToken(token)
+          setItem('spotify_token', token)
+          setAuthenticated(true)
+
+          logger.debug('Authentication successful via callback')
+        }
+      } catch (error) {
+        logger.error('Error exchanging code for token', error)
+        setAuthenticated(false)
+        setError(
+          error instanceof Error ? error.message : 'Authentication failed',
         )
-        spotifyRepository.setAccessToken(token)
-        setItem('spotify_token', token)
-        setAuthenticated(true)
-        
-        logger.debug('Authentication successful via callback')
       }
-    } catch (error) {
-      logger.error('Error exchanging code for token', error)
-      setAuthenticated(false)
-      setError(error instanceof Error ? error.message : 'Authentication failed')
-    }
-  }, [setAuthenticated, setError, setItem])
+    },
+    [setAuthenticated, setError, setItem],
+  )
 
   const handleAuthError = useCallback(async () => {
     logger.debug('Handling authentication error')
@@ -87,7 +84,7 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
       spotifyRepository.logout()
       setAuthenticated(false)
       removeItem('spotify_token')
-      
+
       // Use a more controlled approach instead of window.location.href
       const link = document.createElement('a')
       link.href = authUrl

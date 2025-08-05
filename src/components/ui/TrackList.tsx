@@ -31,7 +31,7 @@ export const TrackList: React.FC<TrackListProps> = ({
       <div className="flex items-center gap-4 p-3 text-sm font-medium text-muted-foreground border-b border-border">
         <div className="w-8 text-center">{t('ui:numberSign', '#')}</div>
         <div className="w-10"></div> {/* Space for album art */}
-        <div className="flex-1 min-w-0">{t('search:title', 'Title')}</div>
+        <div className="flex-1 min-w-0">{t('search:trackTitle', 'Title')}</div>
         <div className="hidden md:block flex-1 min-w-0">
           {t('search:album', 'Album')}
         </div>
@@ -42,15 +42,17 @@ export const TrackList: React.FC<TrackListProps> = ({
 
       {/* Track List */}
       <div className="space-y-1">
-        {tracks.map((track, index) => (
-          <TrackListItem
-            key={track.id}
-            track={track}
-            index={index}
-            onClick={() => handleTrackClick(track)}
-            isLiked={false} // TODO: Implement liked tracks functionality
-          />
-        ))}
+        {tracks
+          .filter((track) => track && track.id) // Filter out null/undefined items
+          .map((track, index) => (
+            <TrackListItem
+              key={track.id}
+              track={track}
+              index={index}
+              onClick={() => handleTrackClick(track)}
+              isLiked={false} // TODO: Implement liked tracks functionality
+            />
+          ))}
       </div>
     </div>
   )

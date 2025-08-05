@@ -9,6 +9,7 @@ import {
   validateSpotifySearchResponse,
   validateSpotifyTracksResponse,
 } from '@/schemas/spotify'
+import { SpotifySearchType } from '@/types/spotify'
 import { errorHandler } from '@/utils/errorHandler'
 import { logger } from '@/utils/logger'
 
@@ -78,12 +79,10 @@ export class SpotifySearchService {
 
   setAccessToken(token: string): void {
     this.accessToken = token
-          // Removed debug logs for cleaner production code
   }
 
   setClientToken(token: string): void {
     this.clientToken = token
-    // Removed debug logs for cleaner production code
   }
 
   hasAccessToken(): boolean {
@@ -102,17 +101,14 @@ export class SpotifySearchService {
     return token
   }
 
-  // Advanced search with filters
   async searchAdvanced(
     query: string,
-    type: 'artist' | 'track' | 'album' | 'playlist',
+    type: SpotifySearchType,
     filters?: SearchFilters,
     limit: number = 20,
     offset: number = 0,
   ) {
     try {
-      // Removed debug logs for cleaner production code
-
       const params: Record<string, string | number> = {
         q: query,
         type,
@@ -152,8 +148,6 @@ export class SpotifySearchService {
         },
       })
 
-      // Removed success debug logs for cleaner production code
-
       return response.data
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -164,13 +158,72 @@ export class SpotifySearchService {
     }
   }
 
+  /**
+   * Busca otimizada com múltiplos tipos em uma única requisição
+   * Conforme documentação: https://developer.spotify.com/documentation/web-api/reference/search
+   */
+  async searchMultipleTypes(
+    query: string,
+    types: SpotifySearchType[],
+    filters?: SearchFilters,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
+    try {
+      const params: Record<string, string | number> = {
+        q: query,
+        type: types.join(','), // Múltiplos tipos separados por vírgula
+        limit,
+        offset,
+      }
+
+      // Add filters to query
+      if (filters) {
+        const filterParts: string[] = []
+
+        if (filters.year) {
+          filterParts.push(`year:${filters.year}`)
+        }
+        if (filters.genre) {
+          filterParts.push(`genre:${filters.genre}`)
+        }
+        if (filters.isrc) {
+          filterParts.push(`isrc:${filters.isrc}`)
+        }
+        if (filters.upc) {
+          filterParts.push(`upc:${filters.upc}`)
+        }
+        if (filters.tag) {
+          filterParts.push(`tag:${filters.tag}`)
+        }
+
+        if (filterParts.length > 0) {
+          params.q = `${query} ${filterParts.join(' ')}`
+        }
+      }
+
+      const response = await this.axiosInstance.get('/search', {
+        params,
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      return response.data
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchMultipleTypes',
+      )
+      throw appError
+    }
+  }
+
   // Get recommendations
   async getRecommendations(
     params: RecommendationParams,
   ): Promise<SpotifyTrack[]> {
     try {
-      // Removed debug logs for cleaner production code
-
       const response = await this.axiosInstance.get('/recommendations', {
         params,
         headers: {
@@ -179,7 +232,6 @@ export class SpotifySearchService {
       })
 
       const validatedData = validateSpotifyTracksResponse(response.data)
-      // Removed success debug logs for cleaner production code
 
       return validatedData.tracks
     } catch (error) {
@@ -194,8 +246,6 @@ export class SpotifySearchService {
   // Get audio features for a track
   async getAudioFeatures(trackId: string): Promise<AudioFeatures> {
     try {
-      // Removed debug logs for cleaner production code
-
       const response = await this.axiosInstance.get(
         `/audio-features/${trackId}`,
         {
@@ -205,7 +255,6 @@ export class SpotifySearchService {
         },
       )
 
-      // Removed success debug logs for cleaner production code
       return response.data
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -219,20 +268,16 @@ export class SpotifySearchService {
   // Get audio features for multiple tracks
   async getMultipleAudioFeatures(trackIds: string[]): Promise<AudioFeatures[]> {
     try {
-      logger.debug('Getting multiple audio features', {
-        trackIdsCount: trackIds.length,
-      })
-
       const response = await this.axiosInstance.get('/audio-features', {
-        params: { ids: trackIds.join(',') },
+        params: {
+          ids: trackIds.join(','),
+        },
         headers: {
           Authorization: `Bearer ${this.getAuthToken()}`,
         },
       })
 
-      // Removed success debug logs for cleaner production code
-
-      return response.data.audio_features || []
+      return response.data.audio_features
     } catch (error) {
       const appError = errorHandler.handleApiError(
         error,
@@ -245,8 +290,6 @@ export class SpotifySearchService {
   // Get available genres
   async getAvailableGenres(): Promise<string[]> {
     try {
-      // Removed debug logs for cleaner production code
-
       const response = await this.axiosInstance.get(
         '/recommendations/available-genre-seeds',
         {
@@ -256,9 +299,7 @@ export class SpotifySearchService {
         },
       )
 
-      // Removed success debug logs for cleaner production code
-
-      return response.data.genres || []
+      return response.data.genres
     } catch (error) {
       const appError = errorHandler.handleApiError(
         error,
@@ -268,15 +309,14 @@ export class SpotifySearchService {
     }
   }
 
-  // Get track by ISRC
+  // Search tracks by ISRC
   async getTrackByISRC(isrc: string): Promise<SpotifyTrack[]> {
     try {
-      // Removed debug logs for cleaner production code
-
       const response = await this.axiosInstance.get('/search', {
         params: {
           q: `isrc:${isrc}`,
-          type: 'track',
+          type: SpotifySearchType.TRACK,
+          limit: 50,
         },
         headers: {
           Authorization: `Bearer ${this.getAuthToken()}`,
@@ -284,8 +324,6 @@ export class SpotifySearchService {
       })
 
       const validatedData = validateSpotifyTracksResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
       return validatedData.tracks
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -296,15 +334,14 @@ export class SpotifySearchService {
     }
   }
 
-  // Get album by UPC
+  // Search albums by UPC
   async getAlbumByUPC(upc: string): Promise<SpotifyAlbum[]> {
     try {
-      // Removed debug logs for cleaner production code
-
       const response = await this.axiosInstance.get('/search', {
         params: {
           q: `upc:${upc}`,
-          type: 'album',
+          type: SpotifySearchType.ALBUM,
+          limit: 50,
         },
         headers: {
           Authorization: `Bearer ${this.getAuthToken()}`,
@@ -312,8 +349,6 @@ export class SpotifySearchService {
       })
 
       const validatedData = validateSpotifyAlbumsResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
       return validatedData.items
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -324,31 +359,23 @@ export class SpotifySearchService {
     }
   }
 
-  // Search artists with user authentication
+  // Search artists
   async searchArtists(query: string, limit: number = 20, offset: number = 0) {
     try {
-      // Removed debug logs for cleaner production code
-
-      if (!this.accessToken) {
-        throw new Error('Access token required for user search')
-      }
-
       const response = await this.axiosInstance.get('/search', {
         params: {
           q: query,
-          type: 'artist',
+          type: SpotifySearchType.ARTIST,
           limit,
           offset,
         },
         headers: {
-          Authorization: `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.getAuthToken()}`,
         },
       })
 
       const validatedData = validateSpotifySearchResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
-      return validatedData
+      return validatedData.artists
     } catch (error) {
       const appError = errorHandler.handleApiError(
         error,
@@ -358,35 +385,178 @@ export class SpotifySearchService {
     }
   }
 
-  // Search artists with client credentials (public)
+  async searchAlbums(query: string, limit: number = 20, offset: number = 0) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.ALBUM,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.albums
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchAlbums',
+      )
+      throw appError
+    }
+  }
+
+  async searchTracks(query: string, limit: number = 20, offset: number = 0) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.TRACK,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.tracks
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchTracks',
+      )
+      throw appError
+    }
+  }
+
+  async searchPlaylists(query: string, limit: number = 20, offset: number = 0) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.PLAYLIST,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.playlists
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchPlaylists',
+      )
+      throw appError
+    }
+  }
+
+  async searchShows(query: string, limit: number = 20, offset: number = 0) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.SHOW,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.shows
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchShows',
+      )
+      throw appError
+    }
+  }
+
+  async searchEpisodes(query: string, limit: number = 20, offset: number = 0) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.EPISODE,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.episodes
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchEpisodes',
+      )
+      throw appError
+    }
+  }
+
+  async searchAudiobooks(
+    query: string,
+    limit: number = 20,
+    offset: number = 0,
+  ) {
+    try {
+      const response = await this.axiosInstance.get('/search', {
+        params: {
+          q: query,
+          type: SpotifySearchType.AUDIOBOOK,
+          limit,
+          offset,
+        },
+        headers: {
+          Authorization: `Bearer ${this.getAuthToken()}`,
+        },
+      })
+
+      const validatedData = validateSpotifySearchResponse(response.data)
+      return validatedData.audiobooks
+    } catch (error) {
+      const appError = errorHandler.handleApiError(
+        error,
+        'SpotifySearchService.searchAudiobooks',
+      )
+      throw appError
+    }
+  }
+
+  // Search artists (public endpoint - no auth required)
   async searchArtistsPublic(
     query: string,
     limit: number = 20,
     offset: number = 0,
   ) {
     try {
-      // Removed debug logs for cleaner production code
-
-      if (!this.clientToken) {
-        throw new Error('Client token required for public search')
-      }
-
       const response = await this.axiosInstance.get('/search', {
         params: {
           q: query,
-          type: 'artist',
+          type: SpotifySearchType.ARTIST,
           limit,
           offset,
-        },
-        headers: {
-          Authorization: `Bearer ${this.clientToken}`,
         },
       })
 
       const validatedData = validateSpotifySearchResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
-      return validatedData
+      return validatedData.artists
     } catch (error) {
       const appError = errorHandler.handleApiError(
         error,
@@ -399,22 +569,13 @@ export class SpotifySearchService {
   // Get artist details
   async getArtistDetails(artistId: string): Promise<SpotifyArtist> {
     try {
-      // Removed debug logs for cleaner production code
-
-      if (!this.accessToken && !this.clientToken) {
-        throw new Error('Authentication token required')
-      }
-
-      const token = this.accessToken || this.clientToken
       const response = await this.axiosInstance.get(`/artists/${artistId}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${this.getAuthToken()}`,
         },
       })
 
       const validatedData = validateSpotifyArtist(response.data)
-      // Removed success debug logs for cleaner production code
-
       return validatedData
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -425,43 +586,25 @@ export class SpotifySearchService {
     }
   }
 
-  // Get artist top tracks - UPDATED VERSION
+  // Get artist top tracks
   async getArtistTopTracks(
     artistId: string,
     market: string = 'US',
   ): Promise<SpotifyTrack[]> {
     try {
-      // Removed verbose debug logs for cleaner production code
-
-      // Use access token if available, otherwise use client token
-      const token = this.accessToken || this.clientToken
-
-      if (!token) {
-        logger.error('No tokens available for top tracks', {
-          artistId,
-          hasAccessToken: !!this.accessToken,
-          hasClientToken: !!this.clientToken,
-          accessTokenLength: this.accessToken?.length || 0,
-          clientTokenLength: this.clientToken?.length || 0,
-        })
-        throw new Error('Authentication token required for top tracks')
-      }
-
-      // Removed token debug logs for security
-
       const response = await this.axiosInstance.get(
         `/artists/${artistId}/top-tracks`,
         {
-          params: { market },
+          params: {
+            market,
+          },
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.getAuthToken()}`,
           },
         },
       )
 
       const validatedData = validateSpotifyTracksResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
       return validatedData.tracks
     } catch (error) {
       const appError = errorHandler.handleApiError(
@@ -480,13 +623,6 @@ export class SpotifySearchService {
     offset: number = 0,
   ): Promise<SpotifyAlbum[]> {
     try {
-      // Removed debug logs for cleaner production code
-
-      if (!this.accessToken && !this.clientToken) {
-        throw new Error('Authentication token required')
-      }
-
-      const token = this.accessToken || this.clientToken
       const response = await this.axiosInstance.get(
         `/artists/${artistId}/albums`,
         {
@@ -496,27 +632,14 @@ export class SpotifySearchService {
             offset,
           },
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${this.getAuthToken()}`,
           },
         },
       )
 
-      // Removed validation debug logs for cleaner production code
-
       const validatedData = validateSpotifyAlbumsResponse(response.data)
-      // Removed success debug logs for cleaner production code
-
       return validatedData.items
     } catch (error) {
-      logger.error('Album validation failed', {
-        artistId,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        responseData:
-          error instanceof Error && 'response' in error
-            ? (error as { response?: { data?: unknown } }).response?.data
-            : 'No response data',
-      })
-
       const appError = errorHandler.handleApiError(
         error,
         'SpotifySearchService.getArtistAlbums',
@@ -529,11 +652,13 @@ export class SpotifySearchService {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        // Removed debug logs for cleaner production code
+        const token = this.getAuthToken()
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`
+        }
         return config
       },
       (error) => {
-        logger.error('Spotify API request error', error)
         return Promise.reject(error)
       },
     )
@@ -541,15 +666,12 @@ export class SpotifySearchService {
     // Response interceptor
     this.axiosInstance.interceptors.response.use(
       (response) => {
-        // Removed debug logs for cleaner production code
         return response
       },
       (error) => {
-        logger.error('Spotify API response error', {
-          status: error.response?.status,
-          message: error.response?.data?.error?.message || error.message,
-          url: error.config?.url,
-        })
+        if (error.response?.status === 401) {
+          logger.warn('Authentication failed in search service')
+        }
         return Promise.reject(error)
       },
     )

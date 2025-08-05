@@ -55,7 +55,7 @@ export default (
     },
 
     // Write file contents
-    writeFile(filename: string, content: string) {
+    writeFile({ filename, content }: { filename: string; content: string }) {
       const fs = require('fs')
       fs.writeFileSync(filename, content)
       return null
@@ -75,27 +75,6 @@ export default (
       const fs = require('fs')
       return fs.existsSync(filename)
     },
-  })
-
-  // Handle uncaught exceptions
-  on('uncaught:exception', (err, runnable) => {
-    // Returning false here prevents Cypress from failing the test
-    // for uncaught exceptions that are not related to the test
-    if (err.message.includes('ResizeObserver loop limit exceeded')) {
-      return false
-    }
-
-    // Log other errors for debugging
-    console.warn('Uncaught exception:', err.message)
-    return false
-  })
-
-  // Handle window:before:load event
-  on('window:before:load', (win) => {
-    // Mock any global objects or functions here if needed
-    cy.stub(win.console, 'log').as('consoleLog')
-    cy.stub(win.console, 'error').as('consoleError')
-    cy.stub(win.console, 'warn').as('consoleWarn')
   })
 
   return config

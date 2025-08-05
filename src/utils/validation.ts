@@ -18,7 +18,7 @@ export function validateArtist(artist: unknown): artist is SpotifyArtist {
 }
 
 export function validateSearchQuery(query: unknown): query is string {
-  return typeof query === 'string' && query.trim().length > 0
+  return typeof query === 'string' && query.trim().length >= 2
 }
 
 export function validatePaginationParams(
@@ -39,15 +39,17 @@ export function validatePaginationParams(
 // Funções de validação adicionais para os testes
 export function validateEmail(email: unknown): boolean {
   if (typeof email !== 'string') return false
-  
+
   // More strict email validation
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-  return emailRegex.test(email) && 
-         !email.includes('..') && 
-         !email.includes('@.') &&
-         !email.startsWith('.') &&
-         !email.endsWith('.') &&
-         email.split('@')[1]?.includes('.')
+  return (
+    emailRegex.test(email) &&
+    !email.includes('..') &&
+    !email.includes('@.') &&
+    !email.startsWith('.') &&
+    !email.endsWith('.') &&
+    email.split('@')[1]?.includes('.')
+  )
 }
 
 export function validateRequired(value: unknown): boolean {
@@ -74,15 +76,17 @@ export function validateMaxLength(value: unknown, maxLength: number): boolean {
 
 export function validateUrl(url: unknown): boolean {
   if (typeof url !== 'string') return false
-  
+
   try {
     const urlObj = new URL(url)
-    return (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') &&
-           urlObj.hostname.length > 0 &&
-           !urlObj.hostname.startsWith('.') &&
-           !urlObj.hostname.endsWith('.') &&
-           !url.includes(' ') &&
-           urlObj.hostname.includes('.')
+    return (
+      (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') &&
+      urlObj.hostname.length > 0 &&
+      !urlObj.hostname.startsWith('.') &&
+      !urlObj.hostname.endsWith('.') &&
+      !url.includes(' ') &&
+      urlObj.hostname.includes('.')
+    )
   } catch {
     return false
   }
@@ -90,17 +94,19 @@ export function validateUrl(url: unknown): boolean {
 
 export function validateSpotifyUrl(url: unknown): boolean {
   if (typeof url !== 'string') return false
-  
+
   try {
     const urlObj = new URL(url)
-    return urlObj.hostname === 'open.spotify.com' && 
-           urlObj.protocol === 'https:' &&
-           (urlObj.pathname.startsWith('/artist/') || 
-            urlObj.pathname.startsWith('/track/') || 
-            urlObj.pathname.startsWith('/album/') ||
-            urlObj.pathname.startsWith('/playlist/')) &&
-           urlObj.pathname.split('/').length >= 3 &&
-           urlObj.pathname.split('/')[2]?.length > 0
+    return (
+      urlObj.hostname === 'open.spotify.com' &&
+      urlObj.protocol === 'https:' &&
+      (urlObj.pathname.startsWith('/artist/') ||
+        urlObj.pathname.startsWith('/track/') ||
+        urlObj.pathname.startsWith('/album/') ||
+        urlObj.pathname.startsWith('/playlist/')) &&
+      urlObj.pathname.split('/').length >= 3 &&
+      urlObj.pathname.split('/')[2]?.length > 0
+    )
   } catch {
     return false
   }

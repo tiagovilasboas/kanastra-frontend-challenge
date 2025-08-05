@@ -2,6 +2,7 @@ import { Check, Play } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 import { SpotifyTrack } from '@/types/spotify'
 
 interface TrackListItemProps {
@@ -36,7 +37,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
   const trackImage =
     track.album.images && track.album.images.length > 0
       ? track.album.images[0].url
-      : 'https://via.placeholder.com/40x40/1DB954/ffffff?text=?'
+      : undefined
 
   return (
     <div
@@ -50,15 +51,21 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
 
       {/* Album Art */}
       <div className="relative w-10 h-10 rounded overflow-hidden bg-muted flex-shrink-0">
-        <img
-          src={trackImage}
-          alt={track.name}
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement
-            target.style.display = 'none'
-          }}
-        />
+        {trackImage ? (
+          <img
+            src={trackImage}
+            alt={track.name}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+            }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-muted">
+            <SpotifyIcon color="green" size={20} />
+          </div>
+        )}
         {/* Play button overlay on hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
           <Play className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -78,14 +85,20 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
           )}
         </div>
         <p className="text-xs text-muted-foreground line-clamp-1">
-          {track.artists.map((artist) => artist.name).join(', ')}
+          {track.artists
+            ?.map(
+              (artist) =>
+                artist?.name ||
+                t('search:unknownArtist', 'Artista desconhecido'),
+            )
+            .join(', ') || t('search:unknownArtist', 'Artista desconhecido')}
         </p>
       </div>
 
       {/* Album */}
       <div className="hidden md:block flex-1 min-w-0">
         <p className="text-sm text-muted-foreground line-clamp-1">
-          {track.album.name}
+          {track.album?.name || t('search:unknownAlbum', 'Álbum desconhecido')}
         </p>
       </div>
 

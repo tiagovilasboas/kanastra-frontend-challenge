@@ -218,12 +218,8 @@ describe('SpotifyAuthService', () => {
       expect(mockErrorHandler.handleAuthError).toHaveBeenCalled()
     })
 
-    it('should extract code verifier from state parameter', async () => {
-      mockCookieManager.getCodeVerifier.mockReturnValue(null)
-
-      const stateWithVerifier = btoa(
-        JSON.stringify({ code_verifier: 'state-code-verifier' }),
-      )
+    it('should handle token exchange with code verifier from cookie', async () => {
+      mockCookieManager.getCodeVerifier.mockReturnValue('cookie-code-verifier')
 
       const mockTokenResponse = {
         access_token: 'test-access-token',
@@ -242,7 +238,7 @@ describe('SpotifyAuthService', () => {
         validateSpotifyTokenResponse as unknown as ReturnType<typeof vi.fn>
       ).mockReturnValue(mockTokenResponse)
 
-      await authService.handleTokenExchange('test-code', stateWithVerifier)
+      await authService.handleTokenExchange('test-code')
 
       expect(mockFetch).toHaveBeenCalled()
       expect(mockCookieManager.clearCodeVerifier).toHaveBeenCalled()

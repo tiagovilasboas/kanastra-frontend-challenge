@@ -16,11 +16,26 @@ Os testes E2E foram organizados em **7 domínios principais**, cada um cobrindo 
 
 ## 🚀 Instalação e Configuração
 
+### Ambientes de Teste
+
+#### Desenvolvimento (porta 5173)
+
+- Usado para desenvolvimento e testes rápidos
+- Servidor Vite com hot reload
+- Não simula ambiente de produção
+
+#### Preview/Produção (porta 4173) - **RECOMENDADO**
+
+- Usado para testes E2E que simulam produção
+- Build otimizada do Vite
+- Mais próximo do ambiente real de produção
+- Detecta problemas que podem não aparecer em desenvolvimento
+
 ### Pré-requisitos
 
 - Node.js 20.18.0+
 - npm ou yarn
-- Aplicação rodando em `http://127.0.0.1:5173`
+- Aplicação buildada e rodando em preview em `http://127.0.0.1:4173`
 
 ### Instalação do Cypress
 
@@ -32,7 +47,7 @@ npm install
 
 O Cypress já está configurado com:
 
-- Base URL: `http://127.0.0.1:5173`
+- Base URL: `http://127.0.0.1:4173` (preview/produção)
 - Viewport padrão: 1280x720
 - Timeouts: 10 segundos
 - Retries: 2 tentativas em modo run
@@ -44,14 +59,19 @@ O Cypress já está configurado com:
 #### Executar todos os testes
 
 ```bash
+# Testes contra servidor de desenvolvimento (porta 5173)
 npm run test:e2e
 # ou
 npm run cypress:run
+
+# Testes contra build de preview (porta 4173) - RECOMENDADO
+npm run test:e2e:preview
 ```
 
 #### Executar testes por domínio
 
 ```bash
+# Testes contra servidor de desenvolvimento (porta 5173)
 # Autenticação
 npm run test:e2e:auth
 
@@ -72,6 +92,13 @@ npm run test:e2e:settings
 
 # Favoritos
 npm run test:e2e:favorites
+
+# Testes contra build de preview (porta 4173) - RECOMENDADO
+# Autenticação
+npm run test:e2e:preview:auth
+
+# Busca
+npm run test:e2e:preview:search
 ```
 
 #### Executar testes específicos via script

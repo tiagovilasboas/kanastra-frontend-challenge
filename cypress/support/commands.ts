@@ -110,7 +110,7 @@ Cypress.Commands.add('getLocalStorage', (key: string) => {
 /**
  * Clear localStorage
  */
-Cypress.Commands.add('clearLocalStorage', () => {
+Cypress.Commands.overwrite('clearLocalStorage', () => {
   cy.window().then((win) => {
     win.localStorage.clear()
   })
@@ -248,6 +248,36 @@ Cypress.Commands.add('mockEmptyResponse', (endpoint: string) => {
   }).as(`empty-${endpoint.replace(/\//g, '-')}`)
 })
 
+/**
+ * Set language for the application
+ */
+Cypress.Commands.add('setLanguage', (languageCode: 'pt' | 'en') => {
+  // Set language in localStorage
+  cy.setLocalStorage('i18nextLng', languageCode)
+
+  // Reload page to apply language change
+  cy.reload()
+
+  // Wait for language to be applied
+  cy.wait(500)
+})
+
+/**
+ * Set language using the language selector in the UI
+ */
+Cypress.Commands.add('setLanguageViaSelector', (languageCode: 'pt' | 'en') => {
+  cy.get('header button:has(.lucide-globe)').click()
+
+  if (languageCode === 'en') {
+    cy.contains('English').click()
+  } else {
+    cy.contains('Português').click()
+  }
+
+  // Wait for language to be applied
+  cy.wait(500)
+})
+
 // Type definitions for custom commands
 declare global {
   namespace Cypress {
@@ -377,6 +407,18 @@ declare global {
        * @example cy.mockEmptyResponse('search')
        */
       mockEmptyResponse(endpoint: string): Chainable<void>
+
+      /**
+       * Custom command to set language
+       * @example cy.setLanguage('pt')
+       */
+      setLanguage(languageCode: 'pt' | 'en'): Chainable<void>
+
+      /**
+       * Custom command to set language using the language selector
+       * @example cy.setLanguageViaSelector('en')
+       */
+      setLanguageViaSelector(languageCode: 'pt' | 'en'): Chainable<void>
 
       // Original Cypress commands
       login(email: string, password: string): Chainable<void>

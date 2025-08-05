@@ -127,5 +127,17 @@ declare namespace Cypress {
      * @example cy.mockEmptyResponse('search')
      */
     mockEmptyResponse(endpoint: string): Chainable<void>
+
+    /**
+     * Custom command to set language
+     * @example cy.setLanguage('pt')
+     */
+    setLanguage(languageCode: 'pt' | 'en'): Chainable<void>
+
+    /**
+     * Custom command to set language using the language selector
+     * @example cy.setLanguageViaSelector('en')
+     */
+    setLanguageViaSelector(languageCode: 'pt' | 'en'): Chainable<void>
   }
 }

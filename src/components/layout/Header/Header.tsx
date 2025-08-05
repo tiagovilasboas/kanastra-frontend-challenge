@@ -1,4 +1,4 @@
-import { LogIn, LogOut, Menu, Music, Search, User } from 'lucide-react'
+import { LogIn, LogOut, Menu, Search, User } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSearchStore } from '@/stores/searchStore'
 
@@ -57,7 +58,7 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
 
           {/* Logo */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <Music className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+            <SpotifyIcon color="green" size={24} />
             <h1 className="text-base sm:text-lg font-bold text-foreground hidden sm:block">
               {t('navigation:spotifyExplorer', 'Spotify Explorer')}
             </h1>

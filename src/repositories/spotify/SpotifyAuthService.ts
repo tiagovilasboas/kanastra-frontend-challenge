@@ -51,12 +51,12 @@ export class SpotifyAuthService {
       // Removed debug logs for cleaner production code
 
       const { clientId, redirectUri, scopes } = this.config
-      
+
       // Validate required configuration
       if (!clientId || clientId.trim() === '') {
         throw new Error('Client ID is required for authentication')
       }
-      
+
       const codeVerifier = this.generateCodeVerifier()
       const codeChallenge = await this.generateCodeChallenge(codeVerifier)
       const state = this.generateState()
@@ -145,10 +145,7 @@ export class SpotifyAuthService {
     logger.debug('Code verifier cleared from both cookies and localStorage')
   }
 
-  async handleTokenExchange(
-    code: string,
-    state?: string,
-  ): Promise<{
+  async handleTokenExchange(code: string): Promise<{
     access_token: string
     token_type: string
     expires_in: number
@@ -156,82 +153,96 @@ export class SpotifyAuthService {
     scope?: string
   }> {
     try {
-      logger.debug('Handling token exchange...')
-      logger.debug('Code received', { code: code.substring(0, 10) + '...' })
+      const codeVerifier = this.getCodeVerifier()
+      if (!codeVerifier) {
+        throw new Error(
+          'Code verifier not found. Please restart the authentication process.',
+        )
+      }
 
       const { clientId, clientSecret, redirectUri } = this.config
-      let codeVerifier = this.getCodeVerifier()
-
-      // If no code verifier found, try to extract from state parameter
-      if (!codeVerifier && state) {
-        logger.debug('Trying to extract code verifier from state parameter...')
-        try {
-          const stateData = JSON.parse(atob(state))
-          codeVerifier = stateData.code_verifier
-          if (codeVerifier) {
-            logger.debug('Code verifier extracted from state', {
-              codeVerifier: codeVerifier.substring(0, 10) + '...',
-            })
-          }
-        } catch (error) {
-          logger.warn('Failed to extract code verifier from state', error)
-        }
-      }
-
-      if (!codeVerifier) {
-        throw new Error('Code verifier not found')
-      }
-
-      const params = new URLSearchParams({
-        grant_type: 'authorization_code',
-        code,
-        redirect_uri: redirectUri,
-        client_id: clientId,
-        client_secret: clientSecret,
-        code_verifier: codeVerifier,
-      })
-
-      logger.debug('Sending token exchange request...')
 
       const response = await fetch('https://accounts.spotify.com/api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: params.toString(),
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: redirectUri,
+          client_id: clientId,
+          client_secret: clientSecret,
+          code_verifier: codeVerifier,
+        }),
       })
 
-      logger.debug('Response status', { status: response.status })
-
       if (!response.ok) {
-        const errorData = await response.json()
-        logger.error('Token exchange failed', errorData)
-
-        // If it's an authorization code error, keep the code verifier for potential retry
-        if (errorData.error === 'invalid_grant') {
-          logger.warn(
-            'Authorization code error - keeping code verifier for potential retry',
-          )
-          return Promise.reject(new Error('Invalid authorization code'))
-        }
-
+        const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          `Token exchange failed: ${errorData.error_description || errorData.error}`,
+          errorData.error_description ||
+            `Token exchange failed: ${response.status}`,
         )
       }
 
       const data = await response.json()
-      const validatedData = validateSpotifyTokenResponse(data)
+      const tokenResponse = validateSpotifyTokenResponse(data)
 
       // Clear code verifier after successful exchange
       this.clearCodeVerifier()
 
-      logger.debug('Token exchange successful')
-      return validatedData
+      return tokenResponse
     } catch (error) {
       const appError = errorHandler.handleAuthError(
         error,
         'SpotifyAuthService.handleTokenExchange',
+      )
+      throw appError
+    }
+  }
+
+  async getClientToken(): Promise<{
+    access_token: string
+    token_type: string
+    expires_in: number
+  }> {
+    try {
+      const { clientId, clientSecret } = this.config
+
+      if (!clientId || !clientSecret) {
+        throw new Error(
+          'Client ID and Client Secret are required for client credentials flow',
+        )
+      }
+
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'client_credentials',
+          client_id: clientId,
+          client_secret: clientSecret,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.error_description ||
+            `Client token request failed: ${response.status}`,
+        )
+      }
+
+      const data = await response.json()
+      const tokenResponse = validateSpotifyTokenResponse(data)
+
+      return tokenResponse
+    } catch (error) {
+      const appError = errorHandler.handleAuthError(
+        error,
+        'SpotifyAuthService.getClientToken',
       )
       throw appError
     }

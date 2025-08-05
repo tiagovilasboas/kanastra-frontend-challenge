@@ -1,11 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useCallback, useMemo, useState } from 'react'
 
-import {
-  getDeviceBasedConfig,
-  getLimitByType,
-} from '@/config/searchLimits'
 import { cache } from '@/config/react-query'
+import { getDeviceBasedConfig, getLimitByType } from '@/config/searchLimits'
 import { spotifyRepository } from '@/repositories'
 import {
   AggregatedSearchResults,
@@ -104,10 +101,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       // Se apenas um tipo está selecionado, usa o método específico
       if (filters.types.length === 1) {
         const type = filters.types[0]
-        const limit = getLimitByType(
-          type.toLowerCase(),
-          getDeviceBasedConfig(),
-        )
+        const limit = getLimitByType(type.toLowerCase(), getDeviceBasedConfig())
 
         switch (type) {
           case SpotifySearchType.ARTIST:
@@ -293,38 +287,43 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       }
     }
 
-    return searchData?.state || {
-      isLoading: false,
-      isLoadingMore: false,
-      error: null,
-      hasMore: false,
-      totalResults: 0,
-    }
+    return (
+      searchData?.state || {
+        isLoading: false,
+        isLoadingMore: false,
+        error: null,
+        hasMore: false,
+        totalResults: 0,
+      }
+    )
   }, [isLoading, error, searchData])
 
   const results: AggregatedSearchResults = useMemo(() => {
-    return searchData?.results || {
-      artists: { items: [], total: 0, hasMore: false },
-      albums: { items: [], total: 0, hasMore: false },
-      tracks: { items: [], total: 0, hasMore: false },
-      playlists: { items: [], total: 0, hasMore: false },
-      shows: { items: [], total: 0, hasMore: false },
-      episodes: { items: [], total: 0, hasMore: false },
-      audiobooks: { items: [], total: 0, hasMore: false },
-    }
+    return (
+      searchData?.results || {
+        artists: { items: [], total: 0, hasMore: false },
+        albums: { items: [], total: 0, hasMore: false },
+        tracks: { items: [], total: 0, hasMore: false },
+        playlists: { items: [], total: 0, hasMore: false },
+        shows: { items: [], total: 0, hasMore: false },
+        episodes: { items: [], total: 0, hasMore: false },
+        audiobooks: { items: [], total: 0, hasMore: false },
+      }
+    )
   }, [searchData])
 
   // Actions
-  const search = useCallback(
-    async (_query: string, _types: SpotifySearchType[]) => {
-      // React Query handles the search automatically based on query key changes
-      // This function is kept for backward compatibility
-    },
-    []
-  )
+  const search = useCallback(async () => {
+    // React Query handles the search automatically based on query key changes
+    // This function is kept for backward compatibility
+  }, [])
 
   const loadMore = useCallback(async () => {
-    if (!searchState.hasMore || searchState.isLoadingMore || !searchQuery.trim()) {
+    if (
+      !searchState.hasMore ||
+      searchState.isLoadingMore ||
+      !searchQuery.trim()
+    ) {
       return
     }
 

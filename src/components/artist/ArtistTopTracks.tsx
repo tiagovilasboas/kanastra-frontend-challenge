@@ -28,7 +28,9 @@ export const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
           <div className="flex items-center gap-4 p-3 text-sm font-medium text-muted-foreground border-b border-border">
             <div className="w-8 text-center">{t('ui:numberSign', '#')}</div>
             <div className="w-10"></div>
-            <div className="flex-1 min-w-0">{t('search:title', 'Title')}</div>
+            <div className="flex-1 min-w-0">
+              {t('search:trackTitle', 'Title')}
+            </div>
             <div className="hidden md:block flex-1 min-w-0">
               {t('search:album', 'Album')}
             </div>

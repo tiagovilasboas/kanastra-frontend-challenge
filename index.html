@@ -4,12 +4,6 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/spotify-icon.svg" />
     
-    <!-- Pré-carregamento de recursos críticos -->
-    <link rel="preload" href="/api/artists" as="fetch" crossorigin="anonymous">
-    <link rel="preload" href="/api/albums" as="fetch" crossorigin="anonymous">
-    
-    <!-- Fontes auto-hospedadas para melhor performance -->
-    <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
@@ -39,11 +33,11 @@
     <!-- Additional Meta Tags -->
     <meta name="theme-color" content="#1DB954" />
     <meta name="msapplication-TileColor" content="#1DB954" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Spotify Explorer" />
     
-    <!-- Preconnect to external domains -->
+    <!-- Preconnect to external domains for better performance -->
     <link rel="preconnect" href="https://api.spotify.com" />
     <link rel="preconnect" href="https://accounts.spotify.com" />
     <link rel="dns-prefetch" href="https://api.spotify.com" />

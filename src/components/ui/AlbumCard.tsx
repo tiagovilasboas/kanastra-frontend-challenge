@@ -42,7 +42,13 @@ export const AlbumCard: React.FC<AlbumCardProps> = ({ album, onClick }) => {
       album.release_date,
       album.release_date_precision,
     )
-    const artists = album.artists.map((artist) => artist.name).join(', ')
+    const artists =
+      album.artists
+        ?.map(
+          (artist) =>
+            artist?.name || t('search:unknownArtist', 'Artista desconhecido'),
+        )
+        .join(', ') || t('search:unknownArtist', 'Artista desconhecido')
     return `${releaseDate} ${t('ui:dot', '•')} ${artists}`
   }
 
