@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { logger } from '@/utils/logger'
+// Removed unused logger import
 
 type NavigationSection = 'home' | 'library' | 'create'
 
@@ -9,14 +9,11 @@ interface NavigationState {
   setActiveSection: (section: NavigationSection) => void
 }
 
-export const useNavigationStore = create<NavigationState>((set, get) => ({
+export const useNavigationStore = create<NavigationState>((set) => ({
   activeSection: 'home',
 
   setActiveSection: (section: NavigationSection) => {
-    logger.debug('Navigation section changed', {
-      from: get().activeSection,
-      to: section,
-    })
+    // Removed debug logs for cleaner production code
     set({ activeSection: section })
 
     // Navigate to home page when changing sections
