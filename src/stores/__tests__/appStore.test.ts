@@ -1,12 +1,31 @@
-import { act,renderHook } from '@testing-library/react'
-import { beforeEach,describe, expect, it } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useAppStore } from '../appStore'
 
+// Mock localStorage for tests
+const localStorageMock = {
+  getItem: vi.fn().mockReturnValue(null),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+  key: vi.fn(),
+  length: 0,
+}
+
+// Ensure localStorage is properly mocked before tests
+beforeEach(() => {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    writable: true,
+    configurable: true,
+  })
+})
+
 describe('appStore', () => {
   beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear()
+    // Clear all mocks
+    vi.clearAllMocks()
     // Reset store to initial state
     act(() => {
       useAppStore.setState({
@@ -214,4 +233,4 @@ describe('appStore', () => {
       expect(result2.current.language).toBe('en') // Same store instance
     })
   })
-}) 
+})
