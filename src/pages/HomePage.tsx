@@ -1,5 +1,5 @@
 import { Music, TrendingUp } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -17,10 +17,13 @@ export const HomePage: React.FC = () => {
       limit: 10,
     })
 
-  // Clear search query when entering home page
-  useEffect(() => {
+  // Clear search query when component mounts
+  // Using a ref to ensure it only runs once
+  const hasClearedSearch = React.useRef(false)
+  if (!hasClearedSearch.current) {
     clearSearch()
-  }, [clearSearch])
+    hasClearedSearch.current = true
+  }
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`)
