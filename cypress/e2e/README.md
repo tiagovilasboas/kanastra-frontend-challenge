@@ -190,7 +190,7 @@ npm run cypress:open
 ### Base URL
 
 - Configurada em `cypress.config.ts`
-- Padrão: `http://127.0.0.1:5175`
+- Padrão: `http://127.0.0.1:5173`
 
 ### Viewport
 
