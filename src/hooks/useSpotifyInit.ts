@@ -10,12 +10,12 @@ export function useSpotifyInit() {
   useEffect(() => {
     async function initializeSpotify() {
       try {
-        logger.debug('Initializing Spotify...')
+        // Removed debug logs for cleaner production code
 
         // Try to get client token, but don't fail the entire app if it fails
         try {
           await spotifyRepository.getClientToken()
-          logger.debug('Spotify initialized with client token')
+          // Removed debug logs for cleaner production code
         } catch (tokenError) {
           logger.warn(
             'Failed to get client token, app will work with user authentication only',

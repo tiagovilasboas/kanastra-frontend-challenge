@@ -188,11 +188,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         const advancedQuery = buildSearchQuery(query)
         const offset = 0
 
-        logger.debug('Starting segmented search', {
-          query: advancedQuery,
-          types,
-          offset,
-        })
+        // Removed debug logs for cleaner production code
 
         // Search for each type
         const searchPromises = types.map(async (type) => {
@@ -267,20 +263,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           error: null,
         }))
 
-        logger.debug('Segmented search completed', {
-          results: {
-            artists: newResults.artists.length,
-            albums: newResults.albums.length,
-            tracks: newResults.tracks.length,
-          },
-          segmented: {
-            exactMatches: segmentedResults.exactMatches.length,
-            similarArtists: segmentedResults.similarArtists.length,
-            relatedArtists: segmentedResults.relatedArtists.length,
-            otherResults: segmentedResults.otherResults.length,
-          },
-          totalResults,
-        })
+        // Removed debug logs for cleaner production code
       } catch (error) {
         logger.error('Search error', error)
         setSearchState((prev) => ({
@@ -459,7 +442,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     }
     if (searchQuery.trim()) {
       debounceRef.current = setTimeout(() => {
-        logger.debug('Debounced search triggered', { searchQuery })
+        // Removed debug logs for cleaner production code
         setDebouncedQuery(searchQuery)
         setPage(0)
         setSearchState((prev) => ({ ...prev, error: null }))

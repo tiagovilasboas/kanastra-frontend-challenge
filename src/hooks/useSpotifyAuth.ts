@@ -30,10 +30,10 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
       if (token) {
         spotifyRepository.setAccessToken(token)
         setIsAuthenticated(true)
-        logger.debug('User authenticated with token')
+        // Removed debug logs for cleaner production code
       } else {
         setIsAuthenticated(false)
-        logger.debug('No authentication token found')
+        // Removed debug logs for cleaner production code
       }
       setIsLoading(false)
     }
@@ -54,11 +54,9 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
 
   const login = useCallback(async () => {
     try {
-      logger.debug('Starting login process')
+      // Removed debug logs for cleaner production code
       const authUrl = await spotifyRepository.getAuthUrl()
-      logger.debug('Redirecting to auth URL', {
-        url: authUrl.substring(0, 100) + '...',
-      })
+      // Removed debug logs for cleaner production code
       window.location.href = authUrl
     } catch (error) {
       logger.error('Error generating auth URL', error)

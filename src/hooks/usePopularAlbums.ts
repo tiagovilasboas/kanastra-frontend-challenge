@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { spotifyRepository } from '@/repositories'
 import { SpotifyAlbum } from '@/types/spotify'
-import { logger } from '@/utils/logger'
+// Removed unused logger import
 
 interface UsePopularAlbumsParams {
   limit?: number
@@ -21,7 +21,7 @@ export function usePopularAlbums({
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['popular-albums', limit],
     queryFn: async () => {
-      logger.debug('Fetching popular albums', { limit })
+      // Removed debug logs for cleaner production code
 
       // For now, we'll search for popular albums using a generic search
       // In a real implementation, you might want to use a different endpoint
@@ -35,9 +35,7 @@ export function usePopularAlbums({
 
       const albums = response.albums?.items || []
 
-      logger.debug('Popular albums fetched successfully', {
-        count: albums.length,
-      })
+              // Removed debug logs for cleaner production code
 
       return albums
     },
