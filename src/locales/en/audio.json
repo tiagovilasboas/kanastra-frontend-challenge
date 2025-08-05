@@ -18,5 +18,6 @@
   "loudness": "Loudness",
   "timeSignature": "Time Signature",
   "major": "Major",
-  "minor": "Minor"
+  "minor": "Minor",
+  "tracks": "Tracks"
 }

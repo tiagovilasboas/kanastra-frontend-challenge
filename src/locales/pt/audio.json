@@ -18,5 +18,6 @@
   "loudness": "Volume",
   "timeSignature": "Compasso",
   "major": "Maior",
-  "minor": "Menor"
+  "minor": "Menor",
+  "tracks": "Músicas"
 }
