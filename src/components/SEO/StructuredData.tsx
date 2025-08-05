@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
+import React from 'react'
+
+import { useDOM } from '@/hooks/useDOM'
 
 interface StructuredDataProps {
   type: 'website' | 'article' | 'artist'
@@ -24,13 +26,10 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
   artistFollowers,
   artistGenres,
 }) => {
-  useEffect(() => {
-    // Remove existing structured data
-    const existingScript = document.querySelector('script[type="application/ld+json"]')
-    if (existingScript) {
-      existingScript.remove()
-    }
+  const { addStructuredData, removeStructuredData } = useDOM()
 
+  // Use useMemo to update structured data when props change
+  React.useMemo(() => {
     let structuredData: Record<string, unknown> = {}
 
     if (type === 'website') {
@@ -89,20 +88,15 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
       }
     }
 
-    // Add structured data to head
-    const script = document.createElement('script')
-    script.type = 'application/ld+json'
-    script.textContent = JSON.stringify(structuredData)
-    document.head.appendChild(script)
+    addStructuredData(structuredData)
+  }, [type, title, description, url, image, artistName, artistImage, artistFollowers, artistGenres, addStructuredData])
 
-    // Cleanup on unmount
+  // Cleanup on unmount using useLayoutEffect
+  React.useLayoutEffect(() => {
     return () => {
-      const scriptToRemove = document.querySelector('script[type="application/ld+json"]')
-      if (scriptToRemove) {
-        scriptToRemove.remove()
-      }
+      removeStructuredData()
     }
-  }, [type, title, description, url, image, artistName, artistImage, artistFollowers, artistGenres])
+  }, [removeStructuredData])
 
   return null
 }
