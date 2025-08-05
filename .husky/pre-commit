@@ -3,11 +3,11 @@
 
 echo "🔍 Husky: Verificando qualidade do código..."
 
-# 1. Verificar se há erros de linting
-echo "📝 Verificando ESLint..."
-npm run lint
+# 1. Executar lint-staged para arquivos staged (inclui ESLint + Prettier)
+echo "🎯 Executando lint-staged..."
+npx lint-staged
 if [ $? -ne 0 ]; then
-  echo "❌ ESLint encontrou erros. Corrija-os antes do commit."
+  echo "❌ lint-staged falhou. Corrija os problemas antes do commit."
   exit 1
 fi
 
@@ -24,14 +24,6 @@ echo "🧪 Executando testes unitários..."
 npm run test -- --run --reporter=verbose
 if [ $? -ne 0 ]; then
   echo "❌ Testes unitários falharam. Corrija-os antes do commit."
-  exit 1
-fi
-
-# 4. Executar lint-staged para arquivos staged
-echo "🎯 Executando lint-staged..."
-npx lint-staged
-if [ $? -ne 0 ]; then
-  echo "❌ lint-staged falhou. Corrija os problemas antes do commit."
   exit 1
 fi
 
