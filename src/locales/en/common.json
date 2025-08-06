@@ -29,5 +29,5 @@
   "nextPage": "Next page",
   "goToPage": "Go to page {page}",
   "refresh": "Refresh",
-  "pageInfo": "Page {{current}} of {{total}}"
+  "pageInfo": "Page {current} of {total}"
 }

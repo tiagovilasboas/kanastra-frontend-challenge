@@ -1,10 +1,4 @@
 {
   "title": "Albums",
-  "description": "Discover and explore albums from your favorite artists",
-  "comingSoonTitle": "Coming Soon",
-  "comingSoonMessage": "The albums page is under development. You can still explore albums by visiting individual artist pages.",
-  "popularAlbums": "Popular Albums",
-  "filterByName": "Filter by album name...",
-  "noAlbumsFound": "No albums found for \"{filter}\".",
-  "noAlbumsAvailable": "No albums available at the moment."
+  "underConstruction": "This albums page is under construction. Soon you will be able to explore releases and collections!"
 }

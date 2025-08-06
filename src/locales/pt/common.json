@@ -29,5 +29,5 @@
   "nextPage": "Próxima página",
   "goToPage": "Ir para página {page}",
   "refresh": "Atualizar",
-  "pageInfo": "Página {{current}} de {{total}}"
+  "pageInfo": "Página {current} de {total}"
 }
