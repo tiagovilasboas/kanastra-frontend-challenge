@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-import { useDOM } from '@/hooks/useDOM'
-
 interface StructuredDataProps {
   type: 'website' | 'article' | 'artist'
   title: string
@@ -26,8 +24,6 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
   artistFollowers,
   artistGenres,
 }) => {
-  const { addStructuredData, removeStructuredData } = useDOM()
-
   // Use useMemo to update structured data when props change
   React.useMemo(() => {
     let structuredData: Record<string, unknown> = {}
@@ -82,21 +78,37 @@ export const StructuredData: React.FC<StructuredDataProps> = ({
             userInteractionCount: artistFollowers,
           },
         }),
-        sameAs: [
-          'https://open.spotify.com',
-        ],
+        sameAs: ['https://open.spotify.com'],
       }
     }
 
-    addStructuredData(structuredData)
-  }, [type, title, description, url, image, artistName, artistImage, artistFollowers, artistGenres, addStructuredData])
+    // Add structured data to document
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.textContent = JSON.stringify(structuredData)
+    script.id = 'structured-data'
+    document.head.appendChild(script)
+  }, [
+    type,
+    title,
+    description,
+    url,
+    image,
+    artistName,
+    artistImage,
+    artistFollowers,
+    artistGenres,
+  ])
 
   // Cleanup on unmount using useLayoutEffect
   React.useLayoutEffect(() => {
     return () => {
-      removeStructuredData()
+      const script = document.getElementById('structured-data')
+      if (script) {
+        script.remove()
+      }
     }
-  }, [removeStructuredData])
+  }, [])
 
   return null
 }
@@ -111,4 +123,4 @@ StructuredData.propTypes = {
   artistImage: PropTypes.string,
   artistFollowers: PropTypes.number,
   artistGenres: PropTypes.arrayOf(PropTypes.string),
-} 
+}
