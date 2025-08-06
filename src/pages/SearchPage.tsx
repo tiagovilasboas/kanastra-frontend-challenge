@@ -83,7 +83,7 @@ export const SearchPage: React.FC = () => {
     <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6">
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header */}
-        <SearchHeader searchQuery={searchQuery} />
+        <SearchHeader />
 
         {/* Search Filters - Only show when there's a search query */}
         {searchQuery && (
@@ -137,13 +137,11 @@ const SearchLoadingState: React.FC<{
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
-        <span className="text-lg font-medium text-muted-foreground">
-          {t('search:searching', 'Searching')}
-          {t('search:space', ' ')}
+        <span className="text-muted-foreground">
           {selectedCategory === 'all'
-            ? t('search:all', 'All')
-            : t(`search:${selectedCategory}`, selectedCategory)}
-          {t('search:ellipsis', '...')}
+            ? t('search:searchingAll')
+            : t(`search:${selectedCategory}`)}
+          {t('search:ellipsis')}
         </span>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

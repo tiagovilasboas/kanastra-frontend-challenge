@@ -1,20 +1,25 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyEpisode } from '@/types/spotify'
+
 import { EpisodeItem } from '../items/EpisodeItem'
 import { GridLayout } from '../layouts/GridLayout'
 import { SectionWrapper } from '../layouts/SectionWrapper'
 
 // Top Episodes Section
 interface TopEpisodesSectionProps {
-  episodes: any[]
-  onClick?: (episode: any) => void
+  episodes: SpotifyEpisode[]
+  onClick?: (episode: SpotifyEpisode) => void
 }
 
-export const TopEpisodesSection: React.FC<TopEpisodesSectionProps> = ({ episodes, onClick }) => {
+export const TopEpisodesSection: React.FC<TopEpisodesSectionProps> = ({
+  episodes,
+  onClick,
+}) => {
   const { t } = useTranslation()
 
-  const handleEpisodeClick = (episode: any) => {
+  const handleEpisodeClick = (episode: SpotifyEpisode) => {
     if (onClick) {
       onClick(episode)
     } else {
@@ -24,16 +29,16 @@ export const TopEpisodesSection: React.FC<TopEpisodesSectionProps> = ({ episodes
   }
 
   return (
-    <SectionWrapper title={t('search:episodes', 'Episódios')}>
+    <SectionWrapper title={t('search:episodes')}>
       <GridLayout cols={4}>
         {episodes.map((episode) => (
-          <EpisodeItem 
-            key={episode.id} 
-            episode={episode} 
+          <EpisodeItem
+            key={episode.id}
+            episode={episode}
             onClick={() => handleEpisodeClick(episode)}
           />
         ))}
       </GridLayout>
     </SectionWrapper>
   )
-} 
+}

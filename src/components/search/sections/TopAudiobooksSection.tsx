@@ -1,20 +1,25 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyAudiobook } from '@/types/spotify'
+
 import { AudiobookItem } from '../items/AudiobookItem'
 import { GridLayout } from '../layouts/GridLayout'
 import { SectionWrapper } from '../layouts/SectionWrapper'
 
 // Top Audiobooks Section
 interface TopAudiobooksSectionProps {
-  audiobooks: any[]
-  onClick?: (audiobook: any) => void
+  audiobooks: SpotifyAudiobook[]
+  onClick?: (audiobook: SpotifyAudiobook) => void
 }
 
-export const TopAudiobooksSection: React.FC<TopAudiobooksSectionProps> = ({ audiobooks, onClick }) => {
+export const TopAudiobooksSection: React.FC<TopAudiobooksSectionProps> = ({
+  audiobooks,
+  onClick,
+}) => {
   const { t } = useTranslation()
 
-  const handleAudiobookClick = (audiobook: any) => {
+  const handleAudiobookClick = (audiobook: SpotifyAudiobook) => {
     if (onClick) {
       onClick(audiobook)
     } else {
@@ -24,16 +29,16 @@ export const TopAudiobooksSection: React.FC<TopAudiobooksSectionProps> = ({ audi
   }
 
   return (
-    <SectionWrapper title={t('search:audiobooks', 'Audiobooks')}>
+    <SectionWrapper title={t('search:audiobooks')}>
       <GridLayout cols={4}>
         {audiobooks.map((audiobook) => (
-          <AudiobookItem 
-            key={audiobook.id} 
-            audiobook={audiobook} 
+          <AudiobookItem
+            key={audiobook.id}
+            audiobook={audiobook}
             onClick={() => handleAudiobookClick(audiobook)}
           />
         ))}
       </GridLayout>
     </SectionWrapper>
   )
-} 
+}

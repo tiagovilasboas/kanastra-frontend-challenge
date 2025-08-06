@@ -2,11 +2,7 @@ import { Search } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-interface SearchHeaderProps {
-  searchQuery: string
-}
-
-export const SearchHeader: React.FC<SearchHeaderProps> = () => {
+export const SearchHeader: React.FC = () => {
   const { t } = useTranslation()
 
   return (

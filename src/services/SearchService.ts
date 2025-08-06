@@ -1,4 +1,8 @@
-import { getDeviceBasedConfig, getSearchLimitWithDevice } from '@/config/searchLimits'
+import {
+  getDeviceBasedConfig,
+  getSearchLimitWithDevice,
+} from '@/config/searchLimits'
+import { SpotifyRepository } from '@/repositories/spotify/SpotifyRepository'
 import { SpotifySearchType, SpotifyTypeMapping } from '@/types/spotify'
 import { logger } from '@/utils/logger'
 
@@ -36,12 +40,17 @@ export class SearchResultProcessor {
    */
   static processResults<T extends SpotifySearchType>(
     response: Record<string, unknown>,
-    type: T
+    type: T,
   ): SearchResult<T> {
     const key = `${type}s` as keyof typeof response
-    const data = response[key] as { items?: unknown[]; total?: number } | undefined
-    
+    const data = response[key] as
+      | { items?: unknown[]; total?: number }
+      | undefined
+
+    console.log(`Processing ${key}:`, { data, response })
+
     if (!data) {
+      console.log(`No data found for ${key}`)
       return {
         items: [],
         total: 0,
@@ -49,51 +58,60 @@ export class SearchResultProcessor {
       } as SearchResult<T>
     }
 
-    return {
+    const result = {
       items: (data.items || []) as SpotifyTypeMapping[T][],
       total: data.total || 0,
-      hasMore: ((data.items?.length || 0) < (data.total || 0)),
+      hasMore: (data.items?.length || 0) < (data.total || 0),
     } as SearchResult<T>
+
+    console.log(`Result for ${key}:`, result)
+    return result
   }
 
   /**
    * Agrega resultados de múltiplos tipos
    */
   static aggregateResults(
-    responses: Array<{ type: SpotifySearchType; response: Record<string, unknown> | null }>
+    responses: Array<{
+      type: SpotifySearchType
+      response: Record<string, unknown> | null
+    }>,
   ): AggregatedSearchResults {
-    const results: any = {}
+    const results: Record<string, SearchResult<SpotifySearchType>> = {
+      artists: { items: [], total: 0, hasMore: false },
+      albums: { items: [], total: 0, hasMore: false },
+      tracks: { items: [], total: 0, hasMore: false },
+      playlists: { items: [], total: 0, hasMore: false },
+      shows: { items: [], total: 0, hasMore: false },
+      episodes: { items: [], total: 0, hasMore: false },
+      audiobooks: { items: [], total: 0, hasMore: false },
+    }
 
     responses.forEach(({ type, response }) => {
       if (response) {
-        const key = `${type}s`
+        const key = `${type}s` as keyof AggregatedSearchResults
         results[key] = this.processResults(response, type)
       }
     })
 
-    return {
-      artists: results.artists || { items: [], total: 0, hasMore: false },
-      albums: results.albums || { items: [], total: 0, hasMore: false },
-      tracks: results.tracks || { items: [], total: 0, hasMore: false },
-      playlists: results.playlists || { items: [], total: 0, hasMore: false },
-      shows: results.shows || { items: [], total: 0, hasMore: false },
-      episodes: results.episodes || { items: [], total: 0, hasMore: false },
-      audiobooks: results.audiobooks || { items: [], total: 0, hasMore: false },
-    }
+    return results as unknown as AggregatedSearchResults
   }
 
   /**
    * Calcula o total de resultados
    */
   static calculateTotalResults(results: AggregatedSearchResults): number {
-    return Object.values(results).reduce((total, result) => total + result.total, 0)
+    return Object.values(results).reduce(
+      (total, result) => total + result.total,
+      0,
+    )
   }
 
   /**
    * Verifica se há mais resultados disponíveis
    */
   static hasMoreResults(results: AggregatedSearchResults): boolean {
-    return Object.values(results).some(result => result.hasMore)
+    return Object.values(results).some((result) => result.hasMore)
   }
 
   /**
@@ -101,24 +119,30 @@ export class SearchResultProcessor {
    */
   static processMultipleTypesResponse(
     response: Record<string, unknown>,
-    types: SpotifySearchType[]
+    types: SpotifySearchType[],
   ): AggregatedSearchResults {
-    const results: any = {}
+    const results: Record<string, SearchResult<SpotifySearchType>> = {
+      artists: { items: [], total: 0, hasMore: false },
+      albums: { items: [], total: 0, hasMore: false },
+      tracks: { items: [], total: 0, hasMore: false },
+      playlists: { items: [], total: 0, hasMore: false },
+      shows: { items: [], total: 0, hasMore: false },
+      episodes: { items: [], total: 0, hasMore: false },
+      audiobooks: { items: [], total: 0, hasMore: false },
+    }
+
+    // Debug: log the response structure
+    console.log('Spotify API Response:', response)
+    console.log('Search Types:', types)
 
     types.forEach((type) => {
-      const key = `${type}s`
+      const key = `${type}s` as keyof AggregatedSearchResults
+      console.log(`Processing ${key}:`, response[key])
       results[key] = this.processResults(response, type)
     })
 
-    return {
-      artists: results.artists || { items: [], total: 0, hasMore: false },
-      albums: results.albums || { items: [], total: 0, hasMore: false },
-      tracks: results.tracks || { items: [], total: 0, hasMore: false },
-      playlists: results.playlists || { items: [], total: 0, hasMore: false },
-      shows: results.shows || { items: [], total: 0, hasMore: false },
-      episodes: results.episodes || { items: [], total: 0, hasMore: false },
-      audiobooks: results.audiobooks || { items: [], total: 0, hasMore: false },
-    }
+    console.log('Aggregated Results:', results)
+    return results as unknown as AggregatedSearchResults
   }
 }
 
@@ -135,7 +159,7 @@ export class SearchQueryBuilder {
       yearTo?: number
       popularityFrom?: number
       popularityTo?: number
-    }
+    },
   ): string {
     let query = baseQuery.trim()
 
@@ -224,7 +248,7 @@ export class SearchStateManager {
   static setSuccess(
     state: SearchState,
     totalResults: number,
-    hasMore: boolean
+    hasMore: boolean,
   ): SearchState {
     return {
       ...state,
@@ -251,9 +275,9 @@ export class SearchStateManager {
 
 // Classe principal do serviço de busca
 export class SearchService {
-  private repository: any // Será injetado
+  private repository: SpotifyRepository
 
-  constructor(repository: any) {
+  constructor(repository: SpotifyRepository) {
     this.repository = repository
   }
 
@@ -263,21 +287,27 @@ export class SearchService {
   async searchMultipleTypes(
     query: string,
     types: SpotifySearchType[],
-    filters: any,
-    offset: number = 0
+    filters: Record<string, unknown>,
+    offset: number = 0,
   ): Promise<{
     results: AggregatedSearchResults
     state: SearchState
   }> {
     try {
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
       const config = getDeviceBasedConfig()
 
       // Se todos os tipos estão selecionados ("Tudo"), usa o limite "all" para cada tipo
       // Caso contrário, usa o limite padrão
-      const adjustedLimit = types.length === 7 ? config.all : getSearchLimitWithDevice(types.map(t => t.toLowerCase()))
+      const adjustedLimit =
+        types.length === 7
+          ? config.all
+          : getSearchLimitWithDevice(types.map((t) => t.toLowerCase()))
 
-      const { results, state } = await this.repository.searchMultipleTypes(
+      const response = await this.repository.searchMultipleTypes(
         advancedQuery,
         types,
         filters,
@@ -285,14 +315,42 @@ export class SearchService {
         offset,
       )
 
+      // Processa os resultados da API do Spotify
+      console.log('SearchService.searchMultipleTypes - Response:', response)
+      console.log('SearchService.searchMultipleTypes - Types:', types)
+
+      const results = SearchResultProcessor.processMultipleTypesResponse(
+        response,
+        types,
+      )
+      const totalResults = SearchResultProcessor.calculateTotalResults(results)
+      const hasMore = SearchResultProcessor.hasMoreResults(results)
+
+      console.log(
+        'SearchService.searchMultipleTypes - Processed Results:',
+        results,
+      )
+      console.log(
+        'SearchService.searchMultipleTypes - Total Results:',
+        totalResults,
+      )
+      console.log('SearchService.searchMultipleTypes - Has More:', hasMore)
+
+      const state = SearchStateManager.setSuccess(
+        SearchStateManager.createInitialState(),
+        totalResults,
+        hasMore,
+      )
+
+      console.log('SearchService.searchMultipleTypes - Final State:', state)
       return { results, state }
     } catch (error) {
       logger.error('Search service error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro na busca'
+        error instanceof Error ? error.message : 'Erro na busca',
       )
-      
+
       return { results: this.getEmptyResults(), state }
     }
   }
@@ -302,9 +360,9 @@ export class SearchService {
    */
   async searchArtists(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.ARTIST>
     state: SearchState
@@ -315,14 +373,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchArtists(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchArtists(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.ARTIST)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.ARTIST,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -330,9 +398,9 @@ export class SearchService {
       logger.error('Artist search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -345,9 +413,9 @@ export class SearchService {
    */
   async searchAlbums(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.ALBUM>
     state: SearchState
@@ -358,15 +426,25 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchAlbums(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchAlbums(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.ALBUM)
-      
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.ALBUM,
+      )
+
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -374,9 +452,9 @@ export class SearchService {
       logger.error('Album search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -389,9 +467,9 @@ export class SearchService {
    */
   async searchTracks(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.TRACK>
     state: SearchState
@@ -402,14 +480,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchTracks(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchTracks(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.TRACK)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.TRACK,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -417,9 +505,9 @@ export class SearchService {
       logger.error('Track search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -432,9 +520,9 @@ export class SearchService {
    */
   async searchPlaylists(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.PLAYLIST>
     state: SearchState
@@ -445,14 +533,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchPlaylists(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchPlaylists(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.PLAYLIST)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.PLAYLIST,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -460,9 +558,9 @@ export class SearchService {
       logger.error('Playlist search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -475,9 +573,9 @@ export class SearchService {
    */
   async searchShows(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.SHOW>
     state: SearchState
@@ -488,14 +586,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchShows(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchShows(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.SHOW)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.SHOW,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -503,9 +611,9 @@ export class SearchService {
       logger.error('Show search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -518,9 +626,9 @@ export class SearchService {
    */
   async searchEpisodes(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.EPISODE>
     state: SearchState
@@ -531,14 +639,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchEpisodes(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchEpisodes(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.EPISODE)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.EPISODE,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -546,9 +664,9 @@ export class SearchService {
       logger.error('Episode search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -561,9 +679,9 @@ export class SearchService {
    */
   async searchAudiobooks(
     query: string,
-    filters: any,
+    filters: Record<string, unknown>,
     limit: number = 20,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.AUDIOBOOK>
     state: SearchState
@@ -574,14 +692,24 @@ export class SearchService {
         throw new Error(validation.error)
       }
 
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
-      const response = await this.repository.searchAudiobooks(advancedQuery, limit, offset)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+      const response = await this.repository.searchAudiobooks(
+        advancedQuery,
+        limit,
+        offset,
+      )
 
-      const results = SearchResultProcessor.processResults(response, SpotifySearchType.AUDIOBOOK)
+      const results = SearchResultProcessor.processResults(
+        response,
+        SpotifySearchType.AUDIOBOOK,
+      )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
         results.total,
-        results.hasMore
+        results.hasMore,
       )
 
       return { results, state }
@@ -589,9 +717,9 @@ export class SearchService {
       logger.error('Audiobook search error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro desconhecido'
+        error instanceof Error ? error.message : 'Erro desconhecido',
       )
-      
+
       return {
         results: { items: [], total: 0, hasMore: false },
         state,
@@ -605,18 +733,23 @@ export class SearchService {
   async loadMore(
     query: string,
     types: SpotifySearchType[],
-    filters: any,
+    filters: Record<string, unknown>,
     currentResults: AggregatedSearchResults,
-    offset: number
+    offset: number,
   ): Promise<{
     results: AggregatedSearchResults
     state: SearchState
   }> {
     try {
-      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(query, filters)
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
 
       // Usa a configuração parametrizável de limites com detecção de dispositivo
-      const adjustedLimit = getSearchLimitWithDevice(types.map(t => t.toLowerCase()))
+      const adjustedLimit = getSearchLimitWithDevice(
+        types.map((t) => t.toLowerCase()),
+      )
 
       const { results, state } = await this.repository.searchMultipleTypes(
         advancedQuery,
@@ -631,21 +764,19 @@ export class SearchService {
       logger.error('Load more service error', error)
       const state = SearchStateManager.setError(
         SearchStateManager.createInitialState(),
-        error instanceof Error ? error.message : 'Erro ao carregar mais'
+        error instanceof Error ? error.message : 'Erro ao carregar mais',
       )
-      
+
       return { results: currentResults, state }
     }
   }
-
-
 
   /**
    * Retorna resultados vazios
    */
   private getEmptyResults(): AggregatedSearchResults {
     const emptyResult = { items: [], total: 0, hasMore: false }
-    
+
     return {
       artists: emptyResult,
       albums: emptyResult,
@@ -656,4 +787,4 @@ export class SearchService {
       audiobooks: emptyResult,
     }
   }
-} 
+}

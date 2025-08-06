@@ -107,7 +107,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.ARTIST:
             const artistResult = await searchService.searchArtists(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -127,7 +127,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.ALBUM:
             const albumResult = await searchService.searchAlbums(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -147,7 +147,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.TRACK:
             const trackResult = await searchService.searchTracks(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -167,7 +167,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.PLAYLIST:
             const playlistResult = await searchService.searchPlaylists(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -187,7 +187,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.SHOW:
             const showResult = await searchService.searchShows(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -207,7 +207,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.EPISODE:
             const episodeResult = await searchService.searchEpisodes(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -227,7 +227,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
           case SpotifySearchType.AUDIOBOOK:
             const audiobookResult = await searchService.searchAudiobooks(
               searchQuery,
-              filters,
+              filters as unknown as Record<string, unknown>,
               limit,
               0,
             )
@@ -245,14 +245,21 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
             }
 
           default:
-            throw new Error(`Tipo de busca não suportado: ${type}`)
+            // Multiple types search
+            const multiResult = await searchService.searchMultipleTypes(
+              searchQuery,
+              filters.types,
+              filters as unknown as Record<string, unknown>,
+              0,
+            )
+            return multiResult
         }
       } else {
         // Para múltiplos tipos ou "tudo", usa o método múltiplo
         const result = await searchService.searchMultipleTypes(
           searchQuery,
           filters.types,
-          filters,
+          filters as unknown as Record<string, unknown>,
           0,
         )
         return result
@@ -299,17 +306,20 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   }, [isLoading, error, searchData])
 
   const results: AggregatedSearchResults = useMemo(() => {
-    return (
-      searchData?.results || {
-        artists: { items: [], total: 0, hasMore: false },
-        albums: { items: [], total: 0, hasMore: false },
-        tracks: { items: [], total: 0, hasMore: false },
-        playlists: { items: [], total: 0, hasMore: false },
-        shows: { items: [], total: 0, hasMore: false },
-        episodes: { items: [], total: 0, hasMore: false },
-        audiobooks: { items: [], total: 0, hasMore: false },
-      }
-    )
+    console.log('useSpotifySearch - searchData:', searchData)
+    const defaultResults = {
+      artists: { items: [], total: 0, hasMore: false },
+      albums: { items: [], total: 0, hasMore: false },
+      tracks: { items: [], total: 0, hasMore: false },
+      playlists: { items: [], total: 0, hasMore: false },
+      shows: { items: [], total: 0, hasMore: false },
+      episodes: { items: [], total: 0, hasMore: false },
+      audiobooks: { items: [], total: 0, hasMore: false },
+    }
+
+    const finalResults = searchData?.results || defaultResults
+    console.log('useSpotifySearch - Final Results:', finalResults)
+    return finalResults
   }, [searchData])
 
   // Actions

@@ -35,9 +35,7 @@ export const ArtistItem: React.FC<ArtistItemProps> = ({ artist, onClick }) => {
         <h4 className="font-medium text-sm text-foreground truncate">
           {artist.name}
         </h4>
-        <p className="text-xs text-muted-foreground">
-          {t('search:artist', 'Artist')}
-        </p>
+        <p className="text-xs text-muted-foreground">{t('search:artist')}</p>
       </div>
     </div>
   )

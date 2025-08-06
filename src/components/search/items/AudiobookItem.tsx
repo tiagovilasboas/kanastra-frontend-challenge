@@ -1,17 +1,25 @@
 import { BookOpen } from 'lucide-react'
 import React from 'react'
 
+import { SpotifyAudiobook } from '@/types/spotify'
+
 import { BaseItem } from './BaseItem'
 
 // Audiobook Item Component
 interface AudiobookItemProps {
-  audiobook: any
+  audiobook: SpotifyAudiobook
   onClick?: () => void
 }
 
-export const AudiobookItem: React.FC<AudiobookItemProps> = ({ audiobook, onClick }) => {
-  const subtitle = audiobook.authors?.map((author: any) => author?.name || 'Autor desconhecido').join(', ') || 'Autor desconhecido'
-  
+export const AudiobookItem: React.FC<AudiobookItemProps> = ({
+  audiobook,
+  onClick,
+}) => {
+  const subtitle =
+    audiobook.authors
+      ?.map((author) => author?.name || 'Autor desconhecido')
+      .join(', ') || 'Autor desconhecido'
+
   return (
     <BaseItem
       image={audiobook.images?.[0]?.url}
@@ -21,4 +29,4 @@ export const AudiobookItem: React.FC<AudiobookItemProps> = ({ audiobook, onClick
       onClick={onClick}
     />
   )
-} 
+}

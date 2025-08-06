@@ -1,17 +1,22 @@
 import { Disc3 } from 'lucide-react'
 import React from 'react'
 
+import { SpotifyAlbum } from '@/types/spotify'
+
 import { BaseItem } from './BaseItem'
 
 // Album Item Component
 interface AlbumItemProps {
-  album: any
+  album: SpotifyAlbum
   onClick?: () => void
 }
 
 export const AlbumItem: React.FC<AlbumItemProps> = ({ album, onClick }) => {
-  const subtitle = album.artists?.map((artist: any) => artist?.name || 'Artista desconhecido').join(', ') || 'Artista desconhecido'
-  
+  const subtitle =
+    album.artists
+      ?.map((artist) => artist?.name || 'Artista desconhecido')
+      .join(', ') || 'Artista desconhecido'
+
   return (
     <BaseItem
       image={album.images?.[0]?.url}
@@ -21,4 +26,4 @@ export const AlbumItem: React.FC<AlbumItemProps> = ({ album, onClick }) => {
       onClick={onClick}
     />
   )
-} 
+}

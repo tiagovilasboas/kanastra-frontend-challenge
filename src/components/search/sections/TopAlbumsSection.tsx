@@ -1,20 +1,25 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyAlbum } from '@/types/spotify'
+
 import { AlbumItem } from '../items/AlbumItem'
 import { GridLayout } from '../layouts/GridLayout'
 import { SectionWrapper } from '../layouts/SectionWrapper'
 
 // Top Albums Section
 interface TopAlbumsSectionProps {
-  albums: any[]
-  onClick?: (album: any) => void
+  albums: SpotifyAlbum[]
+  onClick?: (album: SpotifyAlbum) => void
 }
 
-export const TopAlbumsSection: React.FC<TopAlbumsSectionProps> = ({ albums, onClick }) => {
+export const TopAlbumsSection: React.FC<TopAlbumsSectionProps> = ({
+  albums,
+  onClick,
+}) => {
   const { t } = useTranslation()
 
-  const handleAlbumClick = (album: any) => {
+  const handleAlbumClick = (album: SpotifyAlbum) => {
     if (onClick) {
       onClick(album)
     } else {
@@ -24,16 +29,16 @@ export const TopAlbumsSection: React.FC<TopAlbumsSectionProps> = ({ albums, onCl
   }
 
   return (
-    <SectionWrapper title={t('search:albums', 'Álbuns')}>
+    <SectionWrapper title={t('search:albums')}>
       <GridLayout cols={4}>
         {albums.map((album) => (
-          <AlbumItem 
-            key={album.id} 
-            album={album} 
+          <AlbumItem
+            key={album.id}
+            album={album}
             onClick={() => handleAlbumClick(album)}
           />
         ))}
       </GridLayout>
     </SectionWrapper>
   )
-} 
+}

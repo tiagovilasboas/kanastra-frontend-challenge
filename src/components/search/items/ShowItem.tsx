@@ -1,11 +1,13 @@
 import { Mic } from 'lucide-react'
 import React from 'react'
 
+import { SpotifyShow } from '@/types/spotify'
+
 import { BaseItem } from './BaseItem'
 
 // Show Item Component
 interface ShowItemProps {
-  show: any
+  show: SpotifyShow
   onClick?: () => void
 }
 
@@ -19,4 +21,4 @@ export const ShowItem: React.FC<ShowItemProps> = ({ show, onClick }) => {
       onClick={onClick}
     />
   )
-} 
+}

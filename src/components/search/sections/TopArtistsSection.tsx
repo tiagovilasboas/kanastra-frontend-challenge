@@ -1,20 +1,25 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { SpotifyArtist } from '@/types/spotify'
+
 import { ArtistItem } from '../items/ArtistItem'
 import { GridLayout } from '../layouts/GridLayout'
 import { SectionWrapper } from '../layouts/SectionWrapper'
 
 // Top Artists Section
 interface TopArtistsSectionProps {
-  artists: any[]
-  onClick?: (artist: any) => void
+  artists: SpotifyArtist[]
+  onClick?: (artist: SpotifyArtist) => void
 }
 
-export const TopArtistsSection: React.FC<TopArtistsSectionProps> = ({ artists, onClick }) => {
+export const TopArtistsSection: React.FC<TopArtistsSectionProps> = ({
+  artists,
+  onClick,
+}) => {
   const { t } = useTranslation()
 
-  const handleArtistClick = (artist: any) => {
+  const handleArtistClick = (artist: SpotifyArtist) => {
     if (onClick) {
       onClick(artist)
     } else {
@@ -24,16 +29,16 @@ export const TopArtistsSection: React.FC<TopArtistsSectionProps> = ({ artists, o
   }
 
   return (
-    <SectionWrapper title={t('search:artists', 'Artistas')}>
-      <GridLayout cols={3}>
+    <SectionWrapper title={t('search:artists')}>
+      <GridLayout cols={6}>
         {artists.map((artist) => (
-          <ArtistItem 
-            key={artist.id} 
-            artist={artist} 
+          <ArtistItem
+            key={artist.id}
+            artist={artist}
             onClick={() => handleArtistClick(artist)}
           />
         ))}
       </GridLayout>
     </SectionWrapper>
   )
-} 
+}

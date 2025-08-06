@@ -40,11 +40,8 @@ export const TrackItem: React.FC<TrackItemProps> = ({ track, onClick }) => {
         <h4 className="font-medium text-foreground truncate">{track.name}</h4>
         <p className="text-sm text-muted-foreground truncate">
           {track.artists
-            ?.map(
-              (artist) =>
-                artist?.name || t('search:unknownArtist', 'Unknown Artist'),
-            )
-            .join(', ') || t('search:unknownArtist', 'Unknown Artist')}
+            ?.map((artist) => artist?.name || t('search:unknownArtist'))
+            .join(', ') || t('search:unknownArtist')}
         </p>
       </div>
       <div className="text-sm text-muted-foreground">
