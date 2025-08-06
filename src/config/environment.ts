@@ -40,9 +40,9 @@ const getEnvironmentConfig = (): EnvironmentConfig => {
 
   return {
     spotify: {
-      clientId: requiredEnvVars.VITE_SPOTIFY_CLIENT_ID!,
-      clientSecret: requiredEnvVars.VITE_SPOTIFY_CLIENT_SECRET!,
-      redirectUri: requiredEnvVars.VITE_SPOTIFY_REDIRECT_URI!,
+      clientId: requiredEnvVars.VITE_SPOTIFY_CLIENT_ID || '',
+      clientSecret: requiredEnvVars.VITE_SPOTIFY_CLIENT_SECRET || '',
+      redirectUri: requiredEnvVars.VITE_SPOTIFY_REDIRECT_URI || '',
       scopes: ['user-read-private', 'user-read-email'],
       baseUrl: 'https://api.spotify.com/v1',
       authUrl: 'https://accounts.spotify.com/authorize',

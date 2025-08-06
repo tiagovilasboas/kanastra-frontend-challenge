@@ -2,7 +2,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useMemo, useState } from 'react'
 
 import { cache } from '@/config/react-query'
-import { getDeviceBasedConfig, getLimitByType } from '@/config/searchLimits'
 import { spotifyRepository } from '@/repositories'
 import {
   AggregatedSearchResults,
@@ -21,7 +20,6 @@ interface UseSpotifySearchReturn {
 
   // Actions
   search: (query: string, types: SpotifySearchType[]) => Promise<void>
-  loadMore: () => Promise<void>
   clearSearch: () => void
 
   // Filters
@@ -29,16 +27,18 @@ interface UseSpotifySearchReturn {
   setFilters: (filters: SearchFilters) => void
 }
 
-export function useSpotifySearch(): UseSpotifySearchReturn {
+export function useSpotifySearch(
+  initialFilters?: Partial<SearchFilters>,
+): UseSpotifySearchReturn {
   const queryClient = useQueryClient()
-  const { searchQuery } = useSearchStore()
+  const { debouncedSearchQuery } = useSearchStore()
 
   // Initialize search service
   const searchService = useMemo(() => new SearchService(spotifyRepository), [])
 
-  // Local state for filters
+  // Local state for filters with initial values
   const [filters, setFiltersState] = useState<SearchFilters>({
-    types: [
+    types: initialFilters?.types || [
       SpotifySearchType.ARTIST,
       SpotifySearchType.ALBUM,
       SpotifySearchType.TRACK,
@@ -47,14 +47,14 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       SpotifySearchType.EPISODE,
       SpotifySearchType.AUDIOBOOK,
     ],
-    genres: [],
-    yearFrom: undefined,
-    yearTo: undefined,
-    popularityFrom: undefined,
-    popularityTo: undefined,
-    market: undefined,
-    includeExplicit: false,
-    includeExternal: false,
+    genres: initialFilters?.genres || [],
+    yearFrom: initialFilters?.yearFrom,
+    yearTo: initialFilters?.yearTo,
+    popularityFrom: initialFilters?.popularityFrom,
+    popularityTo: initialFilters?.popularityTo,
+    market: initialFilters?.market,
+    includeExplicit: initialFilters?.includeExplicit ?? false,
+    includeExternal: initialFilters?.includeExternal ?? false,
   })
 
   // Search query with React Query
@@ -65,7 +65,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
   } = useQuery({
     queryKey: [
       'spotify-search',
-      searchQuery,
+      debouncedSearchQuery,
       filters.types,
       filters.genres,
       filters.yearFrom,
@@ -77,7 +77,10 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       filters.includeExternal,
     ],
     queryFn: async () => {
-      if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      if (
+        !debouncedSearchQuery.trim() ||
+        debouncedSearchQuery.trim().length < 2
+      ) {
         return {
           results: {
             artists: { items: [], total: 0, hasMore: false },
@@ -98,16 +101,22 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         }
       }
 
-      // Se apenas um tipo está selecionado, usa o método específico
+      console.log('🔍 useSpotifySearch - filters.types:', filters.types)
+      console.log(
+        '🔍 useSpotifySearch - filters.types.length:',
+        filters.types.length,
+      )
+
+      // If only one type is selected, use the specific method
       if (filters.types.length === 1) {
         const type = filters.types[0]
-        const config = getDeviceBasedConfig()
-        const limit = getLimitByType(type.toLowerCase(), config)
+
+        // Fixed limit of 20 for specific types
+        const limit = 20
 
         console.log('🔍 Debug Search Limits:', {
           type,
           typeLowerCase: type.toLowerCase(),
-          config,
           limit,
           filtersTypes: filters.types,
         })
@@ -115,7 +124,7 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
         switch (type) {
           case SpotifySearchType.ARTIST:
             const artistResult = await searchService.searchArtists(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -132,10 +141,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: artistResult.state,
             }
-
           case SpotifySearchType.ALBUM:
             const albumResult = await searchService.searchAlbums(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -152,10 +160,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: albumResult.state,
             }
-
           case SpotifySearchType.TRACK:
             const trackResult = await searchService.searchTracks(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -172,10 +179,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: trackResult.state,
             }
-
           case SpotifySearchType.PLAYLIST:
             const playlistResult = await searchService.searchPlaylists(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -192,10 +198,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: playlistResult.state,
             }
-
           case SpotifySearchType.SHOW:
             const showResult = await searchService.searchShows(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -212,10 +217,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: showResult.state,
             }
-
           case SpotifySearchType.EPISODE:
             const episodeResult = await searchService.searchEpisodes(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -232,10 +236,9 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: episodeResult.state,
             }
-
           case SpotifySearchType.AUDIOBOOK:
             const audiobookResult = await searchService.searchAudiobooks(
-              searchQuery,
+              debouncedSearchQuery,
               filters as unknown as Record<string, unknown>,
               limit,
               0,
@@ -252,29 +255,40 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
               },
               state: audiobookResult.state,
             }
-
           default:
-            // Multiple types search
-            const multiResult = await searchService.searchMultipleTypes(
-              searchQuery,
-              filters.types,
-              filters as unknown as Record<string, unknown>,
-              0,
-            )
-            return multiResult
+            throw new Error(`Unsupported search type: ${type}`)
         }
       } else {
-        // Para múltiplos tipos ou "tudo", usa o método múltiplo
-        const result = await searchService.searchMultipleTypes(
-          searchQuery,
-          filters.types,
-          filters as unknown as Record<string, unknown>,
-          0,
-        )
-        return result
+        // For multiple types or "all", use the appropriate method
+        // Detecta se é modo "All" (mais de 1 tipo OU todos os tipos OU sentinel ALL)
+        const isAllMode =
+          filters.types.length > 1 ||
+          filters.types.length === 7 ||
+          filters.types.includes(SpotifySearchType.ALL)
+
+        if (isAllMode) {
+          // Use searchAllTypes for "All" mode with limit=5
+          const result = await searchService.searchAllTypes(
+            debouncedSearchQuery,
+            filters.types,
+            filters as unknown as Record<string, unknown>,
+            0,
+          )
+          return result
+        } else {
+          // Use searchMultipleTypes for specific type combinations with limit=20
+          const result = await searchService.searchMultipleTypes(
+            debouncedSearchQuery,
+            filters.types,
+            filters as unknown as Record<string, unknown>,
+            20,
+            0,
+          )
+          return result
+        }
       }
     },
-    enabled: searchQuery.trim().length >= 2,
+    enabled: debouncedSearchQuery.trim().length >= 2,
     staleTime: cache.stale.FREQUENT, // Search results change frequently
     gcTime: cache.times.SHORT, // Keep in memory for short time
     retry: cache.retry.IMPORTANT.retry,
@@ -337,19 +351,6 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     // This function is kept for backward compatibility
   }, [])
 
-  const loadMore = useCallback(async () => {
-    if (
-      !searchState.hasMore ||
-      searchState.isLoadingMore ||
-      !searchQuery.trim()
-    ) {
-      return
-    }
-
-    // TODO: Implement load more with React Query
-    // This would require a separate query or mutation
-  }, [searchState.hasMore, searchState.isLoadingMore, searchQuery])
-
   const clearSearch = useCallback(() => {
     // Invalidate and remove search queries
     queryClient.removeQueries({
@@ -365,7 +366,6 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
     searchState,
     results,
     search,
-    loadMore,
     clearSearch,
     filters,
     setFilters,
