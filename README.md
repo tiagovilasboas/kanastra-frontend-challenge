@@ -133,16 +133,6 @@ npm run lighthouse       # Auditoria de performance
 npm run lighthouse:dev   # Auditoria em desenvolvimento
 ```
 
-### Testes E2E Específicos
-
-```bash
-npm run test:e2e:auth    # Testes de autenticação
-npm run test:e2e:search  # Testes de busca
-npm run test:e2e:artists # Testes de artistas
-npm run test:e2e:albums  # Testes de álbuns
-npm run test:e2e:settings # Testes de configurações
-```
-
 ## 🧪 Testes
 
 ### Testes Unitários
@@ -154,17 +144,17 @@ npm run test:e2e:settings # Testes de configurações
 ### Testes E2E
 
 - **Cypress** para testes end-to-end
-- **Cobertura completa** de fluxos críticos
-- **Testes automatizados** de autenticação, busca e navegação
+- **2 testes focados**: Busca e página de artistas
+- **Cobertura dos fluxos críticos** da aplicação
 
 ### Exemplo de Execução
 
 ```bash
-# Executar todos os testes
+# Executar todos os testes unitários
 npm run test
 
-# Executar testes E2E específicos
-npm run test:e2e:search
+# Executar testes E2E
+npm run test:e2e
 
 # Executar testes com coverage
 npm run test -- --coverage
