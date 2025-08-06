@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { queryKeys } from '@/config/react-query'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { spotifyRepository } from '@/repositories'
 import { useAppStore } from '@/stores/appStore'
 import { logger } from '@/utils/logger'
@@ -24,7 +23,30 @@ export function useSpotifyAuth(): UseSpotifyAuthReturn {
   const queryClient = useQueryClient()
   const { isAuthenticated, isLoading, setAuthenticated, setLoading, setError } =
     useAppStore()
-  const { getItem, setItem, removeItem } = useLocalStorage()
+  // Simple localStorage helpers
+  const getItem = useCallback((key: string) => {
+    try {
+      return localStorage.getItem(key)
+    } catch {
+      return null
+    }
+  }, [])
+
+  const setItem = useCallback((key: string, value: string) => {
+    try {
+      localStorage.setItem(key, value)
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [])
+
+  const removeItem = useCallback((key: string) => {
+    try {
+      localStorage.removeItem(key)
+    } catch {
+      // Ignore localStorage errors
+    }
+  }, [])
 
   const login = useCallback(async () => {
     try {
