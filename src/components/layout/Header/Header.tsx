@@ -1,4 +1,6 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { LogIn, LogOut, Menu, Search, User } from 'lucide-react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
+import { useDebounce } from '@/hooks/useDebounce'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 import { useSearchStore } from '@/stores/searchStore'
 
@@ -23,11 +26,31 @@ export interface HeaderProps {
 export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
-  const { searchQuery, setSearchQuery } = useSearchStore()
+  const { searchQuery, setSearchQuery, setDebouncedSearchQuery } =
+    useSearchStore()
+
+  // Debounce the search query with 350ms delay
+  const debouncedSearchQuery = useDebounce(searchQuery, 350)
+
+  // Update debounced search query in store when it changes
+  useEffect(() => {
+    setDebouncedSearchQuery(debouncedSearchQuery)
+  }, [debouncedSearchQuery, setDebouncedSearchQuery])
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
+
+    // If input is cleared, invalidate queries
+    if (!value.trim()) {
+      queryClient.removeQueries({
+        queryKey: ['spotify-search'],
+      })
+      queryClient.removeQueries({
+        queryKey: ['spotify-search-by-type'],
+      })
+    }
 
     // Navigate to search page if user types something
     if (value.trim()) {
