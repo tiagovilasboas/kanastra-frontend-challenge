@@ -1,5 +1,5 @@
 import { Music, TrendingUp } from 'lucide-react'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -17,10 +17,15 @@ export const HomePage: React.FC = () => {
       limit: 10,
     })
 
-  // Clear search query when component mounts
-  React.useEffect(() => {
+  // Clear search on mount - using useCallback to avoid side effects
+  const clearSearchOnMount = useCallback(() => {
     clearSearch()
   }, [clearSearch])
+
+  // Use useEffect only for this specific case where we need to clear search on mount
+  useEffect(() => {
+    clearSearchOnMount()
+  }, [clearSearchOnMount])
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`)

@@ -1,73 +1,57 @@
 import { AlertCircle, Loader2, Search } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { SearchFilters, SearchHeader, SearchResults } from '@/components/search'
-import { SearchCategory } from '@/components/search/SearchFilters'
-import { Button } from '@/components/ui/button'
+import {
+  AlbumsSection,
+  ArtistsSection,
+  AudiobooksSection,
+  EpisodesSection,
+  PlaylistsSection,
+  SearchHeader,
+  ShowsSection,
+} from '@/components/search'
+import {
+  BestResultCard,
+  SearchResultsLayout,
+  TracksListSection,
+} from '@/components/ui'
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
-import { getDeviceBasedConfig } from '@/config/searchLimits'
+import { SearchTab } from '@/components/ui/SearchTabs'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
-import { SpotifySearchType } from '@/types/spotify'
+
+type SearchFiltersType = {
+  artistName?: string
+  albumName?: string
+  genre?: string
+  yearFrom?: number
+  yearTo?: number
+}
 
 export const SearchPage: React.FC = () => {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { searchQuery } = useSearchStore()
+  const [searchFilters] = useState<SearchFiltersType>({
+    artistName: undefined,
+    albumName: undefined,
+    genre: undefined,
+    yearFrom: undefined,
+    yearTo: undefined,
+  })
 
-  const { searchState, results, loadMore, filters, setFilters } =
-    useSpotifySearch()
-
-  // Convert filters.types to SearchCategory format (single selection)
-  const getSelectedCategories = (): SearchCategory[] => {
-    const allTypes = [
-      SpotifySearchType.ARTIST,
-      SpotifySearchType.ALBUM,
-      SpotifySearchType.TRACK,
-      SpotifySearchType.PLAYLIST,
-      SpotifySearchType.SHOW,
-      SpotifySearchType.EPISODE,
-      SpotifySearchType.AUDIOBOOK,
-    ]
-
-    // Check if all types are selected
-    const hasAllTypes = allTypes.every((type) => filters.types.includes(type))
-
-    if (hasAllTypes) {
-      return ['all']
-    }
-
-    // Return the first selected type (for single selection)
-    return [(filters.types[0] as SearchCategory) || 'all']
-  }
-
-  const selectedCategories = getSelectedCategories()
-
-  const handleCategoriesChange = (categories: SearchCategory[]) => {
-    // Convert SearchCategory back to filters.types format (single selection)
-    const selectedCategory = categories[0] || 'all'
-    let types: SpotifySearchType[]
-
-    if (selectedCategory === 'all') {
-      types = [
-        SpotifySearchType.ARTIST,
-        SpotifySearchType.ALBUM,
-        SpotifySearchType.TRACK,
-        SpotifySearchType.PLAYLIST,
-        SpotifySearchType.SHOW,
-        SpotifySearchType.EPISODE,
-        SpotifySearchType.AUDIOBOOK,
-      ]
-    } else {
-      types = [selectedCategory as SpotifySearchType]
-    }
-
-    setFilters({ ...filters, types })
-  }
+  const { searchState, results } = useSpotifySearch({
+    ...searchFilters,
+    genres: searchFilters.genre ? [searchFilters.genre] : [],
+  })
 
   // Check if there are any results to show
   const hasResults =
@@ -79,41 +63,197 @@ export const SearchPage: React.FC = () => {
     results.episodes.items.length > 0 ||
     results.audiobooks.items.length > 0
 
+  const handleSectionClick = (type: string) => {
+    const queryParams = new URLSearchParams({
+      q: searchQuery,
+      market: 'BR',
+    })
+    navigate(`/search/${type}?${queryParams.toString()}`)
+  }
+
+  // Tabs configuration
+  const tabs: SearchTab[] = [
+    { id: 'all', label: t('search:all', 'Tudo'), isActive: true },
+    { id: 'playlist', label: t('search:playlists', 'Playlists') },
+    { id: 'track', label: t('search:tracks', 'Músicas') },
+    { id: 'artist', label: t('search:artists', 'Artistas') },
+    { id: 'album', label: t('search:albums', 'Álbuns') },
+    { id: 'show', label: t('search:shows', 'Podcasts e programas') },
+    { id: 'episode', label: t('search:episodes', 'Episódios') },
+  ]
+
+  const handleTabChange = (tabId: string) => {
+    if (tabId === 'all') {
+      // Stay on current search page
+      return
+    }
+
+    // Navigate to specific search type page
+    const queryParams = new URLSearchParams(searchParams)
+    navigate(`/search/${tabId}?${queryParams.toString()}`)
+  }
+
   return (
-    <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6">
-      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-4 lg:p-6">
         {/* Header */}
         <SearchHeader />
-
-        {/* Search Filters - Only show when there's a search query */}
+        {/* Type Selector and Filters - Only show when there's a search query */}
         {searchQuery && (
-          <SearchFilters
-            selectedCategories={selectedCategories}
-            onCategoriesChange={handleCategoriesChange}
-          />
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <div className="flex flex-wrap gap-2">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`px-4 py-2 rounded-full transition-all duration-200 font-medium text-sm ${
+                    tab.isActive
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* Search Results */}
         {searchQuery ? (
-          <div className="space-y-8">
+          <div className="p-4">
             {searchState.isLoading ? (
-              <SearchLoadingState selectedCategories={selectedCategories} />
+              <SearchLoadingState />
             ) : searchState.error ? (
               <SearchErrorState error={searchState.error} />
-            ) : hasResults ? (
-              <>
-                <SearchResults selectedCategories={selectedCategories} />
-                <LoadMoreButton
-                  hasMore={searchState.hasMore}
-                  isLoadingMore={searchState.isLoadingMore}
-                  selectedCategories={selectedCategories}
-                  onLoadMore={loadMore}
-                />
-              </>
+            ) : !searchState.isLoading && hasResults ? (
+              <div className="space-y-8">
+                {/* Best Result and Tracks Section */}
+                <SearchResultsLayout
+                  bestResult={(() => {
+                    const playlists = results.playlists.items
+                    const artists = results.artists.items
+                    const albums = results.albums.items
+
+                    if (playlists.length > 0) {
+                      const playlist = playlists[0]
+                      return (
+                        <BestResultCard
+                          imageUrl={playlist.images[0]?.url || ''}
+                          title={playlist.name}
+                          subtitle={`Playlist • ${playlist.owner.display_name}`}
+                          type="Playlist"
+                          onClick={() => navigate(`/playlist/${playlist.id}`)}
+                        />
+                      )
+                    }
+
+                    if (artists.length > 0) {
+                      const artist = artists[0]
+                      return (
+                        <BestResultCard
+                          imageUrl={artist.images[0]?.url || ''}
+                          title={artist.name}
+                          subtitle={t('search:artist', 'Artista')}
+                          type={t('search:artist', 'Artista')}
+                          onClick={() => navigate(`/artist/${artist.id}`)}
+                        />
+                      )
+                    }
+
+                    if (albums.length > 0) {
+                      const album = albums[0]
+                      return (
+                        <BestResultCard
+                          imageUrl={album.images[0]?.url || ''}
+                          title={album.name}
+                          subtitle={album.artists.map((a) => a.name).join(', ')}
+                          type="Álbum"
+                          onClick={() => navigate(`/album/${album.id}`)}
+                        />
+                      )
+                    }
+
+                    return null
+                  })()}
+                  tracksSection={
+                    results.tracks.items.length > 0 && (
+                      <TracksListSection
+                        tracks={results.tracks.items}
+                        onTrackClick={(trackId) => {
+                          const track = results.tracks.items.find(
+                            (t) => t.id === trackId,
+                          )
+                          if (track?.external_urls?.spotify) {
+                            window.open(
+                              track.external_urls.spotify,
+                              '_blank',
+                              'noopener,noreferrer',
+                            )
+                          }
+                        }}
+                      />
+                    )
+                  }
+                >
+                  {/* Artists Section */}
+                  {results.artists.items.length > 0 && (
+                    <ArtistsSection
+                      artists={results.artists.items}
+                      onSectionClick={() => handleSectionClick('artist')}
+                    />
+                  )}
+
+                  {/* Albums Section */}
+                  {results.albums.items.length > 0 && (
+                    <AlbumsSection
+                      albums={results.albums.items}
+                      onSectionClick={() => handleSectionClick('album')}
+                    />
+                  )}
+
+                  {/* Playlists Section */}
+                  {results.playlists.items.length > 0 && (
+                    <PlaylistsSection
+                      playlists={results.playlists.items}
+                      onSectionClick={() => handleSectionClick('playlist')}
+                    />
+                  )}
+
+                  {/* Shows Section */}
+                  {results.shows.items.length > 0 && (
+                    <ShowsSection
+                      shows={results.shows.items}
+                      onSectionClick={() => handleSectionClick('show')}
+                      total={results.shows.total}
+                    />
+                  )}
+
+                  {/* Episodes Section */}
+                  {results.episodes.items.length > 0 && (
+                    <EpisodesSection
+                      episodes={results.episodes.items}
+                      onSectionClick={() => handleSectionClick('episode')}
+                      total={results.episodes.total}
+                    />
+                  )}
+
+                  {/* Audiobooks Section */}
+                  {results.audiobooks.items.length > 0 && (
+                    <AudiobooksSection
+                      audiobooks={results.audiobooks.items}
+                      onSectionClick={() => handleSectionClick('audiobook')}
+                      total={results.audiobooks.total}
+                    />
+                  )}
+                </SearchResultsLayout>
+              </div>
             ) : (
               <NoResultsCard
                 searchQuery={searchQuery}
-                isLoading={searchState.isLoading}
+                isLoading={
+                  searchState.isLoading || searchQuery.trim().length < 2
+                }
                 hasError={!!searchState.error}
               />
             )}
@@ -127,21 +267,15 @@ export const SearchPage: React.FC = () => {
 }
 
 // Loading State Component
-const SearchLoadingState: React.FC<{
-  selectedCategories: SearchCategory[]
-}> = ({ selectedCategories }) => {
+const SearchLoadingState: React.FC = () => {
   const { t } = useTranslation()
-  const selectedCategory = selectedCategories[0] || 'all'
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         <span className="text-muted-foreground">
-          {selectedCategory === 'all'
-            ? t('search:searchingAll')
-            : t(`search:${selectedCategory}`)}
-          {t('search:ellipsis')}
+          {t('search:searching', 'Buscando...')}
         </span>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -172,84 +306,6 @@ const SearchErrorState: React.FC<{ error: string }> = ({ error }) => {
         </div>
       </CardContent>
     </Card>
-  )
-}
-
-// Load More Button Component
-const LoadMoreButton: React.FC<{
-  hasMore: boolean
-  isLoadingMore: boolean
-  selectedCategories: SearchCategory[]
-  onLoadMore: () => void
-}> = ({ hasMore, isLoadingMore, selectedCategories, onLoadMore }) => {
-  const { t } = useTranslation()
-  const { results } = useSpotifySearch()
-  const selectedCategory = selectedCategories[0] || 'all'
-
-  // Calculate total results from selected categories
-  const getTotalResults = () => {
-    if (selectedCategory === 'all') {
-      return (
-        results.artists.total +
-        results.albums.total +
-        results.tracks.total +
-        results.playlists.total +
-        results.shows.total +
-        results.episodes.total +
-        results.audiobooks.total
-      )
-    }
-
-    switch (selectedCategory) {
-      case 'artist':
-        return results.artists.total
-      case 'album':
-        return results.albums.total
-      case 'track':
-        return results.tracks.total
-      case 'playlist':
-        return results.playlists.total
-      case 'show':
-        return results.shows.total
-      case 'episode':
-        return results.episodes.total
-      case 'audiobook':
-        return results.audiobooks.total
-      default:
-        return 0
-    }
-  }
-
-  const totalResults = getTotalResults()
-  const hasResults = totalResults > 0
-  // Usa a configuração parametrizável de limites com detecção de dispositivo
-  const config = getDeviceBasedConfig()
-  const limit =
-    config[selectedCategory as keyof typeof config] || config.default
-  // Não mostra o botão "Carregar mais" quando "tudo" está selecionado
-  const shouldShowButton =
-    selectedCategory !== 'all' && hasMore && hasResults && totalResults > limit
-
-  if (!shouldShowButton) return null
-
-  return (
-    <div className="flex justify-center">
-      <Button
-        onClick={onLoadMore}
-        disabled={isLoadingMore}
-        variant="outline"
-        className="min-w-[120px]"
-      >
-        {isLoadingMore ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {t('search:loadingMore', 'Loading...')}
-          </>
-        ) : (
-          t('search:loadMore', 'Load more')
-        )}
-      </Button>
-    </div>
   )
 }
 
@@ -289,19 +345,21 @@ const WelcomeCard: React.FC = () => {
   const { t } = useTranslation()
 
   return (
-    <Card className="text-center">
-      <CardContent className="p-8">
-        <Search className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
-        <CardTitle className="text-2xl mb-2">
-          {t('search:welcomeTitle', 'O que você quer ouvir hoje?')}
-        </CardTitle>
-        <CardDescription className="text-lg">
-          {t(
-            'search:welcomeDescription',
-            'Procure por artistas, álbuns, músicas, playlists e muito mais.',
-          )}
-        </CardDescription>
-      </CardContent>
-    </Card>
+    <div className="p-4">
+      <Card className="text-center">
+        <CardContent className="p-8">
+          <Search className="mx-auto h-16 w-16 animate-pulse text-primary dark:text-muted-foreground mb-4" />
+          <CardTitle className="text-2xl mb-2">
+            {t('search:welcomeTitle', 'O que você quer ouvir hoje?')}
+          </CardTitle>
+          <CardDescription className="text-lg">
+            {t(
+              'search:welcomeDescription',
+              'Procure por artistas, álbuns, músicas, playlists e muito mais.',
+            )}
+          </CardDescription>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
