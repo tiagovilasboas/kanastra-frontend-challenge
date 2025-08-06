@@ -1,7 +1,3 @@
-import {
-  getDeviceBasedConfig,
-  getSearchLimitWithDevice,
-} from '@/config/searchLimits'
 import { SpotifyRepository } from '@/repositories/spotify/SpotifyRepository'
 import { SpotifySearchType, SpotifyTypeMapping } from '@/types/spotify'
 import { logger } from '@/utils/logger'
@@ -33,7 +29,7 @@ export interface SearchState {
   totalResults: number
 }
 
-// Classe utilitária para processamento de resultados
+// Utility class for result processing
 export class SearchResultProcessor {
   /**
    * Processa resultados de busca para um tipo específico
@@ -41,13 +37,17 @@ export class SearchResultProcessor {
   static processResults<T extends SpotifySearchType>(
     response: Record<string, unknown>,
     type: T,
+    paging?: { limit?: number; offset?: number },
   ): SearchResult<T> {
     const key = `${type}s` as keyof typeof response
     const data = response[key] as
       | { items?: unknown[]; total?: number }
       | undefined
 
-    console.log(`Processing ${key}:`, { data, response })
+    const offset = paging?.offset || 0
+    const limit = paging?.limit
+
+    console.log(`Processing ${key}:`, { data, response, limit, offset })
 
     if (!data) {
       console.log(`No data found for ${key}`)
@@ -58,10 +58,16 @@ export class SearchResultProcessor {
       } as SearchResult<T>
     }
 
+    const items = (data.items || []) as SpotifyTypeMapping[T][]
+    const total = data.total || 0
+
+    // Calcula hasMore como: (offset + items.length) < total
+    const hasMore = offset + items.length < total
+
     const result = {
-      items: (data.items || []) as SpotifyTypeMapping[T][],
-      total: data.total || 0,
-      hasMore: (data.items?.length || 0) < (data.total || 0),
+      items,
+      total,
+      hasMore,
     } as SearchResult<T>
 
     console.log(`Result for ${key}:`, result)
@@ -120,6 +126,8 @@ export class SearchResultProcessor {
   static processMultipleTypesResponse(
     response: Record<string, unknown>,
     types: SpotifySearchType[],
+    limit?: number,
+    offset?: number,
   ): AggregatedSearchResults {
     const results: Record<string, SearchResult<SpotifySearchType>> = {
       artists: { items: [], total: 0, hasMore: false },
@@ -134,11 +142,17 @@ export class SearchResultProcessor {
     // Debug: log the response structure
     console.log('Spotify API Response:', response)
     console.log('Search Types:', types)
+    console.log('Processing with limit:', limit, 'offset:', offset)
 
     types.forEach((type) => {
+      // Pula o sentinel ALL, pois ele não mapeia para nenhum tipo específico
+      if (type === SpotifySearchType.ALL) {
+        return
+      }
+
       const key = `${type}s` as keyof AggregatedSearchResults
       console.log(`Processing ${key}:`, response[key])
-      results[key] = this.processResults(response, type)
+      results[key] = this.processResults(response, type, { limit, offset })
     })
 
     console.log('Aggregated Results:', results)
@@ -146,41 +160,56 @@ export class SearchResultProcessor {
   }
 }
 
-// Classe para construção de queries de busca
+// Class for building search queries
 export class SearchQueryBuilder {
   /**
-   * Constrói query avançada com filtros
+   * Constrói query avançada com filtros compatíveis com Spotify
    */
   static buildAdvancedQuery(
     baseQuery: string,
     filters: {
+      artistName?: string
+      albumName?: string
       genres?: string[]
+      genre?: string
       yearFrom?: number
       yearTo?: number
-      popularityFrom?: number
-      popularityTo?: number
     },
   ): string {
     let query = baseQuery.trim()
 
-    // Adiciona filtros de gênero
+    // Add artist name filter
+    if (filters.artistName && filters.artistName.trim()) {
+      query += ` artist:${filters.artistName.trim()}`
+    }
+
+    // Add album name filter
+    if (filters.albumName && filters.albumName.trim()) {
+      query += ` album:${filters.albumName.trim()}`
+    }
+
+    // Add genre filters (support both arrays and single values)
     if (filters.genres && filters.genres.length > 0) {
       const genreFilters = filters.genres
         .map((genre) => `genre:${genre}`)
         .join(' ')
       query += ` ${genreFilters}`
+    } else if (filters.genre && filters.genre.trim()) {
+      query += ` genre:${filters.genre.trim()}`
     }
 
-    // Adiciona filtro de ano
+    // Adiciona filtro de ano (sintaxe year:YYYY ou year:YYYY-YYYY)
     if (filters.yearFrom || filters.yearTo) {
-      const yearFilter = `year:${filters.yearFrom || '*'}-${filters.yearTo || '*'}`
-      query += ` ${yearFilter}`
-    }
-
-    // Adiciona filtro de popularidade
-    if (filters.popularityFrom || filters.popularityTo) {
-      const popularityFilter = `popularity:${filters.popularityFrom || 0}-${filters.popularityTo || 100}`
-      query += ` ${popularityFilter}`
+      if (filters.yearFrom && filters.yearTo) {
+        const yearFilter = `year:${filters.yearFrom}-${filters.yearTo}`
+        query += ` ${yearFilter}`
+      } else if (filters.yearFrom) {
+        const yearFilter = `year:${filters.yearFrom}`
+        query += ` ${yearFilter}`
+      } else if (filters.yearTo) {
+        const yearFilter = `year:${filters.yearTo}`
+        query += ` ${yearFilter}`
+      }
     }
 
     return query.trim()
@@ -273,7 +302,7 @@ export class SearchStateManager {
   }
 }
 
-// Classe principal do serviço de busca
+// Main search service class
 export class SearchService {
   private repository: SpotifyRepository
 
@@ -288,6 +317,7 @@ export class SearchService {
     query: string,
     types: SpotifySearchType[],
     filters: Record<string, unknown>,
+    limit: number,
     offset: number = 0,
   ): Promise<{
     results: AggregatedSearchResults
@@ -298,38 +328,65 @@ export class SearchService {
         query,
         filters,
       )
-      const config = getDeviceBasedConfig()
 
-      // Se todos os tipos estão selecionados ("Tudo"), usa o limite "all" para cada tipo
-      // Caso contrário, usa o limite padrão
-      const adjustedLimit =
-        types.length === 7
-          ? config.all
-          : getSearchLimitWithDevice(types.map((t) => t.toLowerCase()))
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+      const filtersWithMarket = { ...filters, market }
+
+      // Detecta se é modo "All" (mais de 1 tipo OU todos os tipos OU sentinel ALL)
+      const isAllMode =
+        types.length > 1 ||
+        types.length === 7 ||
+        types.includes(SpotifySearchType.ALL)
+
+      // Se há sentinel ALL, expande para todos os tipos
+      const searchTypes = types.includes(SpotifySearchType.ALL)
+        ? [
+            SpotifySearchType.ARTIST,
+            SpotifySearchType.ALBUM,
+            SpotifySearchType.TRACK,
+            SpotifySearchType.PLAYLIST,
+            SpotifySearchType.SHOW,
+            SpotifySearchType.EPISODE,
+            SpotifySearchType.AUDIOBOOK,
+          ]
+        : types
+
+      // Aplica limite de 5 para modo "All", caso contrário usa o limite fornecido
+      const adjustedLimit = isAllMode ? 5 : limit
 
       console.log('🔍 SearchService Debug Limits:', {
         types,
+        searchTypes,
         typesLength: types.length,
-        config,
+        isAllMode,
+        providedLimit: limit,
         adjustedLimit,
-        isAllTypes: types.length === 7,
+        offset,
+        market,
       })
 
       const response = await this.repository.searchMultipleTypes(
         advancedQuery,
-        types,
-        filters,
+        searchTypes,
+        filtersWithMarket,
         adjustedLimit,
         offset,
       )
 
-      // Processa os resultados da API do Spotify
+      // Process Spotify API results
       console.log('SearchService.searchMultipleTypes - Response:', response)
       console.log('SearchService.searchMultipleTypes - Types:', types)
+      console.log(
+        'SearchService.searchMultipleTypes - SearchTypes:',
+        searchTypes,
+      )
 
       const results = SearchResultProcessor.processMultipleTypesResponse(
         response,
-        types,
+        searchTypes,
+        adjustedLimit,
+        offset,
       )
       const totalResults = SearchResultProcessor.calculateTotalResults(results)
       const hasMore = SearchResultProcessor.hasMoreResults(results)
@@ -385,15 +442,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchArtists(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.ARTIST,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -438,15 +501,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchAlbums(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.ALBUM,
+        { limit, offset },
       )
 
       const state = SearchStateManager.setSuccess(
@@ -492,15 +561,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchTracks(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.TRACK,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -545,15 +620,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchPlaylists(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.PLAYLIST,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -598,15 +679,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchShows(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.SHOW,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -651,15 +738,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchEpisodes(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.EPISODE,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -704,15 +797,21 @@ export class SearchService {
         query,
         filters,
       )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+
       const response = await this.repository.searchAudiobooks(
         advancedQuery,
         limit,
         offset,
+        market,
       )
 
       const results = SearchResultProcessor.processResults(
         response,
         SpotifySearchType.AUDIOBOOK,
+        { limit, offset },
       )
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -736,6 +835,83 @@ export class SearchService {
   }
 
   /**
+   * Executa busca para "Tudo" com limite fixo de 5 itens por tipo
+   */
+  async searchAllTypes(
+    query: string,
+    types: SpotifySearchType[],
+    filters: Record<string, unknown>,
+    offset: number = 0,
+  ): Promise<{
+    results: AggregatedSearchResults
+    state: SearchState
+  }> {
+    try {
+      const advancedQuery = SearchQueryBuilder.buildAdvancedQuery(
+        query,
+        filters,
+      )
+
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+      const filtersWithMarket = { ...filters, market }
+
+      // Limite fixo de 5 para busca "Tudo"
+      const allLimit = 5
+
+      console.log('🔍 SearchService.searchAllTypes - Debug:', {
+        query,
+        types,
+        allLimit,
+        offset,
+        market,
+      })
+
+      const response = await this.repository.searchMultipleTypes(
+        advancedQuery,
+        types,
+        filtersWithMarket,
+        allLimit,
+        offset,
+      )
+
+      // Processa os resultados da API do Spotify
+      console.log('SearchService.searchAllTypes - Response:', response)
+      console.log('SearchService.searchAllTypes - Types:', types)
+
+      const results = SearchResultProcessor.processMultipleTypesResponse(
+        response,
+        types,
+        allLimit,
+        offset,
+      )
+      const totalResults = SearchResultProcessor.calculateTotalResults(results)
+      const hasMore = SearchResultProcessor.hasMoreResults(results)
+
+      console.log('SearchService.searchAllTypes - Processed Results:', results)
+      console.log('SearchService.searchAllTypes - Total Results:', totalResults)
+      console.log('SearchService.searchAllTypes - Has More:', hasMore)
+
+      const state = SearchStateManager.setSuccess(
+        SearchStateManager.createInitialState(),
+        totalResults,
+        hasMore,
+      )
+
+      console.log('SearchService.searchAllTypes - Final State:', state)
+      return { results, state }
+    } catch (error) {
+      logger.error('Search all types service error', error)
+      const state = SearchStateManager.setError(
+        SearchStateManager.createInitialState(),
+        error instanceof Error ? error.message : 'Erro na busca',
+      )
+
+      return { results: this.getEmptyResults(), state }
+    }
+  }
+
+  /**
    * Carrega mais resultados
    */
   async loadMore(
@@ -754,20 +930,38 @@ export class SearchService {
         filters,
       )
 
-      // Usa a configuração parametrizável de limites com detecção de dispositivo
-      const adjustedLimit = getSearchLimitWithDevice(
-        types.map((t) => t.toLowerCase()),
-      )
+      // Garante que market esteja sempre presente
+      const market = (filters.market as string) ?? 'BR'
+      const filtersWithMarket = { ...filters, market }
 
-      const { results, state } = await this.repository.searchMultipleTypes(
+      // Fixed limit of 20 for loadMore
+      const adjustedLimit = 20
+
+      // Chama o repository e obtém a resposta bruta da API
+      const apiResponse = await this.repository.searchMultipleTypes(
         advancedQuery,
         types,
-        filters,
+        filtersWithMarket,
         adjustedLimit,
         offset,
       )
 
-      return { results, state }
+      // Processa a resposta antes de retornar
+      const parsed = SearchResultProcessor.processMultipleTypesResponse(
+        apiResponse,
+        types,
+        adjustedLimit,
+        offset,
+      )
+      const totalResults = SearchResultProcessor.calculateTotalResults(parsed)
+      const hasMore = SearchResultProcessor.hasMoreResults(parsed)
+      const state = SearchStateManager.setSuccess(
+        SearchStateManager.createInitialState(),
+        totalResults,
+        hasMore,
+      )
+
+      return { results: parsed, state }
     } catch (error) {
       logger.error('Load more service error', error)
       const state = SearchStateManager.setError(

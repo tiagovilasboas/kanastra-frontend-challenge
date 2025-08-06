@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 
+import { isFeatureEnabled } from '@/config/features'
+import { getStaticGenres } from '@/constants/genres'
 import {
   SpotifyAlbum,
   SpotifyArtist,
@@ -25,6 +27,7 @@ export interface SearchFilters {
   isrc?: string
   upc?: string
   tag?: string
+  market?: string
 }
 
 export interface RecommendationParams {
@@ -83,6 +86,10 @@ export class SpotifySearchService {
 
   setClientToken(token: string): void {
     this.clientToken = token
+    logger.debug('Client token set in SpotifySearchService', {
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+    })
   }
 
   hasAccessToken(): boolean {
@@ -93,12 +100,49 @@ export class SpotifySearchService {
     return !!this.clientToken
   }
 
-  private getAuthToken(): string {
+  private getAuthToken(): string | null {
     const token = this.accessToken || this.clientToken
-    if (!token) {
-      throw new Error('Authentication token required')
+    logger.debug('Getting auth token:', {
+      hasAccessToken: !!this.accessToken,
+      hasClientToken: !!this.clientToken,
+      usingToken: this.accessToken
+        ? 'access'
+        : this.clientToken
+          ? 'client'
+          : 'none',
+    })
+    return token || null
+  }
+
+  private getAuthHeaders(): Record<string, string> {
+    const token = this.getAuthToken()
+    if (token) {
+      return { Authorization: `Bearer ${token}` }
     }
-    return token
+    return {}
+  }
+
+  private is401Error(error: unknown): boolean {
+    if (typeof error === 'object' && error !== null) {
+      if (
+        'response' in error &&
+        typeof (error as { response?: { status?: number } }).response
+          ?.status === 'number'
+      ) {
+        return (
+          (error as { response?: { status?: number } }).response?.status === 401
+        )
+      }
+      if (
+        'message' in error &&
+        typeof (error as { message?: string }).message === 'string'
+      ) {
+        return (
+          (error as { message?: string }).message === 'Authentication required'
+        )
+      }
+    }
+    return false
   }
 
   async searchAdvanced(
@@ -114,6 +158,7 @@ export class SpotifySearchService {
         type,
         limit,
         offset,
+        market: filters?.market || 'BR',
       }
 
       // Add filters to query
@@ -141,15 +186,25 @@ export class SpotifySearchService {
         }
       }
 
+      const token = this.getAuthToken()
+      const headers: Record<string, string> = {}
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+
       const response = await this.axiosInstance.get('/search', {
         params,
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers,
       })
 
       return response.data
     } catch (error) {
+      // Se for erro 401, não processa aqui - deixa o SpotifyRepository tratar
+      if (this.is401Error(error)) {
+        throw error // Re-lança o erro original para o SpotifyRepository tratar
+      }
+
       const appError = errorHandler.handleApiError(
         error,
         'SpotifySearchService.searchAdvanced',
@@ -170,22 +225,13 @@ export class SpotifySearchService {
     offset: number = 0,
   ) {
     try {
-      console.log('🔍 SpotifySearchService.searchMultipleTypes Debug:', {
-        query,
-        types,
-        limit,
-        offset,
-        filters,
-      })
-
       const params: Record<string, string | number> = {
         q: query,
-        type: types.join(','), // Múltiplos tipos separados por vírgula
+        type: types.join(','), // Multiple types separated by comma
         limit,
         offset,
+        market: filters?.market || 'BR',
       }
-
-      console.log('🔍 SpotifySearchService.searchMultipleTypes Params:', params)
 
       // Add filters to query
       if (filters) {
@@ -212,15 +258,25 @@ export class SpotifySearchService {
         }
       }
 
+      const token = this.getAuthToken()
+      const headers: Record<string, string> = {}
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+
       const response = await this.axiosInstance.get('/search', {
         params,
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers,
       })
 
       return response.data
     } catch (error) {
+      // Se for erro 401, não processa aqui - deixa o SpotifyRepository tratar
+      if (this.is401Error(error)) {
+        throw error // Re-lança o erro original para o SpotifyRepository tratar
+      }
+
       const appError = errorHandler.handleApiError(
         error,
         'SpotifySearchService.searchMultipleTypes',
@@ -236,9 +292,7 @@ export class SpotifySearchService {
     try {
       const response = await this.axiosInstance.get('/recommendations', {
         params,
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers: this.getAuthHeaders(),
       })
 
       const validatedData = validateSpotifyTracksResponse(response.data)
@@ -259,9 +313,7 @@ export class SpotifySearchService {
       const response = await this.axiosInstance.get(
         `/audio-features/${trackId}`,
         {
-          headers: {
-            Authorization: `Bearer ${this.getAuthToken()}`,
-          },
+          headers: this.getAuthHeaders(),
         },
       )
 
@@ -282,9 +334,7 @@ export class SpotifySearchService {
         params: {
           ids: trackIds.join(','),
         },
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers: this.getAuthHeaders(),
       })
 
       return response.data.audio_features
@@ -297,29 +347,57 @@ export class SpotifySearchService {
     }
   }
 
-  // Get available genres
+  // Get available genres with fallback and deprecation warning
   async getAvailableGenres(): Promise<string[]> {
-    try {
-      const response = await this.axiosInstance.get(
-        '/recommendations/available-genre-seeds',
-        {
-          headers: {
-            Authorization: `Bearer ${this.getAuthToken()}`,
-          },
-        },
+    // Show deprecation warning if enabled
+    if (isFeatureEnabled('ENABLE_GENRES_DEPRECATION_WARNING')) {
+      logger.warn(
+        'getAvailableGenres is deprecated. The Spotify API endpoint may return 410/404. Using fallback list.',
+        { method: 'SpotifySearchService.getAvailableGenres' },
       )
-
-      return response.data.genres
-    } catch (error) {
-      const appError = errorHandler.handleApiError(
-        error,
-        'SpotifySearchService.getAvailableGenres',
-      )
-      throw appError
     }
+
+    // Try API endpoint if enabled
+    if (isFeatureEnabled('ENABLE_GENRES_ENDPOINT')) {
+      try {
+        const response = await this.axiosInstance.get(
+          '/recommendations/available-genre-seeds',
+          {
+            headers: this.getAuthHeaders(),
+          },
+        )
+
+        return response.data.genres
+      } catch (error) {
+        logger.warn('Genres API endpoint failed, using fallback', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          method: 'SpotifySearchService.getAvailableGenres',
+        })
+
+        // If fallback is enabled, return static list
+        if (isFeatureEnabled('ENABLE_GENRES_FALLBACK')) {
+          return getStaticGenres()
+        }
+
+        // If fallback is disabled, throw the original error
+        const appError = errorHandler.handleApiError(
+          error,
+          'SpotifySearchService.getAvailableGenres',
+        )
+        throw appError
+      }
+    }
+
+    // If API endpoint is disabled, use fallback if enabled
+    if (isFeatureEnabled('ENABLE_GENRES_FALLBACK')) {
+      return getStaticGenres()
+    }
+
+    // If both API and fallback are disabled, throw error
+    throw new Error('Genres endpoint is disabled and fallback is not available')
   }
 
-  // Search tracks by ISRC
+  // Search tracks by ISRC using /search endpoint
   async getTrackByISRC(isrc: string): Promise<SpotifyTrack[]> {
     try {
       const response = await this.axiosInstance.get('/search', {
@@ -328,9 +406,7 @@ export class SpotifySearchService {
           type: SpotifySearchType.TRACK,
           limit: 50,
         },
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers: this.getAuthHeaders(),
       })
 
       const validatedData = validateSpotifyTracksResponse(response.data)
@@ -344,7 +420,7 @@ export class SpotifySearchService {
     }
   }
 
-  // Search albums by UPC
+  // Search albums by UPC using /search endpoint
   async getAlbumByUPC(upc: string): Promise<SpotifyAlbum[]> {
     try {
       const response = await this.axiosInstance.get('/search', {
@@ -353,9 +429,7 @@ export class SpotifySearchService {
           type: SpotifySearchType.ALBUM,
           limit: 50,
         },
-        headers: {
-          Authorization: `Bearer ${this.getAuthToken()}`,
-        },
+        headers: this.getAuthHeaders(),
       })
 
       const validatedData = validateSpotifyAlbumsResponse(response.data)
@@ -662,9 +736,13 @@ export class SpotifySearchService {
     // Request interceptor
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        const token = this.getAuthToken()
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`
+        // Only add Authorization if not already present
+        // and if we have a token available
+        if (!config.headers.Authorization) {
+          const token = this.getAuthToken()
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+          }
         }
         return config
       },
