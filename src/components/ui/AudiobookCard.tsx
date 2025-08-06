@@ -1,105 +1,84 @@
-import { BookOpen, Headphones } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { SpotifyAudiobook } from '@/types/spotify'
-
 interface AudiobookCardProps {
-  audiobook: SpotifyAudiobook
+  audiobook: {
+    id: string
+    name: string
+    images?: Array<{ url: string; width?: number; height?: number }>
+    authors?: Array<{ name: string }>
+    narrator?: string
+    total_chapters?: number
+  }
   onClick?: () => void
+  className?: string
 }
 
 export const AudiobookCard: React.FC<AudiobookCardProps> = ({
   audiobook,
   onClick,
+  className = '',
 }) => {
   const { t } = useTranslation()
 
-  const audiobookImage = audiobook.images?.[0]?.url
-
   return (
-    <Card
-      className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+    <div
+      className={`group cursor-pointer ${className}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
     >
-      <CardHeader className="p-0">
-        <div className="relative aspect-square overflow-hidden rounded-t-lg">
-          {audiobookImage ? (
-            <img
-              src={audiobookImage}
-              alt={audiobook.name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.style.display = 'none'
-              }}
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-600 to-gray-800">
-              <Headphones className="h-16 w-16 text-gray-400" />
+      <div className="space-y-3">
+        {/* Square Image */}
+        <div className="relative aspect-square w-full">
+          <img
+            src={audiobook.images?.[0]?.url || '/placeholder-audiobook.png'}
+            alt={audiobook.name}
+            className="w-full h-full object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-200"
+          />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-lg transition-colors duration-200 flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-6 h-6 text-primary-foreground ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
             </div>
-          )}
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <h3 className="line-clamp-2 font-semibold text-foreground group-hover:text-primary">
-          {audiobook.name}
-        </h3>
-        {audiobook.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {audiobook.description}
+
+        {/* Text Content */}
+        <div className="space-y-1">
+          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+            {audiobook.name}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-1">
+            {audiobook.authors?.map((author) => author.name).join(', ') ||
+              t('search:unknownAuthor')}
           </p>
-        )}
-        <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-          {audiobook.authors.length > 0 && (
-            <div className="flex items-center gap-1">
-              <BookOpen className="h-3 w-3" />
-              <span>
-                {t('audiobooks:by', 'by')}
-                {t('common:space', ' ')}
-                {audiobook.authors
-                  ?.map(
-                    (a) =>
-                      a?.name || t('search:unknownAuthor', 'Unknown Author'),
-                  )
-                  .join(', ') || t('search:unknownAuthor', 'Unknown Author')}
-              </span>
-            </div>
+          {audiobook.narrator && (
+            <p className="text-sm text-muted-foreground">
+              {t('audiobooks:narratedBy')} {audiobook.narrator}
+            </p>
           )}
-          {audiobook.narrators.length > 0 && (
-            <div className="flex items-center gap-1">
-              <Headphones className="h-3 w-3" />
-              <span>
-                {t('audiobooks:narrated_by', 'narrated by')}
-                {t('common:space', ' ')}
-                {audiobook.narrators
-                  ?.map(
-                    (n) =>
-                      n?.name ||
-                      t('search:unknownNarrator', 'Unknown Narrator'),
-                  )
-                  .join(', ') ||
-                  t('search:unknownNarrator', 'Unknown Narrator')}
-              </span>
-            </div>
+          {audiobook.total_chapters && (
+            <p className="text-sm text-muted-foreground">
+              {t('audiobooks:chapters', { count: audiobook.total_chapters })}
+            </p>
           )}
         </div>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
-          <span>
-            {t('audiobooks:chapters', '{{count}} chapters', {
-              count: audiobook.total_chapters,
-            })}
-          </span>
-          {audiobook.explicit && (
-            <span className="rounded-full bg-orange-100 px-2 py-1 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
-              {t('audiobooks:explicit', 'Explicit')}
-            </span>
-          )}
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
