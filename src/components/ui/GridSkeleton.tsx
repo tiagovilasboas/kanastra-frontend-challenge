@@ -22,7 +22,7 @@ export const GridSkeleton: React.FC<GridSkeletonProps> = ({
     <div
       key={key}
       data-testid="skeleton-card"
-      className={`aspect-square rounded-lg ${baseClasses} ${shape === 'circle' ? 'rounded-full' : 'rounded-lg'}`}
+      className={`aspect-square ${baseClasses} ${shape === 'circle' ? 'rounded-full' : 'rounded-lg'}`}
     />
   )
 
