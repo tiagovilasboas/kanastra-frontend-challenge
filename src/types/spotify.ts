@@ -16,6 +16,7 @@ export enum SpotifySearchType {
   SHOW = 'show',
   EPISODE = 'episode',
   AUDIOBOOK = 'audiobook',
+  ALL = 'all', // Sentinel para busca em todos os tipos
 }
 
 // Array com todos os tipos para facilitar iterações
@@ -120,6 +121,7 @@ export interface SpotifyTypeMapping {
   [SpotifySearchType.SHOW]: SpotifyShow
   [SpotifySearchType.EPISODE]: SpotifyEpisode
   [SpotifySearchType.AUDIOBOOK]: SpotifyAudiobook
+  [SpotifySearchType.ALL]: never // Sentinel não mapeia para nenhum tipo específico
 }
 
 export interface SpotifySearchResponse {

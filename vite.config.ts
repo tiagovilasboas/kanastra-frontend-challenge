@@ -60,12 +60,7 @@ export default defineConfig(({ mode }) => ({
           'feature-search': [
             'src/repositories/spotify/SpotifySearchService.ts',
           ],
-          'feature-artists': [
-            'src/pages/ArtistsPage.tsx',
-            'src/pages/ArtistPage.tsx',
-          ],
-          'feature-albums': ['src/pages/AlbumsPage.tsx'],
-          'feature-favorites': ['src/pages/FavoritesPage.tsx'],
+          'feature-artists': ['src/pages/ArtistPage.tsx'],
         },
         // Optimize chunk naming
         chunkFileNames: (chunkInfo) => {
