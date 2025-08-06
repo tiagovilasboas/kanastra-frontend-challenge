@@ -148,6 +148,7 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
 
   return (
     <SearchResultsLayout
+      data-testid="search-results"
       bestResult={
         bestResult && (
           <BestResultCard

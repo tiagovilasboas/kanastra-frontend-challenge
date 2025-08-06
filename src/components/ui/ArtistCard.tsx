@@ -26,6 +26,7 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({
       onClick={onClick}
       role="button"
       tabIndex={0}
+      data-testid="artist-card"
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
@@ -63,10 +64,16 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({
 
         {/* Text Content */}
         <div className="space-y-1 text-center">
-          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1">
+          <h3
+            className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-1"
+            data-testid="artist-name"
+          >
             {artist.name}
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p
+            className="text-sm text-muted-foreground"
+            data-testid="artist-genres"
+          >
             {t('search:artist', 'Artista')}
           </p>
         </div>

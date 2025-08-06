@@ -6,7 +6,7 @@ export const SearchHeader: React.FC = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-3 sm:space-y-4" data-testid="search-header">
       <div className="flex items-center gap-2 sm:gap-3">
         <Search className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse text-primary dark:text-muted-foreground" />
         <h1 className="text-2xl sm:text-3xl font-bold text-foreground">

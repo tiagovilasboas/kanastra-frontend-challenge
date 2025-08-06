@@ -90,9 +90,10 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
 
         {/* Center - Search */}
         <div className="flex-1 max-w-sm sm:max-w-md mx-2 sm:mx-4">
-          <div className="relative">
+          <div className="relative flex">
             <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
             <Input
+              data-testid="search-input"
               placeholder={
                 searchPlaceholder ||
                 t('search:placeholder', 'Search for artists')
@@ -100,8 +101,16 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyPress={handleSearchKeyPress}
-              className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background"
+              className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background rounded-r-none"
             />
+            <Button
+              data-testid="search-button"
+              onClick={() => searchQuery.trim() && navigate('/search')}
+              className="h-9 sm:h-10 px-3 rounded-l-none"
+              disabled={!searchQuery.trim()}
+            >
+              <Search className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 

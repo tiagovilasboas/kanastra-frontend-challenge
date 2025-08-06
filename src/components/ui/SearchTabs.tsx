@@ -22,6 +22,7 @@ export const SearchTabs: React.FC<SearchTabsProps> = ({
       {tabs.map((tab) => (
         <button
           key={tab.id}
+          data-testid="search-type-button"
           onClick={() => onTabChange(tab.id)}
           className={`px-4 py-2 rounded-full transition-all duration-200 font-medium text-sm ${
             tab.isActive

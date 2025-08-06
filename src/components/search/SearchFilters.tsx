@@ -95,7 +95,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
   ]
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div
+      className={`flex items-center gap-2 ${className}`}
+      data-testid="search-filters"
+    >
       {/* Botão de filtros */}
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>

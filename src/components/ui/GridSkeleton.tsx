@@ -21,6 +21,7 @@ export const GridSkeleton: React.FC<GridSkeletonProps> = ({
   const makeItem = (key: number) => (
     <div
       key={key}
+      data-testid="skeleton-card"
       className={`aspect-square rounded-lg ${baseClasses} ${shape === 'circle' ? 'rounded-full' : 'rounded-lg'}`}
     />
   )

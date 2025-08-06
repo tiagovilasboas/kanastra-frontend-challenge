@@ -61,7 +61,10 @@ export const ArtistHeader: React.FC<ArtistHeaderProps> = ({
         {/* Artist Info */}
         <div className="flex-1 space-y-4">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+            <h1
+              className="text-3xl sm:text-4xl font-bold text-foreground mb-3"
+              data-testid="artist-header"
+            >
               {artist.name}
             </h1>
             <FollowersCount count={artist.followers?.total || 0} />
