@@ -14,7 +14,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({
   isCollapsed = false,
   isMobileOpen = false,
-  onClose
+  onClose,
 }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -25,32 +25,32 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: Home,
       label: t('navigation:home', 'Home'),
       path: '/',
-      active: location.pathname === '/'
+      active: location.pathname === '/',
     },
     {
       icon: Search,
       label: t('navigation:search', 'Search'),
       path: '/search',
-      active: location.pathname.startsWith('/search')
+      active: location.pathname.startsWith('/search'),
     },
     {
       icon: Users,
       label: t('navigation:artists', 'Artists'),
       path: '/artists',
-      active: location.pathname.startsWith('/artist')
+      active: location.pathname.startsWith('/artist'),
     },
     {
       icon: Disc3,
       label: t('navigation:albums', 'Albums'),
       path: '/albums',
-      active: location.pathname.startsWith('/album')
+      active: location.pathname.startsWith('/album'),
     },
     {
       icon: Heart,
       label: t('navigation:favorites', 'Favorites'),
       path: '/favorites',
-      active: location.pathname === '/favorites'
-    }
+      active: location.pathname === '/favorites',
+    },
   ]
 
   const handleNavigation = (path: string) => {
@@ -65,33 +65,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       {/* Mobile overlay */}
       {isMobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div className={`
+      <div
+        className={`
         fixed lg:static inset-y-0 left-0 z-50
         bg-sidebar border-r border-sidebar-border 
         transition-all duration-300 ease-in-out
         ${isCollapsed ? 'w-16' : 'w-64'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         lg:border-r lg:border-sidebar-border
-      `}>
+      `}
+      >
         <div className="flex flex-col h-full">
-          
           {/* Navigation */}
-          <div className="p-4 space-y-2">
+          <div className="p-4 space-y-2" data-testid="sidebar-navigation">
             {navigationItems.map((item) => (
-              <Button 
+              <Button
                 key={item.path}
-                variant={item.active ? "secondary" : "ghost"}
+                variant={item.active ? 'secondary' : 'ghost'}
                 className={`w-full justify-start gap-3 hover:bg-sidebar-accent ${
-                  item.active ? 'bg-sidebar-accent text-sidebar-accent-foreground' : ''
+                  item.active
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    : ''
                 }`}
                 onClick={() => handleNavigation(item.path)}
+                data-testid={`nav-item-${item.path.replace('/', '')}`}
               >
                 <item.icon size={20} />
                 {!isCollapsed && <span>{item.label}</span>}
@@ -102,4 +106,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
     </>
   )
-} 
+}

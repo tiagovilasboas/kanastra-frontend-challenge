@@ -41,12 +41,17 @@ export const LanguageSelector: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-1 sm:gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1 sm:gap-2"
+          data-testid="language-selector"
+        >
           <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" data-testid="language-dropdown">
         {languages.map((language) => (
           <DropdownMenuItem
             key={language.code}
@@ -54,6 +59,7 @@ export const LanguageSelector: React.FC = () => {
             className={`cursor-pointer ${
               i18n.language === language.code ? 'bg-accent' : ''
             }`}
+            data-testid={`language-option-${language.code}`}
           >
             <span className="mr-2">{language.flag}</span>
             <span>{language.name}</span>
