@@ -2,10 +2,10 @@ import { Filter } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { AlbumCard } from '@/components/ui'
+import { AlbumCard, SimpleFilterInput } from '@/components/ui'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { SpotifyAlbum } from '@/schemas/spotify'
+import { SpotifyAlbum } from '@/types/spotify'
 
 interface ArtistAlbumsProps {
   albums: SpotifyAlbum[]
@@ -91,15 +91,11 @@ export const ArtistAlbums: React.FC<ArtistAlbumsProps> = ({
           </p>
         </div>
 
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <Input
-            placeholder={t('artist:filterAlbums')}
-            value={albumFilter}
-            onChange={(e) => handleAlbumFilter(e.target.value)}
-            className="w-48 sm:w-64 pl-10 bg-muted/50 border-0 focus:bg-background"
-          />
-        </div>
+        <SimpleFilterInput
+          value={albumFilter}
+          onChange={handleAlbumFilter}
+          placeholderKey="artist:filterAlbums"
+        />
       </div>
 
       {filteredAlbums.length > 0 ? (
