@@ -1,5 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { SpotifyArtist } from '@/types/spotify'
@@ -7,13 +8,22 @@ import { SpotifyArtist } from '@/types/spotify'
 interface ArtistsSectionProps {
   artists: SpotifyArtist[]
   isLoading?: boolean
+  onSectionClick?: () => void
+  total?: number
 }
 
 export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
   artists,
   isLoading = false,
+  onSectionClick,
+  total = 0,
 }) => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  const handleArtistClick = (artistId: string) => {
+    navigate(`/artist/${artistId}`)
+  }
 
   if (isLoading) {
     return (
@@ -39,9 +49,33 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-foreground">
-        {t('search:artists', 'Artistas')}
-      </h2>
+      <div className="flex items-center justify-between">
+        {onSectionClick ? (
+          <button
+            onClick={onSectionClick}
+            className="text-2xl font-bold text-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded"
+            aria-label={t('search:viewAllArtists', 'Ver todos os Artistas')}
+            aria-pressed="false"
+          >
+            {t('search:artists', 'Artistas')}
+          </button>
+        ) : (
+          <h2 className="text-2xl font-bold text-foreground">
+            {t('search:artists', 'Artistas')}
+          </h2>
+        )}
+        <div className="flex items-center gap-2">
+          {total > artists.length && (
+            <span className="text-sm text-muted-foreground">
+              {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
+                count: artists.length,
+                total,
+              })}
+            </span>
+          )}
+        </div>
+      </div>
+
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {artists
           .filter((artist) => artist && artist.id) // Filter out null/undefined items
@@ -49,12 +83,10 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
             <ArtistCard
               key={artist.id}
               artist={artist}
-              onClick={() => {
-                // TODO: Implement artist navigation
-              }}
+              onClick={() => handleArtistClick(artist.id)}
             />
           ))}
       </div>
     </div>
   )
-} 
+}

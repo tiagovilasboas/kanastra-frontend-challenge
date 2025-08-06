@@ -7,11 +7,15 @@ import { SpotifyEpisode } from '@/types/spotify'
 interface EpisodesSectionProps {
   episodes: SpotifyEpisode[]
   isLoading?: boolean
+  onSectionClick?: () => void
+  total?: number
 }
 
 export const EpisodesSection: React.FC<EpisodesSectionProps> = ({
   episodes,
   isLoading = false,
+  onSectionClick,
+  total = 0,
 }) => {
   const { t } = useTranslation()
 
@@ -39,9 +43,26 @@ export const EpisodesSection: React.FC<EpisodesSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-foreground">
-        {t('search:episodes', 'Episódios')}
-      </h2>
+      <div className="flex items-center justify-between">
+        <button
+          onClick={onSectionClick}
+          className="text-2xl font-bold text-foreground hover:text-primary transition-colors"
+          aria-label={t('search:episodes', 'Episódios')}
+          aria-pressed={false}
+        >
+          {t('search:episodes', 'Episódios')}
+        </button>
+        <div className="flex items-center gap-2">
+          {total > episodes.length && (
+            <span className="text-sm text-muted-foreground">
+              {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
+                count: episodes.length,
+                total,
+              })}
+            </span>
+          )}
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {episodes
           .filter((episode) => episode && episode.id) // Filter out null/undefined items
@@ -58,4 +79,4 @@ export const EpisodesSection: React.FC<EpisodesSectionProps> = ({
       </div>
     </div>
   )
-} 
+}

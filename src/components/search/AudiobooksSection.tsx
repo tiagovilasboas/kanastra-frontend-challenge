@@ -7,11 +7,15 @@ import { SpotifyAudiobook } from '@/types/spotify'
 interface AudiobooksSectionProps {
   audiobooks: SpotifyAudiobook[]
   isLoading?: boolean
+  onSectionClick?: () => void
+  total?: number
 }
 
 export const AudiobooksSection: React.FC<AudiobooksSectionProps> = ({
   audiobooks,
   isLoading = false,
+  onSectionClick,
+  total = 0,
 }) => {
   const { t } = useTranslation()
 
@@ -39,9 +43,26 @@ export const AudiobooksSection: React.FC<AudiobooksSectionProps> = ({
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-foreground">
-        {t('search:audiobooks', 'Audiobooks')}
-      </h2>
+      <div className="flex items-center justify-between">
+        <button
+          onClick={onSectionClick}
+          className="text-2xl font-bold text-foreground hover:text-primary transition-colors"
+          aria-label={t('search:audiobooks', 'Audiobooks')}
+          aria-pressed={false}
+        >
+          {t('search:audiobooks', 'Audiobooks')}
+        </button>
+        <div className="flex items-center gap-2">
+          {total > audiobooks.length && (
+            <span className="text-sm text-muted-foreground">
+              {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
+                count: audiobooks.length,
+                total,
+              })}
+            </span>
+          )}
+        </div>
+      </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {audiobooks
           .filter((audiobook) => audiobook && audiobook.id) // Filter out null/undefined items
@@ -58,4 +79,4 @@ export const AudiobooksSection: React.FC<AudiobooksSectionProps> = ({
       </div>
     </div>
   )
-} 
+}
