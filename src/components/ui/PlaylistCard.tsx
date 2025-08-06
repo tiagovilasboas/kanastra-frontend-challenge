@@ -1,79 +1,76 @@
-import { Music, Users } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { SpotifyPlaylist } from '@/types/spotify'
-// import { formatDuration } from '@/utils/formatters'
-
 interface PlaylistCardProps {
-  playlist: SpotifyPlaylist
+  playlist: {
+    id: string
+    name: string
+    images?: Array<{ url: string; width?: number; height?: number }>
+    owner: { display_name: string }
+    tracks?: { total: number }
+  }
   onClick?: () => void
+  className?: string
 }
 
 export const PlaylistCard: React.FC<PlaylistCardProps> = ({
   playlist,
   onClick,
+  className = '',
 }) => {
   const { t } = useTranslation()
-
-  const playlistImage = playlist.images?.[0]?.url
-
   return (
-    <Card
-      className="group cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg"
+    <div
+      className={`group cursor-pointer ${className}`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick?.()
+        }
+      }}
     >
-      <CardHeader className="p-0">
-        <div className="relative aspect-square overflow-hidden rounded-t-lg">
-          {playlistImage ? (
-            <img
-              src={playlistImage}
-              alt={playlist.name}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.style.display = 'none'
-              }}
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-gray-600 to-gray-800">
-              <Music className="h-16 w-16 text-gray-400" />
+      <div className="space-y-3">
+        {/* Square Image */}
+        <div className="relative aspect-square w-full">
+          <img
+            src={playlist.images?.[0]?.url || '/placeholder-playlist.png'}
+            alt={playlist.name}
+            className="w-full h-full object-cover rounded-lg shadow-lg group-hover:shadow-xl transition-shadow duration-200"
+          />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-lg transition-colors duration-200 flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                <svg
+                  className="w-6 h-6 text-primary-foreground ml-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
             </div>
-          )}
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <h3 className="line-clamp-2 font-semibold text-foreground group-hover:text-primary">
-          {playlist.name}
-        </h3>
-        {playlist.description && (
-          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-            {playlist.description}
+
+        {/* Text Content */}
+        <div className="space-y-1">
+          <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+            {playlist.name}
+          </h3>
+          <p className="text-sm text-muted-foreground line-clamp-1">
+            {playlist.owner.display_name}
           </p>
-        )}
-        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-          <Users className="h-3 w-3" />
-          <span>
-            {playlist.owner?.display_name ||
-              t('search:unknownOwner', 'Proprietário desconhecido')}
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter className="p-4 pt-0">
-        <div className="flex w-full items-center justify-between text-xs text-muted-foreground">
-          <span>
-            {t('playlists:tracks', '{{count}} músicas', {
-              count: playlist.tracks.total,
-            })}
-          </span>
-          {playlist.collaborative && (
-            <span className="rounded-full bg-primary/10 px-2 py-1 text-primary">
-              {t('playlists:collaborative', 'Colaborativa')}
-            </span>
+          {playlist.tracks && (
+            <p className="text-sm text-muted-foreground">
+              {playlist.tracks.total} {t('ui:tracks')}
+            </p>
           )}
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
