@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
+import { GridSkeleton } from '@/components/ui/GridSkeleton'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 
 export const ArtistsPage: React.FC = () => {
@@ -13,8 +13,13 @@ export const ArtistsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <LoadingSpinner size="lg" />
+      <div className="min-h-screen bg-background p-3 sm:p-4 lg:p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+            {t('artists:popularArtists', 'Artistas populares')}
+          </h1>
+          <GridSkeleton count={24} shape="circle" />
+        </div>
       </div>
     )
   }
