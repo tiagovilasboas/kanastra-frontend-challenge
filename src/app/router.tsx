@@ -14,24 +14,25 @@ const SearchPage = lazy(() =>
     default: module.SearchPage,
   })),
 )
+const SearchByTypePage = lazy(() =>
+  import('@/pages/SearchByTypePage').then((module) => ({
+    default: module.SearchByTypePage,
+  })),
+)
+const AlbumsPage = lazy(() =>
+  import('@/pages/AlbumsPage').then((m) => ({ default: m.AlbumsPage })),
+)
+const FavoritesPage = lazy(() =>
+  import('@/pages/FavoritesPage').then((m) => ({ default: m.FavoritesPage })),
+)
 const ArtistsPage = lazy(() =>
   import('@/pages/ArtistsPage').then((module) => ({
     default: module.ArtistsPage,
   })),
 )
-const AlbumsPage = lazy(() =>
-  import('@/pages/AlbumsPage').then((module) => ({
-    default: module.AlbumsPage,
-  })),
-)
 const ArtistPage = lazy(() =>
   import('@/pages/ArtistPage').then((module) => ({
     default: module.ArtistPage,
-  })),
-)
-const FavoritesPage = lazy(() =>
-  import('@/pages/FavoritesPage').then((module) => ({
-    default: module.FavoritesPage,
   })),
 )
 const CallbackPage = lazy(() =>
@@ -70,26 +71,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: 'artists',
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <ArtistsPage />
-          </Suspense>
-        ),
-      },
-      {
         path: 'albums',
         element: (
           <Suspense fallback={<PageLoader />}>
             <AlbumsPage />
-          </Suspense>
-        ),
-      },
-      {
-        path: 'artist/:id',
-        element: (
-          <Suspense fallback={<PageLoader />}>
-            <ArtistPage />
           </Suspense>
         ),
       },
@@ -101,6 +86,31 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: 'artists',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ArtistsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'search/:type',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <SearchByTypePage />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'artist/:id',
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <ArtistPage />
+          </Suspense>
+        ),
+      },
+
       {
         path: 'callback',
         element: (
