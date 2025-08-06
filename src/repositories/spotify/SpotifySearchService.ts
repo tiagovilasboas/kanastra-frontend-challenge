@@ -170,12 +170,22 @@ export class SpotifySearchService {
     offset: number = 0,
   ) {
     try {
+      console.log('🔍 SpotifySearchService.searchMultipleTypes Debug:', {
+        query,
+        types,
+        limit,
+        offset,
+        filters,
+      })
+
       const params: Record<string, string | number> = {
         q: query,
         type: types.join(','), // Múltiplos tipos separados por vírgula
         limit,
         offset,
       }
+
+      console.log('🔍 SpotifySearchService.searchMultipleTypes Params:', params)
 
       // Add filters to query
       if (filters) {

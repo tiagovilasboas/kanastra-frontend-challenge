@@ -101,7 +101,16 @@ export function useSpotifySearch(): UseSpotifySearchReturn {
       // Se apenas um tipo está selecionado, usa o método específico
       if (filters.types.length === 1) {
         const type = filters.types[0]
-        const limit = getLimitByType(type.toLowerCase(), getDeviceBasedConfig())
+        const config = getDeviceBasedConfig()
+        const limit = getLimitByType(type.toLowerCase(), config)
+
+        console.log('🔍 Debug Search Limits:', {
+          type,
+          typeLowerCase: type.toLowerCase(),
+          config,
+          limit,
+          filtersTypes: filters.types,
+        })
 
         switch (type) {
           case SpotifySearchType.ARTIST:

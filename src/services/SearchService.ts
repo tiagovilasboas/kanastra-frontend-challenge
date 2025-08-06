@@ -307,6 +307,14 @@ export class SearchService {
           ? config.all
           : getSearchLimitWithDevice(types.map((t) => t.toLowerCase()))
 
+      console.log('🔍 SearchService Debug Limits:', {
+        types,
+        typesLength: types.length,
+        config,
+        adjustedLimit,
+        isAllTypes: types.length === 7,
+      })
+
       const response = await this.repository.searchMultipleTypes(
         advancedQuery,
         types,
