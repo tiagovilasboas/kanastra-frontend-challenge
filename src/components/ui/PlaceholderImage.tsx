@@ -1,5 +1,6 @@
 import { Image as ImageIcon, Music } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface PlaceholderImageProps {
   type?:
@@ -18,6 +19,7 @@ export const PlaceholderImage: React.FC<PlaceholderImageProps> = ({
   type = 'album',
   className = '',
 }) => {
+  const { t } = useTranslation()
   const renderIcon = () => {
     switch (type) {
       case 'artist':
@@ -30,9 +32,9 @@ export const PlaceholderImage: React.FC<PlaceholderImageProps> = ({
   return (
     <div
       className={`w-full h-full flex items-center justify-center bg-muted ${className}`}
+      aria-label={t('ui:placeholderImage')}
     >
-      {' '}
-      {renderIcon()}{' '}
+      {renderIcon()}
     </div>
   )
 }
