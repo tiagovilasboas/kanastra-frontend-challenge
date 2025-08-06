@@ -1,13 +1,14 @@
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/button'
+import { Button } from './button'
 
 interface PaginationProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
+  isLoading?: boolean
   className?: string
 }
 
@@ -15,6 +16,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
+  isLoading = false,
   className = '',
 }) => {
   const { t } = useTranslation()
@@ -23,94 +25,111 @@ export const Pagination: React.FC<PaginationProps> = ({
     return null
   }
 
-  const getVisiblePages = () => {
-    const delta = 2 // Number of pages to show on each side of current page
-    const range = []
-    const rangeWithDots = []
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i)
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1)
     }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...')
-    } else {
-      rangeWithDots.push(1)
-    }
-
-    rangeWithDots.push(...range)
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages)
-    } else {
-      rangeWithDots.push(totalPages)
-    }
-
-    return rangeWithDots
   }
 
-  const visiblePages = getVisiblePages()
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1)
+    }
+  }
+
+  const handlePageClick = (page: number) => {
+    if (page !== currentPage) {
+      onPageChange(page)
+    }
+  }
+
+  // Gera array de páginas para mostrar
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const maxVisiblePages = 5
+
+    if (totalPages <= maxVisiblePages) {
+      // Mostra todas as páginas se há 5 ou menos
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i)
+      }
+    } else {
+      // Lógica para mostrar páginas com ellipsis
+      if (currentPage <= 3) {
+        // Páginas iniciais
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        // Páginas finais
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i)
+        }
+      } else {
+        // Páginas do meio
+        pages.push(1)
+        pages.push('...')
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+          pages.push(i)
+        }
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+
+    return pages
+  }
 
   return (
-    <div className={`flex items-center justify-center gap-1 ${className}`}>
-      {/* Previous Button */}
+    <div className={`flex items-center justify-center space-x-2 ${className}`}>
+      {/* Botão Anterior */}
       <Button
         variant="outline"
         size="sm"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="h-8 w-8 p-0"
-        aria-label={t('common:previousPage', 'Previous page')}
+        onClick={handlePrevious}
+        disabled={currentPage <= 1 || isLoading}
+        className="flex items-center space-x-1"
       >
         <ChevronLeft className="h-4 w-4" />
+        <span>{t('pagination:previous', 'Anterior')}</span>
       </Button>
 
-      {/* Page Numbers */}
-      {visiblePages.map((page, index) => {
-        if (page === '...') {
-          return (
-            <div
-              key={`dots-${index}`}
-              className="flex h-8 w-8 items-center justify-center"
-            >
-              <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-            </div>
-          )
-        }
+      {/* Números das páginas */}
+      <div className="flex items-center space-x-1">
+        {getPageNumbers().map((page, index) => (
+          <React.Fragment key={index}>
+            {page === '...' ? (
+              <span className="px-2 py-1 text-muted-foreground">
+                {t('pagination:ellipsis', '...')}
+              </span>
+            ) : (
+              <Button
+                variant={page === currentPage ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => handlePageClick(page as number)}
+                disabled={isLoading}
+                className="min-w-[40px]"
+              >
+                {page}
+              </Button>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
 
-        const pageNumber = page as number
-        const isActive = pageNumber === currentPage
-
-        return (
-          <Button
-            key={pageNumber}
-            variant={isActive ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => onPageChange(pageNumber)}
-            className="h-8 w-8 p-0"
-            aria-label={t('common:goToPage', 'Go to page {page}', {
-              page: pageNumber,
-            })}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {pageNumber}
-          </Button>
-        )
-      })}
-
-      {/* Next Button */}
+      {/* Botão Próximo */}
       <Button
         variant="outline"
         size="sm"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="h-8 w-8 p-0"
-        aria-label={t('common:nextPage', 'Next page')}
+        onClick={handleNext}
+        disabled={currentPage >= totalPages || isLoading}
+        className="flex items-center space-x-1"
       >
+        <span>{t('pagination:next', 'Próximo')}</span>
         <ChevronRight className="h-4 w-4" />
       </Button>
     </div>

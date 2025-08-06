@@ -41,7 +41,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
 
   return (
     <div
-      className="group flex items-center gap-4 p-3 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+      className="group flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
       onClick={handleClick}
     >
       {/* Track Number */}
