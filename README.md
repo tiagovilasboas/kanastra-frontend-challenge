@@ -1,6 +1,6 @@
 # 🎵 Spotify Explorer
 
-Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spotify, construída com TypeScript, Vite e Tailwind CSS. Oferece uma experiência similar ao Spotify com busca inteligente e interface responsiva.
+Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spotify, construída com TypeScript, Vite e Tailwind CSS. Oferece uma experiência similar ao Spotify com busca inteligente, interface responsiva e autenticação OAuth.
 
 ## 🌐 Demo Online
 
@@ -8,11 +8,70 @@ Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spot
 
 ## ✨ Funcionalidades Principais
 
-- 🔍 **Busca Inteligente**: Resultados segmentados por artistas, álbuns e músicas
-- 🎨 **Interface Spotify-like**: Layout responsivo com cards interativos
-- 🔐 **Autenticação Inteligente**: Modo público e autenticado
+### 🎯 Core Features
+
+- 🔍 **Busca Inteligente**: Resultados segmentados por artistas, álbuns, músicas, playlists, shows, episódios e audiobooks
+- 🎨 **Interface Spotify-like**: Layout responsivo com cards interativos e skeleton loading
+- 🔐 **Autenticação OAuth**: Modo público e autenticado com refresh token automático
 - 🌍 **Internacionalização**: Português e inglês com interpolação dinâmica
-- 📱 **Mobile-first**: Otimizada para dispositivos móveis
+- 📱 **Mobile-first**: Otimizada para dispositivos móveis com detecção automática
+
+### 🚀 Funcionalidades Avançadas
+
+- **Sistema de Busca Desacoplado**: Busca por tipo específico vs busca geral otimizada
+- **Limites Configuráveis**: Sistema parametrizável de limites por dispositivo e tipo de conteúdo
+- **Estado Global**: Gerenciamento de estado com Zustand para app, navegação e busca
+- **Error Handling**: Sistema robusto de tratamento de erros com toast notifications
+- **SEO Otimizado**: Meta tags dinâmicas e structured data (JSON-LD)
+- **Performance**: Code splitting, lazy loading e otimizações de bundle
+
+## 🏗️ Arquitetura do Projeto
+
+```
+src/
+├── app/                    # Configuração da aplicação e router
+├── components/             # Componentes reutilizáveis
+│   ├── artist/            # Componentes específicos de artista
+│   ├── layout/            # Componentes de layout (Header, etc.)
+│   ├── search/            # Componentes de busca
+│   ├── SEO/               # Componentes de SEO
+│   └── ui/                # Componentes UI base
+├── config/                # Configurações (limites, ambiente)
+├── hooks/                 # Custom hooks
+├── lib/                   # Bibliotecas e configurações
+├── locales/               # Arquivos de internacionalização
+├── pages/                 # Páginas da aplicação
+├── repositories/          # Camada de acesso a dados (Spotify API)
+├── schemas/               # Schemas de validação (Zod)
+├── services/              # Lógica de negócio
+├── stores/                # Estado global (Zustand)
+├── types/                 # Definições de tipos TypeScript
+└── utils/                 # Utilitários e helpers
+```
+
+## 🛠️ Stack Tecnológica
+
+### Frontend
+
+- **React 19** - Biblioteca principal
+- **TypeScript** - Tipagem estática
+- **Vite** - Build tool e dev server
+- **Tailwind CSS** - Framework CSS utilitário
+- **Radix UI** - Componentes acessíveis
+
+### Estado e Dados
+
+- **Zustand** - Gerenciamento de estado
+- **TanStack Query** - Cache e sincronização de dados
+- **Axios** - Cliente HTTP
+
+### Desenvolvimento
+
+- **ESLint + Prettier** - Linting e formatação
+- **Vitest** - Framework de testes
+- **Cypress** - Testes E2E
+- **Husky** - Git hooks
+- **Lighthouse** - Auditoria de performance
 
 ## 🚀 Configuração Rápida
 
@@ -48,97 +107,74 @@ A aplicação estará disponível em `http://127.0.0.1:5173`
 
 ## 📦 Scripts Disponíveis
 
-```bash
-npm run dev          # Servidor de desenvolvimento
-npm run build        # Build de produção
-npm run preview      # Preview do build
-npm run lint         # Verificar código
-npm run lint:fix     # Corrigir problemas de lint automaticamente
-npm run test         # Executar testes
-npm run type-check   # Verificar tipos TypeScript
-npm run test:e2e     # Executar testes E2E
-npm run analyze      # Análise de bundle
-npm run lighthouse   # Auditoria de performance
-```
-
-## 📚 Documentação
-
-- **[🔧 Configuração Detalhada](docs/SETUP.md)** - Guia completo de configuração
-- **[🔐 Autenticação](docs/AUTHENTICATION.md)** - Como funciona a autenticação
-- **[🧪 Testes E2E](docs/E2E_TESTING.md)** - Documentação dos testes end-to-end
-
-## 🚀 Performance e Otimizações
-
-### Análise de Performance
+### Desenvolvimento
 
 ```bash
-# Auditoria Lighthouse em desenvolvimento
-npm run lighthouse:dev
-
-# Auditoria Lighthouse em produção
-npm run lighthouse
-
-# Análise visual do bundle
-npm run analyze
+npm run dev              # Servidor de desenvolvimento
+npm run build            # Build de produção
+npm run preview          # Preview do build
+npm run type-check       # Verificar tipos TypeScript
 ```
 
-### Resultados do Bundle Analysis
+### Qualidade de Código
 
-Com base na análise de bundle, temos:
-
-- **Bundle Principal**: 356.5KB (108.9KB gzip)
-- **Chunks Otimizados**: 18 chunks separados por funcionalidade
-- **Code Splitting**: Implementado para páginas e componentes
-- **Vendor Chunks**: React, UI libraries e utilitários separados
-- **Feature Chunks**: Autenticação, busca, artistas e álbuns isolados
-
-O bundle está bem otimizado com code splitting estratégico, resultando em carregamento mais rápido das páginas individuais.
-
-### Otimizações Implementadas
-
-- **Lazy Loading**: Páginas carregadas sob demanda
-- **Code Splitting**: Separação inteligente de chunks
-- **Limites Configuráveis**: Sistema parametrizável de limites de busca por página
-
-## ⚙️ Configuração de Limites de Busca
-
-A aplicação possui um sistema flexível de configuração de limites de busca que permite personalizar quantos resultados são exibidos por tipo de conteúdo.
-
-### Configuração Padrão
-
-```typescript
-// src/config/searchLimits.ts
-export const SEARCH_LIMITS: SearchLimitsConfig = {
-  default: 20, // Limite padrão para buscas individuais
-  all: 5, // Limite quando "tudo" está selecionado
-  artist: 20, // Limite específico para artistas
-  album: 20, // Limite específico para álbuns
-  track: 20, // Limite específico para músicas
-  playlist: 20, // Limite específico para playlists
-  show: 20, // Limite específico para shows
-  episode: 20, // Limite específico para episódios
-  audiobook: 20, // Limite específico para audiobooks
-}
+```bash
+npm run lint             # Verificar código
+npm run lint:fix         # Corrigir problemas de lint automaticamente
+npm run test             # Executar testes unitários
+npm run test:e2e         # Executar testes E2E
 ```
 
-### Configuração Personalizada
+### Análise e Performance
 
-Você pode criar configurações personalizadas para diferentes contextos:
-
-```typescript
-// Exemplo: Configuração para mobile
-export const MOBILE_SEARCH_LIMITS: SearchLimitsConfig = {
-  default: 15,
-  all: 4, // 4 de cada tipo quando "tudo" está selecionado
-  artist: 15,
-  album: 15,
-  // ... outros tipos
-}
+```bash
+npm run analyze          # Análise de bundle
+npm run lighthouse       # Auditoria de performance
+npm run lighthouse:dev   # Auditoria em desenvolvimento
 ```
 
-### Arquitetura de Busca Desacoplada
+### Testes E2E Específicos
 
-O sistema de busca foi desacoplado para otimizar performance e precisão:
+```bash
+npm run test:e2e:auth    # Testes de autenticação
+npm run test:e2e:search  # Testes de busca
+npm run test:e2e:artists # Testes de artistas
+npm run test:e2e:albums  # Testes de álbuns
+npm run test:e2e:settings # Testes de configurações
+```
+
+## 🧪 Testes
+
+### Testes Unitários
+
+- **227 testes** cobrindo utilitários, stores, serviços e hooks
+- **Cobertura completa** de formatação, validação, autenticação e busca
+- **Vitest** como framework principal
+
+### Testes E2E
+
+- **Cypress** para testes end-to-end
+- **Cobertura completa** de fluxos críticos
+- **Testes automatizados** de autenticação, busca e navegação
+
+### Exemplo de Execução
+
+```bash
+# Executar todos os testes
+npm run test
+
+# Executar testes E2E específicos
+npm run test:e2e:search
+
+# Executar testes com coverage
+npm run test -- --coverage
+```
+
+## ⚙️ Sistema de Busca Inteligente
+
+### Arquitetura Desacoplada
+
+O sistema de busca foi projetado para otimizar performance e precisão:
 
 #### **Busca por Tipo Específico:**
 
@@ -155,7 +191,7 @@ O sistema de busca foi desacoplado para otimizar performance e precisão:
 
 ### Detecção Automática de Dispositivo
 
-A aplicação detecta automaticamente se o usuário está em um dispositivo móvel ou desktop e aplica a configuração apropriada:
+A aplicação detecta automaticamente se o usuário está em um dispositivo móvel ou desktop:
 
 - **Mobile** (< 768px):
   - 4 resultados de cada tipo quando "tudo" está selecionado
@@ -164,59 +200,103 @@ A aplicação detecta automaticamente se o usuário está em um dispositivo móv
   - 5 resultados de cada tipo quando "tudo" está selecionado
   - 10 álbuns, 25 artistas/músicas, 20 playlists, etc.
 
-**Importante**: O limite de 5 é aplicado **somente** quando "tudo" está selecionado. Para tipos específicos (álbuns, artistas, etc.), cada um usa seu próprio limite e faz uma chamada independente à API.
+### Configuração de Limites
 
 ```typescript
-// Detecção automática
-const config = getDeviceBasedConfig() // Retorna MOBILE_SEARCH_LIMITS ou DESKTOP_SEARCH_LIMITS
-const limit = getSearchLimitWithDevice(types) // Usa a configuração apropriada automaticamente
+// src/config/searchLimits.ts
+export const SEARCH_LIMITS: SearchLimitsConfig = {
+  default: 20, // Limite padrão para buscas individuais
+  all: 5, // Limite quando "tudo" está selecionado
+  artist: 20, // Limite específico para artistas
+  album: 20, // Limite específico para álbuns
+  track: 20, // Limite específico para músicas
+  playlist: 20, // Limite específico para playlists
+  show: 20, // Limite específico para shows
+  episode: 20, // Limite específico para episódios
+  audiobook: 20, // Limite específico para audiobooks
+}
 ```
 
-### Como Usar
+## 🚀 Performance e Otimizações
 
-```typescript
-import { getSearchLimit } from '@/config/searchLimits'
-import { CUSTOM_SEARCH_LIMITS } from './searchLimits.custom'
+### Métricas Atuais
 
-// Usar configuração padrão
-const limit = getSearchLimit(types)
+| Métrica                            | Valor Atual | Meta   | Status |
+| ---------------------------------- | ----------- | ------ | ------ |
+| **Lighthouse Performance**         | 61%         | >90%   | 🔄     |
+| **Lighthouse Acessibilidade**      | 93%         | >90%   | ✅     |
+| **Lighthouse Best Practices**      | 96%         | >90%   | ✅     |
+| **Lighthouse SEO**                 | 100%        | >90%   | ✅     |
+| **First Contentful Paint (FCP)**   | 2.9s        | <2.5s  | 🔄     |
+| **Largest Contentful Paint (LCP)** | 4.6s        | <3.0s  | 🔄     |
+| **First Input Delay (FID)**        | 90ms        | <100ms | ✅     |
+| **Cumulative Layout Shift (CLS)**  | 0.265       | <0.1   | 🔄     |
+| **Bundle Size (Principal)**        | 356.5KB     | <500KB | ✅     |
+| **Bundle Size (Gzip)**             | 108.9KB     | <150KB | ✅     |
 
-// Usar configuração personalizada
-const limit = getSearchLimit(types, CUSTOM_SEARCH_LIMITS)
-```
+### Otimizações Implementadas
 
-### Benefícios
-
-- **Flexibilidade**: Diferentes limites para diferentes contextos
-- **Performance**: Controle sobre o volume de dados transferidos
-- **UX**: Experiência otimizada para cada dispositivo/contexto
-- **Manutenibilidade**: Configuração centralizada e fácil de ajustar
+- **Code Splitting**: 18 chunks separados por funcionalidade
+- **Lazy Loading**: Páginas carregadas sob demanda
+- **Skeleton Loading**: Feedback visual durante carregamento
 - **Debounce**: Busca otimizada com delay de 300ms
-- **Pré-carregamento**: Recursos críticos pré-carregados
+- **Cache Inteligente**: TanStack Query para cache de dados
 - **Bundle Analysis**: Análise visual de tamanho de código
 
-### Métricas Reais Coletadas
+### Análise de Bundle
 
-| Métrica                            | Valor Atual | Meta   |
-| ---------------------------------- | ----------- | ------ |
-| **Lighthouse Performance**         | 61%         | >90%   |
-| **Lighthouse Acessibilidade**      | 93%         | >90%   |
-| **Lighthouse Best Practices**      | 96%         | >90%   |
-| **Lighthouse SEO**                 | 100%        | >90%   |
-| **First Contentful Paint (FCP)**   | 2.9s        | <2.5s  |
-| **Largest Contentful Paint (LCP)** | 4.6s        | <3.0s  |
-| **First Input Delay (FID)**        | 90ms        | <100ms |
-| **Cumulative Layout Shift (CLS)**  | 0.265       | <0.1   |
-| **Bundle Size (Principal)**        | 356.5KB     | <500KB |
-| **Bundle Size (Gzip)**             | 108.9KB     | <150KB |
+```bash
+# Análise visual do bundle
+npm run analyze
+```
 
-### Oportunidades de Otimização
+**Resultados:**
 
-Com base nas métricas coletadas, identificamos as seguintes oportunidades:
+- **Bundle Principal**: 356.5KB (108.9KB gzip)
+- **Chunks Otimizados**: 18 chunks separados por funcionalidade
+- **Code Splitting**: Implementado para páginas e componentes
+- **Vendor Chunks**: React, UI libraries e utilitários separados
 
-- **Performance (61%)**: Otimizar LCP e CLS para melhorar a experiência do usuário
-- **Layout Shift (0.265)**: Implementar dimensões explícitas para imagens e elementos
-- **LCP (4.6s)**: Otimizar carregamento de recursos críticos
+## 🔐 Autenticação e Segurança
+
+### Fluxo OAuth 2.0
+
+- **PKCE (Proof Key for Code Exchange)** para segurança adicional
+- **Refresh Token** automático
+- **Fallback** para client credentials quando necessário
+- **Cookies seguros** para armazenamento de tokens
+
+### Modos de Operação
+
+- **Modo Público**: Acesso limitado com client credentials
+- **Modo Autenticado**: Acesso completo com tokens do usuário
+
+## 🌍 Internacionalização
+
+### Idiomas Suportados
+
+- **Português (pt-BR)** - Idioma padrão
+- **Inglês (en-US)** - Idioma alternativo
+
+### Recursos
+
+- **Tradução dinâmica** de gêneros musicais
+- **Formatação localizada** de números e datas
+- **Interpolação** de variáveis nas traduções
+
+## 📱 Responsividade
+
+### Breakpoints
+
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+### Adaptações Automáticas
+
+- **Grid responsivo** para cards
+- **Limites de busca** ajustados por dispositivo
+- **Navegação otimizada** para mobile
 
 ## 🤝 Contribuindo
 
@@ -226,10 +306,19 @@ Com base nas métricas coletadas, identificamos as seguintes oportunidades:
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
+### Padrões de Código
+
+- **TypeScript** com tipagem explícita
+- **ESLint + Prettier** para formatação
+- **Commits em inglês** por arquivo
+- **Testes obrigatórios** para novas funcionalidades
+
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
-**Desenvolvido com React, TypeScript e Spotify Web API**
+**Desenvolvido com ❤️ por Tiago Vilas Boas**
+
+**Tecnologias:** React 19, TypeScript, Vite, Tailwind CSS, Spotify Web API
