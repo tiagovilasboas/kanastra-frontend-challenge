@@ -324,5 +324,3 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 ---
 
 **Desenvolvido com ❤️ por Tiago Vilas Boas**
-
-**Tecnologias:** React 19, TypeScript, Vite, Tailwind CSS, Spotify Web API
