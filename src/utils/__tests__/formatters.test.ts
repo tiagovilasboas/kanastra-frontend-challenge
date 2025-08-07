@@ -150,7 +150,9 @@ describe('formatters', () => {
 
     it('should handle ISO date strings', () => {
       expect(formatDate('2024-01-15T10:30:00Z')).toBe('15 de janeiro de 2024')
-      expect(formatDate('2024-01-15T23:59:59.999Z')).toBe('15 de janeiro de 2024')
+      expect(formatDate('2024-01-15T23:59:59.999Z')).toBe(
+        '15 de janeiro de 2024',
+      )
     })
 
     it('should throw error for invalid dates', () => {
@@ -170,4 +172,4 @@ describe('formatters', () => {
       expect(date1).toBe(date2)
     })
   })
-}) 
+})

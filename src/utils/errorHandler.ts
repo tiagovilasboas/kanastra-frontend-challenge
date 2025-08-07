@@ -93,7 +93,7 @@ export class ErrorHandler {
 
   // Get errors by context
   getErrorsByContext(context: string): AppError[] {
-    return this.errors.filter(error => error.context === context)
+    return this.errors.filter((error) => error.context === context)
   }
 
   private getErrorCode(error: unknown): string {
@@ -122,7 +122,9 @@ export class ErrorHandler {
 
   private getAuthErrorMessage(error: unknown): string {
     if (error && typeof error === 'object' && 'message' in error) {
-      const message = String((error as { message: string }).message).toLowerCase()
+      const message = String(
+        (error as { message: string }).message,
+      ).toLowerCase()
       if (message.includes('invalid_client')) {
         return 'Invalid client'
       }
@@ -182,4 +184,4 @@ export class ErrorHandler {
   }
 }
 
-export const errorHandler = ErrorHandler.getInstance() 
+export const errorHandler = ErrorHandler.getInstance()

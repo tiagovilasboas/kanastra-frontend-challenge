@@ -1,2 +1,2 @@
 export { SEOHead } from './SEOHead'
-export { StructuredData } from './StructuredData' 
+export { StructuredData } from './StructuredData'

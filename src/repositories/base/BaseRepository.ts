@@ -10,7 +10,7 @@ export class RepositoryError extends Error {
   constructor(
     message: string,
     public statusCode?: number,
-    public originalError?: unknown
+    public originalError?: unknown,
   ) {
     super(message)
     this.name = 'RepositoryError'
@@ -38,4 +38,4 @@ export interface PaginatedResponse<T> {
   hasPrevious: boolean
   currentPage: number
   totalPages: number
-} 
+}

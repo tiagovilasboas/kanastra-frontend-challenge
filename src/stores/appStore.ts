@@ -38,13 +38,13 @@ export const useAppStore = create<AppStore>()(
       setError: (error) => set({ error }),
       setInitialized: (isInitialized) => set({ isInitialized }),
       setAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
-      
+
       initialize: async () => {
         const { setLoading, setError, setInitialized, setAuthenticated } = get()
-        
+
         setLoading(true)
         setError(null)
-        
+
         try {
           // Check authentication using a more controlled approach
           let token: string | null = null
@@ -53,13 +53,15 @@ export const useAppStore = create<AppStore>()(
           } catch (error) {
             console.error('Error accessing localStorage:', error)
           }
-          
+
           setAuthenticated(!!token)
-          
+
           // Mark as initialized
           setInitialized(true)
         } catch (error) {
-          setError(error instanceof Error ? error.message : 'Initialization failed')
+          setError(
+            error instanceof Error ? error.message : 'Initialization failed',
+          )
         } finally {
           setLoading(false)
         }
@@ -72,6 +74,6 @@ export const useAppStore = create<AppStore>()(
         theme: state.theme,
         isAuthenticated: state.isAuthenticated,
       }),
-    }
-  )
+    },
+  ),
 )

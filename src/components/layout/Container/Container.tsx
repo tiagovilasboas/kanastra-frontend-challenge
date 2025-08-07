@@ -28,11 +28,7 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn(getVariantClass(), className)}
-        {...props}
-      >
+      <div ref={ref} className={cn(getVariantClass(), className)} {...props}>
         {children}
       </div>
     )

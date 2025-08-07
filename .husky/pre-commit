@@ -11,7 +11,23 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 2. Verificar TypeScript
+# 2. Verificação rigorosa de lint em todo o projeto
+echo "🔍 Verificação rigorosa de lint..."
+npm run lint:strict
+if [ $? -ne 0 ]; then
+  echo "❌ Lint rigoroso encontrou problemas. Execute 'npm run quality-fix' para corrigir."
+  exit 1
+fi
+
+# 3. Verificar formatação do Prettier
+echo "🎨 Verificando formatação..."
+npm run format:check
+if [ $? -ne 0 ]; then
+  echo "❌ Prettier encontrou problemas de formatação. Execute 'npm run format' para corrigir."
+  exit 1
+fi
+
+# 4. Verificar TypeScript
 echo "🔧 Verificando TypeScript..."
 npm run type-check
 if [ $? -ne 0 ]; then
@@ -19,11 +35,19 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 3. Executar testes unitários
+# 5. Executar testes unitários
 echo "🧪 Executando testes unitários..."
 npm run test -- --run --reporter=verbose
 if [ $? -ne 0 ]; then
   echo "❌ Testes unitários falharam. Corrija-os antes do commit."
+  exit 1
+fi
+
+# 6. Verificar build
+echo "🔨 Verificando build..."
+npm run build
+if [ $? -ne 0 ]; then
+  echo "❌ Build falhou. Corrija os problemas antes do commit."
   exit 1
 fi
 

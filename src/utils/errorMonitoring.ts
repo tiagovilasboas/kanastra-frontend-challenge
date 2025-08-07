@@ -132,7 +132,11 @@ class ErrorMonitoring {
       const appError: AppError = {
         code: 'GLOBAL_ERROR',
         message: event.message,
-        details: { error: event.error, filename: event.filename, lineno: event.lineno },
+        details: {
+          error: event.error,
+          filename: event.filename,
+          lineno: event.lineno,
+        },
         timestamp: new Date(),
         context: 'Global Error Handler',
       }
@@ -144,7 +148,7 @@ class ErrorMonitoring {
     const originalConsoleError = console.error
     console.error = (...args) => {
       originalConsoleError.apply(console, args)
-      
+
       // Only report if it's an actual error, not just console.error calls
       if (args[0] instanceof Error) {
         const appError: AppError = {
@@ -173,7 +177,9 @@ class ErrorMonitoring {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        ...(this.config.apiKey && {
+          Authorization: `Bearer ${this.config.apiKey}`,
+        }),
       },
       body: JSON.stringify({
         ...errorReport,
@@ -191,7 +197,9 @@ class ErrorMonitoring {
 // Default configuration
 const defaultConfig: ErrorMonitoringConfig = {
   enabled: import.meta.env.PROD, // Only enable in production
-  environment: (import.meta.env.MODE as 'development' | 'staging' | 'production') || 'development',
+  environment:
+    (import.meta.env.MODE as 'development' | 'staging' | 'production') ||
+    'development',
   sampleRate: 1.0, // Report all errors by default
 }
 
@@ -199,7 +207,9 @@ const defaultConfig: ErrorMonitoringConfig = {
 export const errorMonitoring = new ErrorMonitoring(defaultConfig)
 
 // Export for configuration
-export const configureErrorMonitoring = (config: Partial<ErrorMonitoringConfig>): void => {
+export const configureErrorMonitoring = (
+  config: Partial<ErrorMonitoringConfig>,
+): void => {
   Object.assign(defaultConfig, config)
-      // Removed debug logs for cleaner production code
-} 
+  // Removed debug logs for cleaner production code
+}

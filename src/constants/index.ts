@@ -1,2 +1,2 @@
 // Export all constants
-export * from './artists' 
+export * from './artists'

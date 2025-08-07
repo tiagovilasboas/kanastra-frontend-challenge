@@ -10,7 +10,7 @@ export const ArtistPageSkeleton: React.FC = () => {
             <div className="h-10 w-10 bg-muted rounded"></div>
             <div className="h-6 bg-muted rounded w-24"></div>
           </div>
-          
+
           {/* Artist info skeleton */}
           <div className="flex flex-col md:flex-row gap-6 sm:gap-8">
             <div className="w-48 h-48 bg-muted rounded-lg flex-shrink-0"></div>
@@ -27,4 +27,4 @@ export const ArtistPageSkeleton: React.FC = () => {
       </div>
     </div>
   )
-} 
+}

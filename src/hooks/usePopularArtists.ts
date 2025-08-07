@@ -72,4 +72,4 @@ export function usePopularArtists({
     error: error as Error | null,
     refetch,
   }
-} 
+}

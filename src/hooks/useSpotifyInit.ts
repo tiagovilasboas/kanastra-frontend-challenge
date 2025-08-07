@@ -32,8 +32,8 @@ export function useSpotifyInit() {
     retry: 1, // Retry once on failure
   })
 
-  return { 
-    isInitialized: !isLoading, 
-    error: error?.message || null 
+  return {
+    isInitialized: !isLoading,
+    error: error?.message || null,
   }
 }

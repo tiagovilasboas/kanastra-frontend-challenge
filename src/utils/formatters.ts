@@ -152,20 +152,22 @@ export function formatDuration(ms: number): string {
 export function formatDate(dateString: string): string {
   try {
     const date = new Date(dateString)
-    
+
     // Check if date is valid
     if (isNaN(date.getTime())) {
       throw new Error('Invalid date')
     }
-    
+
     // Handle timezone issues by using UTC for consistent results
-    const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
-    
+    const utcDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+    )
+
     return utcDate.toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      timeZone: 'UTC'
+      timeZone: 'UTC',
     })
   } catch {
     throw new Error('Invalid date format')

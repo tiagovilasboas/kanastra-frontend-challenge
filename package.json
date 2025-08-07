@@ -18,6 +18,11 @@
     "preview": "vite preview",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix --max-warnings=0",
+    "lint:strict": "eslint . --max-warnings=0 --report-unused-disable-directives --no-warn-ignored",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "quality-check": "npm run lint:strict && npm run format:check && npm run type-check",
+    "quality-fix": "npm run lint:fix && npm run format",
     "test": "vitest",
     "type-check": "tsc --noEmit -p tsconfig.build.json",
     "prepare": "husky",
@@ -109,11 +114,11 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
-      "eslint --fix --max-warnings=0 --no-warn-ignored",
-      "prettier --write"
+      "eslint --fix --max-warnings=0 --report-unused-disable-directives --no-warn-ignored",
+      "prettier --write --check"
     ],
     "*.{json,md,css}": [
-      "prettier --write"
+      "prettier --write --check"
     ]
   }
 }

@@ -19,7 +19,7 @@ export enum PopularArtists {
   BILLIE_EILISH = '6qqNVTkY8uBg9cP3Jd7DAH',
   DUA_LIPA = '6M2wZ9GZgrQXHCFfjv46we',
   TAYLOR_SWIFT = '06HL4z0CvFAxyc27GXpf02',
-  BAD_BUNNY = '4q3ewBCX7sLwd24euuV69X'
+  BAD_BUNNY = '4q3ewBCX7sLwd24euuV69X',
 }
 
 // Lista de IDs dos artistas populares (sem duplicatas)
@@ -43,7 +43,7 @@ export const POPULAR_ARTIST_IDS: string[] = [
   PopularArtists.BILLIE_EILISH,
   PopularArtists.DUA_LIPA,
   PopularArtists.TAYLOR_SWIFT,
-  PopularArtists.BAD_BUNNY
+  PopularArtists.BAD_BUNNY,
 ]
 
 // Mapeamento de nomes dos artistas
@@ -67,5 +67,5 @@ export const ARTIST_NAMES: Record<PopularArtists, string> = {
   [PopularArtists.BILLIE_EILISH]: 'Billie Eilish',
   [PopularArtists.DUA_LIPA]: 'Dua Lipa',
   [PopularArtists.TAYLOR_SWIFT]: 'Taylor Swift',
-  [PopularArtists.BAD_BUNNY]: 'Bad Bunny'
-} 
+  [PopularArtists.BAD_BUNNY]: 'Bad Bunny',
+}

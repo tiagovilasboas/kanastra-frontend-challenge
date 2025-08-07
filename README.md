@@ -1,6 +1,31 @@
 # 🎵 Spotify Explorer
 
+> **🧪 Hiring Challenge (Frontend) - Kanastra**  
+> Este projeto é uma implementação do desafio técnico para posições de software engineering focados em frontend da Kanastra. O desafio consiste em criar uma aplicação responsiva que consome a API do Spotify utilizando as melhores práticas de segurança e desenvolvimento.
+
 Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spotify, construída com TypeScript, Vite e Tailwind CSS. Oferece uma experiência similar ao Spotify com busca inteligente, interface responsiva e autenticação OAuth.
+
+## 📋 Sobre o Desafio
+
+### Requisitos Implementados ✅
+
+- ✅ **Consumo da API do Spotify** com melhores práticas de segurança (OAuth 2.0 + PKCE)
+- ✅ **Listagem de artistas** com UI chamativa, imagens e animações
+- ✅ **Visualização detalhada** de artistas (nome, popularidade, músicas principais, álbuns)
+- ✅ **Paginação de álbuns** com 20 itens por página e navegação manual
+- ✅ **Filtros avançados** para artistas e álbuns (por nome, gênero, ano)
+- ✅ **UI responsiva e chamativa** com Tailwind CSS e componentes customizados
+
+### Diferenciais Implementados 🚀
+
+- ✅ **TypeScript** com tipagens avançadas e generics
+- ✅ **Testes unitários** com Vitest e **testes E2E** com Cypress
+- ✅ **Gerenciamento de estado global** com Zustand (sem prop drilling)
+- ✅ **Internacionalização** com react-i18next (Português e Inglês)
+- ✅ **Error handling** robusto com toast notifications
+- ✅ **Loading states** com skeleton loading
+- ✅ **Animações** e transições suaves
+- ✅ **Performance otimizada** com code splitting e lazy loading
 
 ## 🌐 Demo Online
 
