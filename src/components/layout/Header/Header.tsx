@@ -98,8 +98,8 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
 
         {/* Center - Search */}
         <div className="flex-1 max-w-sm sm:max-w-md mx-2 sm:mx-4">
-          <div className="relative">
-            <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
+          <div className="relative group">
+            <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input
               data-testid="search-input"
               placeholder={
@@ -109,8 +109,24 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onKeyPress={handleSearchKeyPress}
-              className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background"
+              className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background focus:ring-2 focus:ring-primary/20 focus:ring-offset-0 transition-all duration-200 hover:bg-muted/70"
             />
+            {searchQuery.trim() && (
+              <Button
+                data-testid="search-button"
+                onClick={() => {
+                  const queryParams = new URLSearchParams({
+                    q: searchQuery,
+                    market: 'BR',
+                  })
+                  navigate(`/search?${queryParams.toString()}`)
+                }}
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                size="sm"
+              >
+                <Search className="w-3 h-3 text-white" />
+              </Button>
+            )}
           </div>
         </div>
 
