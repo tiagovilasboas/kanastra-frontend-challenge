@@ -25,25 +25,25 @@ export const PopularityBar: React.FC<PopularityBarProps> = ({
   return (
     <div className={`space-y-2 ${className}`}>
       {/* Header simples */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">
-            {t('popularity:title', 'Popularidade')}
-          </span>
-        </div>
-        <span className="text-sm font-bold text-foreground">
-          {popularity}
-          {t('common:percent', '%')}
+      <div className="flex items-center gap-2">
+        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        <span className="text-sm font-medium text-muted-foreground">
+          {t('popularity:title', 'Popularidade')}
         </span>
       </div>
 
-      {/* Barra de progresso simples */}
-      <div className="w-1/2 h-2 bg-muted rounded-full overflow-hidden">
-        <div
-          className={`h-full ${getPopularityColor(popularity)} rounded-full transition-all duration-1000 ease-out`}
-          style={{ width: `${popularity}%` }}
-        />
+      {/* Barra de progresso com texto */}
+      <div className="relative">
+        <div className="w-1/2 h-2 bg-muted rounded-full overflow-hidden">
+          <div
+            className={`h-full ${getPopularityColor(popularity)} rounded-full transition-all duration-1000 ease-out`}
+            style={{ width: `${popularity}%` }}
+          />
+        </div>
+        <span className="absolute -top-1 -right-2 text-xs font-bold text-foreground">
+          {popularity}
+          {t('common:percent', '%')}
+        </span>
       </div>
     </div>
   )
