@@ -317,18 +317,6 @@ npm run analyze
 - **Limites de busca** ajustados por dispositivo
 - **Navegação otimizada** para mobile
 
-## 🗺️ Roadmap Técnico
-
-| Prioridade | Item                                 | Descrição                                                                                                              |
-| ---------- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| 1          | **Refatorar páginas de busca**       | Extrair `useSearchParams`, `SearchPresenter`, `SearchSections` para reduzir tamanho de `SearchPage`/`SearchByTypePage` |
-| 2          | **Extrair lógica do Header**         | Criar `SearchBarContainer` (estado + hooks) deixando `Header` puramente visual                                         |
-| 3          | **Delegar navegação aos containers** | Passar `onSelect` para cards/seções; remover `window.open` / `navigate` dentro de UI                                   |
-| 4          | **Centralizar limites de API**       | Criar `src/constants/limits.ts` para eliminar números mágicos                                                          |
-| 5          | **DTOs & Mappers**                   | Introduzir camada de mapeamento para quebrar dependência direta do SDK Spotify                                         |
-
-> As etapas 1 e 2 serão implementadas primeiro, pois trazem ganhos rápidos de legibilidade e mantêm compatibilidade com a UI atual.
-
 ---
 
 ## 📄 Licença
