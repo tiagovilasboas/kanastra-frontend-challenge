@@ -66,6 +66,9 @@ export const SearchByTypePage: React.FC = () => {
       query,
       market,
       fullUrl: window.location.href,
+      queryLength: query.length,
+      queryTrimmed: query.trim(),
+      hasQuery: !!query.trim(),
     })
   }
 

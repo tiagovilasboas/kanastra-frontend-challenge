@@ -38,8 +38,8 @@ export function useSpotifySearchByType({
   market = 'BR',
   includeExternal = false,
 }: UseSpotifySearchByTypeParams): UseSpotifySearchByTypeReturn {
-  // Debounce the query with 350ms delay
-  const debouncedQ = useDebounce(q, 350)
+  // Debounce the query with 200ms delay (reduced for better responsiveness)
+  const debouncedQ = useDebounce(q, 200)
   const searchService = useMemo(() => new SearchService(spotifyRepository), [])
 
   // Create a more specific cache key to avoid conflicts
@@ -59,7 +59,22 @@ export function useSpotifySearchByType({
     initialPageParam: 0,
     queryKey,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
-      if (!debouncedQ.trim() || debouncedQ.trim().length < 2) {
+      // Enhanced query validation with debug logging
+      const trimmedQuery = debouncedQ.trim()
+      const isValidQuery = trimmedQuery.length >= 2
+
+      if (import.meta.env.DEV) {
+        console.log('🔍 useSpotifySearchByType - Query validation:', {
+          originalQuery: debouncedQ,
+          trimmedQuery,
+          queryLength: trimmedQuery.length,
+          isValidQuery,
+          type,
+          market,
+        })
+      }
+
+      if (!isValidQuery) {
         return {
           items: [],
           total: 0,
