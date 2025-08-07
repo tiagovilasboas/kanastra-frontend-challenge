@@ -39,7 +39,7 @@ export const PopularityBar: React.FC<PopularityBarProps> = ({
       </div>
 
       {/* Barra de progresso simples */}
-      <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+      <div className="w-1/2 h-2 bg-muted rounded-full overflow-hidden">
         <div
           className={`h-full ${getPopularityColor(popularity)} rounded-full transition-all duration-1000 ease-out`}
           style={{ width: `${popularity}%` }}
