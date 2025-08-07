@@ -88,7 +88,13 @@ export const AlbumsSection: React.FC<AlbumsSectionProps> = ({
               key={album.id}
               album={album}
               onClick={() => {
-                // TODO: Implement album navigation
+                if (album.external_urls?.spotify) {
+                  window.open(
+                    album.external_urls.spotify,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
               }}
             />
           ))}
