@@ -144,6 +144,7 @@ export const SearchByTypePage: React.FC = () => {
   // Usar flatItems diretamente
   const allItems = filteredItems
   const totalItems = total
+  const hasFilter = localFilter.trim().length > 0
 
   // Debug logs
   if (import.meta.env.DEV) {
@@ -191,14 +192,14 @@ export const SearchByTypePage: React.FC = () => {
               }
             }}
           />
-          {hasNextPage && !localFilter.trim() && (
+          {hasNextPage && !hasFilter && (
             <div className="flex justify-center pt-4">
               <LoadMoreButton
                 onLoadMore={fetchNextPage}
                 isLoading={isFetching}
                 hasMore={hasNextPage}
                 totalResults={totalItems}
-                currentCount={allItems.length}
+                currentCount={flatItems.length}
               />
             </div>
           )}
@@ -349,14 +350,14 @@ export const SearchByTypePage: React.FC = () => {
         </div>
 
         {/* Botão "Carregar mais" */}
-        {hasNextPage && !localFilter.trim() && (
+        {hasNextPage && !hasFilter && (
           <div className="flex justify-center pt-4">
             <LoadMoreButton
               onLoadMore={fetchNextPage}
               isLoading={isFetching}
               hasMore={hasNextPage}
               totalResults={totalItems}
-              currentCount={allItems.length}
+              currentCount={flatItems.length}
             />
           </div>
         )}
@@ -387,17 +388,18 @@ export const SearchByTypePage: React.FC = () => {
         {/* Results Count */}
         {allItems.length > 0 && (
           <div className="text-sm text-muted-foreground text-center">
-            {localFilter.trim()
+            {hasFilter
               ? t(
                   'search:showingFilteredResults',
-                  'Mostrando {{count}} resultados filtrados de {{total}}',
+                  'Mostrando {{count}} resultados filtrados de {{total}} carregados{{moreAvailable}}',
                   {
                     count: allItems.length,
                     total: flatItems.length,
+                    moreAvailable: hasNextPage ? ' (mais disponíveis)' : '',
                   },
                 )
               : t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
-                  count: allItems.length,
+                  count: flatItems.length,
                   total: totalItems,
                 })}
           </div>
