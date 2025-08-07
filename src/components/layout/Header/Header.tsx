@@ -11,19 +11,25 @@ import {
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
-import { useSearchBar } from '@/hooks/useSearchBar'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
 export interface HeaderProps {
   onMenuToggle?: () => void
   searchPlaceholder?: string
+  searchQuery: string
+  onSearchChange: (value: string) => void
+  onSearchKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
+export function Header({
+  onMenuToggle,
+  searchPlaceholder,
+  searchQuery,
+  onSearchChange,
+  onSearchKeyPress,
+}: HeaderProps) {
   const { t } = useTranslation()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
-  const { searchQuery, handleSearchChange, handleSearchKeyPress } =
-    useSearchBar()
 
   return (
     <header
@@ -63,8 +69,8 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
                 t('search:placeholder', 'Pesquisar artistas, álbuns ou músicas')
               }
               value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyPress={handleSearchKeyPress}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onKeyPress={onSearchKeyPress}
               className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background"
             />
           </div>
