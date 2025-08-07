@@ -54,13 +54,21 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
 
     // Navigate to search page if user types something
     if (value.trim()) {
-      navigate('/search')
+      const queryParams = new URLSearchParams({
+        q: value,
+        market: 'BR',
+      })
+      navigate(`/search?${queryParams.toString()}`)
     }
   }
 
   const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
-      navigate('/search')
+      const queryParams = new URLSearchParams({
+        q: searchQuery,
+        market: 'BR',
+      })
+      navigate(`/search?${queryParams.toString()}`)
     }
   }
 
@@ -105,7 +113,15 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
             />
             <Button
               data-testid="search-button"
-              onClick={() => searchQuery.trim() && navigate('/search')}
+              onClick={() => {
+                if (searchQuery.trim()) {
+                  const queryParams = new URLSearchParams({
+                    q: searchQuery,
+                    market: 'BR',
+                  })
+                  navigate(`/search?${queryParams.toString()}`)
+                }
+              }}
               className="h-9 sm:h-10 px-3 rounded-l-none"
               disabled={!searchQuery.trim()}
             >
