@@ -41,6 +41,17 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
   const query = searchParams.get('q') || searchQuery || ''
   const market = searchParams.get('market') || 'BR'
 
+  // Debug logging for query extraction
+  if (import.meta.env.DEV) {
+    console.log('🔍 TypeSelector - Query extraction:', {
+      urlQuery: searchParams.get('q'),
+      storeQuery: searchQuery,
+      finalQuery: query,
+      market,
+      location: location.pathname + location.search,
+    })
+  }
+
   // Determina a tab ativa baseada na URL
   const getActiveTab = (): TabType => {
     const path = location.pathname
@@ -135,10 +146,8 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
       })
     }
 
-    // Add a small delay to ensure state updates are processed
-    setTimeout(() => {
-      navigate(finalUrl)
-    }, 0)
+    // Navigate immediately without delay
+    navigate(finalUrl)
   }
 
   const tabs = [
