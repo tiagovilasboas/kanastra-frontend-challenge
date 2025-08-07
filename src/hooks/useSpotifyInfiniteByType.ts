@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 import { cache } from '@/config/react-query'
+import { API_LIMITS } from '@/constants/limits'
 import { spotifyRepository } from '@/repositories'
 import { SearchService } from '@/services/SearchService'
 import { SpotifySearchType } from '@/types/spotify'
@@ -39,7 +40,7 @@ export function useSpotifyInfiniteByType({
   q,
   type,
   market = 'BR',
-  pageSize = 20,
+  pageSize = API_LIMITS.SEARCH.DEFAULT,
   includeExternal = false,
 }: UseSpotifyInfiniteByTypeParams): UseSpotifyInfiniteByTypeReturn {
   const debouncedQ = useDebounce(q, 350)
