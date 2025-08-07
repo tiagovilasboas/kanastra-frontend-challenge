@@ -165,8 +165,8 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
             disabled={!query} // Desabilita se não há query
             className={`px-4 py-2 rounded-full transition-all duration-200 font-medium ${
               isActive
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                ? 'bg-secondary text-secondary-foreground shadow-md'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
             } ${!query ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {tab.label}
