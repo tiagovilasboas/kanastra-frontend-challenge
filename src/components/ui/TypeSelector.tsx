@@ -118,6 +118,16 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
     newParams.set('q', currentQuery)
     newParams.set('market', market)
 
+    if (import.meta.env.DEV) {
+      console.log('🔍 TypeSelector - URL construction:', {
+        currentQuery,
+        market,
+        newParams: newParams.toString(),
+        hasQuery: !!currentQuery,
+        queryLength: currentQuery.length,
+      })
+    }
+
     let finalUrl: string
 
     if (tab === 'all') {
@@ -150,11 +160,15 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
         currentQuery,
         market,
         finalUrl,
+        newParams: newParams.toString(),
         timestamp: new Date().toISOString(),
       })
     }
 
     // Navigate immediately without delay
+    if (import.meta.env.DEV) {
+      console.log('🔍 TypeSelector - About to navigate to:', finalUrl)
+    }
     navigate(finalUrl)
   }
 
