@@ -192,7 +192,7 @@ export const SearchByTypePage: React.FC = () => {
               }
             }}
           />
-          {hasNextPage && !hasFilter && (
+          {hasNextPage && (
             <div className="flex justify-center pt-4">
               <LoadMoreButton
                 onLoadMore={fetchNextPage}
@@ -350,7 +350,7 @@ export const SearchByTypePage: React.FC = () => {
         </div>
 
         {/* Botão "Carregar mais" */}
-        {hasNextPage && !hasFilter && (
+        {hasNextPage && (
           <div className="flex justify-center pt-4">
             <LoadMoreButton
               onLoadMore={fetchNextPage}
