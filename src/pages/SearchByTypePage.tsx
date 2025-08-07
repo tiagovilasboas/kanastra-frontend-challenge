@@ -1,5 +1,5 @@
 import { AlertCircle, Search } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
@@ -14,6 +14,7 @@ import { EpisodeCard } from '@/components/ui/EpisodeCard'
 import { LoadMoreButton } from '@/components/ui/LoadMoreButton'
 import { PlaylistCard } from '@/components/ui/PlaylistCard'
 import { ShowCard } from '@/components/ui/ShowCard'
+import { SimpleFilterInput } from '@/components/ui/SimpleFilterInput'
 import { TypeSelector } from '@/components/ui/TypeSelector'
 import { useSpotifySearchByType } from '@/hooks/useSpotifySearchByType'
 import { SpotifySearchType } from '@/types/spotify'
@@ -54,6 +55,9 @@ export const SearchByTypePage: React.FC = () => {
   const query = searchParams.get('q') || ''
   const market = searchParams.get('market') || 'BR'
 
+  // Estado para o filtro local
+  const [localFilter, setLocalFilter] = useState('')
+
   // Debug URL parameters
   if (import.meta.env.DEV) {
     console.log('🔍 SearchByTypePage URL Debug:', {
@@ -78,6 +82,36 @@ export const SearchByTypePage: React.FC = () => {
       market,
       includeExternal: false,
     })
+
+  // Filtra os itens baseado no filtro local
+  const filteredItems = flatItems.filter((item: unknown) => {
+    if (!localFilter.trim()) return true
+
+    const itemName = (item as { name?: string })?.name || ''
+    return itemName.toLowerCase().includes(localFilter.toLowerCase())
+  })
+
+  // Mapeamento de placeholders para cada tipo
+  const getFilterPlaceholder = () => {
+    switch (apiType) {
+      case SpotifySearchType.ARTIST:
+        return 'search:filterArtists'
+      case SpotifySearchType.ALBUM:
+        return 'search:filterAlbums'
+      case SpotifySearchType.TRACK:
+        return 'search:filterTracks'
+      case SpotifySearchType.PLAYLIST:
+        return 'search:filterPlaylists'
+      case SpotifySearchType.SHOW:
+        return 'search:filterShows'
+      case SpotifySearchType.EPISODE:
+        return 'search:filterEpisodes'
+      case SpotifySearchType.AUDIOBOOK:
+        return 'search:filterAudiobooks'
+      default:
+        return 'search:filterItems'
+    }
+  }
 
   if (!apiType) {
     return (
@@ -105,7 +139,7 @@ export const SearchByTypePage: React.FC = () => {
   }
 
   // Usar flatItems diretamente
-  const allItems = flatItems
+  const allItems = filteredItems
   const totalItems = total
 
   // Debug logs
@@ -117,13 +151,14 @@ export const SearchByTypePage: React.FC = () => {
       allItems: allItems.length,
       totalItems,
       hasNextPage,
+      localFilter,
     })
   }
 
   // Renderiza os itens baseado no tipo
   const renderItems = () => {
     // Show skeletons while fetching first page
-    if (isFetching && allItems.length === 0) {
+    if (isFetching && flatItems.length === 0) {
       const skeletonMap: Partial<
         Record<SpotifySearchType, React.ReactElement>
       > = {
@@ -173,14 +208,25 @@ export const SearchByTypePage: React.FC = () => {
           <CardContent className="p-8">
             <Search className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">
-              {t('search:noResultsTitle', 'Nenhum resultado encontrado')}
+              {localFilter.trim()
+                ? t(
+                    'search:noFilteredResultsTitle',
+                    'Nenhum resultado encontrado para o filtro',
+                  )
+                : t('search:noResultsTitle', 'Nenhum resultado encontrado')}
             </h3>
             <p className="text-muted-foreground">
-              {t(
-                'search:noResultsDescription',
-                'Não encontramos resultados para "{{query}}". Tente com outras palavras-chave.',
-                { query },
-              )}
+              {localFilter.trim()
+                ? t(
+                    'search:noFilteredResultsDescription',
+                    'Não encontramos resultados para "{{query}}" com o filtro "{{filter}}". Tente com outras palavras-chave.',
+                    { query, filter: localFilter },
+                  )
+                : t(
+                    'search:noResultsDescription',
+                    'Não encontramos resultados para "{{query}}". Tente com outras palavras-chave.',
+                    { query },
+                  )}
             </p>
           </CardContent>
         </Card>
@@ -321,19 +367,36 @@ export const SearchByTypePage: React.FC = () => {
         {/* Header */}
         <SearchHeader />
 
-        {/* Type Selector */}
-        <TypeSelector />
+        {/* Type Selector and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <TypeSelector />
+          <SimpleFilterInput
+            value={localFilter}
+            onChange={setLocalFilter}
+            placeholderKey={getFilterPlaceholder()}
+            className="w-full sm:w-auto"
+          />
+        </div>
 
         {/* Results */}
         {renderItems()}
 
         {/* Results Count */}
-        {allItems.length > 0 && totalItems > allItems.length && (
+        {allItems.length > 0 && (
           <div className="text-sm text-muted-foreground text-center">
-            {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
-              count: allItems.length,
-              total: totalItems,
-            })}
+            {localFilter.trim()
+              ? t(
+                  'search:showingFilteredResults',
+                  'Mostrando {{count}} resultados filtrados de {{total}}',
+                  {
+                    count: allItems.length,
+                    total: flatItems.length,
+                  },
+                )
+              : t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
+                  count: allItems.length,
+                  total: totalItems,
+                })}
           </div>
         )}
       </div>
