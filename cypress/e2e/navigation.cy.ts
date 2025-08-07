@@ -32,7 +32,6 @@ describe('Navigation Menu E2E', () => {
     // Verify search page elements are visible
     cy.get('[data-testid="search-header"]').should('be.visible')
     cy.get('[data-testid="search-input"]').should('be.visible')
-    cy.get('[data-testid="search-filters"]').should('be.visible')
   })
 
   it('should navigate to artists page when clicking artists menu item', () => {

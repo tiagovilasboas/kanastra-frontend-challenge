@@ -6,7 +6,6 @@ describe('Search Page E2E - Happy Path', () => {
   it('should display search page with all search types and perform basic search', () => {
     // Check if search page loads correctly
     cy.get('[data-testid="search-header"]').should('be.visible')
-    cy.get('[data-testid="search-filters"]').should('be.visible')
     cy.get('[data-testid="search-input"]').should('be.visible')
     cy.get('[data-testid="search-button"]').should('be.visible')
 

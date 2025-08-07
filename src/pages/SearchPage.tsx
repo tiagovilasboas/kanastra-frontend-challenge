@@ -1,5 +1,5 @@
 import { AlertCircle, Loader2, Search } from 'lucide-react'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -11,7 +11,6 @@ import {
   SearchHeader,
   ShowsSection,
 } from '@/components/search'
-import { SearchFilters } from '@/components/search/SearchFilters'
 import {
   BestResultCard,
   SearchResultsLayout,
@@ -27,32 +26,14 @@ import { SearchTab } from '@/components/ui/SearchTabs'
 import { useSpotifySearch } from '@/hooks/useSpotifySearch'
 import { useSearchStore } from '@/stores/searchStore'
 
-type SearchFiltersType = {
-  artistName?: string
-  albumName?: string
-  genre?: string
-  yearFrom?: number
-  yearTo?: number
-}
-
 export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const { searchQuery } = useSearchStore()
-  const [searchFilters, setSearchFilters] = useState<SearchFiltersType>({
-    artistName: undefined,
-    albumName: undefined,
-    genre: undefined,
-    yearFrom: undefined,
-    yearTo: undefined,
-  })
 
-  const { searchState, results } = useSpotifySearch({
-    ...searchFilters,
-    genres: searchFilters.genre ? [searchFilters.genre] : [],
-  })
+  const { searchState, results } = useSpotifySearch()
 
   // Check if there are any results to show
   const hasResults =
@@ -99,20 +80,7 @@ export const SearchPage: React.FC = () => {
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-4 lg:p-6">
         {/* Header */}
         <SearchHeader />
-        {/* Filters */}
-        <SearchFilters
-          filters={searchFilters}
-          onFiltersChange={setSearchFilters}
-          onClearFilters={() =>
-            setSearchFilters({
-              artistName: undefined,
-              albumName: undefined,
-              genre: undefined,
-              yearFrom: undefined,
-              yearTo: undefined,
-            })
-          }
-        />
+
         {/* Type Selector and Filters - Only show when there's a search query */}
         {searchQuery && (
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
