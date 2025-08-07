@@ -109,7 +109,7 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
               className="h-9 sm:h-10 px-3 rounded-l-none"
               disabled={!searchQuery.trim()}
             >
-              <Search className="w-4 h-4" />
+              {t('search:search', 'Buscar')}
             </Button>
           </div>
         </div>
