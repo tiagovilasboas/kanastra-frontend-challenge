@@ -3,14 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
-import {
-  AlbumsSection,
-  ArtistsSection,
-  EpisodesSection,
-  PlaylistsSection,
-  SearchHeader,
-  ShowsSection,
-} from '@/components/search'
+import { SearchHeader, SearchSections } from '@/components/search'
 import {
   BestResultCard,
   SearchResultsLayout,
@@ -200,47 +193,10 @@ export const SearchPage: React.FC = () => {
                     )
                   }
                 >
-                  {/* Artists Section */}
-                  {results.artists.items.length > 0 && (
-                    <ArtistsSection
-                      artists={results.artists.items}
-                      onSectionClick={() => handleSectionClick('artist')}
-                    />
-                  )}
-
-                  {/* Albums Section */}
-                  {results.albums.items.length > 0 && (
-                    <AlbumsSection
-                      albums={results.albums.items}
-                      onSectionClick={() => handleSectionClick('album')}
-                    />
-                  )}
-
-                  {/* Playlists Section */}
-                  {results.playlists.items.length > 0 && (
-                    <PlaylistsSection
-                      playlists={results.playlists.items}
-                      onSectionClick={() => handleSectionClick('playlist')}
-                    />
-                  )}
-
-                  {/* Shows Section */}
-                  {results.shows.items.length > 0 && (
-                    <ShowsSection
-                      shows={results.shows.items}
-                      onSectionClick={() => handleSectionClick('show')}
-                      total={results.shows.total}
-                    />
-                  )}
-
-                  {/* Episodes Section */}
-                  {results.episodes.items.length > 0 && (
-                    <EpisodesSection
-                      episodes={results.episodes.items}
-                      onSectionClick={() => handleSectionClick('episode')}
-                      total={results.episodes.total}
-                    />
-                  )}
+                  <SearchSections
+                    results={results}
+                    onSectionClick={handleSectionClick}
+                  />
                 </SearchResultsLayout>
               </div>
             ) : (
