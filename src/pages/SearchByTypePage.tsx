@@ -1,12 +1,7 @@
 import { AlertCircle, Search } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { SearchHeader } from '@/components/search'
 import { TrackList } from '@/components/ui'
@@ -20,6 +15,7 @@ import { PlaylistCard } from '@/components/ui/PlaylistCard'
 import { ShowCard } from '@/components/ui/ShowCard'
 import { SimpleFilterInput } from '@/components/ui/SimpleFilterInput'
 import { TypeSelector } from '@/components/ui/TypeSelector'
+import { useSearchParamsQuery } from '@/hooks/useSearchParams'
 import { useSpotifySearchByType } from '@/hooks/useSpotifySearchByType'
 import { SpotifySearchType } from '@/types/spotify'
 import {
@@ -50,13 +46,12 @@ const URL_TYPE_TO_API_TYPE = {
 
 export const SearchByTypePage: React.FC = () => {
   const { type } = useParams<{ type: string }>()
-  const [searchParams] = useSearchParams()
+  const { params } = useSearchParamsQuery()
   const navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation()
 
-  const query = searchParams.get('q') || ''
-  const market = searchParams.get('market') || 'BR'
+  const { q: query, market } = params
 
   // Estado para o filtro local
   const [localFilter, setLocalFilter] = useState('')
@@ -65,7 +60,9 @@ export const SearchByTypePage: React.FC = () => {
   if (import.meta.env.DEV) {
     logger.debug('🔍 SearchByTypePage URL Debug:', {
       type,
-      searchParams: Object.fromEntries(searchParams.entries()),
+      searchParams: Object.fromEntries(
+        new URLSearchParams(window.location.search).entries(),
+      ),
       query,
       market,
       fullUrl: window.location.href,
