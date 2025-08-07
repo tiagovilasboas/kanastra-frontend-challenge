@@ -35,7 +35,7 @@ Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spot
 
 ### 🎯 Core Features
 
-- 🔍 **Busca Inteligente**: Resultados segmentados por artistas, álbuns, músicas, playlists, shows, episódios e audiobooks
+- 🔍 **Busca Inteligente**: Resultados segmentados por artistas, álbuns, músicas, playlists, shows e episódios
 - 🎨 **Interface Spotify-like**: Layout responsivo com cards interativos e skeleton loading
 - 🔐 **Autenticação OAuth**: Modo público e autenticado com refresh token automático
 - 🌍 **Internacionalização**: Português e inglês com interpolação dinâmica
@@ -74,6 +74,10 @@ src/
 ```
 
 ## 🛠️ Stack Tecnológica
+
+### Integração Contínua
+
+- **Reviewdog** via GitHub Actions: analisa ESLint e Prettier em cada Pull Request, comentando diretamente no diff.
 
 ### Frontend
 
