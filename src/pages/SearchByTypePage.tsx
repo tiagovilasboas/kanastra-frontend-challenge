@@ -145,6 +145,8 @@ export const SearchByTypePage: React.FC = () => {
   const allItems = filteredItems
   const totalItems = total
   const hasFilter = localFilter.trim().length > 0
+  const shouldShowLoadMore =
+    hasNextPage && (!hasFilter || allItems.length >= 20)
 
   // Debug logs
   if (import.meta.env.DEV) {
@@ -194,7 +196,7 @@ export const SearchByTypePage: React.FC = () => {
               }
             }}
           />
-          {hasNextPage && (
+          {shouldShowLoadMore && (
             <div className="flex justify-center pt-4">
               <LoadMoreButton
                 onLoadMore={() => {
@@ -362,7 +364,7 @@ export const SearchByTypePage: React.FC = () => {
         </div>
 
         {/* Botão "Carregar mais" */}
-        {hasNextPage && (
+        {shouldShowLoadMore && (
           <div className="flex justify-center pt-4">
             <LoadMoreButton
               onLoadMore={() => {
@@ -408,7 +410,7 @@ export const SearchByTypePage: React.FC = () => {
         {renderItems()}
 
         {/* Results Count */}
-        {allItems.length > 0 && (
+        {allItems.length > 0 && (!hasFilter || allItems.length >= 20) && (
           <div className="text-sm text-muted-foreground text-center">
             {hasFilter
               ? t(
