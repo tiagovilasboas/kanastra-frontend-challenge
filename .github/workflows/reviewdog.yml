@@ -1,0 +1,59 @@
+name: reviewdog
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+jobs:
+  eslint:
+    name: ESLint Reviewdog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts --prefer-offline --no-audit
+
+      - name: Run ESLint with reviewdog
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review # Change to 'github-pr-check' for summary annotations only
+          eslint_flags: '. --max-warnings=0'
+          level: error
+
+  prettier:
+    name: Prettier Reviewdog
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Run Prettier and report via reviewdog
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          tool_name: prettier
+          pattern: '**/*.{js,jsx,ts,tsx,css,md,json,yml}'
+          command: |
+            npx prettier --check $(git ls-files '**/*.{js,jsx,ts,tsx,css,md,json,yml}')
+          fail_on_error: 'true'
