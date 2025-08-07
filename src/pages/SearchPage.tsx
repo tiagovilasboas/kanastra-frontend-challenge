@@ -108,8 +108,8 @@ export const SearchPage: React.FC = () => {
                   onClick={() => handleTabChange(tab.id)}
                   className={`px-4 py-2 rounded-full transition-all duration-200 font-medium text-sm ${
                     tab.isActive
-                      ? 'bg-secondary text-secondary-foreground shadow-md'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      ? 'bg-primary text-primary-foreground shadow-md'
+                      : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                   }`}
                 >
                   {tab.label}
