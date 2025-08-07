@@ -1,7 +1,7 @@
 import { AlertCircle, Loader2, Search } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { SearchHeader, SearchSections } from '@/components/search'
 import {
@@ -15,58 +15,21 @@ import {
   CardDescription,
   CardTitle,
 } from '@/components/ui/card'
-import { SearchTab } from '@/components/ui/SearchTabs'
-import { useSpotifySearch } from '@/hooks/useSpotifySearch'
-import { useSearchStore } from '@/stores/searchStore'
+import { useSearchPagePresenter } from '@/hooks/useSearchPagePresenter'
 
 export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
-  const { searchQuery } = useSearchStore()
-
-  const { searchState, results } = useSpotifySearch()
-
-  // Check if there are any results to show
-  const hasResults =
-    results.artists.items.length > 0 ||
-    results.albums.items.length > 0 ||
-    results.tracks.items.length > 0 ||
-    results.playlists.items.length > 0 ||
-    results.shows.items.length > 0 ||
-    results.episodes.items.length > 0 ||
-    results.audiobooks.items.length > 0
-
-  const handleSectionClick = (type: string) => {
-    const queryParams = new URLSearchParams({
-      q: searchQuery,
-      market: 'BR',
-    })
-    navigate(`/search/${type}?${queryParams.toString()}`)
-  }
-
-  // Tabs configuration
-  const tabs: SearchTab[] = [
-    { id: 'all', label: t('search:all', 'Tudo'), isActive: true },
-    { id: 'playlist', label: t('search:playlists', 'Playlists') },
-    { id: 'track', label: t('search:tracks', 'Músicas') },
-    { id: 'artist', label: t('search:artists', 'Artistas') },
-    { id: 'album', label: t('search:albums', 'Álbuns') },
-    { id: 'show', label: t('search:shows', 'Podcasts e programas') },
-    { id: 'episode', label: t('search:episodes', 'Episódios') },
-  ]
-
-  const handleTabChange = (tabId: string) => {
-    if (tabId === 'all') {
-      // Stay on current search page
-      return
-    }
-
-    // Navigate to specific search type page
-    const queryParams = new URLSearchParams(searchParams)
-    navigate(`/search/${tabId}?${queryParams.toString()}`)
-  }
+  const {
+    searchQuery,
+    searchState,
+    results,
+    hasResults,
+    tabs,
+    handleSectionClick,
+    handleTabChange,
+  } = useSearchPagePresenter()
 
   return (
     <div className="min-h-screen bg-background">
