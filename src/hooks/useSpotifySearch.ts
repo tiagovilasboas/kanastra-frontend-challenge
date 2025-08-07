@@ -57,13 +57,9 @@ export function useSpotifySearch(
     includeExternal: initialFilters?.includeExternal ?? false,
   })
 
-  // Search query with React Query
-  const {
-    data: searchData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: [
+  // Create a more specific cache key to avoid conflicts
+  const queryKey = useMemo(
+    () => [
       'spotify-search',
       debouncedSearchQuery,
       filters.types,
@@ -75,7 +71,29 @@ export function useSpotifySearch(
       filters.market,
       filters.includeExplicit,
       filters.includeExternal,
+      'v2', // Version to force cache refresh if needed
     ],
+    [
+      debouncedSearchQuery,
+      filters.types,
+      filters.genres,
+      filters.yearFrom,
+      filters.yearTo,
+      filters.popularityFrom,
+      filters.popularityTo,
+      filters.market,
+      filters.includeExplicit,
+      filters.includeExternal,
+    ],
+  )
+
+  // Search query with React Query
+  const {
+    data: searchData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey,
     queryFn: async () => {
       if (
         !debouncedSearchQuery.trim() ||
@@ -101,11 +119,16 @@ export function useSpotifySearch(
         }
       }
 
-      console.log('🔍 useSpotifySearch - filters.types:', filters.types)
-      console.log(
-        '🔍 useSpotifySearch - filters.types.length:',
-        filters.types.length,
-      )
+      // Enhanced debug logging
+      if (import.meta.env.DEV) {
+        console.log('🔍 useSpotifySearch - Starting search:', {
+          query: debouncedSearchQuery,
+          filtersTypes: filters.types,
+          filtersTypesLength: filters.types.length,
+          queryKey,
+          timestamp: new Date().toISOString(),
+        })
+      }
 
       // If only one type is selected, use the specific method
       if (filters.types.length === 1) {
@@ -293,6 +316,10 @@ export function useSpotifySearch(
     gcTime: cache.times.SHORT, // Keep in memory for short time
     retry: cache.retry.IMPORTANT.retry,
     retryDelay: cache.retry.IMPORTANT.retryDelay,
+    // Add refetch on window focus to ensure fresh data
+    refetchOnWindowFocus: true,
+    // Add refetch on reconnect to handle network issues
+    refetchOnReconnect: true,
   })
 
   // Computed state
@@ -329,7 +356,14 @@ export function useSpotifySearch(
   }, [isLoading, error, searchData])
 
   const results: AggregatedSearchResults = useMemo(() => {
-    console.log('useSpotifySearch - searchData:', searchData)
+    // Enhanced debug logging
+    if (import.meta.env.DEV) {
+      console.log('🔍 useSpotifySearch - Results computed:', {
+        searchData: searchData,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
     const defaultResults = {
       artists: { items: [], total: 0, hasMore: false },
       albums: { items: [], total: 0, hasMore: false },
@@ -341,7 +375,21 @@ export function useSpotifySearch(
     }
 
     const finalResults = searchData?.results || defaultResults
-    console.log('useSpotifySearch - Final Results:', finalResults)
+
+    // Enhanced debug logging for final results
+    if (import.meta.env.DEV) {
+      console.log('🔍 useSpotifySearch - Final Results:', {
+        artists: finalResults.artists.items.length,
+        albums: finalResults.albums.items.length,
+        tracks: finalResults.tracks.items.length,
+        playlists: finalResults.playlists.items.length,
+        shows: finalResults.shows.items.length,
+        episodes: finalResults.episodes.items.length,
+        audiobooks: finalResults.audiobooks.items.length,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
     return finalResults
   }, [searchData])
 

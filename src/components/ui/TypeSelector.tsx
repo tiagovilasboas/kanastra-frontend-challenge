@@ -45,6 +45,16 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
   const getActiveTab = (): TabType => {
     const path = location.pathname
 
+    // Debug logging
+    if (import.meta.env.DEV) {
+      console.log('🔍 TypeSelector - getActiveTab:', {
+        path,
+        searchParams: Object.fromEntries(searchParams.entries()),
+        query,
+        searchQuery,
+      })
+    }
+
     // Se está em /search, verifica se há um tipo específico na query
     if (path === '/search') {
       const type = searchParams.get('type')
@@ -72,15 +82,30 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
   // Navega para a tab selecionada
   const handleTabChange = (tab: TabType) => {
-    if (!query) return // Não navega se não há query
+    if (!query) {
+      // Debug logging for empty query
+      if (import.meta.env.DEV) {
+        console.log(
+          '🔍 TypeSelector - handleTabChange: No query, skipping navigation',
+          {
+            tab,
+            query,
+            searchQuery,
+          },
+        )
+      }
+      return // Não navega se não há query
+    }
 
     const newParams = new URLSearchParams()
     newParams.set('q', query)
     newParams.set('market', market)
 
+    let finalUrl: string
+
     if (tab === 'all') {
       // Para "All", vai para /search com query params
-      navigate(`/search?${newParams.toString()}`)
+      finalUrl = `/search?${newParams.toString()}`
     } else {
       // Para tipos específicos, vai para /search/:type com query params
       // Mapeia para o formato correto da URL
@@ -94,21 +119,26 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
         audiobooks: 'audiobook',
       }
       const urlType = urlTypeMap[tab] || tab
-      const finalUrl = `/search/${urlType}?${newParams.toString()}`
-
-      // Debug log
-      if (import.meta.env.DEV) {
-        console.log('🔍 TypeSelector Navigation Debug:', {
-          tab,
-          urlType,
-          finalUrl,
-          query,
-          market,
-        })
-      }
-
-      navigate(finalUrl)
+      finalUrl = `/search/${urlType}?${newParams.toString()}`
     }
+
+    // Enhanced debug logging
+    if (import.meta.env.DEV) {
+      console.log('🔍 TypeSelector - Navigation Debug:', {
+        currentPath: location.pathname,
+        currentSearch: location.search,
+        tab,
+        query,
+        market,
+        finalUrl,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    // Add a small delay to ensure state updates are processed
+    setTimeout(() => {
+      navigate(finalUrl)
+    }, 0)
   }
 
   const tabs = [

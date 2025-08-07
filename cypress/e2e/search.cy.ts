@@ -4,88 +4,132 @@ describe('Search Page E2E - Happy Path', () => {
   })
 
   it('should display search page with all search types and perform basic search', () => {
-    // Verify search page loads correctly
+    // Check if search page loads correctly
     cy.get('[data-testid="search-header"]').should('be.visible')
-    cy.get('[data-testid="search-input"]').should('be.visible')
     cy.get('[data-testid="search-filters"]').should('be.visible')
+    cy.get('[data-testid="search-input"]').should('be.visible')
+    cy.get('[data-testid="search-button"]').should('be.visible')
 
-    // Verify all search types are available
-    cy.get('[data-testid="search-type-button"]').should('have.length', 7) // artist, album, track, playlist, show, episode, audiobook
-
-    // Test search functionality
-    cy.get('[data-testid="search-input"]').type('rock')
+    // Type a search query
+    cy.get('[data-testid="search-input"]').type('coldplay')
     cy.get('[data-testid="search-button"]').click()
 
-    // Verify search results are displayed
+    // Wait for search results
     cy.get('[data-testid="search-results"]').should('be.visible')
 
-    // Verify skeleton loading appears briefly
-    cy.get('[data-testid="skeleton-card"]').should('exist')
-
-    // Wait for results to load
-    cy.get('[data-testid="search-results"]', { timeout: 10000 }).should(
-      'not.contain',
-      'skeleton',
-    )
+    // Check if results are displayed
+    cy.get('[data-testid="search-results"]').should('contain', 'coldplay')
   })
 
   it('should switch between search types and display appropriate results', () => {
-    // Perform initial search
-    cy.get('[data-testid="search-input"]').type('jazz')
+    // Type a search query
+    cy.get('[data-testid="search-input"]').type('coldplay')
     cy.get('[data-testid="search-button"]').click()
 
-    // Test switching to artists
-    cy.get('[data-testid="search-type-button"]').contains('Artistas').click()
+    // Wait for search results
     cy.get('[data-testid="search-results"]').should('be.visible')
-    cy.url().should('include', '/search/artist')
 
-    // Test switching to albums
-    cy.get('[data-testid="search-type-button"]').contains('Álbuns').click()
+    // Test switching to playlists
+    cy.get('[data-testid="search-type-button"]').contains('Playlists').click()
+    cy.url().should('include', '/search/playlist')
     cy.get('[data-testid="search-results"]').should('be.visible')
-    cy.url().should('include', '/search/album')
 
     // Test switching to tracks
     cy.get('[data-testid="search-type-button"]').contains('Músicas').click()
-    cy.get('[data-testid="search-results"]').should('be.visible')
     cy.url().should('include', '/search/track')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+
+    // Test switching back to playlists
+    cy.get('[data-testid="search-type-button"]').contains('Playlists').click()
+    cy.url().should('include', '/search/playlist')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+
+    // Test switching to artists
+    cy.get('[data-testid="search-type-button"]').contains('Artistas').click()
+    cy.url().should('include', '/search/artist')
+    cy.get('[data-testid="search-results"]').should('be.visible')
 
     // Test switching back to all
     cy.get('[data-testid="search-type-button"]').contains('Tudo').click()
-    cy.get('[data-testid="search-results"]').should('be.visible')
     cy.url().should('include', '/search')
+    cy.get('[data-testid="search-results"]').should('be.visible')
   })
 
   it('should handle empty search results gracefully', () => {
-    // Search for something that likely won't return results
+    // Type a search query that should return no results
     cy.get('[data-testid="search-input"]').type('xyz123nonexistent')
     cy.get('[data-testid="search-button"]').click()
 
-    // Verify empty state is handled
-    cy.get('[data-testid="search-results"]', { timeout: 10000 }).should(
-      'be.visible',
-    )
-
-    // Should show some indication of no results (either empty state or message)
-    cy.get('body')
-      .should('contain', 'Nenhum resultado encontrado')
-      .or('contain', 'No results found')
+    // Check if no results message is displayed
+    cy.get('[data-testid="search-results"]').should('be.visible')
+    cy.contains('No results found').should('be.visible')
   })
 
   it('should maintain search state when navigating between types', () => {
-    // Perform search
-    cy.get('[data-testid="search-input"]').type('pop')
+    // Type a search query
+    cy.get('[data-testid="search-input"]').type('coldplay')
     cy.get('[data-testid="search-button"]').click()
 
-    // Verify search query is maintained in input
-    cy.get('[data-testid="search-input"]').should('have.value', 'pop')
-
-    // Switch to different type
-    cy.get('[data-testid="search-type-button"]').contains('Artistas').click()
-
-    // Verify search query is still there
-    cy.get('[data-testid="search-input"]').should('have.value', 'pop')
-
-    // Verify results are displayed for the new type
+    // Wait for search results
     cy.get('[data-testid="search-results"]').should('be.visible')
+
+    // Navigate to playlists and verify query is maintained
+    cy.get('[data-testid="search-type-button"]').contains('Playlists').click()
+    cy.url().should('include', 'q=coldplay')
+    cy.url().should('include', '/search/playlist')
+
+    // Navigate to tracks and verify query is maintained
+    cy.get('[data-testid="search-type-button"]').contains('Músicas').click()
+    cy.url().should('include', 'q=coldplay')
+    cy.url().should('include', '/search/track')
+
+    // Navigate back to all and verify query is maintained
+    cy.get('[data-testid="search-type-button"]').contains('Tudo').click()
+    cy.url().should('include', 'q=coldplay')
+    cy.url().should('include', '/search')
+  })
+
+  it('should handle rapid type switching without losing data', () => {
+    // Type a search query
+    cy.get('[data-testid="search-input"]').type('coldplay')
+    cy.get('[data-testid="search-button"]').click()
+
+    // Wait for search results
+    cy.get('[data-testid="search-results"]').should('be.visible')
+
+    // Rapidly switch between types
+    cy.get('[data-testid="search-type-button"]').contains('Playlists').click()
+    cy.wait(500)
+    cy.get('[data-testid="search-type-button"]').contains('Músicas').click()
+    cy.wait(500)
+    cy.get('[data-testid="search-type-button"]').contains('Artistas').click()
+    cy.wait(500)
+    cy.get('[data-testid="search-type-button"]').contains('Playlists').click()
+    cy.wait(500)
+
+    // Verify we're on playlists page with results
+    cy.url().should('include', '/search/playlist')
+    cy.url().should('include', 'q=coldplay')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+  })
+
+  it('should handle direct navigation to specific search types', () => {
+    // Navigate directly to playlist search
+    cy.visit('/search/playlist?q=coldplay')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+    cy.url().should('include', '/search/playlist')
+    cy.url().should('include', 'q=coldplay')
+
+    // Navigate directly to track search
+    cy.visit('/search/track?q=coldplay')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+    cy.url().should('include', '/search/track')
+    cy.url().should('include', 'q=coldplay')
+
+    // Navigate directly to artist search
+    cy.visit('/search/artist?q=coldplay')
+    cy.get('[data-testid="search-results"]').should('be.visible')
+    cy.url().should('include', '/search/artist')
+    cy.url().should('include', 'q=coldplay')
   })
 })

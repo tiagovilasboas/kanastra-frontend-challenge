@@ -42,15 +42,22 @@ export function useSpotifySearchByType({
   const debouncedQ = useDebounce(q, 350)
   const searchService = useMemo(() => new SearchService(spotifyRepository), [])
 
-  const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
-    initialPageParam: 0,
-    queryKey: [
+  // Create a more specific cache key to avoid conflicts
+  const queryKey = useMemo(
+    () => [
       'spotify-search-by-type',
       debouncedQ,
       type,
       market,
       includeExternal,
+      'v2', // Version to force cache refresh if needed
     ],
+    [debouncedQ, type, market, includeExternal],
+  )
+
+  const { data, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    initialPageParam: 0,
+    queryKey,
     queryFn: async ({ pageParam }: { pageParam: number }) => {
       if (!debouncedQ.trim() || debouncedQ.trim().length < 2) {
         return {
@@ -63,9 +70,9 @@ export function useSpotifySearchByType({
       const limit = 20
       const offset = pageParam * limit
 
-      // Only log in development
+      // Enhanced debug logging
       if (import.meta.env.DEV) {
-        console.log('🔍 useSpotifySearchByType - Debug:', {
+        console.log('🔍 useSpotifySearchByType - Starting search:', {
           q: debouncedQ,
           type,
           market,
@@ -73,6 +80,8 @@ export function useSpotifySearchByType({
           pageParam,
           limit,
           offset,
+          queryKey,
+          timestamp: new Date().toISOString(),
         })
       }
 
@@ -82,73 +91,102 @@ export function useSpotifySearchByType({
         includeExternal,
       }
 
-      // Use SearchService helpers based on type
-      switch (type) {
-        case SpotifySearchType.ARTIST:
-          const artistResult = await searchService.searchArtists(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return artistResult.results as unknown
+      try {
+        // Use SearchService helpers based on type
+        let result: unknown
 
-        case SpotifySearchType.ALBUM:
-          const albumResult = await searchService.searchAlbums(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return albumResult.results as unknown
+        switch (type) {
+          case SpotifySearchType.ARTIST:
+            result = await searchService.searchArtists(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        case SpotifySearchType.TRACK:
-          const trackResult = await searchService.searchTracks(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return trackResult.results as unknown
+          case SpotifySearchType.ALBUM:
+            result = await searchService.searchAlbums(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        case SpotifySearchType.PLAYLIST:
-          const playlistResult = await searchService.searchPlaylists(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return playlistResult.results as unknown
+          case SpotifySearchType.TRACK:
+            result = await searchService.searchTracks(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        case SpotifySearchType.SHOW:
-          const showResult = await searchService.searchShows(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return showResult.results as unknown
+          case SpotifySearchType.PLAYLIST:
+            result = await searchService.searchPlaylists(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        case SpotifySearchType.EPISODE:
-          const episodeResult = await searchService.searchEpisodes(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return episodeResult.results as unknown
+          case SpotifySearchType.SHOW:
+            result = await searchService.searchShows(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        case SpotifySearchType.AUDIOBOOK:
-          const audiobookResult = await searchService.searchAudiobooks(
-            debouncedQ,
-            filters,
-            limit,
-            offset,
-          )
-          return audiobookResult.results as unknown
+          case SpotifySearchType.EPISODE:
+            result = await searchService.searchEpisodes(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
 
-        default:
-          throw new Error(`Unsupported search type: ${type}`)
+          case SpotifySearchType.AUDIOBOOK:
+            result = await searchService.searchAudiobooks(
+              debouncedQ,
+              filters,
+              limit,
+              offset,
+            )
+            break
+
+          default:
+            throw new Error(`Unsupported search type: ${type}`)
+        }
+
+        // Enhanced debug logging for results
+        if (import.meta.env.DEV) {
+          const typedResult = result as {
+            results: { items: unknown[]; total: number; hasMore: boolean }
+          }
+          console.log('🔍 useSpotifySearchByType - Search completed:', {
+            type,
+            query: debouncedQ,
+            resultItems: typedResult.results?.items?.length || 0,
+            resultTotal: typedResult.results?.total || 0,
+            resultHasMore: typedResult.results?.hasMore || false,
+            timestamp: new Date().toISOString(),
+          })
+        }
+
+        return (result as { results: unknown }).results as unknown
+      } catch (error) {
+        console.error('🔍 useSpotifySearchByType - Search error:', {
+          type,
+          query: debouncedQ,
+          error: error instanceof Error ? error.message : error,
+          timestamp: new Date().toISOString(),
+        })
+        throw error
       }
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -158,14 +196,16 @@ export function useSpotifySearchByType({
       const hasMore =
         pageResult.hasMore && currentOffset + 20 < pageResult.total
 
-      // Only log in development
+      // Enhanced debug logging
       if (import.meta.env.DEV) {
         console.log('🔍 useSpotifySearchByType - getNextPageParam:', {
+          type,
           lastPage: pageResult,
           allPagesLength: allPages.length,
           currentOffset,
           hasMore,
           total: pageResult.total,
+          timestamp: new Date().toISOString(),
         })
       }
 
@@ -176,17 +216,47 @@ export function useSpotifySearchByType({
     gcTime: cache.times.SHORT, // Keep in memory for short time
     retry: cache.retry.IMPORTANT.retry,
     retryDelay: cache.retry.IMPORTANT.retryDelay,
+    // Add refetch on window focus to ensure fresh data
+    refetchOnWindowFocus: true,
+    // Add refetch on reconnect to handle network issues
+    refetchOnReconnect: true,
   })
 
   // Flatten pages into a single array of items
   const flatItems = useMemo(() => {
-    return data?.pages.flatMap((page) => (page as SearchPageResult).items) || []
-  }, [data?.pages])
+    const items =
+      data?.pages.flatMap((page) => (page as SearchPageResult).items) || []
+
+    // Debug logging for flatItems
+    if (import.meta.env.DEV) {
+      console.log('🔍 useSpotifySearchByType - flatItems updated:', {
+        type,
+        itemsCount: items.length,
+        pagesCount: data?.pages.length || 0,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    return items
+  }, [data?.pages, type])
 
   // Get total from the first page or 0
   const total = useMemo(() => {
-    return data?.pages[0] ? (data.pages[0] as SearchPageResult).total : 0
-  }, [data?.pages])
+    const totalValue = data?.pages[0]
+      ? (data.pages[0] as SearchPageResult).total
+      : 0
+
+    // Debug logging for total
+    if (import.meta.env.DEV) {
+      console.log('🔍 useSpotifySearchByType - total updated:', {
+        type,
+        total: totalValue,
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    return totalValue
+  }, [data?.pages, type])
 
   return {
     flatItems,
