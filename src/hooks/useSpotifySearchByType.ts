@@ -2,6 +2,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 import { cache } from '@/config/react-query'
+import { API_LIMITS } from '@/constants/limits'
 import { spotifyRepository } from '@/repositories'
 import { SearchService } from '@/services/SearchService'
 import { SpotifySearchType } from '@/types/spotify'
@@ -83,7 +84,7 @@ export function useSpotifySearchByType({
         }
       }
 
-      const limit = 20
+      const limit = API_LIMITS.SEARCH.DEFAULT
       const offset = pageParam * limit
 
       // Enhanced debug logging
@@ -208,9 +209,10 @@ export function useSpotifySearchByType({
     getNextPageParam: (lastPage, allPages) => {
       // Calculate if there are more pages based on total and current offset
       const pageResult = lastPage as SearchPageResult
-      const currentOffset = allPages.length * 20 // 20 items per page
+      const currentOffset = allPages.length * API_LIMITS.SEARCH.DEFAULT
       const hasMore =
-        pageResult.hasMore && currentOffset + 20 < pageResult.total
+        pageResult.hasMore &&
+        currentOffset + API_LIMITS.SEARCH.DEFAULT < pageResult.total
 
       // Enhanced debug logging
       if (import.meta.env.DEV) {

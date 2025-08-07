@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { AlbumCard } from '@/components/ui/AlbumCard'
+import { AlbumCardContainer } from '@/components/ui/AlbumCardContainer'
 import { Pagination } from '@/components/ui/Pagination'
 import { SpotifyAlbum } from '@/types/spotify'
 
@@ -84,19 +84,7 @@ export const AlbumsSection: React.FC<AlbumsSectionProps> = ({
         {albums
           .filter((album) => album && album.id) // Filter out null/undefined items
           .map((album) => (
-            <AlbumCard
-              key={album.id}
-              album={album}
-              onClick={() => {
-                if (album.external_urls?.spotify) {
-                  window.open(
-                    album.external_urls.spotify,
-                    '_blank',
-                    'noopener,noreferrer',
-                  )
-                }
-              }}
-            />
+            <AlbumCardContainer key={album.id} album={album} />
           ))}
       </div>
 

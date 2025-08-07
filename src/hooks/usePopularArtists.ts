@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cache, queryKeys } from '@/config/react-query'
 import { POPULAR_ARTIST_IDS } from '@/constants/artists'
+import { API_LIMITS } from '@/constants/limits'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/schemas/spotify'
 
@@ -20,7 +21,7 @@ interface UsePopularArtistsReturn {
 }
 
 export function usePopularArtists({
-  limit = 6,
+  limit = API_LIMITS.CONTENT.POPULAR_ARTISTS,
   enabled = true,
 }: UsePopularArtistsParams = {}): UsePopularArtistsReturn {
   const { checkAuthError } = useSpotifyAuth()

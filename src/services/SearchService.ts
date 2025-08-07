@@ -1,3 +1,4 @@
+import { API_LIMITS } from '@/constants/limits'
 import { SpotifyRepository } from '@/repositories/spotify/SpotifyRepository'
 import { SpotifySearchType, SpotifyTypeMapping } from '@/types/spotify'
 import { logger } from '@/utils/logger'
@@ -353,7 +354,7 @@ export class SearchService {
         : types
 
       // Aplica limite de 5 para modo "All", caso contrário usa o limite fornecido
-      const adjustedLimit = isAllMode ? 5 : limit
+      const adjustedLimit = isAllMode ? API_LIMITS.SEARCH.ALL_MODE : limit
 
       logger.debug('🔍 SearchService Debug Limits:', {
         types,
@@ -426,7 +427,7 @@ export class SearchService {
   async searchArtists(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.ARTIST>
@@ -485,7 +486,7 @@ export class SearchService {
   async searchAlbums(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.ALBUM>
@@ -545,7 +546,7 @@ export class SearchService {
   async searchTracks(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.TRACK>
@@ -604,7 +605,7 @@ export class SearchService {
   async searchPlaylists(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.PLAYLIST>
@@ -663,7 +664,7 @@ export class SearchService {
   async searchShows(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.SHOW>
@@ -722,7 +723,7 @@ export class SearchService {
   async searchEpisodes(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.EPISODE>
@@ -781,7 +782,7 @@ export class SearchService {
   async searchAudiobooks(
     query: string,
     filters: Record<string, unknown>,
-    limit: number = 20,
+    limit: number = API_LIMITS.SEARCH.DEFAULT,
     offset: number = 0,
   ): Promise<{
     results: SearchResult<SpotifySearchType.AUDIOBOOK>
@@ -857,7 +858,7 @@ export class SearchService {
       const filtersWithMarket = { ...filters, market }
 
       // Limite fixo de 5 para busca "Tudo"
-      const allLimit = 5
+      const allLimit = API_LIMITS.SEARCH.ALL_MODE
 
       logger.debug('🔍 SearchService.searchAllTypes - Debug:', {
         query,
@@ -938,7 +939,7 @@ export class SearchService {
       const filtersWithMarket = { ...filters, market }
 
       // Fixed limit of 20 for loadMore
-      const adjustedLimit = 20
+      const adjustedLimit = API_LIMITS.SEARCH.LOAD_MORE
 
       // Chama o repository e obtém a resposta bruta da API
       const apiResponse = await this.repository.searchMultipleTypes(

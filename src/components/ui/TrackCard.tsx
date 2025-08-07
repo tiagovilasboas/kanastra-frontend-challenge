@@ -16,8 +16,6 @@ export const TrackCard: React.FC<TrackCardProps> = ({ track, onClick }) => {
   const handleClick = () => {
     if (onClick) {
       onClick()
-    } else if (track.external_urls?.spotify) {
-      window.open(track.external_urls.spotify, '_blank', 'noopener,noreferrer')
     }
   }
 
