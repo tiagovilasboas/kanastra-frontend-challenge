@@ -36,9 +36,11 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
   const navigate = useNavigate()
   const { searchQuery } = useSearchStore()
 
-  // Extrai parâmetros da URL
+  // Extrai parâmetros da URL - prioriza query da URL, depois do store
   const searchParams = new URLSearchParams(location.search)
-  const query = searchParams.get('q') || searchQuery || ''
+  const urlQuery = searchParams.get('q')
+  const storeQuery = searchQuery || ''
+  const query = urlQuery || storeQuery || ''
   const market = searchParams.get('market') || 'BR'
 
   // Debug logging for query extraction
@@ -93,7 +95,10 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
   // Navega para a tab selecionada
   const handleTabChange = (tab: TabType) => {
-    if (!query) {
+    // Sempre usa a query disponível (URL ou store)
+    const currentQuery = query || searchQuery || ''
+
+    if (!currentQuery.trim()) {
       // Debug logging for empty query
       if (import.meta.env.DEV) {
         console.log(
@@ -102,6 +107,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
             tab,
             query,
             searchQuery,
+            currentQuery,
           },
         )
       }
@@ -109,7 +115,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
     }
 
     const newParams = new URLSearchParams()
-    newParams.set('q', query)
+    newParams.set('q', currentQuery)
     newParams.set('market', market)
 
     let finalUrl: string
@@ -140,6 +146,8 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
         currentSearch: location.search,
         tab,
         query,
+        searchQuery,
+        currentQuery,
         market,
         finalUrl,
         timestamp: new Date().toISOString(),
