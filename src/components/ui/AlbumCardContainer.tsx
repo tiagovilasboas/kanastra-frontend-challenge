@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useNavigationHandlers } from '@/hooks/useNavigationHandlers'
+import { SpotifyMapper } from '@/mappers/spotify'
 import { SpotifyAlbum } from '@/types/spotify'
 
 import { AlbumCard } from './AlbumCard'
@@ -19,7 +20,8 @@ export const AlbumCardContainer: React.FC<AlbumCardContainerProps> = ({
   const { handleAlbumClick } = useNavigationHandlers()
 
   const handleClick = () => {
-    handleAlbumClick(album.id)
+    const albumDTO = SpotifyMapper.toAlbumDTO(album)
+    handleAlbumClick(albumDTO.id)
   }
 
   return <AlbumCard album={album} onClick={handleClick} />

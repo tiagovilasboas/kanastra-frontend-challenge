@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useNavigationHandlers } from '@/hooks/useNavigationHandlers'
+import { SpotifyMapper } from '@/mappers/spotify'
 import { SpotifyPlaylist } from '@/types/spotify'
 
 import { PlaylistCard } from './PlaylistCard'
@@ -19,8 +20,9 @@ export const PlaylistCardContainer: React.FC<PlaylistCardContainerProps> = ({
   const { handleSpotifyClick } = useNavigationHandlers()
 
   const handleClick = () => {
-    if (playlist.external_urls?.spotify) {
-      handleSpotifyClick(playlist.external_urls.spotify)
+    const playlistDTO = SpotifyMapper.toPlaylistDTO(playlist)
+    if (playlistDTO.spotifyUrl) {
+      handleSpotifyClick(playlistDTO.spotifyUrl)
     }
   }
 

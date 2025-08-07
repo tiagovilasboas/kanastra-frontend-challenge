@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useNavigationHandlers } from '@/hooks/useNavigationHandlers'
+import { SpotifyMapper } from '@/mappers/spotify'
 import { SpotifyArtist } from '@/types/spotify'
 
 import { ArtistCard } from './ArtistCard'
@@ -19,7 +20,8 @@ export const ArtistCardContainer: React.FC<ArtistCardContainerProps> = ({
   const { handleArtistClick } = useNavigationHandlers()
 
   const handleClick = () => {
-    handleArtistClick(artist.id)
+    const artistDTO = SpotifyMapper.toArtistDTO(artist)
+    handleArtistClick(artistDTO.id)
   }
 
   return <ArtistCard artist={artist} onClick={handleClick} />
