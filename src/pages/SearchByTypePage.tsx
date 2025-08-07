@@ -191,7 +191,7 @@ export const SearchByTypePage: React.FC = () => {
               }
             }}
           />
-          {hasNextPage && (
+          {hasNextPage && !localFilter.trim() && (
             <div className="flex justify-center pt-4">
               <LoadMoreButton
                 onLoadMore={fetchNextPage}
@@ -349,7 +349,7 @@ export const SearchByTypePage: React.FC = () => {
         </div>
 
         {/* Botão "Carregar mais" */}
-        {hasNextPage && (
+        {hasNextPage && !localFilter.trim() && (
           <div className="flex justify-center pt-4">
             <LoadMoreButton
               onLoadMore={fetchNextPage}
