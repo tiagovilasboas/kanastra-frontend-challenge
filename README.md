@@ -43,8 +43,7 @@ Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spot
 
 ### 🚀 Funcionalidades Avançadas
 
-- **Sistema de Busca Desacoplado**: Busca por tipo específico vs busca geral otimizada
-- **Limites Configuráveis**: Sistema parametrizável de limites por dispositivo e tipo de conteúdo
+- **Sistema de Busca Inteligente**: Busca por tipo específico vs busca geral otimizada
 - **Estado Global**: Gerenciamento de estado com Zustand para app, navegação e busca
 - **Error Handling**: Sistema robusto de tratamento de erros com toast notifications
 - **SEO Otimizado**: Meta tags dinâmicas e structured data (JSON-LD)
@@ -61,7 +60,7 @@ src/
 │   ├── search/            # Componentes de busca
 │   ├── SEO/               # Componentes de SEO
 │   └── ui/                # Componentes UI base
-├── config/                # Configurações (limites, ambiente)
+├── config/                # Configurações (ambiente)
 ├── hooks/                 # Custom hooks
 ├── lib/                   # Bibliotecas e configurações
 ├── locales/               # Arquivos de internacionalização
