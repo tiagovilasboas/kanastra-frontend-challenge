@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { SpotifyArtist } from '@/types/spotify'
@@ -20,9 +20,12 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
 }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artist/${artistId}`)
+    navigate(`/artist/${artistId}`, {
+      state: { from: location.pathname + location.search },
+    })
   }
 
   if (isLoading) {
@@ -65,7 +68,7 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
           </h2>
         )}
         <div className="flex items-center gap-2">
-          {total > artists.length && (
+          {!onSectionClick && total > artists.length && (
             <span className="text-sm text-muted-foreground">
               {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
                 count: artists.length,

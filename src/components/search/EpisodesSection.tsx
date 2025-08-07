@@ -53,7 +53,7 @@ export const EpisodesSection: React.FC<EpisodesSectionProps> = ({
           {t('search:episodes', 'Episódios')}
         </button>
         <div className="flex items-center gap-2">
-          {total > episodes.length && (
+          {!onSectionClick && total > episodes.length && (
             <span className="text-sm text-muted-foreground">
               {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
                 count: episodes.length,
@@ -71,8 +71,13 @@ export const EpisodesSection: React.FC<EpisodesSectionProps> = ({
               key={episode.id}
               episode={episode}
               onClick={() => {
-                // TODO: Implement episode navigation
-                console.log('Navigate to episode:', episode.id)
+                if (episode.external_urls?.spotify) {
+                  window.open(
+                    episode.external_urls.spotify,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
               }}
             />
           ))}

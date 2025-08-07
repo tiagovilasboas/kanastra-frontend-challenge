@@ -47,10 +47,10 @@ export class SearchResultProcessor {
     const offset = paging?.offset || 0
     const limit = paging?.limit
 
-    console.log(`Processing ${key}:`, { data, response, limit, offset })
+    logger.debug(`Processing ${key}:`, { data, response, limit, offset })
 
     if (!data) {
-      console.log(`No data found for ${key}`)
+      logger.debug(`No data found for ${key}`)
       return {
         items: [],
         total: 0,
@@ -70,7 +70,7 @@ export class SearchResultProcessor {
       hasMore,
     } as SearchResult<T>
 
-    console.log(`Result for ${key}:`, result)
+    logger.debug(`Result for ${key}:`, result)
     return result
   }
 
@@ -140,9 +140,9 @@ export class SearchResultProcessor {
     }
 
     // Debug: log the response structure
-    console.log('Spotify API Response:', response)
-    console.log('Search Types:', types)
-    console.log('Processing with limit:', limit, 'offset:', offset)
+    logger.debug('Spotify API Response:', response)
+    logger.debug('Search Types:', types)
+    logger.debug('Processing with limit and offset', { limit, offset })
 
     types.forEach((type) => {
       // Pula o sentinel ALL, pois ele não mapeia para nenhum tipo específico
@@ -151,11 +151,11 @@ export class SearchResultProcessor {
       }
 
       const key = `${type}s` as keyof AggregatedSearchResults
-      console.log(`Processing ${key}:`, response[key])
+      logger.debug(`Processing ${key}:`, response[key])
       results[key] = this.processResults(response, type, { limit, offset })
     })
 
-    console.log('Aggregated Results:', results)
+    logger.debug('Aggregated Results:', results)
     return results as unknown as AggregatedSearchResults
   }
 }
@@ -355,7 +355,7 @@ export class SearchService {
       // Aplica limite de 5 para modo "All", caso contrário usa o limite fornecido
       const adjustedLimit = isAllMode ? 5 : limit
 
-      console.log('🔍 SearchService Debug Limits:', {
+      logger.debug('🔍 SearchService Debug Limits:', {
         types,
         searchTypes,
         typesLength: types.length,
@@ -375,9 +375,9 @@ export class SearchService {
       )
 
       // Process Spotify API results
-      console.log('SearchService.searchMultipleTypes - Response:', response)
-      console.log('SearchService.searchMultipleTypes - Types:', types)
-      console.log(
+      logger.debug('SearchService.searchMultipleTypes - Response:', response)
+      logger.debug('SearchService.searchMultipleTypes - Types:', types)
+      logger.debug(
         'SearchService.searchMultipleTypes - SearchTypes:',
         searchTypes,
       )
@@ -391,15 +391,15 @@ export class SearchService {
       const totalResults = SearchResultProcessor.calculateTotalResults(results)
       const hasMore = SearchResultProcessor.hasMoreResults(results)
 
-      console.log(
+      logger.debug(
         'SearchService.searchMultipleTypes - Processed Results:',
         results,
       )
-      console.log(
+      logger.debug(
         'SearchService.searchMultipleTypes - Total Results:',
         totalResults,
       )
-      console.log('SearchService.searchMultipleTypes - Has More:', hasMore)
+      logger.debug('SearchService.searchMultipleTypes - Has More:', hasMore)
 
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -407,7 +407,7 @@ export class SearchService {
         hasMore,
       )
 
-      console.log('SearchService.searchMultipleTypes - Final State:', state)
+      logger.debug('SearchService.searchMultipleTypes - Final State:', state)
       return { results, state }
     } catch (error) {
       logger.error('Search service error', error)
@@ -859,7 +859,7 @@ export class SearchService {
       // Limite fixo de 5 para busca "Tudo"
       const allLimit = 5
 
-      console.log('🔍 SearchService.searchAllTypes - Debug:', {
+      logger.debug('🔍 SearchService.searchAllTypes - Debug:', {
         query,
         types,
         allLimit,
@@ -876,8 +876,8 @@ export class SearchService {
       )
 
       // Processa os resultados da API do Spotify
-      console.log('SearchService.searchAllTypes - Response:', response)
-      console.log('SearchService.searchAllTypes - Types:', types)
+      logger.debug('SearchService.searchAllTypes - Response:', response)
+      logger.debug('SearchService.searchAllTypes - Types:', types)
 
       const results = SearchResultProcessor.processMultipleTypesResponse(
         response,
@@ -888,9 +888,12 @@ export class SearchService {
       const totalResults = SearchResultProcessor.calculateTotalResults(results)
       const hasMore = SearchResultProcessor.hasMoreResults(results)
 
-      console.log('SearchService.searchAllTypes - Processed Results:', results)
-      console.log('SearchService.searchAllTypes - Total Results:', totalResults)
-      console.log('SearchService.searchAllTypes - Has More:', hasMore)
+      logger.debug('SearchService.searchAllTypes - Processed Results:', results)
+      logger.debug(
+        'SearchService.searchAllTypes - Total Results:',
+        totalResults,
+      )
+      logger.debug('SearchService.searchAllTypes - Has More:', hasMore)
 
       const state = SearchStateManager.setSuccess(
         SearchStateManager.createInitialState(),
@@ -898,7 +901,7 @@ export class SearchService {
         hasMore,
       )
 
-      console.log('SearchService.searchAllTypes - Final State:', state)
+      logger.debug('SearchService.searchAllTypes - Final State:', state)
       return { results, state }
     } catch (error) {
       logger.error('Search all types service error', error)

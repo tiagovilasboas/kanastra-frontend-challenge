@@ -237,14 +237,14 @@ export const SEARCH_LIMITS: SearchLimitsConfig = {
 
 | Métrica                            | Valor Atual | Meta   | Status |
 | ---------------------------------- | ----------- | ------ | ------ |
-| **Lighthouse Performance**         | 61%         | >90%   | 🔄     |
-| **Lighthouse Acessibilidade**      | 93%         | >90%   | ✅     |
-| **Lighthouse Best Practices**      | 96%         | >90%   | ✅     |
+| **Lighthouse Performance**         | 73%         | >90%   | 🔄     |
+| **Lighthouse Acessibilidade**      | 94%         | >90%   | ✅     |
+| **Lighthouse Best Practices**      | 100%        | >90%   | ✅     |
 | **Lighthouse SEO**                 | 100%        | >90%   | ✅     |
 | **First Contentful Paint (FCP)**   | 2.9s        | <2.5s  | 🔄     |
-| **Largest Contentful Paint (LCP)** | 4.6s        | <3.0s  | 🔄     |
-| **First Input Delay (FID)**        | 90ms        | <100ms | ✅     |
-| **Cumulative Layout Shift (CLS)**  | 0.265       | <0.1   | 🔄     |
+| **Largest Contentful Paint (LCP)** | 5.6s        | <3.0s  | 🔄     |
+| **First Input Delay (FID)**        | 120ms       | <100ms | 🔄     |
+| **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     |
 | **Bundle Size (Principal)**        | 356.5KB     | <500KB | ✅     |
 | **Bundle Size (Gzip)**             | 108.9KB     | <150KB | ✅     |
 
@@ -256,6 +256,7 @@ export const SEARCH_LIMITS: SearchLimitsConfig = {
 - **Debounce**: Busca otimizada com delay de 300ms
 - **Cache Inteligente**: TanStack Query para cache de dados
 - **Bundle Analysis**: Análise visual de tamanho de código
+- **Logs limpos**: `console.log` removidos, `logger.debug` só em DEV
 
 ### Análise de Bundle
 

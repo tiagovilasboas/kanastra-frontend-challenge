@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 
 import { useSearchStore } from '@/stores/searchStore'
 import { SpotifySearchType } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 import { Button } from './button'
 
@@ -45,7 +46,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
   // Debug logging for query extraction
   if (import.meta.env.DEV) {
-    console.log('🔍 TypeSelector - Query extraction:', {
+    logger.debug('🔍 TypeSelector - Query extraction:', {
       urlQuery: searchParams.get('q'),
       storeQuery: searchQuery,
       finalQuery: query,
@@ -60,7 +61,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
     // Debug logging
     if (import.meta.env.DEV) {
-      console.log('🔍 TypeSelector - getActiveTab:', {
+      logger.debug('🔍 TypeSelector - getActiveTab:', {
         path,
         searchParams: Object.fromEntries(searchParams.entries()),
         query,
@@ -101,7 +102,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
     if (!currentQuery.trim()) {
       // Debug logging for empty query
       if (import.meta.env.DEV) {
-        console.log(
+        logger.debug(
           '🔍 TypeSelector - handleTabChange: No query, skipping navigation',
           {
             tab,
@@ -119,7 +120,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
     newParams.set('market', market)
 
     if (import.meta.env.DEV) {
-      console.log('🔍 TypeSelector - URL construction:', {
+      logger.debug('🔍 TypeSelector - URL construction:', {
         currentQuery,
         market,
         newParams: newParams.toString(),
@@ -151,7 +152,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
     // Enhanced debug logging
     if (import.meta.env.DEV) {
-      console.log('🔍 TypeSelector - Navigation Debug:', {
+      logger.debug('🔍 TypeSelector - Navigation Debug:', {
         currentPath: location.pathname,
         currentSearch: location.search,
         tab,
@@ -167,7 +168,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
 
     // Navigate immediately without delay
     if (import.meta.env.DEV) {
-      console.log('🔍 TypeSelector - About to navigate to:', finalUrl)
+      logger.debug('🔍 TypeSelector - About to navigate to:', finalUrl)
     }
     navigate(finalUrl)
   }
@@ -190,6 +191,7 @@ export const TypeSelector: React.FC<TypeSelectorProps> = ({ className }) => {
         return (
           <Button
             key={tab.id}
+            data-testid="search-type-button"
             variant={isActive ? 'default' : 'secondary'}
             size="sm"
             onClick={() => handleTabChange(tab.id)}

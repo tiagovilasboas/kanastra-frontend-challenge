@@ -68,7 +68,16 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: 'pt', // default language
+  lng: (() => {
+    if (typeof window === 'undefined') return 'pt'
+    const lsLang =
+      sessionStorage.getItem('language') ||
+      localStorage.getItem('language') ||
+      localStorage.getItem('i18nextLng')
+    if (lsLang) return lsLang
+    const cookieMatch = document.cookie.match(/(?:^|; )i18nextLng=([^;]+)/)
+    return cookieMatch ? decodeURIComponent(cookieMatch[1]) : 'pt'
+  })(), // default language persisted
   fallbackLng: 'en',
   ns: [
     'app',
@@ -97,5 +106,20 @@ i18n.use(initReactI18next).init({
     useSuspense: false,
   },
 })
+
+// Ensure language preference is applied after initialization
+if (typeof window !== 'undefined') {
+  const storedLang =
+    sessionStorage.getItem('language') ||
+    localStorage.getItem('language') ||
+    localStorage.getItem('i18nextLng') ||
+    (() => {
+      const match = document.cookie.match(/(?:^|; )i18next(?:Lng)?=([^;]+)/)
+      return match ? decodeURIComponent(match[1]) : null
+    })()
+  if (storedLang) {
+    i18n.changeLanguage(storedLang)
+  }
+}
 
 export default i18n

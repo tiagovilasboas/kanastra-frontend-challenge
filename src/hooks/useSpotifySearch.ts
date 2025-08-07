@@ -11,6 +11,7 @@ import {
 import { useSearchStore } from '@/stores/searchStore'
 import { SearchFilters } from '@/types/search'
 import { SpotifySearchType } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 // Hook return interface
 interface UseSpotifySearchReturn {
@@ -45,7 +46,6 @@ export function useSpotifySearch(
       SpotifySearchType.PLAYLIST,
       SpotifySearchType.SHOW,
       SpotifySearchType.EPISODE,
-      SpotifySearchType.AUDIOBOOK,
     ],
     genres: initialFilters?.genres || [],
     yearFrom: initialFilters?.yearFrom,
@@ -121,7 +121,7 @@ export function useSpotifySearch(
 
       // Enhanced debug logging
       if (import.meta.env.DEV) {
-        console.log('🔍 useSpotifySearch - Starting search:', {
+        logger.debug('🔍 useSpotifySearch - Starting search:', {
           query: debouncedSearchQuery,
           filtersTypes: filters.types,
           filtersTypesLength: filters.types.length,
@@ -137,7 +137,7 @@ export function useSpotifySearch(
         // Fixed limit of 20 for specific types
         const limit = 20
 
-        console.log('🔍 Debug Search Limits:', {
+        logger.debug('🔍 Debug Search Limits:', {
           type,
           typeLowerCase: type.toLowerCase(),
           limit,
@@ -358,7 +358,7 @@ export function useSpotifySearch(
   const results: AggregatedSearchResults = useMemo(() => {
     // Enhanced debug logging
     if (import.meta.env.DEV) {
-      console.log('🔍 useSpotifySearch - Results computed:', {
+      logger.debug('🔍 useSpotifySearch - Results computed:', {
         searchData: searchData,
         timestamp: new Date().toISOString(),
       })
@@ -378,7 +378,7 @@ export function useSpotifySearch(
 
     // Enhanced debug logging for final results
     if (import.meta.env.DEV) {
-      console.log('🔍 useSpotifySearch - Final Results:', {
+      logger.debug('🔍 useSpotifySearch - Final Results:', {
         artists: finalResults.artists.items.length,
         albums: finalResults.albums.items.length,
         tracks: finalResults.tracks.items.length,

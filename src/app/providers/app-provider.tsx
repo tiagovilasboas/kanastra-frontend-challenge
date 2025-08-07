@@ -30,7 +30,7 @@ export function AppProvider({ children }: AppProviderProps) {
       <QueryClientProvider client={queryClient}>
         <SpotifyInitializer />
         {children}
-        <ReactQueryDevtools initialIsOpen={false} />
+        {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
       </QueryClientProvider>
     </ErrorBoundary>
   )

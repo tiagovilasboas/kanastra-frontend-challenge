@@ -34,6 +34,13 @@ export const LanguageSelector: React.FC = () => {
   const handleLanguageChange = useCallback(
     (languageCode: string) => {
       i18n.changeLanguage(languageCode)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('language', languageCode)
+        localStorage.setItem('i18nextLng', languageCode)
+        sessionStorage.setItem('language', languageCode)
+        document.cookie = `i18next=${languageCode}; path=/; max-age=31536000`
+        document.cookie = `i18nextLng=${languageCode}; path=/; max-age=31536000`
+      }
     },
     [i18n],
   )

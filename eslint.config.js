@@ -38,6 +38,8 @@ export default [
       'jsx-a11y/anchor-is-valid': 'warn',
       'formatjs/no-literal-string-in-jsx': 'error',
       'react/react-in-jsx-scope': 'off',
+      'no-console': ['error', { allow: ['warn', 'error', 'info', 'debug'] }],
+      'no-debugger': 'error',
     },
   },
   {

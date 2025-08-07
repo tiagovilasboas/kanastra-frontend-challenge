@@ -53,7 +53,7 @@ export const ShowsSection: React.FC<ShowsSectionProps> = ({
           {t('search:shows', 'Podcasts e programas')}
         </button>
         <div className="flex items-center gap-2">
-          {total > shows.length && (
+          {!onSectionClick && total > shows.length && (
             <span className="text-sm text-muted-foreground">
               {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
                 count: shows.length,
@@ -71,8 +71,13 @@ export const ShowsSection: React.FC<ShowsSectionProps> = ({
               key={show.id}
               show={show}
               onClick={() => {
-                // TODO: Implement show navigation
-                console.log('Navigate to show:', show.id)
+                if (show.external_urls?.spotify) {
+                  window.open(
+                    show.external_urls.spotify,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
               }}
             />
           ))}

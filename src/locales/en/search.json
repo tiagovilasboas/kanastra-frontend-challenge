@@ -2,7 +2,7 @@
   "title": "Search",
   "description": "Discover artists, albums and tracks from Spotify",
   "all": "All",
-  "placeholder": "Search for artists, albums or tracks",
+  "placeholder": "Search for artists",
   "resultsForTerm": "Results for \"{term}\"",
   "noResultsMessage": "No results found for \"{term}\". Try a different search term.",
   "welcomeMessage": "Welcome to Spotify Search",

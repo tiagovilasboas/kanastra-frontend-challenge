@@ -59,7 +59,7 @@ export const PlaylistsSection: React.FC<PlaylistsSectionProps> = ({
           </h2>
         )}
         <div className="flex items-center gap-2">
-          {total > playlists.length && (
+          {!onSectionClick && total > playlists.length && (
             <span className="text-sm text-muted-foreground">
               {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
                 count: playlists.length,
@@ -78,7 +78,13 @@ export const PlaylistsSection: React.FC<PlaylistsSectionProps> = ({
               key={playlist.id}
               playlist={playlist}
               onClick={() => {
-                // TODO: Implement playlist navigation
+                if (playlist.external_urls?.spotify) {
+                  window.open(
+                    playlist.external_urls.spotify,
+                    '_blank',
+                    'noopener,noreferrer',
+                  )
+                }
               }}
             />
           ))}

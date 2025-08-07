@@ -5,6 +5,7 @@ import { cache } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SearchService } from '@/services/SearchService'
 import { SpotifySearchType } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 import { useDebounce } from './useDebounce'
 
@@ -64,7 +65,7 @@ export function useSpotifyInfiniteByType({
         const offset = pageParam * pageSize
 
         if (import.meta.env.DEV) {
-          console.log('🔍 useSpotifyInfiniteByType - Debug:', {
+          logger.debug('🔍 useSpotifyInfiniteByType - Debug:', {
             q: debouncedQ,
             type,
             market,
@@ -148,7 +149,7 @@ export function useSpotifyInfiniteByType({
           pageResult.hasMore && currentOffset + pageSize < pageResult.total
 
         if (import.meta.env.DEV) {
-          console.log('🔍 useSpotifyInfiniteByType - getNextPageParam:', {
+          logger.debug('🔍 useSpotifyInfiniteByType - getNextPageParam:', {
             lastPage: pageResult,
             allPagesLength: allPages.length,
             currentOffset,

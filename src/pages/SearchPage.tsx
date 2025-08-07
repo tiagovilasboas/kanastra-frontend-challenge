@@ -1,17 +1,17 @@
 import { AlertCircle, Loader2, Search } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 
 import {
   AlbumsSection,
   ArtistsSection,
-  AudiobooksSection,
   EpisodesSection,
   PlaylistsSection,
   SearchHeader,
   ShowsSection,
 } from '@/components/search'
+import { SearchFilters } from '@/components/search/SearchFilters'
 import {
   BestResultCard,
   SearchResultsLayout,
@@ -38,9 +38,10 @@ type SearchFiltersType = {
 export const SearchPage: React.FC = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const { searchQuery } = useSearchStore()
-  const [searchFilters] = useState<SearchFiltersType>({
+  const [searchFilters, setSearchFilters] = useState<SearchFiltersType>({
     artistName: undefined,
     albumName: undefined,
     genre: undefined,
@@ -98,6 +99,20 @@ export const SearchPage: React.FC = () => {
       <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 lg:space-y-8 p-3 sm:p-4 lg:p-6">
         {/* Header */}
         <SearchHeader />
+        {/* Filters */}
+        <SearchFilters
+          filters={searchFilters}
+          onFiltersChange={setSearchFilters}
+          onClearFilters={() =>
+            setSearchFilters({
+              artistName: undefined,
+              albumName: undefined,
+              genre: undefined,
+              yearFrom: undefined,
+              yearTo: undefined,
+            })
+          }
+        />
         {/* Type Selector and Filters - Only show when there's a search query */}
         {searchQuery && (
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
@@ -105,6 +120,7 @@ export const SearchPage: React.FC = () => {
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
+                  data-testid="search-type-button"
                   onClick={() => handleTabChange(tab.id)}
                   className={`px-4 py-2 rounded-full transition-all duration-200 font-medium text-sm ${
                     tab.isActive
@@ -121,7 +137,7 @@ export const SearchPage: React.FC = () => {
 
         {/* Search Results */}
         {searchQuery ? (
-          <div className="p-4">
+          <div className="p-4" data-testid="search-results">
             {searchState.isLoading ? (
               <SearchLoadingState />
             ) : searchState.error ? (
@@ -143,7 +159,15 @@ export const SearchPage: React.FC = () => {
                           title={playlist.name}
                           subtitle={`Playlist • ${playlist.owner.display_name}`}
                           type="Playlist"
-                          onClick={() => navigate(`/playlist/${playlist.id}`)}
+                          onClick={() => {
+                            if (playlist.external_urls?.spotify) {
+                              window.open(
+                                playlist.external_urls.spotify,
+                                '_blank',
+                                'noopener,noreferrer',
+                              )
+                            }
+                          }}
                         />
                       )
                     }
@@ -156,7 +180,13 @@ export const SearchPage: React.FC = () => {
                           title={artist.name}
                           subtitle={t('search:artist', 'Artista')}
                           type={t('search:artist', 'Artista')}
-                          onClick={() => navigate(`/artist/${artist.id}`)}
+                          onClick={() =>
+                            navigate(`/artist/${artist.id}`, {
+                              state: {
+                                from: location.pathname + location.search,
+                              },
+                            })
+                          }
                         />
                       )
                     }
@@ -169,7 +199,13 @@ export const SearchPage: React.FC = () => {
                           title={album.name}
                           subtitle={album.artists.map((a) => a.name).join(', ')}
                           type="Álbum"
-                          onClick={() => navigate(`/album/${album.id}`)}
+                          onClick={() =>
+                            navigate(`/album/${album.id}`, {
+                              state: {
+                                from: location.pathname + location.search,
+                              },
+                            })
+                          }
                         />
                       )
                     }
@@ -235,15 +271,6 @@ export const SearchPage: React.FC = () => {
                       episodes={results.episodes.items}
                       onSectionClick={() => handleSectionClick('episode')}
                       total={results.episodes.total}
-                    />
-                  )}
-
-                  {/* Audiobooks Section */}
-                  {results.audiobooks.items.length > 0 && (
-                    <AudiobooksSection
-                      audiobooks={results.audiobooks.items}
-                      onSectionClick={() => handleSectionClick('audiobook')}
-                      total={results.audiobooks.total}
                     />
                   )}
                 </SearchResultsLayout>

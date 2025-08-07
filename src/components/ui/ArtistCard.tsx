@@ -41,6 +41,11 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({
             <img
               src={artist.images[0].url}
               alt={artist.name}
+              width={artist.images[0].width || 320}
+              height={artist.images[0].height || 320}
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               className="w-full h-full object-cover rounded-full"
             />
           ) : (

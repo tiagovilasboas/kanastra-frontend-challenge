@@ -69,7 +69,7 @@ export const AlbumsSection: React.FC<AlbumsSectionProps> = ({
           </h2>
         )}
         <div className="flex items-center gap-2">
-          {total > albums.length && (
+          {!onSectionClick && total > albums.length && (
             <span className="text-sm text-muted-foreground">
               {t('search:showingResults', 'Mostrando {{count}} de {{total}}', {
                 count: albums.length,

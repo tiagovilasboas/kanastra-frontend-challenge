@@ -1,11 +1,10 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import {
   AlbumsSection,
   ArtistsSection,
-  AudiobooksSection,
   EpisodesSection,
   PlaylistsSection,
   ShowsSection,
@@ -21,13 +20,13 @@ import { useSearchStore } from '@/stores/searchStore'
 import {
   SpotifyAlbum,
   SpotifyArtist,
-  SpotifyAudiobook,
   SpotifyEpisode,
   SpotifyPlaylist,
   SpotifySearchType,
   SpotifyShow,
   SpotifyTrack,
 } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 interface AllResultsViewProps {
   market?: string
@@ -38,6 +37,7 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
 }) => {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const location = useLocation()
   const { searchQuery } = useSearchStore()
 
   const handleSectionClick = (type: string) => {
@@ -91,13 +91,6 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
     pageSize: 6,
   })
 
-  const audiobooksQuery = useSpotifyInfiniteByType({
-    q: searchQuery,
-    type: SpotifySearchType.AUDIOBOOK,
-    market,
-    pageSize: 6,
-  })
-
   // Get best result
   const getBestResult = () => {
     const artists = artistsQuery.flatItems as SpotifyArtist[]
@@ -112,7 +105,15 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
         title: playlist.name,
         subtitle: `Playlist • ${playlist.owner.display_name}`,
         type: 'Playlist',
-        onClick: () => navigate(`/playlist/${playlist.id}`),
+        onClick: () => {
+          if (playlist.external_urls?.spotify) {
+            window.open(
+              playlist.external_urls.spotify,
+              '_blank',
+              'noopener,noreferrer',
+            )
+          }
+        },
       }
     }
 
@@ -124,7 +125,10 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
         title: artist.name,
         subtitle: t('search:artist', 'Artista'),
         type: t('search:artist', 'Artista'),
-        onClick: () => navigate(`/artist/${artist.id}`),
+        onClick: () =>
+          navigate(`/artist/${artist.id}`, {
+            state: { from: location.pathname + location.search },
+          }),
       }
     }
 
@@ -136,7 +140,10 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
         title: album.name,
         subtitle: album.artists.map((a) => a.name).join(', '),
         type: 'Álbum',
-        onClick: () => navigate(`/album/${album.id}`),
+        onClick: () =>
+          navigate(`/album/${album.id}`, {
+            state: { from: location.pathname + location.search },
+          }),
       }
     }
 
@@ -166,7 +173,7 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
             tracks={tracks}
             onTrackClick={(trackId) => {
               // Implementar navegação para a música
-              console.log('Track clicked:', trackId)
+              logger.debug('Track clicked', { trackId })
             }}
           />
         )
@@ -214,13 +221,6 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
         episodes={episodesQuery.flatItems as SpotifyEpisode[]}
         isLoading={episodesQuery.isFetching}
         onSectionClick={() => handleSectionClick('episode')}
-      />
-
-      {/* Audiobooks Section */}
-      <AudiobooksSection
-        audiobooks={audiobooksQuery.flatItems as SpotifyAudiobook[]}
-        isLoading={audiobooksQuery.isFetching}
-        onSectionClick={() => handleSectionClick('audiobook')}
       />
     </SearchResultsLayout>
   )

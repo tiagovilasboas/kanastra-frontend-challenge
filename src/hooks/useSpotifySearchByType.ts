@@ -5,6 +5,7 @@ import { cache } from '@/config/react-query'
 import { spotifyRepository } from '@/repositories'
 import { SearchService } from '@/services/SearchService'
 import { SpotifySearchType } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 import { useDebounce } from './useDebounce'
 
@@ -64,7 +65,7 @@ export function useSpotifySearchByType({
       const isValidQuery = trimmedQuery.length >= 2
 
       if (import.meta.env.DEV) {
-        console.log('🔍 useSpotifySearchByType - Query validation:', {
+        logger.debug('🔍 useSpotifySearchByType - Query validation:', {
           originalQuery: debouncedQ,
           trimmedQuery,
           queryLength: trimmedQuery.length,
@@ -87,7 +88,7 @@ export function useSpotifySearchByType({
 
       // Enhanced debug logging
       if (import.meta.env.DEV) {
-        console.log('🔍 useSpotifySearchByType - Starting search:', {
+        logger.debug('🔍 useSpotifySearchByType - Starting search:', {
           q: debouncedQ,
           type,
           market,
@@ -183,7 +184,7 @@ export function useSpotifySearchByType({
           const typedResult = result as {
             results: { items: unknown[]; total: number; hasMore: boolean }
           }
-          console.log('🔍 useSpotifySearchByType - Search completed:', {
+          logger.debug('🔍 useSpotifySearchByType - Search completed:', {
             type,
             query: debouncedQ,
             resultItems: typedResult.results?.items?.length || 0,
@@ -213,7 +214,7 @@ export function useSpotifySearchByType({
 
       // Enhanced debug logging
       if (import.meta.env.DEV) {
-        console.log('🔍 useSpotifySearchByType - getNextPageParam:', {
+        logger.debug('🔍 useSpotifySearchByType - getNextPageParam:', {
           type,
           lastPage: pageResult,
           allPagesLength: allPages.length,
@@ -244,7 +245,7 @@ export function useSpotifySearchByType({
 
     // Debug logging for flatItems
     if (import.meta.env.DEV) {
-      console.log('🔍 useSpotifySearchByType - flatItems updated:', {
+      logger.debug('🔍 useSpotifySearchByType - flatItems updated:', {
         type,
         itemsCount: items.length,
         pagesCount: data?.pages.length || 0,
@@ -263,7 +264,7 @@ export function useSpotifySearchByType({
 
     // Debug logging for total
     if (import.meta.env.DEV) {
-      console.log('🔍 useSpotifySearchByType - total updated:', {
+      logger.debug('🔍 useSpotifySearchByType - total updated:', {
         type,
         total: totalValue,
         timestamp: new Date().toISOString(),

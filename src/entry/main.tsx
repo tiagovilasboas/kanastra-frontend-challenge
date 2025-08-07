@@ -2,6 +2,12 @@ import '../config/i18n'
 // import '@mantine/core/styles.css'
 import '../styles/globals.css'
 
+// Silence console.log/debug in production to avoid unnecessary logs
+if (import.meta.env.PROD) {
+  console.info = () => {}
+  console.debug = () => {}
+}
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'

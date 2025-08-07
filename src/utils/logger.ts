@@ -18,7 +18,7 @@ class Logger {
 
   debug(message: string, data?: unknown): void {
     if (this.shouldLog('debug')) {
-      console.log(`🔍 [DEBUG] ${message}`, data || '')
+      console.debug(`🔍 [DEBUG] ${message}`, data || '')
     }
   }
 

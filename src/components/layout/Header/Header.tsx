@@ -73,7 +73,10 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
   }
 
   return (
-    <header className="bg-background border-b border-border px-3 sm:px-4 py-2 sm:py-3 z-50">
+    <header
+      className="bg-background border-b border-border px-3 sm:px-4 py-2 sm:py-3 z-50"
+      style={{ pointerEvents: 'auto' }}
+    >
       <div className="flex items-center justify-between gap-2 sm:gap-4 max-w-7xl mx-auto">
         {/* Left side - Menu button and Logo */}
         <div className="flex items-center gap-2 sm:gap-4">
@@ -99,18 +102,40 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
         {/* Center - Search */}
         <div className="flex-1 max-w-sm sm:max-w-md mx-2 sm:mx-4">
           <div className="relative">
-            <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
-            <Input
-              data-testid="search-input"
-              placeholder={
-                searchPlaceholder ||
-                t('search:placeholder', 'Pesquisar artistas, álbuns ou músicas')
-              }
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyPress={handleSearchKeyPress}
-              className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background"
-            />
+            <div className="relative flex items-center">
+              <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
+              <Input
+                data-testid="search-input"
+                placeholder={
+                  searchPlaceholder ||
+                  t(
+                    'search:placeholder',
+                    'Pesquisar artistas, álbuns ou músicas',
+                  )
+                }
+                value={searchQuery}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                onKeyPress={handleSearchKeyPress}
+                className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background flex-1"
+              />
+              <Button
+                size="sm"
+                variant="secondary"
+                className="ml-2 px-3"
+                onClick={() => {
+                  if (searchQuery.trim()) {
+                    const queryParams = new URLSearchParams({
+                      q: searchQuery,
+                      market: 'BR',
+                    })
+                    navigate(`/search?${queryParams.toString()}`)
+                  }
+                }}
+                data-testid="search-button"
+              >
+                <Search className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
 

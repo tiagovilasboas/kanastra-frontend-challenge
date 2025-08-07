@@ -1,14 +1,18 @@
 import { AlertCircle, Search } from 'lucide-react'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { SearchHeader } from '@/components/search'
 import { TrackList } from '@/components/ui'
 import { GridSkeleton, TrackListSkeleton } from '@/components/ui'
 import { AlbumCard } from '@/components/ui/AlbumCard'
 import { ArtistCard } from '@/components/ui/ArtistCard'
-import { AudiobookCard } from '@/components/ui/AudiobookCard'
 import { Card, CardContent } from '@/components/ui/card'
 import { EpisodeCard } from '@/components/ui/EpisodeCard'
 import { LoadMoreButton } from '@/components/ui/LoadMoreButton'
@@ -21,12 +25,12 @@ import { SpotifySearchType } from '@/types/spotify'
 import {
   SpotifyAlbum,
   SpotifyArtist,
-  SpotifyAudiobook,
   SpotifyEpisode,
   SpotifyPlaylist,
   SpotifyShow,
   SpotifyTrack,
 } from '@/types/spotify'
+import { logger } from '@/utils/logger'
 
 // Mapeamento de tipos da URL para tipos da API
 const URL_TYPE_TO_API_TYPE = {
@@ -42,14 +46,13 @@ const URL_TYPE_TO_API_TYPE = {
   shows: SpotifySearchType.SHOW,
   episode: SpotifySearchType.EPISODE,
   episodes: SpotifySearchType.EPISODE,
-  audiobook: SpotifySearchType.AUDIOBOOK,
-  audiobooks: SpotifySearchType.AUDIOBOOK,
 } as const
 
 export const SearchByTypePage: React.FC = () => {
   const { type } = useParams<{ type: string }>()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { t } = useTranslation()
 
   const query = searchParams.get('q') || ''
@@ -60,7 +63,7 @@ export const SearchByTypePage: React.FC = () => {
 
   // Debug URL parameters
   if (import.meta.env.DEV) {
-    console.log('🔍 SearchByTypePage URL Debug:', {
+    logger.debug('🔍 SearchByTypePage URL Debug:', {
       type,
       searchParams: Object.fromEntries(searchParams.entries()),
       query,
@@ -109,8 +112,6 @@ export const SearchByTypePage: React.FC = () => {
         return 'search:filterShows'
       case SpotifySearchType.EPISODE:
         return 'search:filterEpisodes'
-      case SpotifySearchType.AUDIOBOOK:
-        return 'search:filterAudiobooks'
       default:
         return 'search:filterItems'
     }
@@ -150,7 +151,7 @@ export const SearchByTypePage: React.FC = () => {
 
   // Debug logs
   if (import.meta.env.DEV) {
-    console.log('🔍 SearchByTypePage Debug:', {
+    logger.debug('🔍 SearchByTypePage Debug:', {
       query,
       apiType,
       market,
@@ -176,7 +177,6 @@ export const SearchByTypePage: React.FC = () => {
         [SpotifySearchType.PLAYLIST]: <GridSkeleton count={20} />,
         [SpotifySearchType.SHOW]: <GridSkeleton count={20} />,
         [SpotifySearchType.EPISODE]: <GridSkeleton count={20} />,
-        [SpotifySearchType.AUDIOBOOK]: <GridSkeleton />,
       }
       return apiType ? skeletonMap[apiType] : null
     }
@@ -201,7 +201,7 @@ export const SearchByTypePage: React.FC = () => {
               <LoadMoreButton
                 onLoadMore={() => {
                   if (import.meta.env.DEV) {
-                    console.log('🔍 LoadMoreButton clicked:', {
+                    logger.debug('🔍 LoadMoreButton clicked:', {
                       hasFilter,
                       flatItemsLength: flatItems.length,
                       hasNextPage,
@@ -253,7 +253,9 @@ export const SearchByTypePage: React.FC = () => {
 
     // Handlers para navegação
     const handleArtistClick = (artistId: string) => {
-      navigate(`/artist/${artistId}`)
+      navigate(`/artist/${artistId}`, {
+        state: { from: location.pathname + location.search },
+      })
     }
 
     const handleItemClick = (item: unknown) => {
@@ -325,19 +327,10 @@ export const SearchByTypePage: React.FC = () => {
                     />
                   )
 
-                case SpotifySearchType.AUDIOBOOK:
-                  return (
-                    <AudiobookCard
-                      key={`${(item as SpotifyAudiobook).id}-${index}`}
-                      audiobook={item as SpotifyAudiobook}
-                      onClick={() => handleItemClick(item)}
-                    />
-                  )
-
                 default:
                   return (
                     <div
-                      key={`${(item as SpotifyArtist | SpotifyAlbum | SpotifyPlaylist | SpotifyShow | SpotifyEpisode | SpotifyAudiobook | SpotifyTrack).id}-${index}`}
+                      key={`${(item as SpotifyArtist | SpotifyAlbum | SpotifyPlaylist | SpotifyShow | SpotifyEpisode | SpotifyTrack).id}-${index}`}
                       className="bg-card rounded-lg p-4 border"
                     >
                       <div className="space-y-2">
@@ -351,7 +344,6 @@ export const SearchByTypePage: React.FC = () => {
                                 | SpotifyPlaylist
                                 | SpotifyShow
                                 | SpotifyEpisode
-                                | SpotifyAudiobook
                                 | SpotifyTrack
                             ).name
                           }
@@ -369,7 +361,7 @@ export const SearchByTypePage: React.FC = () => {
             <LoadMoreButton
               onLoadMore={() => {
                 if (import.meta.env.DEV) {
-                  console.log('🔍 LoadMoreButton clicked (tracks):', {
+                  logger.debug('🔍 LoadMoreButton clicked (tracks):', {
                     hasFilter,
                     flatItemsLength: flatItems.length,
                     hasNextPage,
@@ -407,7 +399,7 @@ export const SearchByTypePage: React.FC = () => {
         </div>
 
         {/* Results */}
-        {renderItems()}
+        <div data-testid="search-results">{renderItems()}</div>
 
         {/* Results Count */}
         {allItems.length > 0 && (!hasFilter || allItems.length >= 20) && (
