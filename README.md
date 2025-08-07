@@ -317,21 +317,6 @@ npm run analyze
 - **Limites de busca** ajustados por dispositivo
 - **Navegação otimizada** para mobile
 
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-### Padrões de Código
-
-- **TypeScript** com tipagem explícita
-- **ESLint + Prettier** para formatação
-- **Commits em inglês** por arquivo
-- **Testes obrigatórios** para novas funcionalidades
-
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
