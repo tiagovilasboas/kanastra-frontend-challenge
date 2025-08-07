@@ -32,15 +32,15 @@ export const PopularityBar: React.FC<PopularityBarProps> = ({
         </span>
       </div>
 
-      {/* Barra de progresso com texto */}
-      <div className="relative">
+      {/* Barra de progresso com texto integrado */}
+      <div className="flex items-center gap-2">
         <div className="w-1/2 h-2 bg-muted rounded-full overflow-hidden">
           <div
             className={`h-full ${getPopularityColor(popularity)} rounded-full transition-all duration-1000 ease-out`}
             style={{ width: `${popularity}%` }}
           />
         </div>
-        <span className="absolute -top-0.5 -right-1 text-xs font-bold text-foreground bg-background/80 px-1 rounded">
+        <span className="text-xs font-bold text-foreground">
           {popularity}
           {t('common:percent', '%')}
         </span>
