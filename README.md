@@ -13,7 +13,7 @@ Uma aplicação React moderna para explorar artistas, álbuns e músicas do Spot
 - ✅ **Listagem de artistas** com UI chamativa, imagens e animações
 - ✅ **Visualização detalhada** de artistas (nome, popularidade, músicas principais, álbuns)
 - ✅ **Paginação de álbuns** com 20 itens por página e navegação manual
-- ✅ **Filtros avançados** para artistas e álbuns (por nome, gênero, ano)
+
 - ✅ **UI responsiva e chamativa** com Tailwind CSS e componentes customizados
 
 ### Diferenciais Implementados 🚀
