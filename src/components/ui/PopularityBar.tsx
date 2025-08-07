@@ -40,7 +40,7 @@ export const PopularityBar: React.FC<PopularityBarProps> = ({
             style={{ width: `${popularity}%` }}
           />
         </div>
-        <span className="absolute -top-1 -right-2 text-xs font-bold text-foreground">
+        <span className="absolute -top-0.5 -right-1 text-xs font-bold text-foreground bg-background/80 px-1 rounded">
           {popularity}
           {t('common:percent', '%')}
         </span>
