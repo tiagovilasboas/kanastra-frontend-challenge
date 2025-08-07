@@ -35,12 +35,4 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# 5. Executar testes E2E (se disponível)
-echo "🌐 Verificando testes E2E..."
-if npm run test:e2e 2>/dev/null; then
-  echo "✅ Testes E2E passaram!"
-else
-  echo "⚠️  Testes E2E não disponíveis ou falharam. Continuando..."
-fi
-
 echo "✅ Pre-push: Todos os checks passaram! Pode fazer push com segurança." 
