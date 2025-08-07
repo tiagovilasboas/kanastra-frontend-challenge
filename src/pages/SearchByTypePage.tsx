@@ -156,6 +156,8 @@ export const SearchByTypePage: React.FC = () => {
       totalItems,
       hasNextPage,
       localFilter,
+      flatItemsLength: flatItems.length,
+      hasFilter,
     })
   }
 
@@ -195,7 +197,17 @@ export const SearchByTypePage: React.FC = () => {
           {hasNextPage && (
             <div className="flex justify-center pt-4">
               <LoadMoreButton
-                onLoadMore={fetchNextPage}
+                onLoadMore={() => {
+                  if (import.meta.env.DEV) {
+                    console.log('🔍 LoadMoreButton clicked:', {
+                      hasFilter,
+                      flatItemsLength: flatItems.length,
+                      hasNextPage,
+                      totalItems,
+                    })
+                  }
+                  fetchNextPage()
+                }}
                 isLoading={isFetching}
                 hasMore={hasNextPage}
                 totalResults={totalItems}
@@ -353,7 +365,17 @@ export const SearchByTypePage: React.FC = () => {
         {hasNextPage && (
           <div className="flex justify-center pt-4">
             <LoadMoreButton
-              onLoadMore={fetchNextPage}
+              onLoadMore={() => {
+                if (import.meta.env.DEV) {
+                  console.log('🔍 LoadMoreButton clicked (tracks):', {
+                    hasFilter,
+                    flatItemsLength: flatItems.length,
+                    hasNextPage,
+                    totalItems,
+                  })
+                }
+                fetchNextPage()
+              }}
               isLoading={isFetching}
               hasMore={hasNextPage}
               totalResults={totalItems}
