@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { Sidebar } from '@/components/ui/Sidebar'
 
-import { Header } from './Header'
+import { SearchBarContainer } from './Header/SearchBarContainer'
 
 export const AppLayout: React.FC = () => {
   const [isSidebarCollapsed] = useState(false)
@@ -21,7 +21,7 @@ export const AppLayout: React.FC = () => {
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header - Full width */}
-      <Header onMenuToggle={handleMenuToggle} />
+      <SearchBarContainer onMenuToggle={handleMenuToggle} />
 
       {/* Main Content Area */}
       <div className="flex flex-1 min-h-0">

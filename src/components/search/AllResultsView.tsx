@@ -15,6 +15,7 @@ import {
   SearchResultsLayout,
   TracksListSection,
 } from '@/components/ui'
+import { API_LIMITS } from '@/constants/limits'
 import { useSpotifyInfiniteByType } from '@/hooks/useSpotifyInfiniteByType'
 import { useSearchStore } from '@/stores/searchStore'
 import {
@@ -53,42 +54,42 @@ export const AllResultsView: React.FC<AllResultsViewProps> = ({
     q: searchQuery,
     type: SpotifySearchType.ARTIST,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   const albumsQuery = useSpotifyInfiniteByType({
     q: searchQuery,
     type: SpotifySearchType.ALBUM,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   const tracksQuery = useSpotifyInfiniteByType({
     q: searchQuery,
     type: SpotifySearchType.TRACK,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   const playlistsQuery = useSpotifyInfiniteByType({
     q: searchQuery,
     type: SpotifySearchType.PLAYLIST,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   const showsQuery = useSpotifyInfiniteByType({
     q: searchQuery,
     type: SpotifySearchType.SHOW,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   const episodesQuery = useSpotifyInfiniteByType({
     q: searchQuery,
     type: SpotifySearchType.EPISODE,
     market,
-    pageSize: 6,
+    pageSize: API_LIMITS.SEARCH.PREVIEW,
   })
 
   // Get best result

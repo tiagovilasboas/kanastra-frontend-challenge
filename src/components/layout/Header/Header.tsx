@@ -1,8 +1,5 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { LogIn, LogOut, Menu, Search, User } from 'lucide-react'
-import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,63 +11,25 @@ import {
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
-import { useDebounce } from '@/hooks/useDebounce'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
-import { useSearchStore } from '@/stores/searchStore'
 
 export interface HeaderProps {
   onMenuToggle?: () => void
   searchPlaceholder?: string
+  searchQuery: string
+  onSearchChange: (value: string) => void
+  onSearchKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void
 }
 
-export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
+export function Header({
+  onMenuToggle,
+  searchPlaceholder,
+  searchQuery,
+  onSearchChange,
+  onSearchKeyPress,
+}: HeaderProps) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
-  const { searchQuery, setSearchQuery, setDebouncedSearchQuery } =
-    useSearchStore()
-
-  // Debounce the search query with 350ms delay
-  const debouncedSearchQuery = useDebounce(searchQuery, 350)
-
-  // Update debounced search query in store when it changes
-  useEffect(() => {
-    setDebouncedSearchQuery(debouncedSearchQuery)
-  }, [debouncedSearchQuery, setDebouncedSearchQuery])
-
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value)
-
-    // If input is cleared, invalidate queries
-    if (!value.trim()) {
-      queryClient.removeQueries({
-        queryKey: ['spotify-search'],
-      })
-      queryClient.removeQueries({
-        queryKey: ['spotify-search-by-type'],
-      })
-    }
-
-    // Navigate to search page if user types something
-    if (value.trim()) {
-      const queryParams = new URLSearchParams({
-        q: value,
-        market: 'BR',
-      })
-      navigate(`/search?${queryParams.toString()}`)
-    }
-  }
-
-  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && searchQuery.trim()) {
-      const queryParams = new URLSearchParams({
-        q: searchQuery,
-        market: 'BR',
-      })
-      navigate(`/search?${queryParams.toString()}`)
-    }
-  }
 
   return (
     <header
@@ -110,8 +69,8 @@ export function Header({ onMenuToggle, searchPlaceholder }: HeaderProps) {
                 t('search:placeholder', 'Pesquisar artistas, álbuns ou músicas')
               }
               value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onKeyPress={handleSearchKeyPress}
+              onChange={(e) => onSearchChange(e.target.value)}
+              onKeyPress={onSearchKeyPress}
               className="pl-7 sm:pl-10 h-9 sm:h-10 text-sm sm:text-base bg-muted/50 border-0 focus:bg-background"
             />
           </div>

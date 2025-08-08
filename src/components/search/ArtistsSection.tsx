@@ -1,8 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useLocation, useNavigate } from 'react-router-dom'
 
-import { ArtistCard } from '@/components/ui/ArtistCard'
+import { ArtistCardContainer } from '@/components/ui/ArtistCardContainer'
 import { SpotifyArtist } from '@/types/spotify'
 
 interface ArtistsSectionProps {
@@ -19,14 +18,6 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
   total = 0,
 }) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const handleArtistClick = (artistId: string) => {
-    navigate(`/artist/${artistId}`, {
-      state: { from: location.pathname + location.search },
-    })
-  }
 
   if (isLoading) {
     return (
@@ -83,11 +74,7 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
         {artists
           .filter((artist) => artist && artist.id) // Filter out null/undefined items
           .map((artist) => (
-            <ArtistCard
-              key={artist.id}
-              artist={artist}
-              onClick={() => handleArtistClick(artist.id)}
-            />
+            <ArtistCardContainer key={artist.id} artist={artist} />
           ))}
       </div>
     </div>

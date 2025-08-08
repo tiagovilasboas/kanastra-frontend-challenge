@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { TrackList } from '@/components/ui/TrackList'
+import { TrackListContainer } from '@/components/ui/TrackListContainer'
 import { SpotifyTrack } from '@/types/spotify'
 
 interface TracksSectionProps {
@@ -100,17 +100,8 @@ export const TracksSection: React.FC<TracksSectionProps> = ({
         </div>
       </div>
 
-      <TrackList
+      <TrackListContainer
         tracks={tracks.filter((track) => track && track.id)}
-        onTrackClick={(track) => {
-          if (track.external_urls?.spotify) {
-            window.open(
-              track.external_urls.spotify,
-              '_blank',
-              'noopener,noreferrer',
-            )
-          }
-        }}
       />
     </div>
   )

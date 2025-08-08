@@ -317,6 +317,8 @@ npm run analyze
 - **Limites de busca** ajustados por dispositivo
 - **Navegação otimizada** para mobile
 
+---
+
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
