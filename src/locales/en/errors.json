@@ -1,0 +1,18 @@
+{
+  "networkError": "Connection Error",
+  "authError": "Authentication Error",
+  "genericError": "Something went wrong",
+  "networkErrorDesc": "Please check your internet connection and try again.",
+  "authErrorDesc": "Please refresh the page to re-authenticate.",
+  "genericErrorDesc": "An unexpected error occurred in the {context}.",
+  "technicalDetails": "Technical Details",
+  "refresh": "Refresh Page",
+  "tryAgain": "Try Again",
+  "connectionLost": "Connection Lost",
+  "connectionLostDesc": "Unable to load {context}. Please check your connection.",
+  "reconnect": "Reconnect",
+  "loadingFailed": "Failed to Load",
+  "loadingFailedDesc": "Could not load {resource}",
+  "retry": "Retry",
+  "loadError": "Load error"
+}

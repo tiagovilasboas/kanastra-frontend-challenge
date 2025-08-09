@@ -12,7 +12,7 @@ interface OptimizedImageProps {
   alt: string
   context: 'thumbnail' | 'card' | 'header' | 'list'
   className?: string
-  priority?: boolean // Para imagens críticas (above the fold)
+  priority?: boolean // For critical images (above the fold)
   placeholder?: 'blur' | 'icon'
   placeholderType?:
     | 'album'
@@ -44,7 +44,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   const imageUrl = getOptimalImageUrl(images, context)
 
-  // Intersection Observer para lazy loading
+  // Intersection Observer for lazy loading
   useEffect(() => {
     if (priority || !containerRef.current) return
 
@@ -62,7 +62,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return () => observer.disconnect()
   }, [priority])
 
-  // Preload para imagens críticas
+  // Preload for critical images
   useEffect(() => {
     if (priority && imageUrl) {
       const link = document.createElement('link')
@@ -84,14 +84,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     onError?.()
   }
 
-  // Se não há imagem ou houve erro, mostra placeholder
+  // If no image or error occurred, show placeholder
   if (!imageUrl || hasError) {
     return (
       <div
         ref={containerRef}
         className={`relative overflow-hidden ${className}`}
         style={{
-          // Garantir que placeholders circulares sejam sempre quadrados
+          // Ensure circular placeholders are always square
           aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
         }}
       >
@@ -105,11 +105,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       ref={containerRef}
       className={`relative overflow-hidden ${className}`}
       style={{
-        // Garantir que containers circulares sejam sempre quadrados
+        // Ensure circular containers are always square
         aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
       }}
     >
-      {/* Placeholder enquanto carrega */}
+      {/* Placeholder while loading */}
       {isLoading && placeholder === 'icon' && (
         <div className="absolute inset-0 z-10">
           <PlaceholderImage type={placeholderType} className="w-full h-full" />
@@ -123,7 +123,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
         />
       )}
 
-      {/* Imagem principal */}
+      {/* Main image */}
       {shouldLoad && (
         <img
           ref={imgRef}
@@ -133,7 +133,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
             isLoading ? 'opacity-0' : 'opacity-100'
           } ${className}`}
           style={{
-            // Garantir que imagens circulares sejam sempre quadradas
+            // Ensure circular images are always square
             aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
           }}
           loading={priority ? 'eager' : 'lazy'}

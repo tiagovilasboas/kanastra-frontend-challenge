@@ -1,0 +1,18 @@
+{
+  "networkError": "Erro de Conexão",
+  "authError": "Erro de Autenticação",
+  "genericError": "Algo deu errado",
+  "networkErrorDesc": "Verifique sua conexão com a internet e tente novamente.",
+  "authErrorDesc": "Atualize a página para re-autenticar.",
+  "genericErrorDesc": "Ocorreu um erro inesperado no {context}.",
+  "technicalDetails": "Detalhes Técnicos",
+  "refresh": "Atualizar Página",
+  "tryAgain": "Tentar Novamente",
+  "connectionLost": "Conexão Perdida",
+  "connectionLostDesc": "Não foi possível carregar {context}. Verifique sua conexão.",
+  "reconnect": "Reconectar",
+  "loadingFailed": "Falha ao Carregar",
+  "loadingFailedDesc": "Não foi possível carregar {resource}",
+  "retry": "Tentar Novamente",
+  "loadError": "Erro de carregamento"
+}
