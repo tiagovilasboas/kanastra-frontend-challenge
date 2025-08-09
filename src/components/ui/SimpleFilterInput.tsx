@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from './button'
 import { Input } from './input'
-import { MobileFiltersOverlay } from './MobileFiltersOverlay'
+import { MobileSearchOverlay } from './MobileSearchOverlay'
 
 interface SimpleFilterInputProps {
   value: string
@@ -12,7 +12,6 @@ interface SimpleFilterInputProps {
   placeholderKey: string // i18n key
   className?: string
   disabled?: boolean
-  overlayTitle?: string // Título para o overlay móvel
 }
 
 // Simple icon + input filter reused across pages (artist albums, search filters, etc.)
@@ -22,10 +21,9 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
   placeholderKey,
   className = '',
   disabled = false,
-  overlayTitle,
 }) => {
   const { t } = useTranslation()
-  const [isMobileOverlayOpen, setIsMobileOverlayOpen] = useState(false)
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
   return (
     <>
@@ -44,7 +42,7 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
       {/* Mobile Filter Button */}
       <Button
         variant="outline"
-        onClick={() => setIsMobileOverlayOpen(true)}
+        onClick={() => setIsMobileFilterOpen(true)}
         className={`lg:hidden flex items-center gap-2 ${className}`}
         disabled={disabled}
       >
@@ -52,17 +50,18 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
         <span className="text-sm">{value || t(placeholderKey)}</span>
       </Button>
 
-      {/* Mobile Filter Overlay */}
-      <MobileFiltersOverlay
-        isOpen={isMobileOverlayOpen}
-        onClose={() => setIsMobileOverlayOpen(false)}
-        mode="advanced"
-        title={overlayTitle || t('search:filters', 'Filtros')}
-        filters={{ artistName: value }}
-        onFiltersChange={(filters) => {
-          onChange(filters.artistName || '')
+      {/* Mobile Filter Overlay - Reutiliza o mesmo MobileSearchOverlay */}
+      <MobileSearchOverlay
+        isOpen={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        searchQuery={value}
+        onSearchChange={onChange}
+        onSearchKeyPress={(e) => {
+          if (e.key === 'Enter' && value.trim()) {
+            setIsMobileFilterOpen(false)
+          }
         }}
-        onClearFilters={() => onChange('')}
+        searchPlaceholder={t(placeholderKey)}
       />
     </>
   )
