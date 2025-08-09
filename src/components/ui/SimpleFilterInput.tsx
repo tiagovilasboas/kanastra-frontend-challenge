@@ -1,10 +1,8 @@
 import { Filter } from 'lucide-react'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from './button'
 import { Input } from './input'
-import { MobileFilterOverlay } from './MobileFilterOverlay'
 
 interface SimpleFilterInputProps {
   value: string
@@ -23,7 +21,6 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
   disabled = false,
 }) => {
   const { t } = useTranslation()
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
   return (
     <>
@@ -39,25 +36,17 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
         />
       </div>
 
-      {/* Mobile Filter Button */}
-      <Button
-        variant="outline"
-        onClick={() => setIsMobileFilterOpen(true)}
-        className={`lg:hidden flex items-center gap-2 ${className}`}
-        disabled={disabled}
-      >
-        <Filter className="w-4 h-4" />
-        <span className="text-sm">{value || t(placeholderKey)}</span>
-      </Button>
-
-      {/* Mobile Filter Overlay - No blur to see background content */}
-      <MobileFilterOverlay
-        isOpen={isMobileFilterOpen}
-        onClose={() => setIsMobileFilterOpen(false)}
-        value={value}
-        onChange={onChange}
-        placeholder={t(placeholderKey)}
-      />
+      {/* Mobile Filter Input */}
+      <div className={`relative lg:hidden ${className}`}>
+        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          disabled={disabled}
+          value={value}
+          placeholder={t(placeholderKey)}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full pl-10 bg-muted/50 border-0 focus:bg-background"
+        />
+      </div>
     </>
   )
 }
