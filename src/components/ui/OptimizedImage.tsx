@@ -90,6 +90,10 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       <div
         ref={containerRef}
         className={`relative overflow-hidden ${className}`}
+        style={{
+          // Garantir que placeholders circulares sejam sempre quadrados
+          aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
+        }}
       >
         <PlaceholderImage type={placeholderType} className="w-full h-full" />
       </div>
@@ -97,7 +101,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }
 
   return (
-    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
+    <div
+      ref={containerRef}
+      className={`relative overflow-hidden ${className}`}
+      style={{
+        // Garantir que containers circulares sejam sempre quadrados
+        aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
+      }}
+    >
       {/* Placeholder enquanto carrega */}
       {isLoading && placeholder === 'icon' && (
         <div className="absolute inset-0 z-10">
@@ -121,6 +132,10 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           className={`w-full h-full object-cover transition-opacity duration-300 ${
             isLoading ? 'opacity-0' : 'opacity-100'
           } ${className}`}
+          style={{
+            // Garantir que imagens circulares sejam sempre quadradas
+            aspectRatio: className.includes('rounded-full') ? '1/1' : undefined,
+          }}
           loading={priority ? 'eager' : 'lazy'}
           decoding="async"
           fetchPriority={priority ? 'high' : 'low'}
