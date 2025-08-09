@@ -1,8 +1,10 @@
 import { Filter } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Button } from './button'
 import { Input } from './input'
+import { MobileFiltersOverlay } from './MobileFiltersOverlay'
 
 interface SimpleFilterInputProps {
   value: string
@@ -10,6 +12,7 @@ interface SimpleFilterInputProps {
   placeholderKey: string // i18n key
   className?: string
   disabled?: boolean
+  overlayTitle?: string // Título para o overlay móvel
 }
 
 // Simple icon + input filter reused across pages (artist albums, search filters, etc.)
@@ -19,19 +22,48 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
   placeholderKey,
   className = '',
   disabled = false,
+  overlayTitle,
 }) => {
   const { t } = useTranslation()
+  const [isMobileOverlayOpen, setIsMobileOverlayOpen] = useState(false)
 
   return (
-    <div className={`relative ${className}`}>
-      <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <Input
+    <>
+      {/* Desktop Filter Input */}
+      <div className={`relative hidden lg:block ${className}`}>
+        <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Input
+          disabled={disabled}
+          value={value}
+          placeholder={t(placeholderKey)}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-48 sm:w-64 pl-10 bg-muted/50 border-0 focus:bg-background"
+        />
+      </div>
+
+      {/* Mobile Filter Button */}
+      <Button
+        variant="outline"
+        onClick={() => setIsMobileOverlayOpen(true)}
+        className={`lg:hidden flex items-center gap-2 ${className}`}
         disabled={disabled}
-        value={value}
-        placeholder={t(placeholderKey)}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-48 sm:w-64 pl-10 bg-muted/50 border-0 focus:bg-background"
+      >
+        <Filter className="w-4 h-4" />
+        <span className="text-sm">{value || t(placeholderKey)}</span>
+      </Button>
+
+      {/* Mobile Filter Overlay */}
+      <MobileFiltersOverlay
+        isOpen={isMobileOverlayOpen}
+        onClose={() => setIsMobileOverlayOpen(false)}
+        mode="advanced"
+        title={overlayTitle || t('search:filters', 'Filtros')}
+        filters={{ artistName: value }}
+        onFiltersChange={(filters) => {
+          onChange(filters.artistName || '')
+        }}
+        onClearFilters={() => onChange('')}
       />
-    </div>
+    </>
   )
 }
