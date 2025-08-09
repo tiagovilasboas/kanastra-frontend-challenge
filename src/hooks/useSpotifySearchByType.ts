@@ -197,12 +197,16 @@ export function useSpotifySearchByType({
 
         return (result as { results: unknown }).results as unknown
       } catch (error) {
-        console.error('🔍 useSpotifySearchByType - Search error:', {
-          type,
-          query: debouncedQ,
-          error: error instanceof Error ? error.message : error,
-          timestamp: new Date().toISOString(),
-        })
+        logger.logError(
+          'Search error in useSpotifySearchByType',
+          error as Error,
+          {
+            type,
+            query: debouncedQ,
+            error: error instanceof Error ? error.message : error,
+            timestamp: new Date().toISOString(),
+          },
+        )
         throw error
       }
     },

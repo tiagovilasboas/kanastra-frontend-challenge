@@ -5,6 +5,7 @@ import { POPULAR_ARTIST_IDS } from '@/constants/artists'
 import { API_LIMITS } from '@/constants/limits'
 import { spotifyRepository } from '@/repositories'
 import { SpotifyArtist } from '@/schemas/spotify'
+import { logger } from '@/utils/logger'
 
 import { useSpotifyAuth } from './useSpotifyAuth'
 
@@ -40,7 +41,7 @@ export function usePopularArtists({
             ? artist
             : null
         } catch (error) {
-          console.warn(`Failed to fetch artist ${artistId}:`, error)
+          logger.warn(`Failed to fetch artist details`, { artistId, error })
 
           // Check if it's an auth error
           if (checkAuthError(error)) {
