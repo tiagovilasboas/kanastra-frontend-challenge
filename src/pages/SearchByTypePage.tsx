@@ -279,13 +279,17 @@ export const SearchByTypePage: React.FC = () => {
               switch (apiType) {
                 case SpotifySearchType.ARTIST:
                   return (
-                    <ArtistCard
+                    <div
                       key={`${(item as SpotifyArtist).id}-${index}`}
-                      artist={item as SpotifyArtist}
-                      onClick={() =>
-                        handleArtistClick((item as SpotifyArtist).id)
-                      }
-                    />
+                      className="w-full aspect-square"
+                    >
+                      <ArtistCard
+                        artist={item as SpotifyArtist}
+                        onClick={() =>
+                          handleArtistClick((item as SpotifyArtist).id)
+                        }
+                      />
+                    </div>
                   )
 
                 case SpotifySearchType.ALBUM:

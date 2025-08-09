@@ -72,8 +72,8 @@ export const HomePage: React.FC = () => {
           {isPopularLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
               {Array.from({ length: 10 }).map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 bg-muted rounded-full mb-3 mx-auto"></div>
+                <div key={index} className="w-full aspect-square animate-pulse">
+                  <div className="w-full aspect-square bg-muted rounded-full mb-3"></div>
                   <div className="h-4 bg-muted rounded w-3/4 mb-1 mx-auto"></div>
                   <div className="h-3 bg-muted rounded w-1/2 mx-auto"></div>
                 </div>
@@ -84,6 +84,7 @@ export const HomePage: React.FC = () => {
               {popularArtists.map((artist, index) => (
                 <div
                   key={artist.id}
+                  className="w-full aspect-square"
                   onClick={() => handleArtistClick(artist.id)}
                 >
                   <ArtistCard

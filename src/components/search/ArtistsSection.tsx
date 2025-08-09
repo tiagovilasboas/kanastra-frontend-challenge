@@ -74,7 +74,9 @@ export const ArtistsSection: React.FC<ArtistsSectionProps> = ({
         {artists
           .filter((artist) => artist && artist.id) // Filter out null/undefined items
           .map((artist) => (
-            <ArtistCardContainer key={artist.id} artist={artist} />
+            <div key={artist.id} className="w-full aspect-square">
+              <ArtistCardContainer artist={artist} />
+            </div>
           ))}
       </div>
     </div>

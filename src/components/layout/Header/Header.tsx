@@ -1,4 +1,5 @@
 import { LogIn, LogOut, Menu, Search, User } from 'lucide-react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+// import { MobileSearchOverlay } from '@/components/ui/MobileSearchOverlay'
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
@@ -30,6 +32,7 @@ export function Header({
 }: HeaderProps) {
   const { t } = useTranslation()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
+  // const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false)
 
   return (
     <header
@@ -60,7 +63,27 @@ export function Header({
 
         {/* Center - Search */}
         <div className="flex-1 max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl mx-2 sm:mx-4 lg:mx-8">
-          <div className="relative">
+          {/* Mobile Search Button */}
+          <Button
+            variant="ghost"
+            onClick={() => {
+              /* TODO: setIsMobileSearchOpen(true) */
+            }}
+            className="lg:hidden w-full justify-start gap-2 h-9 bg-muted/50 hover:bg-muted text-muted-foreground"
+          >
+            <Search className="w-4 h-4" />
+            <span className="text-sm">
+              {searchQuery ||
+                searchPlaceholder ||
+                t(
+                  'search:placeholder',
+                  'Pesquisar artistas, álbuns ou músicas',
+                )}
+            </span>
+          </Button>
+
+          {/* Desktop Search Input */}
+          <div className="relative hidden lg:block">
             <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
             <Input
               data-testid="search-input"
