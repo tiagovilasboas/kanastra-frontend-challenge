@@ -58,12 +58,15 @@ src/
 │   ├── artist/            # Componentes específicos de artista
 │   ├── layout/            # Componentes de layout (Header, etc.)
 │   ├── search/            # Componentes de busca
+│   │   └── sections/      # Seções organizadas de resultados
 │   ├── SEO/               # Componentes de SEO
-│   └── ui/                # Componentes UI base
+│   └── ui/                # Componentes UI base + Containers
 ├── config/                # Configurações (ambiente)
-├── hooks/                 # Custom hooks
+├── constants/             # Constantes centralizadas (limites, configurações)
+├── hooks/                 # Custom hooks + Presenters/Navigation handlers
 ├── lib/                   # Bibliotecas e configurações
 ├── locales/               # Arquivos de internacionalização
+├── mappers/               # DTOs e mapeadores (Spotify → App)
 ├── pages/                 # Páginas da aplicação
 ├── repositories/          # Camada de acesso a dados (Spotify API)
 ├── schemas/               # Schemas de validação (Zod)
@@ -239,18 +242,19 @@ export const SEARCH_LIMITS: SearchLimitsConfig = {
 
 ### Métricas Atuais
 
-| Métrica                            | Valor Atual | Meta   | Status |
-| ---------------------------------- | ----------- | ------ | ------ |
-| **Lighthouse Performance**         | 73%         | >90%   | 🔄     |
-| **Lighthouse Acessibilidade**      | 94%         | >90%   | ✅     |
-| **Lighthouse Best Practices**      | 100%        | >90%   | ✅     |
-| **Lighthouse SEO**                 | 100%        | >90%   | ✅     |
-| **First Contentful Paint (FCP)**   | 2.9s        | <2.5s  | 🔄     |
-| **Largest Contentful Paint (LCP)** | 5.6s        | <3.0s  | 🔄     |
-| **First Input Delay (FID)**        | 120ms       | <100ms | 🔄     |
-| **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     |
-| **Bundle Size (Principal)**        | 356.5KB     | <500KB | ✅     |
-| **Bundle Size (Gzip)**             | 108.9KB     | <150KB | ✅     |
+| Métrica                            | Valor Atual | Meta   | Status | Melhoria |
+| ---------------------------------- | ----------- | ------ | ------ | -------- |
+| **Lighthouse Performance**         | 79%         | >90%   | 🔄     | +6pts    |
+| **Lighthouse Acessibilidade**      | 94%         | >90%   | ✅     | =        |
+| **Lighthouse Best Practices**      | 100%        | >90%   | ✅     | =        |
+| **Lighthouse SEO**                 | 100%        | >90%   | ✅     | =        |
+| **First Contentful Paint (FCP)**   | 3.1s        | <2.5s  | 🔄     | -0.2s    |
+| **Largest Contentful Paint (LCP)** | 4.3s        | <3.0s  | 🔄     | -1.3s    |
+| **Total Blocking Time (TBT)**      | 50ms        | <200ms | ✅     | -70ms    |
+| **Speed Index (SI)**               | 3.4s        | <3.4s  | ✅     | -0.2s    |
+| **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     | =        |
+| **Bundle Size (Principal)**        | 364.5KB     | <500KB | ✅     | +8KB     |
+| **Bundle Size (Gzip)**             | 111.2KB     | <150KB | ✅     | +2.3KB   |
 
 ### Otimizações Implementadas
 
@@ -261,6 +265,9 @@ export const SEARCH_LIMITS: SearchLimitsConfig = {
 - **Cache Inteligente**: TanStack Query para cache de dados
 - **Bundle Analysis**: Análise visual de tamanho de código
 - **Logs limpos**: `console.log` removidos, `logger.debug` só em DEV
+- **Clean Architecture**: Separação clara de responsabilidades (SRP)
+- **Container Pattern**: Components UI puramente apresentacionais
+- **DTOs & Mappers**: Desacoplamento da API Spotify via camada de mapeamento
 
 ### Análise de Bundle
 

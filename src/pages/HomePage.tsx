@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
+import { usePopularArtistsImagePreload } from '@/hooks/useImagePreload'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 import { useSearchStore } from '@/stores/searchStore'
 
@@ -16,6 +17,9 @@ export const HomePage: React.FC = () => {
     usePopularArtists({
       limit: 10,
     })
+
+  // Preload de imagens críticas para melhorar LCP
+  usePopularArtistsImagePreload(popularArtists)
 
   // Clear search on mount - using useCallback to avoid side effects
   const clearSearchOnMount = useCallback(() => {
@@ -77,12 +81,15 @@ export const HomePage: React.FC = () => {
             </div>
           ) : popularArtists.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
-              {popularArtists.map((artist) => (
+              {popularArtists.map((artist, index) => (
                 <div
                   key={artist.id}
                   onClick={() => handleArtistClick(artist.id)}
                 >
-                  <ArtistCard artist={artist} />
+                  <ArtistCard
+                    artist={artist}
+                    priority={index < 6} // Primeiros 6 cards têm prioridade alta
+                  />
                 </div>
               ))}
             </div>

@@ -1,15 +1,37 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 
 import { ArtistCard } from '@/components/ui/ArtistCard'
 import { GridSkeleton } from '@/components/ui/GridSkeleton'
+import { usePopularArtistsImagePreload } from '@/hooks/useImagePreload'
 import { usePopularArtists } from '@/hooks/usePopularArtists'
 
 export const ArtistsPage: React.FC = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { artists, isLoading, error, refetch } = usePopularArtists({
     limit: 24,
   })
+
+  // 🚀 Preload de imagens críticas para melhorar LCP
+  usePopularArtistsImagePreload(artists)
+
+  // 🚀 Otimização: useCallback para evitar re-renders desnecessários
+  const handleArtistClick = useCallback(
+    (artistId: string) => {
+      navigate(`/artist/${artistId}`)
+    },
+    [navigate],
+  )
+
+  // 🚀 Otimização: useMemo para computar artistas prioritários apenas quando necessário
+  const artistsWithPriority = useMemo(() => {
+    return artists.map((artist, index) => ({
+      ...artist,
+      priority: index < 6, // Primeiros 6 têm prioridade alta
+    }))
+  }, [artists])
 
   if (isLoading) {
     return (
@@ -48,13 +70,12 @@ export const ArtistsPage: React.FC = () => {
         </h1>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-          {artists.map((artist) => (
+          {artistsWithPriority.map((artist) => (
             <ArtistCard
               key={artist.id}
               artist={artist}
-              onClick={() => {
-                window.location.href = `/artist/${artist.id}`
-              }}
+              onClick={() => handleArtistClick(artist.id)}
+              priority={artist.priority}
             />
           ))}
         </div>

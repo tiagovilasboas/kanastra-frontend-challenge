@@ -33,10 +33,10 @@ export function Header({
 
   return (
     <header
-      className="bg-background border-b border-border px-3 sm:px-4 py-2 sm:py-3 z-50"
+      className="bg-background border-b border-border px-3 sm:px-6 lg:px-8 py-2 sm:py-3 z-50"
       style={{ pointerEvents: 'auto' }}
     >
-      <div className="flex items-center justify-between gap-2 sm:gap-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between gap-2 sm:gap-4 w-full">
         {/* Left side - Menu button and Logo */}
         <div className="flex items-center gap-2 sm:gap-4">
           {/* Mobile Menu Button */}
@@ -59,7 +59,7 @@ export function Header({
         </div>
 
         {/* Center - Search */}
-        <div className="flex-1 max-w-sm sm:max-w-md mx-2 sm:mx-4">
+        <div className="flex-1 max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl mx-2 sm:mx-4 lg:mx-8">
           <div className="relative">
             <Search className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground" />
             <Input

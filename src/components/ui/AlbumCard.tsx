@@ -12,7 +12,7 @@ interface AlbumCardProps {
   className?: string
 }
 
-export const AlbumCard: React.FC<AlbumCardProps> = ({
+const AlbumCardComponent: React.FC<AlbumCardProps> = ({
   album,
   onClick,
   className = '',
@@ -74,3 +74,7 @@ export const AlbumCard: React.FC<AlbumCardProps> = ({
     </div>
   )
 }
+
+AlbumCardComponent.displayName = 'AlbumCard'
+
+export const AlbumCard = React.memo(AlbumCardComponent)

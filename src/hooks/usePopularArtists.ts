@@ -29,29 +29,38 @@ export function usePopularArtists({
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.artists.popular(limit),
     queryFn: async () => {
-      const artists: SpotifyArtist[] = []
-
       // Buscar detalhes de artistas populares conhecidos
       const artistIdsToFetch = POPULAR_ARTIST_IDS.slice(0, limit)
 
-      for (const artistId of artistIdsToFetch) {
+      // 🚀 OTIMIZAÇÃO: Fazer requests em paralelo com Promise.allSettled
+      const artistPromises = artistIdsToFetch.map(async (artistId) => {
         try {
           const artist = await spotifyRepository.getArtistDetails(artistId)
-          if (artist && artist.popularity && artist.popularity > 30) {
-            artists.push(artist)
-          }
+          return artist && artist.popularity && artist.popularity > 30
+            ? artist
+            : null
         } catch (error) {
           console.warn(`Failed to fetch artist ${artistId}:`, error)
 
-          // Check if it's an auth error and handle it gracefully
+          // Check if it's an auth error
           if (checkAuthError(error)) {
-            // Return empty array on auth error
-            return []
+            throw error // Propagar erro de autenticação
           }
 
-          // Continuar com outros artistas mesmo se um falhar
+          return null // Continuar com outros artistas
         }
-      }
+      })
+
+      // Aguardar todas as requests em paralelo
+      const results = await Promise.allSettled(artistPromises)
+
+      // Filtrar apenas resultados válidos
+      const artists = results
+        .filter(
+          (result): result is PromiseFulfilledResult<SpotifyArtist> =>
+            result.status === 'fulfilled' && result.value !== null,
+        )
+        .map((result) => result.value)
 
       // Ordenar por popularidade (mais alta primeiro)
       const sortedArtists = artists

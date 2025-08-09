@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { PlaceholderImage } from './PlaceholderImage'
+import { OptimizedImage } from './OptimizedImage'
 
 interface ArtistCardProps {
   artist: {
@@ -12,12 +12,14 @@ interface ArtistCardProps {
   }
   onClick?: () => void
   className?: string
+  priority?: boolean
 }
 
-export const ArtistCard: React.FC<ArtistCardProps> = ({
+const ArtistCardComponent: React.FC<ArtistCardProps> = ({
   artist,
   onClick,
   className = '',
+  priority = false,
 }) => {
   const { t } = useTranslation()
   return (
@@ -37,20 +39,15 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({
       <div className="space-y-3">
         {/* Circular Image */}
         <div className="relative aspect-square w-full">
-          {artist.images && artist.images[0] ? (
-            <img
-              src={artist.images[0].url}
-              alt={artist.name}
-              width={artist.images[0].width || 320}
-              height={artist.images[0].height || 320}
-              loading="lazy"
-              decoding="async"
-              fetchPriority="low"
-              className="w-full h-full object-cover rounded-full"
-            />
-          ) : (
-            <PlaceholderImage type="artist" className="rounded-full" />
-          )}
+          <OptimizedImage
+            images={artist.images}
+            alt={artist.name}
+            context="card"
+            className="rounded-full"
+            placeholderType="artist"
+            placeholder="blur"
+            priority={priority}
+          />
           {/* Hover overlay */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-full transition-colors duration-200 flex items-center justify-center">
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -86,3 +83,7 @@ export const ArtistCard: React.FC<ArtistCardProps> = ({
     </div>
   )
 }
+
+ArtistCardComponent.displayName = 'ArtistCard'
+
+export const ArtistCard = React.memo(ArtistCardComponent)

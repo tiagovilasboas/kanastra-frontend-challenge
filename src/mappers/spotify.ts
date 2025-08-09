@@ -7,6 +7,7 @@ import {
   SpotifyShow,
   SpotifyTrack,
 } from '@/types/spotify'
+import { getSpotifyImageUrls } from '@/utils/imageOptimization'
 
 /**
  * DTOs (Data Transfer Objects) para representar dados da aplicação
@@ -17,6 +18,12 @@ export interface ArtistDTO {
   id: string
   name: string
   imageUrl?: string
+  imageUrls?: {
+    thumbnail?: string
+    card?: string
+    header?: string
+    list?: string
+  }
   popularity?: number
   followersCount: number
   genres: string[]
@@ -102,10 +109,12 @@ export class SpotifyMapper {
    * Converte SpotifyArtist para ArtistDTO
    */
   static toArtistDTO(artist: SpotifyArtist): ArtistDTO {
+    const imageUrls = getSpotifyImageUrls(artist.images)
     return {
       id: artist.id,
       name: artist.name,
-      imageUrl: artist.images?.[0]?.url,
+      imageUrl: artist.images?.[0]?.url, // Mantém compatibilidade
+      imageUrls, // URLs otimizadas por contexto
       popularity: artist.popularity,
       followersCount: artist.followers?.total || 0,
       genres: artist.genres || [],

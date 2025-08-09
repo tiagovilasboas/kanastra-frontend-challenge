@@ -2,7 +2,7 @@ import { Check, Play } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
+import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { SpotifyTrack } from '@/types/spotify'
 
 interface TrackListItemProps {
@@ -12,7 +12,7 @@ interface TrackListItemProps {
   isLiked?: boolean
 }
 
-export const TrackListItem: React.FC<TrackListItemProps> = ({
+const TrackListItemComponent: React.FC<TrackListItemProps> = ({
   track,
   index,
   onClick,
@@ -34,11 +34,6 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
-  const trackImage =
-    track.album.images && track.album.images.length > 0
-      ? track.album.images[0].url
-      : undefined
-
   return (
     <div
       className="group flex items-center gap-4 p-2 rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
@@ -51,21 +46,15 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
 
       {/* Album Art */}
       <div className="relative w-10 h-10 rounded overflow-hidden bg-muted flex-shrink-0">
-        {trackImage ? (
-          <img
-            src={trackImage}
-            alt={track.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement
-              target.style.display = 'none'
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-muted">
-            <SpotifyIcon color="green" size={20} />
-          </div>
-        )}
+        <OptimizedImage
+          images={track.album.images}
+          alt={track.name}
+          context="thumbnail"
+          className="w-full h-full"
+          placeholderType="album"
+          placeholder="icon"
+          priority={false}
+        />
         {/* Play button overlay on hover */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
           <Play className="w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -110,3 +99,7 @@ export const TrackListItem: React.FC<TrackListItemProps> = ({
     </div>
   )
 }
+
+TrackListItemComponent.displayName = 'TrackListItem'
+
+export const TrackListItem = React.memo(TrackListItemComponent)
