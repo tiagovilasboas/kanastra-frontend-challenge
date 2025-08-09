@@ -1,8 +1,7 @@
-import { Search, X } from 'lucide-react'
+import { Search } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export interface MobileSearchOverlayProps {
@@ -65,20 +64,10 @@ export function MobileSearchOverlay({
       />
 
       {/* Overlay Content */}
-      <div className="relative z-10 bg-background border-b border-border">
-        <div className="flex items-center gap-3 p-4">
-          {/* Botão Voltar */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            className="flex-shrink-0"
-          >
-            <X className="w-5 h-5" />
-          </Button>
-
-          {/* Campo de Busca */}
-          <div className="flex-1 relative">
+      <div className="relative z-10 bg-background border-b border-border w-full">
+        <div className="flex items-center gap-3 p-4 w-full">
+          {/* Campo de Busca - 100% largura */}
+          <div className="flex-1 relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               ref={inputRef}
@@ -96,17 +85,10 @@ export function MobileSearchOverlay({
                   onClose()
                 }
               }}
-              className="pl-10 h-12 text-base bg-muted/50 border-border focus:bg-background"
+              className="pl-10 h-12 text-base bg-muted/50 border-border focus:bg-background w-full"
             />
           </div>
         </div>
-
-        {/* Dica de uso */}
-        {!searchQuery && (
-          <div className="px-4 pb-4 text-sm text-muted-foreground">
-            {t('search:mobileHint', 'Digite para buscar e pressione Enter')}
-          </div>
-        )}
       </div>
     </div>
   )
