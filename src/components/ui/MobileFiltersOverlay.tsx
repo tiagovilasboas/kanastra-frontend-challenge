@@ -250,9 +250,12 @@ export function MobileFiltersOverlay({
                   {t('search:genre', 'Gênero')}
                 </Label>
                 <Select
-                  value={filters.genre || ''}
+                  value={filters.genre || '__all__'}
                   onValueChange={(value) =>
-                    handleFilterChange('genre', value || undefined)
+                    handleFilterChange(
+                      'genre',
+                      value === '__all__' ? undefined : value,
+                    )
                   }
                 >
                   <SelectTrigger className="h-10">
@@ -261,7 +264,7 @@ export function MobileFiltersOverlay({
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">
+                    <SelectItem value="__all__">
                       {t('search:allGenres', 'Todos os gêneros')}
                     </SelectItem>
                     {genres.map((genre) => (
@@ -278,11 +281,11 @@ export function MobileFiltersOverlay({
                 <div className="space-y-2">
                   <Label>{t('search:yearFrom', 'Ano de')}</Label>
                   <Select
-                    value={filters.yearFrom?.toString() || ''}
+                    value={filters.yearFrom?.toString() || '__any__'}
                     onValueChange={(value) =>
                       handleFilterChange(
                         'yearFrom',
-                        value ? parseInt(value) : undefined,
+                        value === '__any__' ? undefined : parseInt(value),
                       )
                     }
                   >
@@ -292,7 +295,7 @@ export function MobileFiltersOverlay({
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">
+                      <SelectItem value="__any__">
                         {t('search:anyYear', 'Qualquer ano')}
                       </SelectItem>
                       {years.map((year) => (
@@ -307,11 +310,11 @@ export function MobileFiltersOverlay({
                 <div className="space-y-2">
                   <Label>{t('search:yearTo', 'Ano até')}</Label>
                   <Select
-                    value={filters.yearTo?.toString() || ''}
+                    value={filters.yearTo?.toString() || '__any__'}
                     onValueChange={(value) =>
                       handleFilterChange(
                         'yearTo',
-                        value ? parseInt(value) : undefined,
+                        value === '__any__' ? undefined : parseInt(value),
                       )
                     }
                   >
@@ -321,7 +324,7 @@ export function MobileFiltersOverlay({
                       />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">
+                      <SelectItem value="__any__">
                         {t('search:anyYear', 'Qualquer ano')}
                       </SelectItem>
                       {years.map((year) => (
