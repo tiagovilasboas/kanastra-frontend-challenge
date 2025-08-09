@@ -87,24 +87,21 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   // Se não há imagem ou houve erro, mostra placeholder
   if (!imageUrl || hasError) {
     return (
-      <div ref={containerRef} className={`relative ${className}`}>
-        <PlaceholderImage
-          type={placeholderType}
-          className={`w-full h-full ${className}`}
-        />
+      <div
+        ref={containerRef}
+        className={`relative overflow-hidden ${className}`}
+      >
+        <PlaceholderImage type={placeholderType} className="w-full h-full" />
       </div>
     )
   }
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
+    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
       {/* Placeholder enquanto carrega */}
       {isLoading && placeholder === 'icon' && (
         <div className="absolute inset-0 z-10">
-          <PlaceholderImage
-            type={placeholderType}
-            className={`w-full h-full ${className}`}
-          />
+          <PlaceholderImage type={placeholderType} className="w-full h-full" />
         </div>
       )}
 
