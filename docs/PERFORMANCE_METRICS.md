@@ -15,8 +15,8 @@
 | **Total Blocking Time (TBT)**      | 50ms        | <200ms | ✅     | -70ms    |
 | **Speed Index (SI)**               | 3.4s        | <3.4s  | ✅     | -0.2s    |
 | **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     | =        |
-| **Bundle Size (Principal)**        | 364.5KB     | <500KB | ✅     | +8KB     |
-| **Bundle Size (Gzip)**             | 111.2KB     | <150KB | ✅     | +2.3KB   |
+| **Bundle Size (Principal)**        | 371.90KB    | <500KB | ✅     | +8KB     |
+| **Bundle Size (Gzip)**             | 112.79KB    | <150KB | ✅     | +2.3KB   |
 
 ### Métricas Otimizadas (Pós-Implementação)
 

@@ -25,7 +25,7 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 
 ## 🌐 Demo Online
 
-**Acesse a aplicação em:** **[https://kanastra-frontend-challenge.vercel.app/](https://kanastra-frontend-challenge.vercel.app/)**
+**Acesse a aplicação em:** **[https://spotify-artist-explorer.vercel.app/](https://spotify-artist-explorer.vercel.app/)**
 
 ## ✨ Funcionalidades Principais
 

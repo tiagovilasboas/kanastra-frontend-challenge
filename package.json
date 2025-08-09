@@ -2,7 +2,7 @@
   "name": "react-vite-boilerplate",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://kanastra-frontend-challenge.vercel.app/",
+  "homepage": "https://spotify-artist-explorer.vercel.app/",
   "type": "module",
   "author": {
     "name": "Tiago Vilas Boas",

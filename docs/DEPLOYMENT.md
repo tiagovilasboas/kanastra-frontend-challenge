@@ -6,7 +6,7 @@
 
 O projeto está configurado para deploy automático no Vercel:
 
-- **URL de Produção**: [https://kanastra-frontend-challenge.vercel.app/](https://kanastra-frontend-challenge.vercel.app/)
+- **URL de Produção**: [https://spotify-artist-explorer.vercel.app/](https://spotify-artist-explorer.vercel.app/)
 - **Deploy Automático**: A cada push para `main`
 - **Preview Deploys**: A cada Pull Request
 
@@ -33,7 +33,7 @@ Configure as seguintes variáveis no Vercel:
 # Spotify API
 VITE_SPOTIFY_CLIENT_ID=seu_client_id_aqui
 VITE_SPOTIFY_CLIENT_SECRET=seu_client_secret_aqui
-VITE_SPOTIFY_REDIRECT_URI=https://kanastra-frontend-challenge.vercel.app/callback
+VITE_SPOTIFY_REDIRECT_URI=https://spotify-artist-explorer.vercel.app/callback
 
 # Ambiente
 NODE_ENV=production
