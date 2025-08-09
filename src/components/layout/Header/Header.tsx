@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
-// import { MobileSearchOverlay } from '@/components/ui/MobileSearchOverlay'
+import { MobileSearchOverlay } from '@/components/ui/MobileSearchOverlay'
 import { SpotifyIcon } from '@/components/ui/SpotifyIcon'
 import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
 
@@ -32,7 +32,7 @@ export function Header({
 }: HeaderProps) {
   const { t } = useTranslation()
   const { isAuthenticated, login, logout } = useSpotifyAuth()
-  // const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false)
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false)
 
   return (
     <header
@@ -66,9 +66,7 @@ export function Header({
           {/* Mobile Search Button */}
           <Button
             variant="ghost"
-            onClick={() => {
-              /* TODO: setIsMobileSearchOpen(true) */
-            }}
+            onClick={() => setIsMobileSearchOpen(true)}
             className="lg:hidden w-full justify-start gap-2 h-9 bg-muted/50 hover:bg-muted text-muted-foreground"
           >
             <Search className="w-4 h-4" />
@@ -132,6 +130,16 @@ export function Header({
           )}
         </div>
       </div>
+
+      {/* Mobile Search Overlay */}
+      <MobileSearchOverlay
+        isOpen={isMobileSearchOpen}
+        onClose={() => setIsMobileSearchOpen(false)}
+        searchQuery={searchQuery}
+        onSearchChange={onSearchChange}
+        onSearchKeyPress={onSearchKeyPress}
+        searchPlaceholder={searchPlaceholder}
+      />
     </header>
   )
 }
