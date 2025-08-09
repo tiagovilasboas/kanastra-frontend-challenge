@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from './button'
 import { Input } from './input'
-import { MobileSearchOverlay } from './MobileSearchOverlay'
+import { MobileFilterOverlay } from './MobileFilterOverlay'
 
 interface SimpleFilterInputProps {
   value: string
@@ -50,18 +50,13 @@ export const SimpleFilterInput: React.FC<SimpleFilterInputProps> = ({
         <span className="text-sm">{value || t(placeholderKey)}</span>
       </Button>
 
-      {/* Mobile Filter Overlay - Reutiliza o mesmo MobileSearchOverlay */}
-      <MobileSearchOverlay
+      {/* Mobile Filter Overlay - No blur to see background content */}
+      <MobileFilterOverlay
         isOpen={isMobileFilterOpen}
         onClose={() => setIsMobileFilterOpen(false)}
-        searchQuery={value}
-        onSearchChange={onChange}
-        onSearchKeyPress={(e) => {
-          if (e.key === 'Enter' && value.trim()) {
-            setIsMobileFilterOpen(false)
-          }
-        }}
-        searchPlaceholder={t(placeholderKey)}
+        value={value}
+        onChange={onChange}
+        placeholder={t(placeholderKey)}
       />
     </>
   )
