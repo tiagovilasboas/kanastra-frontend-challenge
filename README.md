@@ -22,6 +22,7 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 - ✅ **Qualidade de Código**: 227 testes, 100% TypeScript, zero erros de linting
 - ✅ **Monitoramento**: Web Vitals, logging estruturado, Service Worker
 - ✅ **Segurança**: OAuth 2.0 PKCE, validação robusta, proteção XSS/CSRF
+- ✅ **PWA Completo**: Service Worker, cache estratégico, manifest.json
 
 ## 🌐 Demo Online
 
@@ -45,6 +46,21 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 - **SEO Otimizado**: Meta tags dinâmicas e structured data (JSON-LD)
 - **Performance**: Code splitting, lazy loading e otimizações de bundle
 
+### 📱 Progressive Web App (PWA)
+
+- **Service Worker**: Cache estratégico com múltiplas estratégias (Cache First, Network First, Stale While Revalidate)
+- **Offline Support**: Funcionalidade básica offline com cache de imagens e dados
+- **App Manifest**: Configuração completa para instalação como app nativo
+- **Background Sync**: Sincronização em background quando conexão retorna
+- **Push Notifications**: Estrutura preparada para notificações push
+- **Cache Management**: Cache inteligente com invalidação baseada em tempo
+
+#### Estratégias de Cache Implementadas
+
+- **Cache First**: Para imagens do Spotify (7 dias de cache)
+- **Network First**: Para chamadas de API (5 minutos de cache)
+- **Stale While Revalidate**: Para assets estáticos (CSS, JS, HTML)
+
 ## 🛠️ Stack Tecnológica
 
 ### Frontend
@@ -64,7 +80,7 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 ### Performance & Monitoring
 
 - **Web Vitals** - Monitoramento de performance
-- **Service Worker** - Cache estratégico
+- **Service Worker** - Cache estratégico e funcionalidades PWA
 - **Structured Logging** - Sistema de logs profissional
 
 ### Qualidade

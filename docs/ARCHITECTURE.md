@@ -245,6 +245,54 @@ const artistSchema = z.object({
 - **TanStack Query**: Cache inteligente para dados
 - **Memory Cache**: Cache em memória para cálculos pesados
 
+### Progressive Web App (PWA)
+
+#### Service Worker Architecture
+
+```typescript
+// Estratégias de cache implementadas
+const CACHE_STRATEGIES = {
+  IMAGES: 'cache-first', // 7 dias de cache
+  API: 'network-first', // 5 minutos de cache
+  STATIC: 'stale-while-revalidate', // Assets estáticos
+}
+
+// Registro automático com fallback graceful
+export async function registerServiceWorker(): Promise<void> {
+  if (!('serviceWorker' in navigator) || import.meta.env.DEV) {
+    return
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+    })
+
+    // Listen for updates
+    registration.addEventListener('updatefound', () => {
+      // Handle service worker updates
+    })
+  } catch (error) {
+    logger.error('Service Worker registration failed', error as Error)
+  }
+}
+```
+
+#### Cache Management
+
+- **Static Cache**: Assets estáticos (CSS, JS, HTML)
+- **Image Cache**: Imagens do Spotify com cache de 7 dias
+- **API Cache**: Dados da API com cache de 5 minutos
+- **Cache Invalidation**: Limpeza automática de caches antigos
+
+#### PWA Features
+
+- **Offline Support**: Funcionalidade básica offline
+- **Background Sync**: Preparado para sincronização em background
+- **Push Notifications**: Estrutura preparada para notificações
+- **App Manifest**: Configuração completa para instalação
+- **Update Management**: Notificação de atualizações disponíveis
+
 ## 🔄 State Management
 
 ### Zustand Implementation

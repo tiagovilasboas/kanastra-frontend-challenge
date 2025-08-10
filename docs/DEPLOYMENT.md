@@ -218,18 +218,79 @@ npm run analyze
 
 ### Service Worker
 
+O projeto implementa um Service Worker completo com estratégias de cache avançadas:
+
 ```javascript
 // public/sw.js
-const CACHE_NAME = 'spotify-clone-v1'
-const STATIC_ASSETS = ['/', '/manifest.json', '/spotify-icon.svg']
+const STATIC_CACHE = 'static-cache-v1'
+const IMAGES_CACHE = 'images-cache-v1'
+const API_CACHE = 'api-cache-v1'
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS)
-    }),
-  )
+// Estratégias de cache implementadas:
+// 1. Cache First para imagens (7 dias)
+// 2. Network First para APIs (5 minutos)
+// 3. Stale While Revalidate para assets estáticos
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event
+  const url = new URL(request.url)
+
+  // Cache First para imagens do Spotify
+  if (request.destination === 'image' || url.hostname.includes('spotify')) {
+    event.respondWith(cacheFirstStrategy(request, IMAGES_CACHE, 604800000))
+    return
+  }
+
+  // Network First para API calls
+  if (
+    url.pathname.startsWith('/api/') ||
+    url.hostname.includes('api.spotify.com')
+  ) {
+    event.respondWith(networkFirstStrategy(request, API_CACHE, 300000))
+    return
+  }
+
+  // Stale While Revalidate para assets estáticos
+  if (request.destination === 'script' || request.destination === 'style') {
+    event.respondWith(staleWhileRevalidateStrategy(request, STATIC_CACHE))
+    return
+  }
 })
+```
+
+### Registro do Service Worker
+
+```typescript
+// src/utils/serviceWorkerStrategy.ts
+export async function registerServiceWorker(): Promise<void> {
+  if (!('serviceWorker' in navigator) || import.meta.env.DEV) {
+    return
+  }
+
+  try {
+    const registration = await navigator.serviceWorker.register('/sw.js', {
+      scope: '/',
+    })
+
+    // Listen for updates
+    registration.addEventListener('updatefound', () => {
+      const newWorker = registration.installing
+      if (newWorker) {
+        newWorker.addEventListener('statechange', () => {
+          if (
+            newWorker.state === 'installed' &&
+            navigator.serviceWorker.controller
+          ) {
+            // Notify user about update
+            showUpdateNotification()
+          }
+        })
+      }
+    })
+  } catch (error) {
+    logger.error('Service Worker registration failed', error as Error)
+  }
+}
 ```
 
 ### Manifest
@@ -237,22 +298,42 @@ self.addEventListener('install', (event) => {
 ```json
 // public/manifest.json
 {
-  "name": "Spotify Explorer",
-  "short_name": "Spotify",
-  "description": "Explore artists, albums and songs from Spotify",
+  "name": "Spotify Artist Explorer",
+  "short_name": "Spotify Explorer",
+  "description": "Explore artistas, álbuns e músicas do Spotify. Descubra novos artistas, ouça suas principais faixas e navegue por discografias completas.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#121212",
+  "background_color": "#191414",
   "theme_color": "#1DB954",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "categories": ["music", "entertainment", "lifestyle"],
   "icons": [
     {
       "src": "/spotify-icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
 ```
+
+### Funcionalidades PWA Implementadas
+
+- ✅ **Service Worker**: Cache estratégico com múltiplas estratégias
+- ✅ **Offline Support**: Funcionalidade básica offline
+- ✅ **App Manifest**: Configuração completa para instalação
+- ✅ **Background Sync**: Preparado para sincronização
+- ✅ **Push Notifications**: Estrutura preparada
+- ✅ **Cache Management**: Cache inteligente com invalidação baseada em tempo
+
+### Estratégias de Cache
+
+1. **Cache First**: Para imagens do Spotify (7 dias de cache)
+2. **Network First**: Para chamadas de API (5 minutos de cache)
+3. **Stale While Revalidate**: Para assets estáticos (CSS, JS, HTML)
 
 ## 🌍 Domínios e SSL
 

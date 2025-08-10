@@ -4,30 +4,19 @@
 
 ### Métricas Atuais
 
-| Métrica                            | Valor Atual | Meta   | Status | Melhoria |
-| ---------------------------------- | ----------- | ------ | ------ | -------- |
-| **Lighthouse Performance**         | 79%         | >90%   | 🔄     | +6pts    |
-| **Lighthouse Acessibilidade**      | 94%         | >90%   | ✅     | =        |
-| **Lighthouse Best Practices**      | 100%        | >90%   | ✅     | =        |
-| **Lighthouse SEO**                 | 100%        | >90%   | ✅     | =        |
-| **First Contentful Paint (FCP)**   | 3.1s        | <2.5s  | 🔄     | -0.2s    |
-| **Largest Contentful Paint (LCP)** | 4.3s        | <3.0s  | 🔄     | -1.3s    |
-| **Total Blocking Time (TBT)**      | 50ms        | <200ms | ✅     | -70ms    |
-| **Speed Index (SI)**               | 3.4s        | <3.4s  | ✅     | -0.2s    |
-| **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     | =        |
-| **Bundle Size (Principal)**        | 371.90KB    | <500KB | ✅     | +8KB     |
-| **Bundle Size (Gzip)**             | 112.79KB    | <150KB | ✅     | +2.3KB   |
-
-### Métricas Otimizadas (Pós-Implementação)
-
-| Métrica                            | Valor Atual | Meta   | Status | Melhoria |
-| ---------------------------------- | ----------- | ------ | ------ | -------- |
-| **LCP (Largest Contentful Paint)** | 1.2s        | <3.0s  | ✅     | -3.1s    |
-| **FCP (First Contentful Paint)**   | 0.8s        | <2.5s  | ✅     | -2.3s    |
-| **CLS (Cumulative Layout Shift)**  | 0.02        | <0.1   | ✅     | -0.08    |
-| **TTFB (Time to First Byte)**      | 0.3s        | <1.0s  | ✅     | -0.7s    |
-| **Bundle Size (Principal)**        | 371.90KB    | <500KB | ✅     | +8KB     |
-| **Bundle Size (Gzip)**             | 112.78KB    | <150KB | ✅     | +2.3KB   |
+| Métrica                            | Valor Atual | Meta   | Status |
+| ---------------------------------- | ----------- | ------ | ------ |
+| **Lighthouse Performance**         | 79%         | >90%   | 🔄     |
+| **Lighthouse Acessibilidade**      | 94%         | >90%   | ✅     |
+| **Lighthouse Best Practices**      | 100%        | >90%   | ✅     |
+| **Lighthouse SEO**                 | 100%        | >90%   | ✅     |
+| **First Contentful Paint (FCP)**   | 3.1s        | <2.5s  | 🔄     |
+| **Largest Contentful Paint (LCP)** | 4.3s        | <3.0s  | 🔄     |
+| **Total Blocking Time (TBT)**      | 50ms        | <200ms | ✅     |
+| **Speed Index (SI)**               | 3.4s        | <3.4s  | ✅     |
+| **Cumulative Layout Shift (CLS)**  | 0           | <0.1   | ✅     |
+| **Bundle Size (Principal)**        | 371.90KB    | <500KB | ✅     |
+| **Bundle Size (Gzip)**             | 112.79KB    | <150KB | ✅     |
 
 ## 🚀 Otimizações Implementadas
 
@@ -54,6 +43,17 @@
 - **Web Vitals Monitoring**: Tracking automático de métricas Core Web Vitals
 - **Performance Monitoring**: Custom metrics e long task detection
 - **Retry Strategies**: Sistema de retry com backoff exponencial para APIs
+
+### Progressive Web App (PWA)
+
+- **Service Worker Registration**: Registro automático com fallback graceful
+- **Cache Strategies**:
+  - Cache First para imagens (7 dias)
+  - Network First para APIs (5 minutos)
+  - Stale While Revalidate para assets estáticos
+- **Offline Support**: Funcionalidade básica offline
+- **Background Sync**: Preparado para sincronização em background
+- **Push Notifications**: Estrutura preparada para notificações
 
 ## 📦 Análise de Bundle
 
@@ -136,31 +136,11 @@ npm run dev  # Inclui monitoramento automático
 - **Image Loading Performance**: Performance de carregamento de imagens
 - **Long Tasks**: Detecção de tarefas longas que bloqueiam a UI
 
-## 🎯 Metas de Performance
-
-### Short Term (1-2 semanas)
-
-- [ ] Reduzir LCP para < 2.0s
-- [ ] Otimizar FCP para < 1.5s
-- [ ] Implementar image optimization avançado
-
-### Medium Term (1 mês)
-
-- [ ] Implementar streaming SSR
-- [ ] Otimizar bundle size para < 300KB
-- [ ] Implementar PWA features
-
-### Long Term (3 meses)
-
-- [ ] Implementar Edge Caching
-- [ ] Otimizar para Core Web Vitals 100%
-- [ ] Implementar performance budgets
-
 ## 📊 Ferramentas Utilizadas
 
 - **Lighthouse**: Auditoria de performance
 - **Web Vitals**: Monitoramento de métricas core
 - **Bundle Analyzer**: Análise de tamanho de código
 - **Performance Monitor**: Custom metrics e tracking
-- **Service Worker**: Cache estratégico
+- **Service Worker**: Cache estratégico e funcionalidades PWA
 - **Intersection Observer**: Lazy loading e virtual scrolling
