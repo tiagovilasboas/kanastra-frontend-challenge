@@ -63,19 +63,32 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 
 ## 🛠️ Stack Tecnológica
 
-### Frontend
+### Frontend Core
 
-- **React 19** - Biblioteca principal
-- **TypeScript** - Tipagem estática
-- **Vite** - Build tool e dev server
-- **Tailwind CSS** - Framework CSS utilitário
-- **Radix UI** - Componentes acessíveis
+- **React 19** - Biblioteca principal com hooks avançados
+- **TypeScript** - Tipagem estática com configuração strict
+- **Vite** - Build tool com code splitting estratégico e otimizações
+- **Tailwind CSS** - Framework CSS utilitário com configuração customizada
+
+### UI & Componentes
+
+- **Radix UI** - Componentes acessíveis (Dialog, Select, Navigation, etc.)
+- **Lucide React** - Biblioteca de ícones SVG otimizados
+- **Class Variance Authority** - Sistema de variantes para componentes
+- **Tailwind Merge** - Merge inteligente de classes CSS
 
 ### Estado e Dados
 
-- **Zustand** - Gerenciamento de estado
-- **TanStack Query** - Cache e sincronização de dados
-- **Axios** - Cliente HTTP
+- **Zustand** - Gerenciamento de estado global
+- **TanStack Query** - Cache e sincronização de dados com configuração avançada
+- **Axios** - Cliente HTTP com interceptors
+- **Zod** - Validação de schemas e runtime type safety
+
+### Utilities & Libraries
+
+- **Sonner** - Sistema de toast notifications
+- **i18next** - Internacionalização com react-i18next
+- **clsx** - Utilitário para classes CSS condicionais
 
 ### Performance & Monitoring
 
@@ -83,12 +96,45 @@ Este projeto demonstra **capacidades de engenharia frontend de nível Staff** co
 - **Service Worker** - Cache estratégico e funcionalidades PWA
 - **Structured Logging** - Sistema de logs profissional
 
-### Qualidade
+### Qualidade & Desenvolvimento
 
-- **Vitest** - Testes unitários
-- **Cypress** - Testes E2E
-- **ESLint + Prettier** - Qualidade de código
-- **Husky** - Git hooks
+- **Vitest** - Testes unitários com configuração avançada
+- **Cypress** - Testes E2E com scripts automatizados
+- **ESLint** - Linting com plugins específicos (React, TypeScript, A11y)
+- **Prettier** - Formatação de código
+- **Husky** - Git hooks para qualidade
+- **Lint-staged** - Linting apenas de arquivos staged
+
+## ⚙️ Configurações Avançadas
+
+### Build & Performance
+
+- **Code Splitting Estratégico**: Chunks separados por vendor, feature e domínio
+- **Bundle Analysis**: Análise visual de tamanho de código com rollup-plugin-visualizer
+- **Tree Shaking**: Eliminação automática de código não utilizado
+- **Minificação**: Terser com otimizações específicas para produção
+- **Source Maps**: Configurados para debugging em desenvolvimento
+
+### Cache & Otimização
+
+- **TanStack Query**: Cache inteligente com configurações por tipo de dados
+- **Service Worker**: Cache estratégico com múltiplas estratégias
+- **Image Optimization**: Lazy loading e seleção inteligente de tamanhos
+- **Code Splitting**: 18 chunks otimizados por funcionalidade
+
+### Type Safety & Validação
+
+- **TypeScript Strict**: Configuração strict com noUnusedLocals e noUnusedParameters
+- **Zod Schemas**: Validação runtime completa para todas as APIs
+- **Type Guards**: Validação de tipos em runtime
+- **Generic Types**: Tipos avançados para reutilização
+
+### Development Experience
+
+- **Hot Module Replacement**: HMR otimizado para desenvolvimento
+- **Path Aliases**: Aliases configurados (@/ para src/)
+- **ESLint Plugins**: React, TypeScript, A11y, FormatJS e Simple Import Sort
+- **Pre-commit Hooks**: Linting e formatação automática
 
 ## 📚 Documentação
 
@@ -132,14 +178,20 @@ npm run build
 
 ### Diferenciais Implementados 🚀
 
-- ✅ **TypeScript** com tipagens avançadas e generics
+- ✅ **TypeScript** com tipagens avançadas, generics e configuração strict
 - ✅ **Testes unitários** com Vitest e **testes E2E** com Cypress
 - ✅ **Gerenciamento de estado global** com Zustand (sem prop drilling)
 - ✅ **Internacionalização** com react-i18next (Português e Inglês)
-- ✅ **Error handling** robusto com toast notifications
+- ✅ **Error handling** robusto com toast notifications (Sonner)
 - ✅ **Loading states** com skeleton loading
 - ✅ **Animações** e transições suaves
 - ✅ **Performance otimizada** com code splitting e lazy loading
+- ✅ **Validação robusta** com Zod schemas para todas as APIs
+- ✅ **UI Components** com Radix UI e sistema de variantes (CVA)
+- ✅ **Ícones otimizados** com Lucide React
+- ✅ **Cache inteligente** com TanStack Query e Service Worker
+- ✅ **Type safety** em runtime com validação de schemas
+- ✅ **Code splitting** estratégico com 18 chunks otimizados
 
 ## 📄 Licença
 
